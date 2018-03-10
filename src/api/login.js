@@ -35,7 +35,7 @@ export function getInfo(token) {
 
 export function logout(accesstoken, refreshToken) {
   return request({
-    url: '/auth/removeToken',
+    url: '/auth/authentication/removeToken',
     method: 'post',
     params: { accesstoken, refreshToken }
   })
