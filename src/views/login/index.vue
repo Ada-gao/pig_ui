@@ -70,7 +70,7 @@
             </el-button>
           </el-form-item>
         </el-tab-pane>
-        <el-tab-pane label="社交登录" name="three">
+        <!--<el-tab-pane label="社交登录" name="three">
           <el-row>
             <el-col :span="8">
               <el-card :body-style="{ padding: '0px' }">
@@ -81,7 +81,7 @@
               </el-card>
             </el-col>
           </el-row>
-        </el-tab-pane>
+        </el-tab-pane>-->
       </el-tabs>
     </el-form>
   </div>
