@@ -16,7 +16,7 @@
 
       <el-table-column align="center" label="序号">
         <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
+          <span>{{Number(scope.row.id).toFixed()}}</span>
         </template>
       </el-table-column>
 
