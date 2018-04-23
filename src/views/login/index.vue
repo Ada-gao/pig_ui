@@ -3,7 +3,7 @@
     <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left"
              label-width="0px"
              class="card-box login-form">
-      <h3 class="title">系统登录</h3>
+      <h3 class="title">智投CRM系统登录</h3>
       <el-tabs v-model="activeName">
         <el-tab-pane label="账号登录" name="first">
           <el-form-item prop="username">
@@ -43,7 +43,7 @@
             </el-button>
           </el-form-item>
         </el-tab-pane>
-        <el-tab-pane label="短信登录" name="second">
+        <!--<el-tab-pane label="短信登录" name="second">
           <el-form-item prop="mobile">
             <span class="svg-container svg-container_login">
               <svg-icon icon-class="mobile"/>
@@ -69,7 +69,7 @@
               登录
             </el-button>
           </el-form-item>
-        </el-tab-pane>
+        </el-tab-pane>-->
         <!--<el-tab-pane label="社交登录" name="three">
           <el-row>
             <el-col :span="8">
