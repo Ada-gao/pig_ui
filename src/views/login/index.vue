@@ -2,6 +2,7 @@
   <div class="login-container">
     <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left"
              label-width="0px"
+             v-show="pwdStep===1"
              class="card-box login-form">
       <h3 class="title">智投CRM系统登录</h3>
       <el-tabs v-model="activeName">
@@ -20,22 +21,10 @@
                         autoComplete="on"
                       placeholder="密码"></el-input>
             <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye"/></span>
+            <a class="forget-psd" @click="pwdStep=2">忘记密码</a>
           </el-form-item>
 
           <input name="randomStr" type="hidden" v-model="loginForm.randomStr"/>
-          <el-form-item>
-            <el-col :span="2">
-          <span class="svg-container">
-            <svg-icon icon-class="code"/>
-          </span>
-            </el-col>
-            <el-col :span="11">
-              <el-input name="code" type="text" v-model="loginForm.code" autoComplete="on" placeholder="验证码"/>
-            </el-col>
-            <el-col :span="10" align="right">
-              <img :src="src" style="padding-bottom: 1px" @click="refreshCode"/>
-            </el-col>
-          </el-form-item>
 
           <el-form-item>
             <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
@@ -84,6 +73,81 @@
         </el-tab-pane>-->
       </el-tabs>
     </el-form>
+    <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left"
+             label-width="0px"
+             v-show="pwdStep===2"
+             class="card-box login-form">
+      <h3 class="title">智投CRM系统登录</h3>
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="用户验证" name="first">
+          <el-form-item prop="username">
+            <span class="svg-container svg-container_login">
+              <svg-icon icon-class="user"/>
+            </span>
+            <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="账号"/>
+          </el-form-item>
+    
+          <input name="randomStr" type="hidden" v-model="loginForm.randomStr"/>
+          <el-form-item>
+            <el-col :span="2">
+          <span class="svg-container">
+            <svg-icon icon-class="code"/>
+          </span>
+            </el-col>
+            <el-col :span="11">
+              <el-input name="code" type="text" v-model="loginForm.code" autoComplete="on" placeholder="验证码"/>
+            </el-col>
+            <el-col :span="10" align="right">
+              <img :src="src" style="padding-bottom: 1px" @click="refreshCode"/>
+            </el-col>
+          </el-form-item>
+
+          <el-form-item style="border: none; text-align: center; background-color: transparent;">
+            <el-button type="primary" :loading="loading" @click.native.prevent="pwdStep=3">
+              下一步
+            </el-button>
+            <el-button @click="pwdStep=1">返回登陆框</el-button>
+          </el-form-item>
+        </el-tab-pane>
+      </el-tabs>
+    </el-form>
+    <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left"
+             label-width="0px"
+             v-show="pwdStep===3"
+             class="card-box login-form">
+      <h3 class="title">智投CRM系统登录</h3>
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="重置密码" name="first">
+
+          <el-form-item prop="password">
+            <span class="svg-container">
+              <svg-icon icon-class="password"></svg-icon>
+            </span>
+              <el-input name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password"
+                        autoComplete="on"
+                      placeholder="新密码"></el-input>
+            <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye"/></span>
+          </el-form-item>
+          <el-form-item prop="password">
+            <span class="svg-container">
+              <svg-icon icon-class="password"></svg-icon>
+            </span>
+              <el-input name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password"
+                        autoComplete="on"
+                      placeholder="再次输入新密码"></el-input>
+            <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye"/></span>
+          </el-form-item>
+
+          <input name="randomStr" type="hidden" v-model="loginForm.randomStr"/>
+
+          <el-form-item>
+            <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="pwdStep=1">
+              确定
+            </el-button>
+          </el-form-item>
+        </el-tab-pane>
+      </el-tabs>
+    </el-form>
   </div>
 </template>
 
@@ -122,7 +186,8 @@
           code: [{required: true, trigger: 'blur'}],
         },
         loading: false,
-        pwdType: 'password'
+        pwdType: 'password',
+        pwdStep: 1
       }
     },
     methods: {
@@ -312,6 +377,15 @@
       position: absolute;
       right: 35px;
       bottom: 28px;
+    }
+    .forget-psd {
+      position: absolute;
+      right: -70px;
+      bottom: 0;
+      color: #fff;
+    }
+    .el-tabs__content {
+      overflow: visible;
     }
   }
 

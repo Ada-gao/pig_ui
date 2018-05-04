@@ -17,7 +17,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="用户名">
+      <el-table-column align="center" label="员工姓名">
         <template slot-scope="scope">
           <span>
             <img v-if="scope.row.avatar" class="user-avatar" style="width: 20px; height: 20px; border-radius: 50%;" :src="scope.row.avatar+'?imageView2/1/w/20/h/20'">
@@ -26,27 +26,39 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="所属部门" show-overflow-tooltip>
+      <el-table-column align="center" label="手机号" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.deptName}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="角色">
+      <el-table-column align="center" label="工号" show-overflow-tooltip>
+        <template slot-scope="scope">
+        <span>{{scope.row.deptName}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="入职时间">
+        <template slot-scope="scope">
+          <span>{{scope.row.createTime | parseTime('{y}-{m}-{d}')}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" class-name="status-col" label="员工状态">
+        <template slot-scope="scope">
+          <el-tag>{{scope.row.delFlag | statusFilter}}</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="职位">
         <template slot-scope="scope">
           <span>{{scope.row.roleList[0].roleDesc}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="创建时间">
+      <el-table-column align="center" label="部门" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{scope.row.createTime | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" class-name="status-col" label="状态">
-        <template slot-scope="scope">
-          <el-tag>{{scope.row.delFlag | statusFilter}}</el-tag>
+        <span>{{scope.row.deptName}}</span>
         </template>
       </el-table-column>
 
@@ -89,28 +101,133 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :model="form" :rules="rules" ref="form" label-width="100px">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="form.username" placeholder="请输用户名"></el-input>
-        </el-form-item>
+        
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="姓名" prop="username">
+              <el-input v-model="form.username" placeholder="请输入姓名"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="角色" prop="role">
+              <el-select class="filter-item" v-model="role" placeholder="请选择">
+                <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
+                  <span style="float: left">{{ item.roleDesc }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="工号" prop="username">
+              <el-input v-model="form.username" placeholder="请输入工号"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="入职日期" prop="date">
+              <el-date-picker
+                v-model="entryDate"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="性别" prop="username">
+              <el-select class="filter-item" v-model="sex" placeholder="请选择">
+                <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
+                  <span style="float: left">{{ item.label }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="学历" prop="edu">
+              <el-select class="filter-item" v-model="edu" placeholder="请选择">
+                <el-option v-for="item in eduOptions" :key="item.value" :value="item.value" :label="item.label">
+                  <span style="float: left">{{ item.label }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="证件类型" prop="IDsType">
+              <el-select class="filter-item" v-model="IDsType" placeholder="请选择">
+                <el-option v-for="item in IDsTypeOptions" :key="item.value" :value="item.value" :label="item.label">
+                  <span style="float: left">{{ item.label }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="婚姻状况" prop="maritalStatus">
+              <el-select class="filter-item" v-model="maritalStatus" placeholder="请选择">
+                <el-option v-for="item in maritalStatusOptions" :key="item.value" :value="item.value" :label="item.label">
+                  <span style="float: left">{{ item.label }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="证件号码" prop="username">
+              <el-input v-model="form.username" placeholder="请输入姓名"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="手机号" prop="role">
+              <el-input v-model="form.role"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="职位" prop="username">
+              <el-select class="filter-item" v-model="role" placeholder="请选择">
+                <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
+                  <span style="float: left">{{ item.roleDesc }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="简历" prop="role">
+              <el-input v-model="form.role"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="部门" prop="deptName">
+              <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
+              <input type="hidden" v-model="form.deptId"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="form.email"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-        <el-form-item v-if="dialogStatus == 'create'" label="密码" placeholder="请输入密码" prop="password">
-          <el-input type="password" v-model="form.password"></el-input>
+        <el-form-item label="备注" prop="role">
+          <el-input type="textarea" v-model="form.role"></el-input>
         </el-form-item>
-
-        <el-form-item label="所属部门" prop="deptName">
-          <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
-          <input type="hidden" v-model="form.deptId"/>
-        </el-form-item>
-
-        <el-form-item label="角色" prop="role">
-          <el-select class="filter-item" v-model="role" placeholder="请选择">
-            <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
-              <span style="float: left">{{ item.roleDesc }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
-            </el-option>
-          </el-select>
-        </el-form-item>
-
+        
         <el-form-item label="状态" v-if="dialogStatus == 'update' && sys_user_del " prop="delFlag" >
           <el-select class="filter-item" v-model="form.delFlag" placeholder="请选择">
             <el-option v-for="item in statusOptions" :key="item" :label="item | statusFilter" :value="item"> </el-option>
@@ -216,14 +333,76 @@
         userDel: false,
         dialogStatus: '',
         textMap: {
-          update: '编辑',
-          create: '创建'
+          update: '编辑员工',
+          create: '新增员工'
         },
         isDisabled: {
           0: false,
           1: true
         },
-        tableKey: 0
+        tableKey: 0,
+        sexOptions: [
+          {
+            label: '男',
+            value: 1
+          }, {
+            label: '女',
+            value: 2
+          }
+        ],
+        sex: '',
+        eduOptions: [
+          {
+            label: '博士',
+            value: 1
+          }, {
+            label: '硕士',
+            value: 2
+          }, {
+            label: '本科',
+            value: 3
+          }, {
+            label: '大专',
+            value: 4
+          }, {
+            label: '高中',
+            value: 5
+          }, {
+            label: '初中',
+            value: 6
+          }, {
+            label: '小学',
+            value: 7
+          }
+        ],
+        edu: '',
+        IDsTypeOptions: [
+          {
+            label: '二代居民身份证',
+            value: 1
+          }, {
+            label: '护照',
+            value: 2
+          }, {
+            label: '军官证',
+            value: 3
+          }
+        ],
+        IDsType: '',
+        entryDate: '',
+        maritalStatusOptions: [
+          {
+            label: '已婚',
+            value: 1
+          }, {
+            label: '未婚',
+            value: 2
+          }, {
+            label: '保密',
+            value: 3
+          }
+        ],
+        maritalStatus: ''
       }
     },
     computed: {
