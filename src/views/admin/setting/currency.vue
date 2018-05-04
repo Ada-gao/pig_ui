@@ -19,10 +19,7 @@
 
       <el-table-column align="center" label="币种名称">
         <template slot-scope="scope">
-          <span>
-            <img v-if="scope.row.avatar" class="user-avatar" style="width: 20px; height: 20px; border-radius: 50%;" :src="scope.row.avatar+'?imageView2/1/w/20/h/20'">
-            {{scope.row.name}}
-          </span>
+          <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
 
@@ -98,9 +95,7 @@
         },
         form: {
           name: undefined,
-          password: undefined,
-          delFlag: undefined,
-          deptId: undefined
+          currencyId: undefined
         },
         statusOptions: ['0', '1'],
         dialogFormVisible: false,
@@ -152,11 +147,11 @@
           this.listLoading = false
         })
       },
-      getNodeData(data) {
-        this.dialogDeptVisible = false
-        this.form.deptId = data.id
-        this.form.deptName = data.name
-      },
+      // getNodeData(data) {
+      //   this.dialogDeptVisible = false
+      //   this.form.deptId = data.id
+      //   this.form.deptName = data.name
+      // },
       handleDept() {
         fetchDeptTree()
           .then(response => {
@@ -259,7 +254,7 @@
       },
       resetTemp() {
         this.form = {
-          id: undefined,
+          currencyId: undefined,
           name: '',
         }
       }

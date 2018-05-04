@@ -175,7 +175,7 @@
         loginForm: {
           username: null,
           password: null,
-          code: '',
+          code: '1234',
           randomStr: Math.ceil(Math.random() * 100000) + '_' + Date.now(),
           mobile: null,
           smsCode: ''

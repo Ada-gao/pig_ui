@@ -64,17 +64,18 @@ export const asyncRouterMap = [
     menuId: 19,
     path: '/admin',
     component: Layout,
-    name: '产品列表',
+    name: '产品管理',
     hidden: false,
-    redirect: '/admin/user',
+    redirect: '/admin/product',
     // icon: 'table',
     meta: {
-      title: '产品列表',
+      title: '产品管理',
       icon: 'table'
     },
     children: [
-      { menuId: 20, path: 'user', component: _import('admin/user/index'), name: '新增产品', meta: { title: '新增产品', icon: 'user' }},
-      { menuId: 80, path: 'user', component: _import('admin/user/index'), name: '产品详情', meta: { title: '产品详情', icon: 'user' }},
+      { menuId: 81, path: 'product/list', component: _import('admin/product/list'), name: '产品列表', meta: { title: '产品列表', icon: 'user' }},
+      { menuId: 20, path: 'product/add', component: _import('admin/product/add'), name: '产品新增', meta: { title: '产品新增', icon: 'user' }},
+      { menuId: 80, path: 'product/det', component: _import('admin/product/detail'), name: '产品详情', meta: { title: '产品详情', icon: 'user' }},
     ]
   },
   {

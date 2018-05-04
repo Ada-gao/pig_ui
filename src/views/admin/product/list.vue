@@ -1,67 +1,30 @@
+
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名"
+      <!-- <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名"
                 v-model="listQuery.username">
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
-      <el-row :gutter="10">
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <div class="grid-content bg-purple">
-            搜索
-            <el-input
-              placeholder="搜索员工、手机号、工号"
-              suffix-icon="el-icon-date"
-              v-model="input2">
-            </el-input>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <div class="grid-content bg-purple-light">
-            职位
-            <el-select class="filter-item" v-model="sex" placeholder="请选择">
-              <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <div class="grid-content bg-purple">
-            工作状态
-            <el-select class="filter-item" v-model="sex" placeholder="请选择">
-              <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row>  
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <div class="grid-content bg-purple-light">
-            入职时间
-            <el-date-picker
-              v-model="value13"
-              type="daterange"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :default-time="['00:00:00', '23:59:59']">
-            </el-date-picker>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <div class="grid-content bg-purple-light">
-            角色
-            <el-select class="filter-item" v-model="sex" placeholder="请选择">
-              <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </div>
-        </el-col>
-      </el-row>
+      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
+      <el-col>
+        <div class="grid-content bg-purple">
+          产品名称
+          <el-input
+            placeholder="请输入产品名称"
+            v-model="input2">
+          </el-input>
+        </div>
+      </el-col>
+
+      <el-col>
+        <div>
+          产品分类
+          <el-checkbox-group v-model="checkboxGroup1">
+            <el-checkbox-button v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox-button>
+          </el-checkbox-group>
+        </div>
+      </el-col>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -486,7 +449,9 @@
           }
         ],
         maritalStatus: '',
-        fileList: []
+        fileList: [],
+        cities: ['不限', '理财', '另类投资', '固收', '二级市场'],
+        checkboxGroup1: ''
       }
     },
     computed: {
