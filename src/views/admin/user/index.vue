@@ -73,12 +73,36 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="员工姓名">
+      <el-table-column align="center" label="用户名">
         <template slot-scope="scope">
           <span>
             <img v-if="scope.row.avatar" class="user-avatar" style="width: 20px; height: 20px; border-radius: 50%;" :src="scope.row.avatar+'?imageView2/1/w/20/h/20'">
             {{scope.row.username}}
           </span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="所属部门" show-overflow-tooltip>
+        <template slot-scope="scope">
+        <span>{{scope.row.deptName}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="职位">
+        <template slot-scope="scope">
+          <span>{{scope.row.roleList[0].roleDesc}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="入职时间">
+        <template slot-scope="scope">
+          <span>{{scope.row.createTime | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" class-name="status-col" label="状态">
+        <template slot-scope="scope">
+          <el-tag>{{scope.row.delFlag | statusFilter}}</el-tag>
         </template>
       </el-table-column>
 
@@ -89,30 +113,6 @@
       </el-table-column>
 
       <el-table-column align="center" label="工号" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="入职时间">
-        <template slot-scope="scope">
-          <span>{{scope.row.createTime | parseTime('{y}-{m}-{d}')}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" class-name="status-col" label="员工状态">
-        <template slot-scope="scope">
-          <el-tag>{{scope.row.delFlag | statusFilter}}</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="职位">
-        <template slot-scope="scope">
-          <span>{{scope.row.roleList[0].roleDesc}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="部门" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.deptName}}</span>
         </template>

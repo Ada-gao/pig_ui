@@ -43,21 +43,22 @@ export const asyncRouterMap = [
     menuId: 1,
     path: '/admin',
     component: Layout,
-    name: '组织架构',
+    name: '系统管理',
     hidden: false,
     redirect: '/admin/user',
     // icon: 'table',
     meta: {
-      title: '组织架构',
+      title: '系统管理',
       icon: 'table'
     },
     children: [
-      { menuId: 2, path: 'user', component: _import('admin/user/index'), name: '员工管理', meta: { title: '员工管理', icon: 'user' }},
+      { menuId: 2, path: 'user', component: _import('admin/user/index'), name: '用户管理', meta: { title: '用户管理', icon: 'user' }},
       { menuId: 3, path: 'menu', component: _import('admin/menu/index'), name: '权限管理', meta: { title: '权限管理', icon: 'tree' }},
       { menuId: 4, path: 'role', component: _import('admin/role/index'), name: '角色管理', meta: { title: '角色管理', icon: 'role' }},
       { menuId: 5, path: 'posi', component: _import('admin/posi/index'), name: '职位管理', meta: { title: '职位管理', icon: 'log' }},
-      // { menuId: 6, path: 'dict', component: _import('admin/dict/index'), name: '--管理', meta: { title: '--管理', icon: 'dict' }},
-      { menuId: 7, path: 'dept', component: _import('admin/dept/index'), name: '部门管理', meta: { title: '部门管理', icon: 'dept' }}
+      { menuId: 7, path: 'dept', component: _import('admin/dept/index'), name: '部门管理', meta: { title: '部门管理', icon: 'dept' }},
+      { menuId: 6, path: 'dict', component: _import('admin/dict/index'), name: '字典管理', meta: { title: '字典管理', icon: 'dict' }},
+      { menuId: 6, path: 'log', component: _import('admin/log/index'), name: '日志管理', meta: { title: '日志管理', icon: 'log' }},
     ]
   },
   {
@@ -80,6 +81,28 @@ export const asyncRouterMap = [
   },
   {
     menuId: 8,
+    path: '/monitor',
+    component: Layout,
+    name: '系统监控',
+    redirect: '/monitor/service',
+    hidden: false,
+    // icon: 'table',
+    meta: {
+      title: '系统监控',
+      icon: 'monitor'
+    },
+    children: [
+      { menuId: 9, path: 'service', component: _import('admin/monitor/service'), name: '服务状态', meta: { title: '服务状态', icon: 'service' }},
+      { menuId: 10, path: 'zipkin', component: _import('admin/monitor/zipkin'), name: 'zipkin监控', meta: { title: 'zipkin监控', icon: 'zipkin' }},
+      { menuId: 11, path: 'pinpoint', component: _import('admin/monitor/pinpoint'), name: 'pinpoint监控', meta: { title: 'pinpoint监控', icon: 'pinpoint' }},
+      { menuId: 12, path: 'cache', component: _import('admin/monitor/cache'), name: '缓存状态', meta: { title: '缓存状态', icon: 'cache' }},
+      { menuId: 13, path: 'elk', component: _import('admin/monitor/elk'), name: 'ELK状态', meta: { title: 'ELK状态', icon: 'elk' }},
+      { menuId: 14, path: 'swagger', component: _import('admin/monitor/swagger'), name: '接口文档', meta: { title: '接口文档', icon: 'swagger' }},
+      { menuId: 15, path: 'daemon', component: _import('admin/monitor/daemon'), name: '任务监控', meta: { title: '任务监控', icon: 'daemon' }}
+    ]
+  },
+  {
+    menuId: 8,
     path: '/setting',
     component: Layout,
     name: '设置管理',
@@ -92,12 +115,6 @@ export const asyncRouterMap = [
     },
     children: [
       { menuId: 9, path: 'currency', component: _import('admin/setting/currency'), name: '币种管理', meta: { title: '币种管理', icon: 'service' }},
-      // { menuId: 10, path: 'zipkin', component: _import('admin/setting/zipkin'), name: 'zipkin监控', meta: { title: 'zipkin监控', icon: 'zipkin' }}
-      // { menuId: 11, path: 'pinpoint', component: _import('admin/setting/pinpoint'), name: 'pinpoint监控', meta: { title: 'pinpoint监控', icon: 'pinpoint' }},
-      // { menuId: 12, path: 'cache', component: _import('admin/setting/cache'), name: '缓存状态', meta: { title: '缓存状态', icon: 'cache' }},
-      // { menuId: 13, path: 'elk', component: _import('admin/setting/elk'), name: 'ELK状态', meta: { title: 'ELK状态', icon: 'elk' }},
-      // { menuId: 14, path: 'swagger', component: _import('admin/setting/swagger'), name: '接口文档', meta: { title: '接口文档', icon: 'swagger' }},
-      // { menuId: 15, path: 'daemon', component: _import('admin/setting/daemon'), name: '任务监控', meta: { title: '任务监控', icon: 'daemon' }}
     ]
   }
   // {

@@ -23,8 +23,21 @@
             <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye"/></span>
             <a class="forget-psd" @click="pwdStep=2">忘记密码</a>
           </el-form-item>
-
+              
           <input name="randomStr" type="hidden" v-model="loginForm.randomStr"/>
+          <el-form-item>
+            <el-col :span="2">
+          <span class="svg-container">
+            <svg-icon icon-class="code"/>
+          </span>
+            </el-col>
+            <el-col :span="11">
+              <el-input name="code" type="text" v-model="loginForm.code" autoComplete="on" placeholder="验证码"/>
+            </el-col>
+            <el-col :span="10" align="right">
+              <img :src="src" style="padding-bottom: 1px" @click="refreshCode"/>
+            </el-col>
+          </el-form-item>
 
           <el-form-item>
             <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
@@ -175,7 +188,7 @@
         loginForm: {
           username: null,
           password: null,
-          code: '1234',
+          code: '',
           randomStr: Math.ceil(Math.random() * 100000) + '_' + Date.now(),
           mobile: null,
           smsCode: ''
