@@ -214,6 +214,7 @@
           if (valid) {
             this.dialogFormVisible = false
             putObj(this.form).then(() => {
+              debugger
               this.dialogFormVisible = false
               this.getList()
               this.$notify({
@@ -254,7 +255,7 @@
       },
       resetTemp() {
         this.form = {
-          currencyId: undefined,
+          id: undefined,
           name: '',
         }
       }
