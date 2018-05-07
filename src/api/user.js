@@ -8,6 +8,9 @@ export function fetchList(query) {
   })
 }
 
+/**
+ * 新增用户
+ */
 export function addObj(obj) {
   return request({
     url: '/admin/user/',

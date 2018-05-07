@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchCurrency(query) {
   return request({
-    url: '/admin/currency',
+    url: '/admin/currency/',
     method: 'get',
     params: query
   })
@@ -32,7 +32,7 @@ export function delObj(id) {
 
 export function putObj(obj) {
   return request({
-    url: '/admin/currency/',
+    url: '/admin/currency/' + obj.currencyId,
     method: 'put',
     data: obj
   })

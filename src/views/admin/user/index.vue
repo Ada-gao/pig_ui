@@ -6,7 +6,7 @@
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
-      <el-row :gutter="10">
+      <el-row :gutter="20">
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <div class="grid-content bg-purple">
             搜索
@@ -20,7 +20,7 @@
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <div class="grid-content bg-purple-light">
             职位
-            <el-select class="filter-item" v-model="sex" placeholder="请选择">
+            <el-select class="filter-item" v-model="positionId" placeholder="请选择">
               <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -30,15 +30,15 @@
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <div class="grid-content bg-purple">
             工作状态
-            <el-select class="filter-item" v-model="sex" placeholder="请选择">
+            <el-select class="filter-item" v-model="delFlag" placeholder="请选择">
               <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
           </div>
         </el-col>
-      </el-row>
-      <el-row>  
+      <!-- </el-row> -->
+      <!-- <el-row :gutter="10"> -->
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <div class="grid-content bg-purple-light">
             入职时间
@@ -54,7 +54,7 @@
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <div class="grid-content bg-purple-light">
             角色
-            <el-select class="filter-item" v-model="sex" placeholder="请选择">
+            <el-select class="filter-item" v-model="role" placeholder="请选择">
               <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -114,11 +114,11 @@
 
       <el-table-column align="center" label="工号" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.empNo}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作">
+      <el-table-column align="center" label="操作" fixed="right">
         <template slot-scope="scope">
           <el-button v-if="sys_user_upd" size="small" type="success"
                      @click="handleUpdate(scope.row)">编辑
@@ -160,8 +160,8 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="姓名" prop="username">
-              <el-input v-model="form.username" placeholder="请输入姓名"></el-input>
+            <el-form-item label="姓名" prop="name">
+              <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -173,14 +173,14 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="工号" prop="username">
-              <el-input v-model="form.username" placeholder="请输入工号"></el-input>
+            <el-form-item label="工号" prop="empNo">
+              <el-input v-model="form.empNo" placeholder="请输入工号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="入职日期" prop="date">
               <el-date-picker
-                v-model="entryDate"
+                v-model="employeeDate"
                 type="date"
                 placeholder="选择日期">
               </el-date-picker>
@@ -190,8 +190,8 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="性别" prop="username">
-              <el-select class="filter-item" v-model="sex" placeholder="请选择">
+            <el-form-item label="性别" prop="gender">
+              <el-select class="filter-item" v-model="gender" placeholder="请选择">
                 <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
@@ -199,8 +199,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="学历" prop="edu">
-              <el-select class="filter-item" v-model="edu" placeholder="请选择">
+            <el-form-item label="学历" prop="education">
+              <el-select class="filter-item" v-model="education" placeholder="请选择">
                 <el-option v-for="item in eduOptions" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
@@ -211,9 +211,9 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="证件类型" prop="IDsType">
-              <el-select class="filter-item" v-model="IDsType" placeholder="请选择">
-                <el-option v-for="item in IDsTypeOptions" :key="item.value" :value="item.value" :label="item.label">
+            <el-form-item label="证件类型" prop="idType">
+              <el-select class="filter-item" v-model="idType" placeholder="请选择">
+                <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
               </el-select>
@@ -232,13 +232,13 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="证件号码" prop="username">
-              <el-input v-model="form.username" placeholder="请输入姓名"></el-input>
+            <el-form-item label="证件号码" prop="idNo">
+              <el-input v-model="form.idNo" placeholder="请输入证件号码"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="手机号" prop="role">
-              <el-input v-model="form.role"></el-input>
+            <el-form-item label="手机号" prop="mobile">
+              <el-input v-model="form.mobile"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -246,16 +246,18 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="职位" prop="username">
-              <el-select class="filter-item" v-model="role" placeholder="请选择">
-                <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
-                  <span style="float: left">{{ item.roleDesc }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
+              <!-- positionId -->
+              <el-select class="filter-item" v-model="role" placeholder="请选择" @focus="handlePosition()">
+                <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId" :disabled="isDisabled[item.delFlag]">
+                  <span style="float: left">{{ item.positionName }}</span>
+                  <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span> -->
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="角色" prop="role">
+              <!-- role -->
               <el-select class="filter-item" v-model="role" placeholder="请选择">
                 <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
                   <span style="float: left">{{ item.roleDesc }}</span>
@@ -269,6 +271,7 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="部门" prop="deptName">
+              <!-- deptId -->
               <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
               <input type="hidden" v-model="form.deptId"/>
             </el-form-item>
@@ -282,7 +285,7 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="简历" prop="role">
+            <el-form-item label="简历" prop="resumeUrl">
               <!-- <el-input v-model="form.role"></el-input> -->
               <el-upload
                 class="upload-demo"
@@ -301,21 +304,23 @@
               </el-upload>
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item label="状态" v-if="dialogStatus == 'update' && sys_user_del " prop="delFlag" >
+              <el-select class="filter-item" v-model="form.delFlag" placeholder="请选择">
+                <el-option v-for="item in statusOptions" :key="item" :label="item | statusFilter" :value="item"> </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
 
         <el-row>
           <el-col :span="22">
-            <el-form-item label="备注" prop="role">
-              <el-input type="textarea" v-model="form.role"></el-input>
+            <el-form-item label="备注" prop="remark">
+              <el-input type="textarea" v-model="form.remark"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         
-        <el-form-item label="状态" v-if="dialogStatus == 'update' && sys_user_del " prop="delFlag" >
-          <el-select class="filter-item" v-model="form.delFlag" placeholder="请选择">
-            <el-option v-for="item in statusOptions" :key="item" :label="item | statusFilter" :value="item"> </el-option>
-          </el-select>
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel('form')">取 消</el-button>
@@ -329,6 +334,7 @@
 <script>
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/user'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
+  import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
@@ -338,7 +344,8 @@
   export default {
     components: {
       ElOption,
-      ElRadioGroup },
+      ElRadioGroup 
+    },
     name: 'table_user',
     directives: {
       waves
@@ -360,10 +367,12 @@
         },
         role: undefined,
         form: {
+          name: 'rank',
           username: undefined,
           password: undefined,
           delFlag: undefined,
-          deptId: undefined
+          deptId: undefined,
+          empNo: 111081
         },
         rules: {
           username: [
@@ -408,6 +417,7 @@
           ]
         },
         statusOptions: ['0', '1'],
+        positionsOptions: [],
         rolesOptions: [],
         dialogFormVisible: false,
         dialogDeptVisible: false,
@@ -433,7 +443,9 @@
             value: 2
           }
         ],
-        sex: '',
+        input2: '',
+        gender: '',
+        value13: '',
         eduOptions: [
           {
             label: '博士',
@@ -458,8 +470,8 @@
             value: 7
           }
         ],
-        edu: '',
-        IDsTypeOptions: [
+        education: '',
+        idTypeOptions: [
           {
             label: '二代居民身份证',
             value: 1
@@ -471,8 +483,8 @@
             value: 3
           }
         ],
-        IDsType: '',
-        entryDate: '',
+        idType: '',
+        employeeDate: '',
         maritalStatusOptions: [
           {
             label: '已婚',
@@ -486,7 +498,9 @@
           }
         ],
         maritalStatus: '',
-        fileList: []
+        fileList: [],
+        positionId: '',
+        delFlag: ''
       }
     },
     computed: {
@@ -505,6 +519,7 @@
       }
     },
     created() {
+      // this.handlePosition()
       this.getList()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
@@ -529,6 +544,12 @@
           .then(response => {
             this.rolesOptions = response.data
           })
+      },
+      handlePosition() {
+        getAllPositon().then(res => {
+          this.positionsOptions = res.data
+          console.log(res.data)
+        })
       },
       handleDept() {
         fetchDeptTree()
@@ -558,6 +579,11 @@
         getObj(row.userId)
           .then(response => {
             this.form = response.data
+            this.form.name = 'jas',
+            this.form.empNo = '11108',
+            this.form.idNo = '11111111111111111111',
+            this.form.mobile = '156235656565',
+            this.form.email = '12@234234.com',
             this.role = row.roleList[0].roleId
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
