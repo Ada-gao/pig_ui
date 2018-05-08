@@ -7,36 +7,60 @@
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
-      <el-col>
-        <div class="grid-content bg-purple">
-          产品名称
+      <el-row :gutter="20">
+        <el-col :lg="2" class="query-title">产品名称</el-col>
+        <el-col :md="12" :lg="6">
           <el-input
             placeholder="请输入产品名称"
             v-model="input2">
           </el-input>
-        </div>
-      </el-col>
+        </el-col>
+      </el-row>
 
-      <el-col>
-        <div>
-          产品分类
+      <el-row style="margin-top: 20px;">
+        <el-col :lg="2" class="query-title">产品分类</el-col>
+        <el-col :lg="20">
           <el-checkbox-group v-model="checkboxGroup1">
-            <el-checkbox-button v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox-button>
+            <el-checkbox-button v-for="type in productTypes" :label="type" :key="type">{{type}}</el-checkbox-button>
           </el-checkbox-group>
-        </div>
-      </el-col>
+        </el-col>
+      </el-row>
+
+      <el-row style="margin-top: 20px;">
+        <el-col :lg="2" class="query-title">产品状态</el-col>
+        <el-col :lg="21">
+          <el-checkbox-group v-model="checkboxGroup2">
+            <el-checkbox-button v-for="status in productStatus" :label="status" :key="status">{{status}}</el-checkbox-button>
+          </el-checkbox-group>
+        </el-col>
+      </el-row>
+
+      <el-row style="margin-top: 20px;">
+        <el-col :lg="2" class="query-title">年化收益</el-col>
+        <el-col :lg="20">
+          <el-checkbox-group v-model="checkboxGroup3">
+            <el-checkbox-button v-for="income in productIncome" :label="income" :key="income">{{income}}</el-checkbox-button>
+          </el-checkbox-group>
+        </el-col>
+      </el-row>
+      
+      <el-row style="margin-top: 20px; text-align: center;">
+        <el-button style="padding: 10px 60px;">筛选</el-button>
+        <el-button style="padding: 10px 60px">重置</el-button>
+      </el-row>
+      
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
-              highlight-current-row style="width: 100%">
+              highlight-current-row style="width: 100%;">
 
-      <el-table-column align="center" label="序号">
+      <el-table-column align="center" label="产品ID">
         <template slot-scope="scope">
           <span>{{scope.row.userId}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="员工姓名">
+      <el-table-column align="center" label="产品名称">
         <template slot-scope="scope">
           <span>
             <img v-if="scope.row.avatar" class="user-avatar" style="width: 20px; height: 20px; border-radius: 50%;" :src="scope.row.avatar+'?imageView2/1/w/20/h/20'">
@@ -45,39 +69,45 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="手机号" show-overflow-tooltip>
+      <el-table-column align="center" label="产品分类" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.deptName}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="工号" show-overflow-tooltip>
+      <el-table-column align="center" label="产品期限" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.deptName}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="入职时间">
+      <el-table-column align="center" label="风险等级" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{scope.row.createTime | parseTime('{y}-{m}-{d}')}}</span>
+        <span>{{scope.row.deptName}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" class-name="status-col" label="员工状态">
+      <el-table-column align="center" label="募集规模" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-tag>{{scope.row.delFlag | statusFilter}}</el-tag>
+        <span>{{scope.row.deptName}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="职位">
+      <el-table-column align="center" label="起投金额">
+        <template slot-scope="scope">
+          <span>{{scope.row.deptName}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="年化收益率">
         <template slot-scope="scope">
           <span>{{scope.row.roleList[0].roleDesc}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="部门" show-overflow-tooltip>
+      <el-table-column align="center" class-name="status-col" label="产品状态">
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+          <el-tag>{{scope.row.delFlag | statusFilter}}</el-tag>
         </template>
       </el-table-column>
 
@@ -88,6 +118,9 @@
           </el-button>
           <el-button v-if="sys_user_del" size="small" type="danger"
                      @click="deletes(scope.row)">删除
+          </el-button>
+          <el-button v-if="sys_user_del" size="small" type=""
+                     @click="upper(scope.row)">产品上架
           </el-button>
         </template>
       </el-table-column>
@@ -450,8 +483,13 @@
         ],
         maritalStatus: '',
         fileList: [],
-        cities: ['不限', '理财', '另类投资', '固收', '二级市场'],
-        checkboxGroup1: ''
+        productTypes: ['不限', '理财', '另类投资', '固收', '二级市场'],
+        checkboxGroup1: [''],
+        checkboxGroup2: [''],
+        checkboxGroup3: [''],
+        productStatus: ['不限', '在建', '预热', '开始募集', '募集结束', '存续期', '产品下架'],
+        productIncome: ['不限', '10%以下', '10-15%', '15%以上', '浮动'],
+        input2: ''
       }
     },
     computed: {
@@ -603,6 +641,30 @@
           })
         })
       },
+      upper(row) {
+        this.$confirm('确定要上架此产品吗<span>产品上架后，内容不可修改，如需修改可点击产品下架</span>', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delObj(row.userId).then(() => {
+            this.getList()
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+          }).cache(() => {
+            this.$notify({
+              title: '失败',
+              message: '删除失败',
+              type: 'error',
+              duration: 2000
+            })
+          })
+        })
+      },
       resetTemp() {
         this.form = {
           id: undefined,
@@ -639,6 +701,17 @@
 .el-select,
 .el-date-editor {
   width: 100%;
+}
+.filter-container {
+  .query-title {
+    white-space: nowrap;
+    min-width: 85px;
+    padding: 0;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    vertical-align: center;
+  }
 }
 </style>
 

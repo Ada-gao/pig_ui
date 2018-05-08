@@ -1,46 +1,61 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名"
+      <!-- <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名"
                 v-model="listQuery.username">
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
+      <el-form label-position="right" label-width="80px">
       <el-row :gutter="20">
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <div class="grid-content bg-purple">
-            搜索
+          <el-form-item label="搜索">
             <el-input
               placeholder="搜索员工、手机号、工号"
-              suffix-icon="el-icon-date"
+              prefix-icon="el-icon-search"
               v-model="input2">
             </el-input>
-          </div>
+          </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <div class="grid-content bg-purple-light">
-            职位
+          <el-form-item label="职位">
+            <el-select class="filter-item" v-model="positionId" placeholder="请选择" @focus="handlePosition()">
+              <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName" :disabled="isDisabled[item.delFlag]">
+                <span style="float: left">{{ item.positionName }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+          <el-form-item label="工作状态">
             <el-select class="filter-item" v-model="positionId" placeholder="请选择">
               <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <div class="grid-content bg-purple">
+          </el-form-item>
+          <!-- <div class="grid-content bg-purple">
             工作状态
             <el-select class="filter-item" v-model="delFlag" placeholder="请选择">
               <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
-          </div>
+          </div> -->
         </el-col>
       <!-- </el-row> -->
       <!-- <el-row :gutter="10"> -->
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <div class="grid-content bg-purple-light">
+          <el-form-item label="入职时间">
+            <el-date-picker
+              v-model="value13"
+              type="daterange"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :default-time="['00:00:00', '23:59:59']">
+            </el-date-picker>
+          </el-form-item>
+          <!-- <div class="grid-content bg-purple-light">
             入职时间
             <el-date-picker
               v-model="value13"
@@ -49,19 +64,31 @@
               end-placeholder="结束日期"
               :default-time="['00:00:00', '23:59:59']">
             </el-date-picker>
-          </div>
+          </div> -->
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <div class="grid-content bg-purple-light">
+          <el-form-item label="角色">
+            <el-select class="filter-item" v-model="role" placeholder="请选择">
+              <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <!-- <div class="grid-content bg-purple-light">
             角色
             <el-select class="filter-item" v-model="role" placeholder="请选择">
               <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
-          </div>
+          </div> -->
         </el-col>
       </el-row>
+      <el-row style="text-align: center;">
+        <el-button type="info" style="padding: 10px 60px;">筛选</el-button>
+        <el-button type="info" style="padding: 10px 60px">重置</el-button>
+      </el-row>
+      </el-form>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit

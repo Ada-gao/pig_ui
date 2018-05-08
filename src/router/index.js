@@ -62,7 +62,7 @@ export const asyncRouterMap = [
     ]
   },
   {
-    menuId: 19,
+    menuId: 83,
     path: '/admin',
     component: Layout,
     name: '产品管理',
@@ -74,8 +74,8 @@ export const asyncRouterMap = [
       icon: 'table'
     },
     children: [
-      { menuId: 81, path: 'product/list', component: _import('admin/product/list'), name: '产品列表', meta: { title: '产品列表', icon: 'user' }},
-      { menuId: 20, path: 'product/add', component: _import('admin/product/add'), name: '产品新增', meta: { title: '产品新增', icon: 'user' }},
+      { menuId: 831, path: 'product/list', component: _import('admin/product/list'), name: '产品列表', meta: { title: '产品列表', icon: 'user' }},
+      { menuId: 832, path: 'product/add', component: _import('admin/product/add'), name: '产品新增', meta: { title: '产品新增', icon: 'user' }},
       { menuId: 80, path: 'product/det', component: _import('admin/product/detail'), name: '产品详情', meta: { title: '产品详情', icon: 'user' }},
     ]
   },
