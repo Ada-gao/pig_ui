@@ -231,7 +231,7 @@
           <el-col :span="11">
             <el-form-item label="学历" prop="education">
               <el-select class="filter-item" v-model="education" placeholder="请选择">
-                <el-option v-for="item in eduOptions" :key="item.value" :value="item.value" :label="item.label">
+                <el-option v-for="item in educationType" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
               </el-select>
@@ -476,30 +476,7 @@
         input2: '',
         gender: '',
         value13: '',
-        eduOptions: [
-          {
-            label: '博士',
-            value: 1
-          }, {
-            label: '硕士',
-            value: 2
-          }, {
-            label: '本科',
-            value: 3
-          }, {
-            label: '大专',
-            value: 4
-          }, {
-            label: '高中',
-            value: 5
-          }, {
-            label: '初中',
-            value: 6
-          }, {
-            label: '小学',
-            value: 7
-          }
-        ],
+        eduOptions: [],
         education: '',
         idTypeOptions: [
           {
@@ -535,7 +512,8 @@
     },
     computed: {
       ...mapGetters([
-        'permissions'
+        'permissions',
+        'educationType'
       ])
     },
     filters: {
@@ -602,8 +580,10 @@
       },
       handleCreate() {
         this.resetTemp()
+        debugger
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
+        console.log(this.educationType)
       },
       handleUpdate(row) {
         getObj(row.userId)

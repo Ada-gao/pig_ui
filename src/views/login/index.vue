@@ -222,6 +222,12 @@
             this.$store.dispatch('Login', this.loginForm).then(() => {
               this.loading = false
               this.$router.push({path: '/'})
+              const params = {
+                page: 1,
+                limit: 20,
+                isAsc: false
+              }
+              this.$store.dispatch('FetchList', params)
             }).catch(() => {
               this.loading = false
               this.refreshCode()
@@ -232,39 +238,39 @@
           }
         })
       },
-      handleMobileLogin() {
-        this.loading = true
-        if (!this.loginForm.smsCode || this.loginForm.smsCode.length !== 4) {
-          this.$message.error('验证码不合法')
-          return false
-        }
-        this.$store.dispatch('MobileLogin', this.loginForm).then(() => {
-          this.loading = false
-          this.$router.push({path: '/'})
-        }).catch(() => {
-          this.loading = false
-        })
-      },
-      getMobileCode: function () {
-        if (!this.loginForm.mobile) {
-          this.$message.error('请输入手机号码')
-        } else if (!(/^1[34578]\d{9}$/.test(this.loginForm.mobile))) {
-          this.$message.error('手机号格式不正确')
-        } else {
-          request({
-            url: '/admin/smsCode/' + this.loginForm.mobile,
-            method: 'get'
-          }).then(response => {
-            console.log(response)
-            if (response.data.data) {
-              this.timer()
-              this.$message.success('验证码发送成功')
-            } else {
-              this.$message.error(response.data.msg)
-            }
-          })
-        }
-      },
+      // handleMobileLogin() {
+      //   this.loading = true
+      //   if (!this.loginForm.smsCode || this.loginForm.smsCode.length !== 4) {
+      //     this.$message.error('验证码不合法')
+      //     return false
+      //   }
+      //   this.$store.dispatch('MobileLogin', this.loginForm).then(() => {
+      //     this.loading = false
+      //     this.$router.push({path: '/'})
+      //   }).catch(() => {
+      //     this.loading = false
+      //   })
+      // },
+      // getMobileCode: function () {
+      //   if (!this.loginForm.mobile) {
+      //     this.$message.error('请输入手机号码')
+      //   } else if (!(/^1[34578]\d{9}$/.test(this.loginForm.mobile))) {
+      //     this.$message.error('手机号格式不正确')
+      //   } else {
+      //     request({
+      //       url: '/admin/smsCode/' + this.loginForm.mobile,
+      //       method: 'get'
+      //     }).then(response => {
+      //       console.log(response)
+      //       if (response.data.data) {
+      //         this.timer()
+      //         this.$message.success('验证码发送成功')
+      //       } else {
+      //         this.$message.error(response.data.msg)
+      //       }
+      //     })
+      //   }
+      // },
       timer: function () {
         if (this.time > 0) {
           this.timeFlag = true
