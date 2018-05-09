@@ -74,9 +74,10 @@ export const asyncRouterMap = [
       icon: 'table'
     },
     children: [
-      { menuId: 831, path: 'product/list', component: _import('admin/product/list'), name: '产品列表', meta: { title: '产品列表', icon: 'user' }},
-      { menuId: 832, path: 'product/add', component: _import('admin/product/add'), name: '产品新增', meta: { title: '产品新增', icon: 'user' }},
-      { menuId: 80, path: 'product/det', component: _import('admin/product/detail'), name: '产品详情', meta: { title: '产品详情', icon: 'user' }},
+      { menuId: 831, path: 'product/list', component: _import('admin/product/list'), name: '产品管理', meta: { title: '产品管理', icon: 'user' }},
+      // { menuId: 832, path: 'product/add/0', component: _import('admin/product/add'), name: '产品新增', meta: { title: '产品新增', icon: 'user' }},
+      // { menuId: 833, path: 'product/add/1', component: _import('admin/product/add'), name: '产品修改', meta: { title: '产品修改', icon: 'user' }},
+      { menuId: 80, path: 'product/type', component: _import('admin/product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'user' }},
     ]
   },
   {

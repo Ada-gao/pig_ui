@@ -91,6 +91,9 @@
       </el-form>
     </div>
 
+    <div style="text-align: right">
+      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+    </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
@@ -538,9 +541,9 @@
     filters: {
       statusFilter(status) {
         const statusMap = {
-          0: '在职',
+          0: '正常',
           1: '离职',
-          9: '锁定'
+          9: '异常'
         }
         return statusMap[status]
       }
