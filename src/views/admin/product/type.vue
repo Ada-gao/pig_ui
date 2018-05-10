@@ -5,7 +5,7 @@
                 v-model="listQuery.name">
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button> -->
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">新增币种</el-button>
+      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">新增产品类型</el-button>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -13,11 +13,11 @@
 
       <el-table-column align="center" label="序号">
         <template slot-scope="scope">
-          <span>{{scope.row.currencyId}}</span>
+          <span>{{scope.row.productTypeId}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="币种名称">
+      <el-table-column align="center" label="产品类型名称">
         <template slot-scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
@@ -47,7 +47,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :model="form" ref="form" label-width="100px">
         
-        <el-form-item label="币种" prop="name">
+        <el-form-item label="产品类型" prop="name">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
 
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-  import { fetchCurrency, getObj, addObj, putObj, delObj } from '@/api/currency'
+  import { fetchList, addObj, putObj, getObj } from '@/api/product/productType'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
@@ -109,8 +109,8 @@
           1: true
         },
         textMap: {
-          update: '编辑币种',
-          create: '新增币种'
+          update: '编辑产品类型',
+          create: '新增产品类型'
         },
         tableKey: 0
       }
@@ -141,9 +141,10 @@
         this.listLoading = true
         // this.listQuery.orderByField = '`user`.create_time'
         // this.listQuery.isAsc = false
-        fetchCurrency(this.listQuery).then(response => {
-          this.list = response.data.records
-          this.total = response.data.total
+        fetchList().then(response => {
+          console.log(response)
+          this.list = response.data
+          // this.total = response.data.total
           this.listLoading = false
         })
       },
@@ -177,7 +178,7 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {
-        getObj(row.currencyId)
+        getObj(row.productTypeId)
           .then(response => {
             this.form = response.data
             this.dialogFormVisible = true
@@ -214,7 +215,6 @@
           if (valid) {
             this.dialogFormVisible = false
             putObj(this.form).then(() => {
-              debugger
               this.dialogFormVisible = false
               this.getList()
               this.$notify({
@@ -235,22 +235,22 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          delObj(row.currencyId).then(() => {
-            this.getList()
-            this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
-              duration: 2000
-            })
-          }).cache(() => {
-            this.$notify({
-              title: '失败',
-              message: '删除失败',
-              type: 'error',
-              duration: 2000
-            })
-          })
+          // delObj(row.currencyId).then(() => {
+          //   this.getList()
+          //   this.$notify({
+          //     title: '成功',
+          //     message: '删除成功',
+          //     type: 'success',
+          //     duration: 2000
+          //   })
+          // }).cache(() => {
+          //   this.$notify({
+          //     title: '失败',
+          //     message: '删除失败',
+          //     type: 'error',
+          //     duration: 2000
+          //   })
+          // })
         })
       },
       resetTemp() {

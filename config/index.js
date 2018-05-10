@@ -29,19 +29,24 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/auth': {
-        // target: 'http://10.60.2.141:9999',
-        target: 'http://10.70.0.175:9999', //赵旭东
+        target: 'http://127.0.0.1:9999',
         changeOrigin: true,
         pathRewrite: {
           '^/auth' : '/auth'
         }
       },
       '/admin': {
-        // target: 'http://10.60.2.141:9999',
-        target: 'http://10.70.0.175:9999', //赵旭东
+        target: 'http://127.0.0.1:9999',
         changeOrigin: true,
         pathRewrite: {
           '^/admin' : '/admin'
+        }
+      },
+      '/product': {
+        target: 'http://127.0.0.1:9999',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/product' : '/product'
         }
       }
     },

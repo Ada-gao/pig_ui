@@ -59,7 +59,7 @@
 
       <el-table-column align="center" label="产品ID">
         <template slot-scope="scope">
-          <span>{{scope.row.userId}}</span>
+          <span>{{scope.row.productId}}</span>
         </template>
       </el-table-column>
 
@@ -67,50 +67,51 @@
         <template slot-scope="scope">
           <span>
             <img v-if="scope.row.avatar" class="user-avatar" style="width: 20px; height: 20px; border-radius: 50%;" :src="scope.row.avatar+'?imageView2/1/w/20/h/20'">
-            {{scope.row.username}}
+            {{scope.row.productName}}
           </span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="产品分类" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.productTypeId}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="产品期限" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.investmentHorizon}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="风险等级" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.productRiskLevel}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="募集规模" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.collectionAmount}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="起投金额">
         <template slot-scope="scope">
-          <span>{{scope.row.deptName}}</span>
+          <span>{{scope.row.minimalAmount}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="年化收益率">
         <template slot-scope="scope">
-          <span>{{scope.row.roleList[0].roleDesc}}</span>
+          <span>{{scope.row.annualizedReturn}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" class-name="status-col" label="产品状态">
         <template slot-scope="scope">
-          <el-tag>{{scope.row.delFlag | statusFilter}}</el-tag>
+          <!-- <el-tag>{{scope.row.delFlag | statusFilter}}</el-tag> -->
+          {{scope.row.productStatus}}
         </template>
       </el-table-column>
 
@@ -155,7 +156,8 @@
     </el-dialog>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form v-if="!nextToUpdate" :model="form" :rules="rules" ref="form" label-width="100px">
+      <el-form :model="form" :rules="rules" ref="form" label-width="100px">
+        <!-- <el-form v-if="!nextToUpdate" :model="form" :rules="rules" ref="form" label-width="100px"> -->
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="产品名称" prop="username">
@@ -299,7 +301,8 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <div v-if="!nextToUpdate" slot="footer" class="dialog-footer">
+      <div slot="footer" class="dialog-footer">
+        <!-- <div v-if="!nextToUpdate" slot="footer" class="dialog-footer"> -->
         <el-button @click="cancel('form')">取 消</el-button>
         <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
         <el-button v-else type="primary" @click="update('form')">修 改</el-button>
@@ -427,7 +430,7 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/user'
+  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/product/product'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
@@ -457,7 +460,7 @@
         listQuery: {
           page: 1,
           limit: 20,
-          username: '',
+          // username: '',
           typeGroup1: [],
           statusGroup2: [],
           incomeGroup3: []
@@ -645,9 +648,8 @@
     methods: {
       getList() {
         this.listLoading = true
-        this.listQuery.orderByField = '`user`.create_time'
-        this.listQuery.isAsc = false
-        debugger
+        // this.listQuery.orderByField = '`user`.create_time'
+        // this.listQuery.isAsc = false
         // this.listQuery.type = this.typeGroup1
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
@@ -688,7 +690,6 @@
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
         this.nextToUpdate = false
-        debugger
         console.log(this.productStatus)
       },
       handleUpdate(row) {
@@ -753,54 +754,6 @@
           }
         })
       },
-      // deletes(row) {
-      //   this.$confirm('此操作将永久删除该用户(用户名:' + row.username + '), 是否继续?', '提示', {
-      //     confirmButtonText: '确定',
-      //     cancelButtonText: '取消',
-      //     type: 'warning'
-      //   }).then(() => {
-      //     delObj(row.userId).then(() => {
-      //       this.getList()
-      //       this.$notify({
-      //         title: '成功',
-      //         message: '删除成功',
-      //         type: 'success',
-      //         duration: 2000
-      //       })
-      //     }).cache(() => {
-      //       this.$notify({
-      //         title: '失败',
-      //         message: '删除失败',
-      //         type: 'error',
-      //         duration: 2000
-      //       })
-      //     })
-      //   })
-      // },
-      // upper(row) {
-      //   this.$confirm('确定要上架此产品吗<span>产品上架后，内容不可修改，如需修改可点击产品下架</span>', '提示', {
-      //     confirmButtonText: '确定',
-      //     cancelButtonText: '取消',
-      //     type: 'warning'
-      //   }).then(() => {
-      //     delObj(row.userId).then(() => {
-      //       this.getList()
-      //       this.$notify({
-      //         title: '成功',
-      //         message: '删除成功',
-      //         type: 'success',
-      //         duration: 2000
-      //       })
-      //     }).cache(() => {
-      //       this.$notify({
-      //         title: '失败',
-      //         message: '删除失败',
-      //         type: 'error',
-      //         duration: 2000
-      //       })
-      //     })
-      //   })
-      // },
       resetTemp() {
         this.form = {
           id: undefined,
