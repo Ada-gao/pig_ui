@@ -33,6 +33,12 @@ router.beforeEach((to, from, next) => { // 开启Progress
             next({ path: '/login' })
           })
         })
+        const params = {
+          page: 1,
+          limit: 40,
+          isAsc: false
+        }
+        store.dispatch('FetchList', params) // 获取字典信息
       } else {
         // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
         if (hasPermission(store.getters.roles, to.meta.role)) {

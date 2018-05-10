@@ -119,8 +119,13 @@
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item label="产品状态" prop="deptName">
-            <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
-            <input type="hidden" v-model="form.deptId"/>
+            <el-select class="filter-item" v-model="productStus" placeholder="请选择">
+              <el-option v-for="item in productStatus" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
+            <!-- <el-input v-model="form.deptName" placeholder="请选择" @focus="handleDept()" readonly></el-input>
+            <input type="hidden" v-model="form.deptId"/> -->
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -436,12 +441,14 @@
         fileList2: [],
         fileList3: [],
         indexList: [],
-        type_is_update: ''
+        type_is_update: '',
+        productStus: ''
       }
     },
     computed: {
       ...mapGetters([
-        'permissions'
+        'permissions',
+        'productStatus'
       ])
     },
     filters: {

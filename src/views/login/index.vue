@@ -222,12 +222,6 @@
             this.$store.dispatch('Login', this.loginForm).then(() => {
               this.loading = false
               this.$router.push({path: '/'})
-              const params = {
-                page: 1,
-                limit: 20,
-                isAsc: false
-              }
-              this.$store.dispatch('FetchList', params)
             }).catch(() => {
               this.loading = false
               this.refreshCode()

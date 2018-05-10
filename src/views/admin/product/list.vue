@@ -12,7 +12,7 @@
         <el-col :md="12" :lg="6">
           <el-input
             placeholder="请输入产品名称"
-            v-model="input2">
+            v-model="listQuery.username">
           </el-input>
         </el-col>
       </el-row>
@@ -20,8 +20,8 @@
       <el-row style="margin-top: 20px;">
         <el-col :lg="2" class="query-title">产品分类</el-col>
         <el-col :lg="20">
-          <el-checkbox-group v-model="checkboxGroup1">
-            <el-checkbox-button v-for="type in productTypes" :label="type" :key="type">{{type}}</el-checkbox-button>
+          <el-checkbox-group v-model="listQuery.typeGroup1">
+            <el-checkbox-button v-for="item in productTypes" :label="item.label" :key="item.value">{{item.label}}</el-checkbox-button>
           </el-checkbox-group>
         </el-col>
       </el-row>
@@ -29,8 +29,9 @@
       <el-row style="margin-top: 20px;">
         <el-col :lg="2" class="query-title">产品状态</el-col>
         <el-col :lg="21">
-          <el-checkbox-group v-model="checkboxGroup2">
-            <el-checkbox-button v-for="status in productStatus" :label="status" :key="status">{{status}}</el-checkbox-button>
+          <el-checkbox-group v-model="listQuery.statusGroup2">
+            <!-- <el-checkbox-button label="不限">不限</el-checkbox-button> -->
+            <el-checkbox-button v-for="status in productStatus" :label="status.label" :key="status.value">{{status.label}}</el-checkbox-button>
           </el-checkbox-group>
         </el-col>
       </el-row>
@@ -38,15 +39,15 @@
       <el-row style="margin-top: 20px;">
         <el-col :lg="2" class="query-title">年化收益</el-col>
         <el-col :lg="20">
-          <el-checkbox-group v-model="checkboxGroup3">
+          <el-checkbox-group v-model="listQuery.incomeGroup3">
             <el-checkbox-button v-for="income in productIncome" :label="income" :key="income">{{income}}</el-checkbox-button>
           </el-checkbox-group>
         </el-col>
       </el-row>
       
       <el-row style="margin-top: 20px; text-align: center;">
-        <el-button class="btn-padding">筛选</el-button>
-        <el-button class="btn-padding">重置</el-button>
+        <el-button class="btn-padding" @click="handleFilter">筛选</el-button>
+        <el-button class="btn-padding" @click="resetFilter">重置</el-button>
       </el-row>
     </div>
 
@@ -270,8 +271,11 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="产品状态" prop="deptName">
-              <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
-              <input type="hidden" v-model="form.deptId"/>
+              <el-select class="filter-item" v-model="productStus" placeholder="请选择">
+                <el-option v-for="item in productStatus" :key="item.value" :value="item.value" :label="item.label">
+                  <span style="float: left">{{ item.label }}</span>
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -297,10 +301,6 @@
       </el-form>
       <div v-if="!nextToUpdate" slot="footer" class="dialog-footer">
         <el-button @click="cancel('form')">取 消</el-button>
-        <el-button type="primary" @click="create('form')">下一步</el-button>
-      </div>
-      <div v-if="nextToUpdate" slot="footer" class="dialog-footer">
-        <el-button @click="cancel('form')">上一步</el-button>
         <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
         <el-button v-else type="primary" @click="update('form')">修 改</el-button>
       </div>
@@ -456,7 +456,11 @@
         listLoading: true,
         listQuery: {
           page: 1,
-          limit: 20
+          limit: 20,
+          username: '',
+          typeGroup1: [],
+          statusGroup2: [],
+          incomeGroup3: []
         },
         role: undefined,
         form: {
@@ -468,7 +472,7 @@
         rules: {
           username: [
             {
-              required: true,
+              required: false,
               message: '请输入账户',
               trigger: 'blur'
             },
@@ -481,7 +485,7 @@
           ],
           password: [
             {
-              required: true,
+              required: false,
               message: '请输入密码',
               trigger: 'blur'
             },
@@ -494,14 +498,14 @@
           ],
           deptId: [
             {
-              required: true,
+              required: false,
               message: '请选择部门',
               trigger: 'blur'
             }
           ],
           role: [
             {
-              required: true,
+              required: false,
               message: '请选择角色',
               trigger: 'blur'
             }
@@ -587,11 +591,24 @@
         ],
         maritalStatus: '',
         fileList: [],
-        productTypes: ['不限', '理财', '另类投资', '固收', '二级市场'],
-        checkboxGroup1: [''],
-        checkboxGroup2: [''],
-        checkboxGroup3: [''],
-        productStatus: ['不限', '在建', '预热', '开始募集', '募集结束', '存续期', '产品下架'],
+        productTypes: [
+          {
+            label: '理财',
+            value: 0
+          }, {
+            label: '另类投资',
+            value: 1
+          }, {
+            label:  '固收',
+            value: 2
+          }, {
+            label:  '二级市场',
+            value: 3
+          }
+        ],
+        // typeGroup1: [],
+        // statusGroup2: [],
+        // checkboxGroup3: [],
         productIncome: ['不限', '10%以下', '10-15%', '15%以上', '浮动'],
         input2: '',
         nextToUpdate: false,
@@ -600,11 +617,13 @@
         fileList2: [],
         fileList3: [],
         indexList: [],
+        productStus: ''
       }
     },
     computed: {
       ...mapGetters([
-        'permissions'
+        'permissions',
+        'productStatus'
       ])
     },
     filters: {
@@ -628,6 +647,8 @@
         this.listLoading = true
         this.listQuery.orderByField = '`user`.create_time'
         this.listQuery.isAsc = false
+        debugger
+        // this.listQuery.type = this.typeGroup1
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
@@ -667,6 +688,8 @@
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
         this.nextToUpdate = false
+        debugger
+        console.log(this.productStatus)
       },
       handleUpdate(row) {
         this.nextToUpdate = false
@@ -784,6 +807,12 @@
           username: '',
           password: '',
           role: undefined
+        }
+      },
+      resetFilter() {
+        this.listQuery = {
+          username: '',
+          type: []
         }
       },
       handleRemove(file, fileList) {

@@ -13,13 +13,13 @@
             <el-input
               placeholder="搜索员工、手机号、工号"
               prefix-icon="el-icon-search"
-              v-model="input2">
+              v-model="listQuery.username">
             </el-input>
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="职位">
-            <el-select class="filter-item" v-model="positionId" placeholder="请选择" @focus="handlePosition()">
+            <el-select class="filter-item" v-model="listQuery.positionId" placeholder="请选择" @focus="handlePosition()">
               <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName" :disabled="isDisabled[item.delFlag]">
                 <span style="float: left">{{ item.positionName }}</span>
               </el-option>
@@ -28,7 +28,7 @@
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="工作状态">
-            <el-select class="filter-item" v-model="positionId" placeholder="请选择">
+            <el-select class="filter-item" v-model="listQuery.statusId" placeholder="请选择">
               <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -48,7 +48,7 @@
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="入职时间">
             <el-date-picker
-              v-model="value13"
+              v-model="listQuery.entryDate"
               type="daterange"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -68,7 +68,7 @@
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="角色">
-            <el-select class="filter-item" v-model="role" placeholder="请选择">
+            <el-select class="filter-item" v-model="listQuery.role" placeholder="请选择">
               <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -85,8 +85,8 @@
         </el-col>
       </el-row>
       <el-row style="text-align: center;">
-        <el-button type="info" style="padding: 10px 60px;">筛选</el-button>
-        <el-button type="info" style="padding: 10px 60px">重置</el-button>
+        <el-button type="info" style="padding: 10px 60px;" @click="handleFilter">筛选</el-button>
+        <el-button type="info" style="padding: 10px 60px" @click="resetFilter">重置</el-button>
       </el-row>
       </el-form>
     </div>
@@ -148,7 +148,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" fixed="right">
+      <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
           <el-button v-if="sys_user_upd" size="small" type="success"
                      @click="handleUpdate(scope.row)">编辑
@@ -222,7 +222,7 @@
           <el-col :span="11">
             <el-form-item label="性别" prop="gender">
               <el-select class="filter-item" v-model="gender" placeholder="请选择">
-                <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
+                <el-option v-for="item in genderType" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
               </el-select>
@@ -241,9 +241,9 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="证件类型" prop="idType">
-              <el-select class="filter-item" v-model="idType" placeholder="请选择">
-                <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
+            <el-form-item label="证件类型" prop="IDType">
+              <el-select class="filter-item" v-model="IDType" placeholder="请选择">
+                <el-option v-for="item in idType" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
               </el-select>
@@ -252,7 +252,7 @@
           <el-col :span="11">
             <el-form-item label="婚姻状况" prop="maritalStatus">
               <el-select class="filter-item" v-model="maritalStatus" placeholder="请选择">
-                <el-option v-for="item in maritalStatusOptions" :key="item.value" :value="item.value" :label="item.label">
+                <el-option v-for="item in marriageStatus" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
               </el-select>
@@ -478,32 +478,8 @@
         value13: '',
         eduOptions: [],
         education: '',
-        idTypeOptions: [
-          {
-            label: '二代居民身份证',
-            value: 1
-          }, {
-            label: '护照',
-            value: 2
-          }, {
-            label: '军官证',
-            value: 3
-          }
-        ],
-        idType: '',
+        IDType: '',
         employeeDate: '',
-        maritalStatusOptions: [
-          {
-            label: '已婚',
-            value: 1
-          }, {
-            label: '未婚',
-            value: 2
-          }, {
-            label: '保密',
-            value: 3
-          }
-        ],
         maritalStatus: '',
         fileList: [],
         positionId: '',
@@ -513,7 +489,10 @@
     computed: {
       ...mapGetters([
         'permissions',
-        'educationType'
+        'educationType',
+        'genderType',
+        'idType',
+        'marriageStatus'
       ])
     },
     filters: {
@@ -538,6 +517,7 @@
         this.listLoading = true
         this.listQuery.orderByField = '`user`.create_time'
         this.listQuery.isAsc = false
+        debugger
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
@@ -580,10 +560,8 @@
       },
       handleCreate() {
         this.resetTemp()
-        debugger
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
-        console.log(this.educationType)
       },
       handleUpdate(row) {
         getObj(row.userId)
@@ -680,6 +658,15 @@
           username: '',
           password: '',
           role: undefined
+        }
+      },
+      resetFilter() { // 重置搜索条件
+        this.listQuery = {
+          username: '',
+          statusId: '',
+          positionId: '',
+          entryDate: '',
+          role: ''
         }
       },
       handleRemove(file, fileList) {

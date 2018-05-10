@@ -41,8 +41,6 @@ const dictionary = {
       // const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         fetchList(params).then(response => {
-          console.log(response.data.records)
-          debugger
           const data = response.data.records
           let idTypeList = []
           let marriageStatusList = []
@@ -51,7 +49,7 @@ const dictionary = {
           let certificationTypeList = []
           let genderTypeList = []
           let educationTypeList = []
-
+          
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
               idTypeList.push(data[i])
