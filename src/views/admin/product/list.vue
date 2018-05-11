@@ -215,7 +215,7 @@
           <el-col :span="11">
             <el-form-item label="交易币种" prop="currencyId">
               <el-select class="filter-item" v-model="form.currencyId" placeholder="请选择">
-                <el-option v-for="item in IDsTypeOptions" :key="item.value" :value="item.value" :label="item.label">
+                <el-option v-for="item in currencyList" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
               </el-select>
@@ -255,9 +255,9 @@
         </el-row>
           
         <el-row :gutter="20">
-          <el-col :span="10">
+          <el-col :span="11">
             <el-form-item label="产品期限" prop="investmentHorizon">
-              <el-input v-model="form.investmentHorizon"></el-input>月
+              <el-input v-model="form.investmentHorizon" style="width: 80%; margin-right: 20px;"></el-input><span>月</span>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -270,7 +270,7 @@
               <el-radio-group v-model="form.annualizedReturn" @change="radioChange">
                 <el-radio :label="3" style="display: inline-block">浮动收益率</el-radio>
                 <el-radio :label="6" style="display: inline-block">收益对标基准</el-radio>
-                <el-input style="display: inline-block" v-model="form.annualizedReturn"></el-input>
+                <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-model="form.annualizedReturn"></el-input>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -279,7 +279,7 @@
         </el-row>
         
         <el-row :gutter="20">
-          <el-col :span="11">
+          <el-col :span="22">
             <el-form-item label="收益分配方式" prop="incomeDistribution">
               <el-input
                 type="textarea"
@@ -288,11 +288,10 @@
               </el-input>
             </el-form-item>
           </el-col>
-          </el-col>
         </el-row>
         
         <el-row :gutter="20">
-          <el-col :span="11">
+          <el-col :span="22">
             <el-form-item label="产品亮点" prop="highlight">
               <el-input
                 type="textarea"
@@ -300,7 +299,6 @@
                 v-model="form.highlight">
               </el-input>
             </el-form-item>
-          </el-col>
           </el-col>
         </el-row>
 
@@ -354,7 +352,7 @@
               width="180">
             </el-table-column>
             <el-table-column
-              prop="size"
+              prop="fileSize"
               label="大小/k"
               width="180">
             </el-table-column>
@@ -368,9 +366,11 @@
               class="upload-demo"
               style="display: inline-block;"
               :headers="headers"
-              :action="importFile('transaction')"
+              :action="importFile1('transaction')"
               :on-change="handleChange1"
-              :show-file-list="false">
+              :auto-upload="false"
+              :show-file-list="false"
+              accept=".pdf, .doc">
               <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
             </el-upload>
             <el-button type="info" class="btn-padding" @click="delfiles1">删除材料</el-button>
@@ -394,7 +394,7 @@
               width="180">
             </el-table-column>
             <el-table-column
-              prop="size"
+              prop="fileSize"
               label="大小/k"
               width="180">
             </el-table-column>
@@ -408,10 +408,10 @@
               class="upload-demo"
               style="display: inline-block;"
               :headers="headers"
-              :action="importFile('product')"
-              :on-success="uploadSuccess2"
+              :action="importFile2('product')"
               :on-error="uploadError2"
               :on-change="handleChange2"
+              :auto-upload="false"
               :show-file-list="false">
               <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
             </el-upload>
@@ -436,7 +436,7 @@
               width="180">
             </el-table-column>
             <el-table-column
-              prop="size"
+              prop="fileSize"
               label="大小/k"
               width="180">
             </el-table-column>
@@ -450,8 +450,9 @@
               class="upload-demo"
               style="display: inline-block;"
               :headers="headers"
-              :action="importFile('announcement')"
+              :action="importFile3('announcement')"
               :on-change="handleChange3"
+              :auto-upload="false"
               :show-file-list="false">
               <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
             </el-upload>
@@ -467,6 +468,8 @@
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/product/product'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
+  import { getFiles, delFiles } from '@/api/qiniu'
+  import { fetchCurrency } from '@/api/currency'
   import { getToken } from '@/utils/auth'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
@@ -602,7 +605,7 @@
           }
         ],
         edu: '',
-        IDsTypeOptions: [
+        currencyList: [
           {
             label: '二代居民身份证',
             value: 1
@@ -631,9 +634,6 @@
         maritalStatus: '',
         fileList: [],
         productTypes: [],
-        // typeGroup1: [],
-        // statusGroup2: [],
-        // checkboxGroup3: [],
         productIncome: ['不限', '10%以下', '10-15%', '15%以上', '浮动'],
         input2: '',
         nextToUpdate: false,
@@ -641,7 +641,9 @@
         fileList1: [],
         fileList2: [],
         fileList3: [],
-        indexList: [],
+        indexList1: [],
+        indexList2: [],
+        indexList3: [],
         productStus: '',
         radio2: 1,
         profitTextarea: '',
@@ -690,6 +692,9 @@
           this.total = response.data.total
           this.listLoading = false
         })
+        fetchCurrency(this.listQuery).then(response => {
+          this.currencyList = response.data.records
+        })
       },
       getNodeData(data) {
         this.dialogDeptVisible = false
@@ -731,7 +736,7 @@
         getObj(row.productId)
           .then(response => {
             this.form = response.data
-            console.log(this.form)
+            // console.log(this.form)
             // this.role = row.roleList[0].roleId
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
@@ -740,6 +745,7 @@
             //     this.rolesOptions = response.data
             //   })
           })
+        
       },
       create(formName) {
         this.nextToUpdate = true
@@ -780,6 +786,30 @@
                 this.nextToUpdate = true
                 this.getList()
                 this.uploadData.productId = this.form.productId
+                let uploadData1 = {
+                  productId: this.uploadData.productId,
+                  fileType: 'transaction'
+                }
+                let uploadData2 = {
+                  productId: this.uploadData.productId,
+                  fileType: 'product'
+                }
+                let uploadData3 = {
+                  productId: this.uploadData.productId,
+                  fileType: 'announcement'
+                }
+                getFiles(uploadData1).then(response => {
+                  console.log(response.data)
+                  this.fileList1 = response.data
+                })
+                getFiles(uploadData2).then(response => {
+                  console.log(response.data)
+                  this.fileList2 = response.data
+                })
+                getFiles(uploadData3).then(response => {
+                  console.log(response.data)
+                  this.fileList3 = response.data
+                })
               }
               // this.$notify({
               //   title: '成功',
@@ -811,7 +841,7 @@
         console.log(file, fileList);
       },
       handlePreview(file) {
-        console.log(file);
+        // console.log(file);
       },
       handleExceed(files, fileList) {
         this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
@@ -820,7 +850,7 @@
       //   return this.$confirm(`确定移除 ${ file.name }？`);
       // },
       beforeUpload(file) { // 限制上传文档类型
-        console.log(file)
+        // console.log(file)
         const isFile = file.type === 'application/pdf'
         if (!isFile) {
           this.$message.error('只能上传pdf文档')
@@ -828,66 +858,79 @@
         return isFile
       },
       handleChange1(file, fileList) { // 上传材料，列表展示
-        this.fileList1 = fileList.slice(-3)
+        // this.fileList1 = fileList.slice(-3)
+        this.uploadData.fileType = 'transaction'
+        getFiles(this.uploadData).then(response => {
+          console.log('上传1')
+          console.log(response.data)
+          this.fileList1 = response.data
+        })
       },
       handleSelectionChange1(selection, row) { // 选中材料
-        let uid = row.uid
-        this.indexList.push(uid)
+        let productFileId = row.productFileId
+        this.indexList1.push(productFileId)
       },
       delfiles1() { // 删除材料
-        this.indexList.forEach(id => {
-          this.fileList1.forEach((item, index) => {
-            if(item.uid === id) {
-              this.fileList1.splice(index, 1)
-            }
+        this.indexList1.forEach(id => {
+          delFiles({fileType: 'transaction', productFileId: id}).then(response => {
+            this.handleChange1()
           })
         })
       },
       handleChange2(file, fileList) { // 上传材料，列表展示
-        this.fileList2 = fileList.slice(-3)
+        // this.fileList2 = fileList.slice(-3)
+        this.uploadData.fileType = 'product'
+        getFiles(this.uploadData).then(response => {
+          this.fileList2 = response.data
+        })
       },
       handleSelectionChange2(selection, row) { // 选中材料
-        let uid = row.uid
-        this.indexList.push(uid)
+        let productFileId = row.productFileId
+        this.indexList2.push(productFileId)
       },
       delfiles2() { // 删除材料
-        this.indexList.forEach(id => {
-          this.fileList2.forEach((item, index) => {
-            if(item.uid === id) {
-              this.fileList2.splice(index, 1)
-            }
+        this.indexList2.forEach(id => {
+          delFiles({fileType: 'product', productFileId: id}).then(response => {
+            this.handleChange2()
           })
         })
       },
       handleChange3(file, fileList) { // 上传材料，列表展示
-        this.fileList3 = fileList.slice(-3)
+        // this.fileList3 = fileList.slice(-3)
+        this.uploadData.fileType = 'announcement'
+        getFiles(this.uploadData).then(response => {
+          this.fileList3 = response.data
+        })
       },
       handleSelectionChange3(selection, row) { // 选中材料
-        let uid = row.uid
-        this.indexList.push(uid)
+        let productFileId = row.productFileId
+        this.indexList3.push(productFileId)
       },
       delfiles3() { // 删除材料
-        this.indexList.forEach(id => {
-          this.fileList3.forEach((item, index) => {
-            if(item.uid === id) {
-              this.fileList3.splice(index, 1)
-            }
+        this.indexList3.forEach(id => {
+          delFiles({fileType: 'announcement', productFileId: id}).then(response => {
+            this.handleChange3()
           })
         })
       },
       radioChange(value) {
-        console.log(value)
-      },
-      uploadSuccess2(response, file, fileList) {
-        console.log('上传文件', response)
+        // console.log(value)
       },
       uploadError2(err, file, fileList) {
         console.log(err)
       },
-      importFile(fileType) {
+      importFile1(fileType) {
         let url = '/zuul/product/products/' + this.uploadData.productId + '/' + fileType + '/files'
         return url
       },
+      importFile2(fileType) {
+        let url = '/zuul/product/products/' + this.uploadData.productId + '/' + fileType + '/files'
+        return url
+      },
+      importFile3(fileType) {
+        let url = '/zuul/product/products/' + this.uploadData.productId + '/' + fileType + '/files'
+        return url
+      }
     }
   }
 </script>
