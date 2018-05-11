@@ -63,7 +63,7 @@
 </template>
 
 <script>
-  import { fetchList, addObj, putObj, getObj } from '@/api/product/productType'
+  import { fetchProductTypeList, addObj, putObj, getObj } from '@/api/product/productType'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
@@ -141,7 +141,7 @@
         this.listLoading = true
         // this.listQuery.orderByField = '`user`.create_time'
         // this.listQuery.isAsc = false
-        fetchList().then(response => {
+        fetchProductTypeList().then(response => {
           console.log(response)
           this.list = response.data
           // this.total = response.data.total

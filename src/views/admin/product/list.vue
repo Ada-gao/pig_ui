@@ -21,7 +21,7 @@
         <el-col :lg="2" class="query-title">产品分类</el-col>
         <el-col :lg="20">
           <el-checkbox-group v-model="listQuery.typeGroup1">
-            <el-checkbox-button v-for="item in productTypes" :label="item.label" :key="item.value">{{item.label}}</el-checkbox-button>
+            <el-checkbox-button v-for="item in productTypes" :label="item.name" :key="item.productTypeId">{{item.name}}</el-checkbox-button>
           </el-checkbox-group>
         </el-col>
       </el-row>
@@ -160,15 +160,33 @@
         <!-- <el-form v-if="!nextToUpdate" :model="form" :rules="rules" ref="form" label-width="100px"> -->
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="产品名称" prop="username">
-              <el-input v-model="form.username" placeholder="请输入产品名称"></el-input>
+            <el-form-item label="产品名称" prop="productName">
+              <el-input v-model="form.productName" placeholder="请输入产品名称"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="产品类型" prop="edu">
-              <el-select class="filter-item" v-model="edu" placeholder="请选择">
-                <el-option v-for="item in eduOptions" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
+            <el-form-item label="产品编号" prop="productId">
+              <el-input v-model="form.productId" placeholder="请输入产品编号"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="11">
+            <el-form-item label="产品类型" prop="productTypeId">
+              <el-select class="filter-item" v-model="form.productTypeId" placeholder="请选择">
+                <el-option v-for="item in productTypes" :key="item.productTypeId" :value="item.productTypeId" :label="item.name">
+                  <span style="float: left">{{ item.name }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="产品风险级别" prop="productRiskLevel">
+              <el-select class="filter-item" v-model="form.productRiskLevel" placeholder="请选择">
+                <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
+                  <span style="float: left">{{ item.roleDesc }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -177,100 +195,116 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="起投金额" prop="username">
-              <el-input v-model="form.username" placeholder="请输入起投金额"></el-input>
+            <el-form-item label="产品LP数量" prop="productLp">
+              <el-input v-model="form.productLp" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="年化收益率" prop="date">
-              <el-date-picker
-                v-model="entryDate"
-                type="date"
-                placeholder="选择日期">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-          
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="投资期限" prop="username">
-              <el-select class="filter-item" v-model="sex" placeholder="请选择">
-                <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="基金管理人" prop="edu">
-              <el-select class="filter-item" v-model="edu" placeholder="请选择">
-                <el-option v-for="item in eduOptions" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
+            <el-form-item label="产品业绩" prop="historyPerformance">
+              <el-input v-model="form.historyPerformance" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="募集币种" prop="IDsType">
-              <el-select class="filter-item" v-model="IDsType" placeholder="请选择">
+            <el-form-item label="基金管理人" prop="manager">
+              <el-input v-model="form.manager" placeholder="请输入"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="交易币种" prop="currencyId">
+              <el-select class="filter-item" v-model="form.currencyId" placeholder="请选择">
                 <el-option v-for="item in IDsTypeOptions" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+          
+        <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="发行额度" prop="maritalStatus">
-              <el-select class="filter-item" v-model="maritalStatus" placeholder="请选择">
+            <el-form-item label="募集额度" prop="collectionAmount">
+              <el-select class="filter-item" v-model="form.collectionAmount" placeholder="请选择">
                 <el-option v-for="item in maritalStatusOptions" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
-          </el-col>
-        </el-row>
-          
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="投资门槛" prop="username">
-              <el-input v-model="form.username" placeholder="请输入姓名"></el-input>
-            </el-form-item>
+            
           </el-col>
           <el-col :span="11">
-            <el-form-item label="最低追加金额" prop="role">
-              <el-input v-model="form.role"></el-input>
+            <el-form-item label="净值" prop="netValue">
+              <el-input v-model="form.netValue" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="收益分配方式" prop="">
-              <el-select class="filter-item" v-model="role" placeholder="请选择">
-                <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
-                  <span style="float: left">{{ item.roleDesc }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
-                </el-option>
-              </el-select>
+            <el-form-item label="起投金额" prop="minimalAmount">
+              <el-input v-model="form.minimalAmount" placeholder="请输入起投金额"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="风险评级" prop="role">
-              <el-select class="filter-item" v-model="role" placeholder="请选择">
-                <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
-                  <span style="float: left">{{ item.roleDesc }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
-                </el-option>
-              </el-select>
+            <el-form-item label="追加金额" prop="minimalAddAmount">
+              <el-input v-model="form.minimalAddAmount"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-
+          
         <el-row :gutter="20">
+          <el-col :span="10">
+            <el-form-item label="产品期限" prop="investmentHorizon">
+              <el-input v-model="form.investmentHorizon"></el-input>月
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col>
+            <el-form-item label="收益" prop="isFloat">
+              <el-radio-group v-model="form.annualizedReturn" @change="radioChange">
+                <el-radio :label="3" style="display: inline-block">浮动收益率</el-radio>
+                <el-radio :label="6" style="display: inline-block">收益对标基准</el-radio>
+                <el-input style="display: inline-block" v-model="form.annualizedReturn"></el-input>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="11">
+            <el-form-item label="收益分配方式" prop="incomeDistribution">
+              <el-input
+                type="textarea"
+                :row="2"
+                v-model="form.incomeDistribution">
+              </el-input>
+            </el-form-item>
+          </el-col>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="11">
+            <el-form-item label="产品亮点" prop="highlight">
+              <el-input
+                type="textarea"
+                :row="2"
+                v-model="form.highlight">
+              </el-input>
+            </el-form-item>
+          </el-col>
+          </el-col>
+        </el-row>
+
+        <!-- <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="产品状态" prop="deptName">
               <el-select class="filter-item" v-model="productStus" placeholder="请选择">
@@ -280,14 +314,9 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item label="邮箱" prop="email">
-              <el-input v-model="form.email"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        </el-row> -->
         
-        <el-row>
+        <!-- <el-row>
           <el-col :span="22">
             <el-form-item label="备注" prop="role">
               <el-input type="textarea" v-model="form.role"></el-input>
@@ -299,9 +328,9 @@
           <el-select class="filter-item" v-model="form.delFlag" placeholder="请选择">
             <el-option v-for="item in statusOptions" :key="item" :label="item | statusFilter" :value="item"> </el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div slot="footer" class="dialog-footer" style="text-align: center;">
         <!-- <div v-if="!nextToUpdate" slot="footer" class="dialog-footer"> -->
         <el-button @click="cancel('form')">取 消</el-button>
         <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
@@ -338,7 +367,8 @@
             <el-upload
               class="upload-demo"
               style="display: inline-block;"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              :headers="headers"
+              :action="importFile('transaction')"
               :on-change="handleChange1"
               :show-file-list="false">
               <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
@@ -377,7 +407,10 @@
             <el-upload
               class="upload-demo"
               style="display: inline-block;"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              :headers="headers"
+              :action="importFile('product')"
+              :on-success="uploadSuccess2"
+              :on-error="uploadError2"
               :on-change="handleChange2"
               :show-file-list="false">
               <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
@@ -416,7 +449,8 @@
             <el-upload
               class="upload-demo"
               style="display: inline-block;"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              :headers="headers"
+              :action="importFile('announcement')"
               :on-change="handleChange3"
               :show-file-list="false">
               <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
@@ -431,7 +465,9 @@
 
 <script>
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/product/product'
+  import { fetchProductTypeList } from '@/api/product/productType'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
+  import { getToken } from '@/utils/auth'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
@@ -594,21 +630,7 @@
         ],
         maritalStatus: '',
         fileList: [],
-        productTypes: [
-          {
-            label: '理财',
-            value: 0
-          }, {
-            label: '另类投资',
-            value: 1
-          }, {
-            label:  '固收',
-            value: 2
-          }, {
-            label:  '二级市场',
-            value: 3
-          }
-        ],
+        productTypes: [],
         // typeGroup1: [],
         // statusGroup2: [],
         // checkboxGroup3: [],
@@ -620,7 +642,16 @@
         fileList2: [],
         fileList3: [],
         indexList: [],
-        productStus: ''
+        productStus: '',
+        radio2: 1,
+        profitTextarea: '',
+        highlight: '',
+        uploadData: {
+          productId: ''
+        },
+        headers: {
+          Authorization: 'Bearer ' + getToken()
+        }
       }
     },
     computed: {
@@ -651,6 +682,9 @@
         // this.listQuery.orderByField = '`user`.create_time'
         // this.listQuery.isAsc = false
         // this.listQuery.type = this.typeGroup1
+        fetchProductTypeList().then(res => {
+          this.productTypes = res.data
+        })
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
@@ -694,16 +728,17 @@
       },
       handleUpdate(row) {
         this.nextToUpdate = false
-        getObj(row.userId)
+        getObj(row.productId)
           .then(response => {
             this.form = response.data
-            this.role = row.roleList[0].roleId
+            console.log(this.form)
+            // this.role = row.roleList[0].roleId
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
-            deptRoleList(response.data.deptId)
-              .then(response => {
-                this.rolesOptions = response.data
-              })
+            // deptRoleList(response.data.deptId)
+            //   .then(response => {
+            //     this.rolesOptions = response.data
+            //   })
           })
       },
       create(formName) {
@@ -739,9 +774,13 @@
           if (valid) {
             this.dialogFormVisible = true
             this.form.password = undefined
-            putObj(this.form).then(() => {
-              this.nextToUpdate = true
-              this.getList()
+            let productId = this.form.productId
+            putObj(this.form).then(response => {
+              if(response.data) {
+                this.nextToUpdate = true
+                this.getList()
+                this.uploadData.productId = this.form.productId
+              }
               // this.$notify({
               //   title: '成功',
               //   message: '修改成功',
@@ -835,7 +874,20 @@
             }
           })
         })
-      }
+      },
+      radioChange(value) {
+        console.log(value)
+      },
+      uploadSuccess2(response, file, fileList) {
+        console.log('上传文件', response)
+      },
+      uploadError2(err, file, fileList) {
+        console.log(err)
+      },
+      importFile(fileType) {
+        let url = '/zuul/product/products/' + this.uploadData.productId + '/' + fileType + '/files'
+        return url
+      },
     }
   }
 </script>

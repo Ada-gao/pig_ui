@@ -3,7 +3,7 @@ import request from '@/utils/request'
 /**
  * 查询产品类型
  */
-export function fetchList() {
+export function fetchProductTypeList() {
   return request({
     url: '/product/productType/list',
     method: 'get'

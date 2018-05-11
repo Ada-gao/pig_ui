@@ -16,18 +16,18 @@ export function fetchList(query) {
  */
 export function addObj(obj) {
   return request({
-    url: '/product/productType/',
+    url: '/product/products/',
     method: 'post',
     data: obj
   })
 }
 
 /**
- * 精确查询（无）
+ * 精确查询
  */
 export function getObj(id) {
   return request({
-    url: '/product/productType/' + id,
+    url: '/product/products/' + id,
     method: 'get'
   })
 }
@@ -37,7 +37,7 @@ export function getObj(id) {
  */
 export function delObj(id) {
   return request({
-    url: '/product/productType/' + id,
+    url: '/product/products/' + id,
     method: 'delete'
   })
 }
@@ -47,10 +47,8 @@ export function delObj(id) {
  */
 export function putObj(obj) {
   return request({
-    url: '/admin/positions/' + obj.positionId,
+    url: '/product/products/' + obj.productId,
     method: 'put',
-    data: {
-      name: obj.positionName
-    }
+    data: obj
   })
 }
