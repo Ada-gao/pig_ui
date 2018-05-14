@@ -73,7 +73,6 @@ const dictionary = {
               educationTypeList.push(data[i])
             }
           }
-          console.log(educationTypeList)
           commit('SET_ID_TYPE', idTypeList)
           commit('SET_MARRIAGE_STATUS', marriageStatusList)
           commit('SET_PRODUCT_STATUS', productStatusList)

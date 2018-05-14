@@ -74,6 +74,7 @@
 
       <el-table-column align="center" label="产品分类" show-overflow-tooltip>
         <template slot-scope="scope">
+        <!-- <span>{{scope.row.productTypeName}}</span> -->
         <span>{{scope.row.productTypeId}}</span>
         </template>
       </el-table-column>
@@ -111,7 +112,7 @@
       <el-table-column align="center" class-name="status-col" label="产品状态">
         <template slot-scope="scope">
           <!-- <el-tag>{{scope.row.delFlag | statusFilter}}</el-tag> -->
-          {{scope.row.productStatus}}
+          {{scope.row.productStatus | statusFilter}}
         </template>
       </el-table-column>
 
@@ -215,8 +216,8 @@
           <el-col :span="11">
             <el-form-item label="交易币种" prop="currencyId">
               <el-select class="filter-item" v-model="form.currencyId" placeholder="请选择">
-                <el-option v-for="item in currencyList" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
+                <el-option v-for="item in currencyList" :key="item.currencyId" :value="item.currencyId" :label="item.name">
+                  <span style="float: left">{{ item.name }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -226,11 +227,7 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="募集额度" prop="collectionAmount">
-              <el-select class="filter-item" v-model="form.collectionAmount" placeholder="请选择">
-                <el-option v-for="item in maritalStatusOptions" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
+              <el-input v-model="form.collectionAmount" placeholder="请输入"></el-input>
             </el-form-item>
             
           </el-col>
@@ -267,10 +264,10 @@
         <el-row :gutter="20">
           <el-col>
             <el-form-item label="收益" prop="isFloat">
-              <el-radio-group v-model="form.annualizedReturn" @change="radioChange">
+              <el-radio-group v-model="radio2" @change="radioChange">
                 <el-radio :label="3" style="display: inline-block">浮动收益率</el-radio>
                 <el-radio :label="6" style="display: inline-block">收益对标基准</el-radio>
-                <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-model="form.annualizedReturn"></el-input>
+                <el-input style="display: inline-block; width: 100px; margin-left: 20px;" :disabled="isDisabled" v-model="form.annualizedReturn"></el-input>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -605,18 +602,7 @@
           }
         ],
         edu: '',
-        currencyList: [
-          {
-            label: '二代居民身份证',
-            value: 1
-          }, {
-            label: '护照',
-            value: 2
-          }, {
-            label: '军官证',
-            value: 3
-          }
-        ],
+        currencyList: [],
         IDsType: '',
         entryDate: '',
         maritalStatusOptions: [
@@ -634,6 +620,7 @@
         maritalStatus: '',
         fileList: [],
         productTypes: [],
+        productTypesList: [],
         productIncome: ['不限', '10%以下', '10-15%', '15%以上', '浮动'],
         input2: '',
         nextToUpdate: false,
@@ -645,7 +632,7 @@
         indexList2: [],
         indexList3: [],
         productStus: '',
-        radio2: 1,
+        radio2: null,
         profitTextarea: '',
         highlight: '',
         uploadData: {
@@ -653,7 +640,8 @@
         },
         headers: {
           Authorization: 'Bearer ' + getToken()
-        }
+        },
+        isDisabled: null
       }
     },
     computed: {
@@ -663,37 +651,92 @@
       ])
     },
     filters: {
+      // statusFilter(status) {
+      //   const statusMap = {
+      //     0: '在职',
+      //     1: '离职',
+      //     9: '锁定'
+      //   }
+      //   return statusMap[status]
+      // },
+      productTypeFilter(type) {
+        fetchProductTypeList().then(res => { // 获取产品类型
+          let obj = {}
+          res.data.forEach((val, idx) => {
+            let key = val.productTypeId
+            obj[key] = val.name
+
+            type = obj[type]
+          })
+          return type
+        })
+      },
       statusFilter(status) {
         const statusMap = {
-          0: '在职',
-          1: '离职',
-          9: '锁定'
+          0: '在建',
+          1: '预热中',
+          2: '募集中',
+          3: '募集完成',
+          4: '存续期',
+          5: '已下架'
         }
         return statusMap[status]
       }
     },
     created() {
+      // console.log(this.productStatus)
       this.getList()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
     },
     methods: {
+      productTypeFilter(type) {
+        fetchProductTypeList().then(res => { // 获取产品类型
+          let obj = {}
+          res.data.forEach((val, idx) => {
+            let key = val.productTypeId
+            obj[key] = val.name
+
+            type = obj[type]
+          })
+          return type
+        })
+      },
       getList() {
         this.listLoading = true
-        // this.listQuery.orderByField = '`user`.create_time'
-        // this.listQuery.isAsc = false
-        // this.listQuery.type = this.typeGroup1
-        fetchProductTypeList().then(res => {
+        fetchProductTypeList().then(res => { // 获取产品类型
           this.productTypes = res.data
         })
         fetchList(this.listQuery).then(response => {
-          this.list = response.data.records
+          let list = response.data.records
           this.total = response.data.total
           this.listLoading = false
+          list.forEach(item => {
+            let obj = {}
+            // fetchProductTypeList().then(res => { // 获取产品类型
+              this.productTypes.forEach((val, idx) => {
+                let key = val.productTypeId
+                obj[key] = val.name
+              })
+              item.productTypeId = obj[item.productTypeId]
+              
+              // for(let key in obj) {
+              //   console.log(key)
+              //   if(item.productTypeId === key) {
+              //     item.productTypeName = obj[key]
+              //     console.log(item.productTypeName)
+              //   }
+              //   return item.productTypeId
+              // }
+            // })
+          })
+          this.list = list
+          // console.log(this.list)
         })
         fetchCurrency(this.listQuery).then(response => {
           this.currencyList = response.data.records
+          console.log(this.currencyList)
         })
       },
       getNodeData(data) {
@@ -729,21 +772,21 @@
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
         this.nextToUpdate = false
-        console.log(this.productStatus)
       },
       handleUpdate(row) {
         this.nextToUpdate = false
         getObj(row.productId)
           .then(response => {
             this.form = response.data
-            // console.log(this.form)
-            // this.role = row.roleList[0].roleId
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
-            // deptRoleList(response.data.deptId)
-            //   .then(response => {
-            //     this.rolesOptions = response.data
-            //   })
+            if(this.form.isFloat === 0) { // 0 代表 正常
+              this.radio2 = 3
+            } else if(this.form.isFloat === 1 || this.form.annualizedReturn) {
+              this.radio2 = 6
+            } else {
+              this.radio2 = 1
+            }
           })
         
       },
@@ -914,7 +957,11 @@
         })
       },
       radioChange(value) {
-        // console.log(value)
+        if(value === 3) {
+          this.isDisabled = true
+        } else {
+          this.isDisabled = false
+        }
       },
       uploadError2(err, file, fileList) {
         console.log(err)
