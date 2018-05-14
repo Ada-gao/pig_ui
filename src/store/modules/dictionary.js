@@ -8,7 +8,8 @@ const dictionary = {
     certificationStatus: [],
     certificationType: [],
     genderType: [],
-    educationType: []
+    educationType: [],
+    productRiskLevel: []
   },
 
   mutations: {
@@ -33,6 +34,9 @@ const dictionary = {
     SET_EDUCATION_TYPE: (state, educationType) => {
       state.educationType = educationType
     },
+    SET_PRODUCT_RISK_LEVEL: (state, productRiskLevel) => {
+      state.productRiskLevel = productRiskLevel
+    },
   },
 
   actions: {
@@ -49,6 +53,7 @@ const dictionary = {
           let certificationTypeList = []
           let genderTypeList = []
           let educationTypeList = []
+          let productRiskLevelList = []
           
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -71,6 +76,9 @@ const dictionary = {
 
             } else if(data[i].type === 'education_type') {
               educationTypeList.push(data[i])
+
+            } else if(data[i].type === 'product_risk_level') {
+              productRiskLevelList.push(data[i])
             }
           }
           commit('SET_ID_TYPE', idTypeList)
@@ -80,6 +88,7 @@ const dictionary = {
           commit('SET_CERTIFICATION_TYPE', certificationTypeList)
           commit('SET_GENDER_TYPE', genderTypeList)
           commit('SET_EDUCATION_TYPE', educationTypeList)
+          commit('SET_PRODUCT_RISK_LEVEL', productRiskLevelList)
           resolve()
         }).catch(error => {
           reject(error)

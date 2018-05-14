@@ -182,12 +182,11 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
+          <el-col :span="11" style="white-space: nowrap">
             <el-form-item label="产品风险级别" prop="productRiskLevel">
               <el-select class="filter-item" v-model="form.productRiskLevel" placeholder="请选择">
-                <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
-                  <span style="float: left">{{ item.roleDesc }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
+                <el-option v-for="item in productRiskLevel" :key="item.value" :value="item.value" :label="item.label">
+                  <span style="float: left">{{ item.label }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -509,10 +508,10 @@
           deptId: undefined
         },
         rules: {
-          username: [
+          productName: [
             {
-              required: false,
-              message: '请输入账户',
+              required: true,
+              message: '请输入产品名称',
               trigger: 'blur'
             },
             {
@@ -522,10 +521,23 @@
               trigger: 'blur'
             }
           ],
-          password: [
+          productId: [
             {
-              required: false,
-              message: '请输入密码',
+              required: true,
+              message: '请输入产品编号',
+              trigger: 'blur'
+            },
+            {
+              min: 3,
+              max: 20,
+              message: '长度在 3 到 20 个字符',
+              trigger: 'blur'
+            }
+          ],
+          productTypeId: [
+            {
+              required: true,
+              message: '请选择产品类型',
               trigger: 'blur'
             },
             {
@@ -535,10 +547,10 @@
               trigger: 'blur'
             }
           ],
-          deptId: [
+          productRiskLevel: [
             {
-              required: false,
-              message: '请选择部门',
+              required: true,
+              message: '请选择产品风险级别',
               trigger: 'blur'
             }
           ],
@@ -647,7 +659,8 @@
     computed: {
       ...mapGetters([
         'permissions',
-        'productStatus'
+        'productStatus',
+        'productRiskLevel'
       ])
     },
     filters: {
@@ -736,7 +749,6 @@
         })
         fetchCurrency(this.listQuery).then(response => {
           this.currencyList = response.data.records
-          console.log(this.currencyList)
         })
       },
       getNodeData(data) {
@@ -793,7 +805,7 @@
       create(formName) {
         this.nextToUpdate = true
         const set = this.$refs
-        this.form.role = this.role
+        // this.form.role = this.role
         set[formName].validate(valid => {
           if (valid) {
             addObj(this.form)
@@ -842,15 +854,15 @@
                   fileType: 'announcement'
                 }
                 getFiles(uploadData1).then(response => {
-                  console.log(response.data)
+                  // console.log(response.data)
                   this.fileList1 = response.data
                 })
                 getFiles(uploadData2).then(response => {
-                  console.log(response.data)
+                  // console.log(response.data)
                   this.fileList2 = response.data
                 })
                 getFiles(uploadData3).then(response => {
-                  console.log(response.data)
+                  // console.log(response.data)
                   this.fileList3 = response.data
                 })
               }
@@ -881,7 +893,7 @@
         }
       },
       handleRemove(file, fileList) {
-        console.log(file, fileList);
+        console.log(file, fileList)
       },
       handlePreview(file) {
         // console.log(file);
