@@ -34,14 +34,6 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <!-- <div class="grid-content bg-purple">
-            工作状态
-            <el-select class="filter-item" v-model="delFlag" placeholder="请选择">
-              <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </div> -->
         </el-col>
       <!-- </el-row> -->
       <!-- <el-row :gutter="10"> -->
@@ -55,16 +47,6 @@
               :default-time="['00:00:00', '23:59:59']">
             </el-date-picker>
           </el-form-item>
-          <!-- <div class="grid-content bg-purple-light">
-            入职时间
-            <el-date-picker
-              v-model="value13"
-              type="daterange"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :default-time="['00:00:00', '23:59:59']">
-            </el-date-picker>
-          </div> -->
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="角色">
@@ -93,6 +75,7 @@
 
     <div style="text-align: right">
       <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+      <!-- <upload-excel-component @on-selected-file='selected'></upload-excel-component> -->
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
@@ -138,7 +121,7 @@
 
       <el-table-column align="center" label="手机号" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.mobile}}</span>
         </template>
       </el-table-column>
 
@@ -275,14 +258,10 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="职位" prop="username">
-              <!-- positionId -->
-              <el-select class="filter-item" v-model="role" placeholder="请选择" @focus="handlePosition()">
-                <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId" :disabled="isDisabled[item.delFlag]">
-                  <span style="float: left">{{ item.positionName }}</span>
-                  <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span> -->
-                </el-option>
-              </el-select>
+            <el-form-item label="部门" prop="deptName">
+              <!-- deptId -->
+              <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
+              <input type="hidden" v-model="form.deptId"/>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -300,10 +279,14 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="部门" prop="deptName">
-              <!-- deptId -->
-              <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
-              <input type="hidden" v-model="form.deptId"/>
+            <el-form-item label="职位" prop="positionName">
+              <!-- positionId -->
+              <el-select class="filter-item" v-model="form.positionName" placeholder="请选择" @focus="handlePosition()">
+                <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId" :disabled="isDisabled[item.delFlag]">
+                  <span style="float: left">{{ item.positionName }}</span>
+                  <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span> -->
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -358,6 +341,7 @@
         <el-button v-else type="primary" @click="update('form')">修 改</el-button>
       </div>
     </el-dialog>
+
   </div>
 </template>
 
@@ -370,11 +354,24 @@
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
+  import UploadExcelComponent from '@/components/UploadExcel/index.vue'
+  import { isvalidPhone } from '@/utils/validate'
+
+  let validPhone = (rule, value, callback) => {
+    if (!value) {
+      callback(new Error('请输入电话号码'))
+    } else if (!isvalidPhone(value)) {
+      callback(new Error('请输入正确的11位手机号'))
+    } else {
+      callback()
+    }
+  }
 
   export default {
     components: {
       ElOption,
-      ElRadioGroup 
+      ElRadioGroup,
+      UploadExcelComponent
     },
     name: 'table_user',
     directives: {
@@ -408,7 +405,7 @@
           username: [
             {
               required: true,
-              message: '请输入账户',
+              message: '请输入用户名',
               trigger: 'blur'
             },
             {
@@ -438,6 +435,17 @@
               trigger: 'blur'
             }
           ],
+          mobile: [
+            {
+              required: true,
+              trigger: 'blur',
+              validator: validPhone
+            },
+            {
+              maxLength: 11,
+              trigger: 'blur,change'
+            }
+          ],
           role: [
             {
               required: true,
@@ -446,7 +454,7 @@
             }
           ]
         },
-        statusOptions: ['0', '1'],
+        statusOptions: ['0', '1', '2'],
         positionsOptions: [],
         rolesOptions: [],
         dialogFormVisible: false,
@@ -483,7 +491,9 @@
         maritalStatus: '',
         fileList: [],
         positionId: '',
-        delFlag: ''
+        delFlag: '',
+        tableData: [],
+        tableHeader: []
       }
     },
     computed: {
@@ -500,7 +510,7 @@
         const statusMap = {
           0: '正常',
           1: '离职',
-          9: '异常'
+          2: '异常'
         }
         return statusMap[status]
       }
@@ -523,7 +533,7 @@
           this.listLoading = false
         })
       },
-      getNodeData(data) {
+      getNodeData(data) { // 部门查询
         this.dialogDeptVisible = false
         this.form.deptId = data.id
         this.form.deptName = data.name
@@ -562,7 +572,7 @@
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
       },
-      handleUpdate(row) {
+      handleUpdate(row) { // 编辑查询
         getObj(row.userId)
           .then(response => {
             this.form = response.data
@@ -687,6 +697,10 @@
           this.$message.error('只能上传pdf文档')
         }
         return isFile
+      },
+      selected(data) {
+        this.tableData = data.results
+        this.tableHeader = data.header
       }
     }
   }
