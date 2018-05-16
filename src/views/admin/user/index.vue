@@ -251,7 +251,7 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="手机号" prop="mobile">
-              <el-input v-model="form.mobile"></el-input>
+              <el-input v-model="form.mobile" :maxlength="11"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -442,7 +442,7 @@
               validator: validPhone
             },
             {
-              maxLength: 11,
+              maxlength: 11,
               trigger: 'blur,change'
             }
           ],
