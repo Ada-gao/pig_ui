@@ -539,12 +539,6 @@
               required: true,
               message: '请选择产品类型',
               trigger: 'blur'
-            },
-            {
-              min: 5,
-              max: 20,
-              message: '长度在 5 到 20 个字符',
-              trigger: 'blur'
             }
           ],
           productRiskLevel: [
@@ -554,13 +548,55 @@
               trigger: 'blur'
             }
           ],
-          role: [
+          manager: [
             {
-              required: false,
-              message: '请选择角色',
+              required: true,
+              message: '请输入基金管理人',
               trigger: 'blur'
             }
-          ]
+          ],
+          currencyId: [
+            {
+              required: true,
+              message: '请选择交易币种',
+              trigger: 'blur'
+            }
+          ],
+          collectionAmount: [
+            {
+              required: true,
+              message: '请输入募集额度',
+              trigger: 'blur'
+            }
+          ],
+          minimalAmount: [
+            {
+              required: true,
+              message: '请输入起投金额',
+              trigger: 'blur'
+            }
+          ],
+          minimalAddAmount: [
+            {
+              required: true,
+              message: '请输入追加金额',
+              trigger: 'blur'
+            }
+          ],
+          investmentHorizon: [
+            {
+              required: true,
+              message: '请输入产品期限',
+              trigger: 'blur'
+            }
+          ],
+          isFloat: [
+            {
+              required: true,
+              message: '请选择收益',
+              trigger: 'blur'
+            }
+          ],
         },
         statusOptions: ['0', '1'],
         rolesOptions: [],
@@ -579,15 +615,6 @@
           1: true
         },
         tableKey: 0,
-        sexOptions: [
-          {
-            label: '男',
-            value: 1
-          }, {
-            label: '女',
-            value: 2
-          }
-        ],
         sex: '',
         eduOptions: [
           {
@@ -617,19 +644,6 @@
         currencyList: [],
         IDsType: '',
         entryDate: '',
-        maritalStatusOptions: [
-          {
-            label: '已婚',
-            value: 1
-          }, {
-            label: '未婚',
-            value: 2
-          }, {
-            label: '保密',
-            value: 3
-          }
-        ],
-        maritalStatus: '',
         fileList: [],
         productTypes: [],
         productTypesList: [],
@@ -745,7 +759,6 @@
             // })
           })
           this.list = list
-          // console.log(this.list)
         })
         fetchCurrency(this.listQuery).then(response => {
           this.currencyList = response.data.records

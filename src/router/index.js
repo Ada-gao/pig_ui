@@ -52,17 +52,18 @@ export const asyncRouterMap = [
       icon: 'table'
     },
     children: [
-      { menuId: 2, path: 'user', component: _import('admin/user/index'), name: '用户管理', meta: { title: '用户管理', icon: 'user' }},
-      { menuId: 3, path: 'menu', component: _import('admin/menu/index'), name: '菜单管理', meta: { title: '菜单管理', icon: 'tree' }},
-      { menuId: 4, path: 'role', component: _import('admin/role/index'), name: '角色管理', meta: { title: '角色管理', icon: 'role' }},
-      { menuId: 81, path: 'posi', component: _import('admin/posi/index'), name: '职位管理', meta: { title: '职位管理', icon: 'log' }},
-      { menuId: 5, path: 'dept', component: _import('admin/dept/index'), name: '部门管理', meta: { title: '部门管理', icon: 'dept' }},
-      { menuId: 6, path: 'dict', component: _import('admin/dict/index'), name: '字典管理', meta: { title: '字典管理', icon: 'dict' }},
-      { menuId: 7, path: 'log', component: _import('admin/log/index'), name: '日志管理', meta: { title: '日志管理', icon: 'log' }},
+      { menuId: 5, path: 'user', component: _import('admin/user/index'), name: '用户管理', meta: { title: '用户管理', icon: 'user' }},
+      { menuId: 6, path: 'menu', component: _import('admin/menu/index'), name: '菜单管理', meta: { title: '菜单管理', icon: 'tree' }},
+      { menuId: 7, path: 'role', component: _import('admin/role/index'), name: '角色管理', meta: { title: '角色管理', icon: 'role' }},
+      { menuId: 43, path: 'posi', component: _import('admin/posi/index'), name: '职位管理', meta: { title: '职位管理', icon: 'log' }},
+      { menuId: 10, path: 'dept', component: _import('admin/dept/index'), name: '部门管理', meta: { title: '部门管理', icon: 'dept' }},
+      { menuId: 9, path: 'dict', component: _import('admin/dict/index'), name: '字典管理', meta: { title: '字典管理', icon: 'dict' }},
+      { menuId: 8, path: 'log', component: _import('admin/log/index'), name: '日志管理', meta: { title: '日志管理', icon: 'log' }},
+      { menuId: 2, path: 'uploadUser', component: _import('admin/user/uploadExcel'), name: '用户批量导入', meta: { title: '用户批量导入', icon: 'user' }}
     ]
   },
   {
-    menuId: 83,
+    menuId: 3,
     path: '/admin',
     component: Layout,
     name: '产品管理',
@@ -74,14 +75,12 @@ export const asyncRouterMap = [
       icon: 'table'
     },
     children: [
-      { menuId: 831, path: 'product/list', component: _import('admin/product/list'), name: '产品管理', meta: { title: '产品管理', icon: 'user' }},
-      // { menuId: 832, path: 'product/add/0', component: _import('admin/product/add'), name: '产品新增', meta: { title: '产品新增', icon: 'user' }},
-      // { menuId: 833, path: 'product/add/1', component: _import('admin/product/add'), name: '产品修改', meta: { title: '产品修改', icon: 'user' }},
-      { menuId: 835, path: 'product/type', component: _import('admin/product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'user' }},
+      { menuId: 48, path: 'product/list', component: _import('admin/product/list'), name: '产品管理', meta: { title: '产品管理', icon: 'user' }},
+      { menuId: 49, path: 'product/type', component: _import('admin/product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'user' }},
     ]
   },
   {
-    menuId: 8,
+    menuId: 2,
     path: '/monitor',
     component: Layout,
     name: '系统监控',
@@ -93,17 +92,17 @@ export const asyncRouterMap = [
       icon: 'monitor'
     },
     children: [
-      { menuId: 9, path: 'service', component: _import('admin/monitor/service'), name: '服务状态', meta: { title: '服务状态', icon: 'service' }},
-      { menuId: 10, path: 'zipkin', component: _import('admin/monitor/zipkin'), name: 'zipkin监控', meta: { title: 'zipkin监控', icon: 'zipkin' }},
-      { menuId: 11, path: 'pinpoint', component: _import('admin/monitor/pinpoint'), name: 'pinpoint监控', meta: { title: 'pinpoint监控', icon: 'pinpoint' }},
-      { menuId: 12, path: 'cache', component: _import('admin/monitor/cache'), name: '缓存状态', meta: { title: '缓存状态', icon: 'cache' }},
-      { menuId: 13, path: 'elk', component: _import('admin/monitor/elk'), name: 'ELK状态', meta: { title: 'ELK状态', icon: 'elk' }},
-      { menuId: 14, path: 'swagger', component: _import('admin/monitor/swagger'), name: '接口文档', meta: { title: '接口文档', icon: 'swagger' }},
-      { menuId: 15, path: 'daemon', component: _import('admin/monitor/daemon'), name: '任务监控', meta: { title: '任务监控', icon: 'daemon' }}
+      { menuId: 11, path: 'service', component: _import('admin/monitor/service'), name: '服务状态', meta: { title: '服务状态', icon: 'service' }},
+      { menuId: 12, path: 'zipkin', component: _import('admin/monitor/zipkin'), name: 'zipkin监控', meta: { title: 'zipkin监控', icon: 'zipkin' }},
+      { menuId: 13, path: 'pinpoint', component: _import('admin/monitor/pinpoint'), name: 'pinpoint监控', meta: { title: 'pinpoint监控', icon: 'pinpoint' }},
+      { menuId: 14, path: 'cache', component: _import('admin/monitor/cache'), name: '缓存状态', meta: { title: '缓存状态', icon: 'cache' }},
+      { menuId: 15, path: 'elk', component: _import('admin/monitor/elk'), name: 'ELK状态', meta: { title: 'ELK状态', icon: 'elk' }},
+      { menuId: 16, path: 'swagger', component: _import('admin/monitor/swagger'), name: '接口文档', meta: { title: '接口文档', icon: 'swagger' }},
+      { menuId: 17, path: 'daemon', component: _import('admin/monitor/daemon'), name: '任务监控', meta: { title: '任务监控', icon: 'daemon' }}
     ]
   },
   {
-    menuId: 8,
+    menuId: 4,
     path: '/setting',
     component: Layout,
     name: '设置管理',
@@ -115,7 +114,7 @@ export const asyncRouterMap = [
       icon: 'table'
     },
     children: [
-      { menuId: 9, path: 'currency', component: _import('admin/setting/currency'), name: '币种管理', meta: { title: '币种管理', icon: 'service' }},
+      { menuId: 38, path: 'currency', component: _import('admin/setting/currency'), name: '币种管理', meta: { title: '币种管理', icon: 'service' }},
     ]
   }
   // {

@@ -8,8 +8,10 @@ import store from './store'
 import * as filters from './filters' // 全局filter
 import '@/icons' // icon
 import '@/permission' // 权限
+import { Validate } from '@/utils/validate_rules'
 
 Vue.use(ElementUI, { locale })
+Vue.use(Validate)
 
 // register global utility filters.
 Object.keys(filters).forEach(key => {

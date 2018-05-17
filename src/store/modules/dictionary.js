@@ -2,8 +2,8 @@ import { fetchList } from '@/api/dict'
 
 const dictionary = {
   state: {
-    idType: [],
-    marriageStatus: [],
+    idTypeOptions: [],
+    marriageStatusOptions: [],
     productStatus: [],
     certificationStatus: [],
     certificationType: [],
@@ -14,10 +14,10 @@ const dictionary = {
 
   mutations: {
     SET_ID_TYPE: (state, idType) => {
-      state.idType = idType
+      state.idTypeOptions = idType
     },
     SET_MARRIAGE_STATUS: (state, marriageStatus) => {
-      state.marriageStatus = marriageStatus
+      state.marriageStatusOptions = marriageStatus
     },
     SET_PRODUCT_STATUS: (state, productStatus) => {
       state.productStatus = productStatus

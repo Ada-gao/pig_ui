@@ -48,23 +48,15 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="角色">
             <el-select class="filter-item" v-model="listQuery.role" placeholder="请选择">
-              <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
+              <el-option v-for="item in rolesOptions" :key="item.roleId" :value="item.roleId" :label="item.roleName">
+                <span style="float: left">{{ item.roleName }}</span>
               </el-option>
             </el-select>
           </el-form-item>
-          <!-- <div class="grid-content bg-purple-light">
-            角色
-            <el-select class="filter-item" v-model="role" placeholder="请选择">
-              <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </div> -->
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row style="text-align: center;">
         <el-button type="info" style="padding: 10px 60px;" @click="handleFilter">筛选</el-button>
@@ -193,7 +185,7 @@
           <el-col :span="11">
             <el-form-item label="入职日期" prop="date">
               <el-date-picker
-                v-model="employeeDate"
+                v-model="form.employeeDate"
                 type="date"
                 placeholder="选择日期">
               </el-date-picker>
@@ -204,7 +196,7 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="性别" prop="gender">
-              <el-select class="filter-item" v-model="gender" placeholder="请选择">
+              <el-select class="filter-item" v-model="form.gender" placeholder="请选择">
                 <el-option v-for="item in genderType" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
@@ -213,7 +205,7 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="学历" prop="education">
-              <el-select class="filter-item" v-model="education" placeholder="请选择">
+              <el-select class="filter-item" v-model="form.education" placeholder="请选择">
                 <el-option v-for="item in educationType" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
@@ -224,18 +216,18 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="证件类型" prop="IDType">
-              <el-select class="filter-item" v-model="IDType" placeholder="请选择">
-                <el-option v-for="item in idType" :key="item.value" :value="item.value" :label="item.label">
+            <el-form-item label="证件类型" prop="idType">
+              <el-select class="filter-item" v-model="form.idType" placeholder="请选择">
+                <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="婚姻状况" prop="maritalStatus">
-              <el-select class="filter-item" v-model="maritalStatus" placeholder="请选择">
-                <el-option v-for="item in marriageStatus" :key="item.value" :value="item.value" :label="item.label">
+            <el-form-item label="婚姻状况" prop="marriageStatus">
+              <el-select class="filter-item" v-model="form.marriageStatus" placeholder="请选择">
+                <el-option v-for="item in marriageStatusOptions" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
               </el-select>
@@ -246,12 +238,12 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="证件号码" prop="idNo">
-              <el-input v-model="form.idNo" placeholder="请输入证件号码"></el-input>
+              <el-input v-model="form.idNo" :maxlength="18" placeholder="请输入证件号码"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="手机号" prop="mobile">
-              <el-input v-model="form.mobile" :maxlength="11"></el-input>
+              <el-input v-model="form.mobile" :maxlength="11" placeholder="请输入手机号码"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -269,7 +261,7 @@
               <!-- role -->
               <el-select class="filter-item" v-model="role" placeholder="请选择">
                 <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
-                  <span style="float: left">{{ item.roleDesc }}</span>
+                  <span style="float: left">{{ item.roleName }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
                 </el-option>
               </el-select>
@@ -279,9 +271,9 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="职位" prop="positionName">
+            <el-form-item label="职位" prop="positionId">
               <!-- positionId -->
-              <el-select class="filter-item" v-model="form.positionName" placeholder="请选择" @focus="handlePosition()">
+              <el-select class="filter-item" v-model="form.positionId" placeholder="请选择" @focus="handlePosition()">
                 <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId" :disabled="isDisabled[item.delFlag]">
                   <span style="float: left">{{ item.positionName }}</span>
                   <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span> -->
@@ -355,12 +347,12 @@
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { isvalidPhone } from '@/utils/validate'
+  import { isvalidMobile } from '@/utils/validate'
 
-  let validPhone = (rule, value, callback) => {
+  const validMobile = (rule, value, callback) => {
     if (!value) {
       callback(new Error('请输入电话号码'))
-    } else if (!isvalidPhone(value)) {
+    } else if (!isvalidMobile(value)) {
       callback(new Error('请输入正确的11位手机号'))
     } else {
       callback()
@@ -398,60 +390,64 @@
           username: undefined,
           password: undefined,
           delFlag: undefined,
-          deptId: undefined,
-          empNo: 111081
+          deptId: undefined
         },
         rules: {
+          name: [
+            {required: true, trigger: 'blur'}
+          ],
           username: [
-            {
-              required: true,
-              message: '请输入用户名',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 20,
-              message: '长度在 3 到 20 个字符',
-              trigger: 'blur'
-            }
+            {required: true, trigger: 'blur', message: '请输入用户名'},
+            {min: 3, max: 20, trigger: 'blur', message: '长度在 3 到 20 个字符'}
           ],
-          password: [
-            {
-              required: true,
-              message: '请输入密码',
-              trigger: 'blur'
-            },
-            {
-              min: 5,
-              max: 20,
-              message: '长度在 5 到 20 个字符',
-              trigger: 'blur'
-            }
+          empNo: [
+            {required: true, trigger: 'blur'}
           ],
-          deptId: [
-            {
-              required: true,
-              message: '请选择部门',
-              trigger: 'blur'
-            }
+          // date: [
+          //   {required: true, trigger: 'blur'}
+          // ],
+          gender: [
+            {required: true, trigger: 'blur'}
           ],
-          mobile: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validPhone
-            },
-            {
-              maxlength: 11,
-              trigger: 'blur,change'
-            }
+          education: [
+            {required: true, trigger: 'blur'}
+          ],
+          idType: [
+            // {required: true, trigger: 'blur'}
+          ],
+          marriageStatus: [
+            {required: true, trigger: 'blur'}
+          ],
+          idNo: [
+            {required: true, trigger: 'blur'}
+          ],
+          deptName: [
+            {required: true, trigger: 'blur', message: '请选择部门'}
           ],
           role: [
-            {
-              required: true,
-              message: '请选择角色',
-              trigger: 'blur'
-            }
+            {required: true, trigger: 'blur', message: '请选择角色'}
+          ],
+          positionId: [
+            {required: true, trigger: 'blur'}
+          ],
+          email: [
+            {required: true, trigger: 'blur'}
+          ],
+          // password: [
+          //   {
+          //     required: true,
+          //     message: '请输入密码',
+          //     trigger: 'blur'
+          //   },
+          //   {
+          //     min: 5,
+          //     max: 20,
+          //     message: '长度在 5 到 20 个字符',
+          //     trigger: 'blur'
+          //   }
+          // ],
+          mobile: [
+            {required: true, trigger: 'blur, change', validator: validMobile}
           ]
         },
         statusOptions: ['0', '1', '2'],
@@ -486,7 +482,7 @@
         value13: '',
         eduOptions: [],
         education: '',
-        IDType: '',
+        // IDType: '',
         employeeDate: '',
         maritalStatus: '',
         fileList: [],
@@ -501,8 +497,8 @@
         'permissions',
         'educationType',
         'genderType',
-        'idType',
-        'marriageStatus'
+        'idTypeOptions',
+        'marriageStatusOptions'
       ])
     },
     filters: {
@@ -576,12 +572,7 @@
         getObj(row.userId)
           .then(response => {
             this.form = response.data
-            this.form.name = 'jas',
-            this.form.empNo = '11108',
-            this.form.idNo = '11111111111111111111',
-            this.form.mobile = '156235656565',
-            this.form.email = '12@234234.com',
-            this.role = row.roleList[0].roleId
+            this.role = row.roleList[0].roleName
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
             deptRoleList(response.data.deptId)
@@ -593,6 +584,8 @@
       create(formName) {
         const set = this.$refs
         this.form.role = this.role
+        // this.form.idType = this.IDType
+        // this.form.marriageStatus = this.maritalStatus
         set[formName].validate(valid => {
           if (valid) {
             addObj(this.form)
