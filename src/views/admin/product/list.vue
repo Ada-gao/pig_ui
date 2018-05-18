@@ -41,6 +41,9 @@
           <el-checkbox-group v-model="listQuery.annualizedReturns">
             <el-checkbox-button v-for="item in productIncome" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
           </el-checkbox-group>
+          <el-checkbox-group v-model="listQuery.isFloat">
+            <el-checkbox-button v-for="item in productIncome1" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
+          </el-checkbox-group>
         </el-col>
       </el-row>
       
@@ -654,11 +657,13 @@
           {
             label: '15%以上',
             value: 2
-          },
+          }
+        ],
+        productIncome1: [
           {
             label: '浮动',
-            value: 4
-          },
+            value: 0
+          }
         ],
         input2: '',
         nextToUpdate: false,
@@ -906,14 +911,16 @@
         this.form = {
           id: undefined,
           name: '',
-          password: '',
           role: undefined
         }
       },
       resetFilter() {
         this.listQuery = {
           name: '',
-          type: []
+          // type: [],
+          productTypeIds: [],
+          annualizedReturns: [],
+          productStatus: []
         }
         this.getList()
       },
