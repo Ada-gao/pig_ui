@@ -6,12 +6,12 @@
              class="card-box login-form">
       <h3 class="title">智投CRM系统登录</h3>
       <el-tabs v-model="activeName">
-        <el-tab-pane label="账号登录" name="first">
+        <el-tab-pane label="账号/邮箱登录" name="first">
           <el-form-item prop="username">
             <span class="svg-container svg-container_login">
               <svg-icon icon-class="user"/>
             </span>
-            <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="用户名"/>
+            <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="用户名或邮箱"/>
           </el-form-item>
           <el-form-item prop="password">
             <span class="svg-container">
@@ -45,7 +45,7 @@
             </el-button>
           </el-form-item>
         </el-tab-pane>
-        <!--<el-tab-pane label="短信登录" name="second">
+        <el-tab-pane label="短信登录" name="second">
           <el-form-item prop="mobile">
             <span class="svg-container svg-container_login">
               <svg-icon icon-class="mobile"/>
@@ -71,8 +71,8 @@
               登录
             </el-button>
           </el-form-item>
-        </el-tab-pane>-->
-        <!--<el-tab-pane label="社交登录" name="three">
+        </el-tab-pane>
+        <!-- <el-tab-pane label="邮箱登录" name="three">
           <el-row>
             <el-col :span="8">
               <el-card :body-style="{ padding: '0px' }">
@@ -83,7 +83,7 @@
               </el-card>
             </el-col>
           </el-row>
-        </el-tab-pane>-->
+        </el-tab-pane> -->
       </el-tabs>
     </el-form>
     <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left"
@@ -232,39 +232,39 @@
           }
         })
       },
-      // handleMobileLogin() {
-      //   this.loading = true
-      //   if (!this.loginForm.smsCode || this.loginForm.smsCode.length !== 4) {
-      //     this.$message.error('验证码不合法')
-      //     return false
-      //   }
-      //   this.$store.dispatch('MobileLogin', this.loginForm).then(() => {
-      //     this.loading = false
-      //     this.$router.push({path: '/'})
-      //   }).catch(() => {
-      //     this.loading = false
-      //   })
-      // },
-      // getMobileCode: function () {
-      //   if (!this.loginForm.mobile) {
-      //     this.$message.error('请输入手机号码')
-      //   } else if (!(/^1[34578]\d{9}$/.test(this.loginForm.mobile))) {
-      //     this.$message.error('手机号格式不正确')
-      //   } else {
-      //     request({
-      //       url: '/admin/smsCode/' + this.loginForm.mobile,
-      //       method: 'get'
-      //     }).then(response => {
-      //       console.log(response)
-      //       if (response.data.data) {
-      //         this.timer()
-      //         this.$message.success('验证码发送成功')
-      //       } else {
-      //         this.$message.error(response.data.msg)
-      //       }
-      //     })
-      //   }
-      // },
+      handleMobileLogin() {
+        this.loading = true
+        if (!this.loginForm.smsCode || this.loginForm.smsCode.length !== 4) {
+          this.$message.error('验证码不合法')
+          return false
+        }
+        this.$store.dispatch('MobileLogin', this.loginForm).then(() => {
+          this.loading = false
+          this.$router.push({path: '/'})
+        }).catch(() => {
+          this.loading = false
+        })
+      },
+      getMobileCode: function () {
+        if (!this.loginForm.mobile) {
+          this.$message.error('请输入手机号码')
+        } else if (!(/^1[34578]\d{9}$/.test(this.loginForm.mobile))) {
+          this.$message.error('手机号格式不正确')
+        } else {
+          request({
+            url: '/admin/smsCode/' + this.loginForm.mobile,
+            method: 'get'
+          }).then(response => {
+            console.log(response)
+            if (response.data.data) {
+              this.timer()
+              this.$message.success('验证码发送成功')
+            } else {
+              this.$message.error(response.data.msg)
+            }
+          })
+        }
+      },
       timer: function () {
         if (this.time > 0) {
           this.timeFlag = true

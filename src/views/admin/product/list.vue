@@ -3,16 +3,16 @@
   <div class="app-container calendar-list-container">
     <div class="filter-container">
       <!-- <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名"
-                v-model="listQuery.username">
+                v-model="listQuery.name">
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
-      <el-row :gutter="20">
+      <el-row>
         <el-col :lg="2" class="query-title">产品名称</el-col>
         <el-col :md="12" :lg="6">
           <el-input
             placeholder="请输入产品名称"
-            v-model="listQuery.username">
+            v-model="listQuery.name">
           </el-input>
         </el-col>
       </el-row>
@@ -20,8 +20,8 @@
       <el-row style="margin-top: 20px;">
         <el-col :lg="2" class="query-title">产品分类</el-col>
         <el-col :lg="20">
-          <el-checkbox-group v-model="listQuery.typeGroup1">
-            <el-checkbox-button v-for="item in productTypes" :label="item.name" :key="item.productTypeId">{{item.name}}</el-checkbox-button>
+          <el-checkbox-group v-model="listQuery.productTypeIds">
+            <el-checkbox-button v-for="item in productTypes" :label="item.productTypeId" :key="item.productTypeId">{{item.name}}</el-checkbox-button>
           </el-checkbox-group>
         </el-col>
       </el-row>
@@ -29,9 +29,8 @@
       <el-row style="margin-top: 20px;">
         <el-col :lg="2" class="query-title">产品状态</el-col>
         <el-col :lg="21">
-          <el-checkbox-group v-model="listQuery.statusGroup2">
-            <!-- <el-checkbox-button label="不限">不限</el-checkbox-button> -->
-            <el-checkbox-button v-for="status in productStatus" :label="status.label" :key="status.value">{{status.label}}</el-checkbox-button>
+          <el-checkbox-group v-model="listQuery.productStatus">
+            <el-checkbox-button v-for="status in productStatus" :label="status.value" :key="status.value">{{status.label}}</el-checkbox-button>
           </el-checkbox-group>
         </el-col>
       </el-row>
@@ -39,8 +38,8 @@
       <el-row style="margin-top: 20px;">
         <el-col :lg="2" class="query-title">年化收益</el-col>
         <el-col :lg="20">
-          <el-checkbox-group v-model="listQuery.incomeGroup3">
-            <el-checkbox-button v-for="income in productIncome" :label="income" :key="income">{{income}}</el-checkbox-button>
+          <el-checkbox-group v-model="listQuery.annualizedReturns">
+            <el-checkbox-button v-for="item in productIncome" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
           </el-checkbox-group>
         </el-col>
       </el-row>
@@ -497,14 +496,14 @@
         listQuery: {
           page: 1,
           limit: 20,
-          // username: '',
-          typeGroup1: [],
-          statusGroup2: [],
-          incomeGroup3: []
+          // name: '',
+          productTypeIds: [],
+          productStatus: [],
+          annualizedReturns: []
         },
         role: undefined,
         form: {
-          username: undefined,
+          name: undefined,
           password: undefined,
           delFlag: undefined,
           deptId: undefined
@@ -643,7 +642,24 @@
         fileList: [],
         productTypes: [],
         productTypesList: [],
-        productIncome: ['不限', '10%以下', '10-15%', '15%以上', '浮动'],
+        productIncome: [
+          {
+            label: '10%以下',
+            value: 1
+          },
+          {
+            label: '10-15%',
+            value: 3
+          },
+          {
+            label: '15%以上',
+            value: 2
+          },
+          {
+            label: '浮动',
+            value: 4
+          },
+        ],
         input2: '',
         nextToUpdate: false,
         fileList: [],
@@ -889,16 +905,17 @@
       resetTemp() {
         this.form = {
           id: undefined,
-          username: '',
+          name: '',
           password: '',
           role: undefined
         }
       },
       resetFilter() {
         this.listQuery = {
-          username: '',
+          name: '',
           type: []
         }
+        this.getList()
       },
       handleRemove(file, fileList) {
         console.log(file, fileList)
