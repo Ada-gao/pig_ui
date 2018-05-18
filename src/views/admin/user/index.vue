@@ -59,7 +59,7 @@
         </el-col> -->
       </el-row>
       <el-row style="text-align: center;">
-        <el-button type="info" style="padding: 10px 60px;" @click="handleFilter">筛选</el-button>
+        <el-button type="info" style="padding: 10px 60px;" @click="handleFilter">查询</el-button>
         <el-button type="info" style="padding: 10px 60px" @click="resetFilter">重置</el-button>
       </el-row>
       </el-form>

@@ -10,6 +10,7 @@
 
 <script>
 import XLSX from 'xlsx'
+import { uploadExcel } from '@/api/uploadExcel'
 
 export default {
   data() {
@@ -22,9 +23,10 @@ export default {
     }
   },
   methods: {
-    generateDate({ header, results }) {
+    generateDate({ header, results, formData }) {
       this.excelData.header = header
       this.excelData.results = results
+      this.excelData.formData = formData
       this.$emit('on-selected-file', this.excelData)
     },
     handleDrop(e) {
@@ -51,9 +53,14 @@ export default {
     handkeFileChange(e) {
       const files = e.target.files
       const itemFile = files[0] // only use files[0]
-      this.readerData(itemFile)
+     
+      let formData = new FormData()
+      formData.append('file', itemFile)
+      
+      this.readerData(itemFile, formData)
+      
     },
-    readerData(itemFile) {
+    readerData(itemFile, formData) {
       const reader = new FileReader()
       reader.onload = e => {
         const data = e.target.result
@@ -63,7 +70,7 @@ export default {
         const worksheet = workbook.Sheets[firstSheetName]
         const header = this.get_header_row(worksheet)
         const results = XLSX.utils.sheet_to_json(worksheet)
-        this.generateDate({ header, results })
+        this.generateDate({ header, results, formData })
       }
       reader.readAsArrayBuffer(itemFile)
     },
@@ -78,7 +85,6 @@ export default {
     get_header_row(sheet) {
       // const headers = ['姓名', '用户名', '密码', '工作状态', '部门', '学历', '邮箱', '工号', '性别', '证件号码', '证件类型', '手机号', '角色']
       const headers = []
-      debugger
       const range = XLSX.utils.decode_range(sheet['!ref'])
       let C
       const R = range.s.r /* start in the first row */

@@ -46,7 +46,7 @@
       </el-row>
       
       <el-row style="margin-top: 20px; text-align: center;">
-        <el-button class="btn-padding" @click="handleFilter">筛选</el-button>
+        <el-button class="btn-padding" @click="handleFilter">查询</el-button>
         <el-button class="btn-padding" @click="resetFilter">重置</el-button>
       </el-row>
     </div>
@@ -408,7 +408,8 @@
               :on-error="uploadError2"
               :on-change="handleChange2"
               :auto-upload="false"
-              :show-file-list="false">
+              :show-file-list="false"
+              accept=".pdf, .doc">
               <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
             </el-upload>
             <el-button type="info" class="btn-padding" @click="delfiles2">删除材料</el-button>
@@ -449,7 +450,8 @@
               :action="importFile3('announcement')"
               :on-change="handleChange3"
               :auto-upload="false"
-              :show-file-list="false">
+              :show-file-list="false"
+              accept=".pdf, .doc">
               <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
             </el-upload>
             <el-button type="info" class="btn-padding" @click="delfiles3">删除材料</el-button>
@@ -525,12 +527,6 @@
             {
               required: true,
               message: '请输入产品编号',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 20,
-              message: '长度在 3 到 20 个字符',
               trigger: 'blur'
             }
           ],
@@ -867,7 +863,6 @@
                   fileType: 'announcement'
                 }
                 getFiles(uploadData1).then(response => {
-                  // console.log(response.data)
                   this.fileList1 = response.data
                 })
                 getFiles(uploadData2).then(response => {
@@ -928,6 +923,7 @@
       handleChange1(file, fileList) { // 上传材料，列表展示
         // this.fileList1 = fileList.slice(-3)
         this.uploadData.fileType = 'transaction'
+        // debugger
         getFiles(this.uploadData).then(response => {
           console.log('上传1')
           console.log(response.data)

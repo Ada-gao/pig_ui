@@ -51,7 +51,8 @@
   export default {
     components: {
       ElFormItem,
-      'my-upload': myUpload },
+      'my-upload': myUpload
+    },
     data() {
       var validatePass = (rule, value, callback) => {
         if (value === '') {
