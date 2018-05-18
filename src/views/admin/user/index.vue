@@ -107,7 +107,7 @@
 
       <el-table-column align="center" label="入职时间">
         <template slot-scope="scope">
-          <span>{{scope.row.createTime | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+          <span>{{scope.row.employeeDate | parseTime('{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
 
@@ -279,7 +279,7 @@
           <el-col :span="11">
             <el-form-item label="职位" prop="positionId">
               <!-- positionId -->
-              <el-select class="filter-item" v-model="form.positionId" placeholder="请选择" @focus="handlePosition()">
+              <el-select class="filter-item" v-model="form.positionName" placeholder="请选择" @focus="handlePosition()">
                 <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId" :disabled="isDisabled[item.delFlag]">
                   <span style="float: left">{{ item.positionName }}</span>
                   <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span> -->
@@ -346,9 +346,10 @@
 <script>
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/user'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
+  import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  // import { parseTime } from '@/utils'
+  import { parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -484,15 +485,6 @@
           1: true
         },
         tableKey: 0,
-        sexOptions: [
-          {
-            label: '男',
-            value: 1
-          }, {
-            label: '女',
-            value: 2
-          }
-        ],
         input2: '',
         gender: '',
         value13: '',
@@ -541,8 +533,13 @@
         this.listLoading = true
         this.listQuery.orderByField = '`user`.create_time'
         this.listQuery.isAsc = false
-        this.listQuery.startTime = this.entryDate[0]
-        this.listQuery.endTime = this.entryDate[1]
+        if(this.entryDate.length > 0) {
+          this.listQuery.startTime = parseTime(this.entryDate[0], '{y}-{m}-{d}') 
+          this.listQuery.endTime = parseTime(this.entryDate[1], '{y}-{m}-{d}')
+        } else {
+          this.listQuery.startTime = ''
+          this.listQuery.endTime = ''
+        } 
         this.handlePosition()
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
@@ -601,10 +598,13 @@
         getObj(row.userId)
           .then(response => {
             this.form = response.data
+            this.form.role = row.roleList[0].roleId
             this.role = row.roleList[0].roleDesc
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
-            this.form.positionId = 
+            getPositionName(this.form.positionId).then(res => {
+              this.form.positionName = res.data
+            })
             deptRoleList(response.data.deptId)
               .then(response => {
                 this.rolesOptions = response.data
@@ -638,9 +638,9 @@
         this.dialogFormVisible = false
         this.$refs[formName].resetFields()
       },
-      update(formName) {
+      update(formName) { // 编辑提交
         const set = this.$refs
-        this.form.role = this.role
+        // this.form.role = this.role
         set[formName].validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
@@ -699,6 +699,7 @@
           delFlag: ''
         },
         this.entryDate = []
+        this.handleFilter()
       },
       handleRemove(file, fileList) {
         console.log(file, fileList);

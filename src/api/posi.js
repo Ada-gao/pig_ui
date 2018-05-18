@@ -31,6 +31,12 @@ export function getObj(id) {
     method: 'get'
   })
 }
+export function getPositionName(id) {
+  return request({
+    url: '/admin/positions/' + id,
+    method: 'get'
+  })
+}
 
 /**
  * 删除职位
