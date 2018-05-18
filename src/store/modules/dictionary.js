@@ -9,7 +9,8 @@ const dictionary = {
     certificationType: [],
     genderType: [],
     educationType: [],
-    productRiskLevel: []
+    productRiskLevel: [],
+    delFlag: []
   },
 
   mutations: {
@@ -37,6 +38,9 @@ const dictionary = {
     SET_PRODUCT_RISK_LEVEL: (state, productRiskLevel) => {
       state.productRiskLevel = productRiskLevel
     },
+    SET_DEL_FLAG: (state, delFlag) => {
+      state.delFlag = delFlag
+    }
   },
 
   actions: {
@@ -54,6 +58,7 @@ const dictionary = {
           let genderTypeList = []
           let educationTypeList = []
           let productRiskLevelList = []
+          let delFlagList = []
           
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -79,6 +84,9 @@ const dictionary = {
 
             } else if(data[i].type === 'product_risk_level') {
               productRiskLevelList.push(data[i])
+
+            } else if(data[i].type === 'del_flag') {
+              delFlagList.push(data[i])
             }
           }
           commit('SET_ID_TYPE', idTypeList)
@@ -89,6 +97,7 @@ const dictionary = {
           commit('SET_GENDER_TYPE', genderTypeList)
           commit('SET_EDUCATION_TYPE', educationTypeList)
           commit('SET_PRODUCT_RISK_LEVEL', productRiskLevelList)
+          commit('SET_DEL_FLAG', delFlagList)
           resolve()
         }).catch(error => {
           reject(error)

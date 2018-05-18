@@ -738,11 +738,11 @@
           list.forEach(item => {
             let obj = {}
             // fetchProductTypeList().then(res => { // 获取产品类型
-              this.productTypes.forEach((val, idx) => {
-                let key = val.productTypeId
-                obj[key] = val.name
-              })
-              item.productTypeId = obj[item.productTypeId]
+            this.productTypes.forEach((val, idx) => {
+              let key = val.productTypeId
+              obj[key] = val.name
+            })
+            item.productTypeId = obj[item.productTypeId]
               
               // for(let key in obj) {
               //   console.log(key)

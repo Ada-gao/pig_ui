@@ -19,6 +19,7 @@ const getters = {
   certificationType: state => state.dictionary.certificationType,
   genderType: state => state.dictionary.genderType,
   educationType: state => state.dictionary.educationType,
-  productRiskLevel: state => state.dictionary.productRiskLevel
+  productRiskLevel: state => state.dictionary.productRiskLevel,
+  delFlagOptions: state => state.dictionary.delFlag
 }
 export default getters

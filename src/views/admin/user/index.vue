@@ -29,7 +29,7 @@
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="工作状态">
             <el-select class="filter-item" v-model="listQuery.statusId" placeholder="请选择">
-              <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
+              <el-option v-for="item in delFlagOptions" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
@@ -94,6 +94,12 @@
       </el-table-column>
 
       <el-table-column align="center" label="职位">
+        <template slot-scope="scope">
+          <span>{{scope.row.positionId}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="角色">
         <template slot-scope="scope">
           <span>{{scope.row.roleList[0].roleDesc}}</span>
         </template>
@@ -261,7 +267,7 @@
               <!-- role -->
               <el-select class="filter-item" v-model="role" placeholder="请选择">
                 <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
-                  <span style="float: left">{{ item.roleName }}</span>
+                  <span style="float: left">{{ item.roleDesc }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
                 </el-option>
               </el-select>
@@ -273,7 +279,7 @@
           <el-col :span="11">
             <el-form-item label="职位" prop="positionId">
               <!-- positionId -->
-              <el-select class="filter-item" v-model="form.positionId" placeholder="请选择" @focus="handlePosition()">
+              <el-select class="filter-item" v-model="form.positionName" placeholder="请选择" @focus="handlePosition()">
                 <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId" :disabled="isDisabled[item.delFlag]">
                   <span style="float: left">{{ item.positionName }}</span>
                   <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span> -->
@@ -498,7 +504,8 @@
         'educationType',
         'genderType',
         'idTypeOptions',
-        'marriageStatusOptions'
+        'marriageStatusOptions',
+        'delFlagOptions'
       ])
     },
     filters: {
@@ -523,10 +530,19 @@
         this.listLoading = true
         this.listQuery.orderByField = '`user`.create_time'
         this.listQuery.isAsc = false
+        this.handlePosition()
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
+          this.list.forEach(item => {
+            let obj = {}
+            this.positionsOptions.forEach((val, idx) => {
+              let key = val.positionId
+              obj[key] = val.positionName
+            })
+            item.positionId = obj[item.positionId]
+          })
         })
       },
       getNodeData(data) { // 部门查询
@@ -572,7 +588,7 @@
         getObj(row.userId)
           .then(response => {
             this.form = response.data
-            this.role = row.roleList[0].roleName
+            this.role = row.roleList[0].roleDesc
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
             deptRoleList(response.data.deptId)
