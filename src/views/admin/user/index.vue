@@ -13,7 +13,7 @@
             <el-input
               placeholder="搜索员工、手机号、工号"
               prefix-icon="el-icon-search"
-              v-model="listQuery.username">
+              v-model="listQuery.searchParams">
             </el-input>
           </el-form-item>
         </el-col>
@@ -28,7 +28,7 @@
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="工作状态">
-            <el-select class="filter-item" v-model="listQuery.statusId" placeholder="请选择">
+            <el-select class="filter-item" v-model="listQuery.delFlag" placeholder="请选择">
               <el-option v-for="item in delFlagOptions" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -40,7 +40,7 @@
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="入职时间">
             <el-date-picker
-              v-model="listQuery.entryDate"
+              v-model="entryDate"
               type="daterange"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -279,7 +279,7 @@
           <el-col :span="11">
             <el-form-item label="职位" prop="positionId">
               <!-- positionId -->
-              <el-select class="filter-item" v-model="form.positionName" placeholder="请选择" @focus="handlePosition()">
+              <el-select class="filter-item" v-model="form.positionId" placeholder="请选择" @focus="handlePosition()">
                 <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId" :disabled="isDisabled[item.delFlag]">
                   <span style="float: left">{{ item.positionName }}</span>
                   <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span> -->
@@ -353,13 +353,23 @@
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { isvalidMobile } from '@/utils/validate'
+  import { isvalidMobile, isvalidID } from '@/utils/validate'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
       callback(new Error('请输入电话号码'))
     } else if (!isvalidMobile(value)) {
       callback(new Error('请输入正确的11位手机号'))
+    } else {
+      callback()
+    }
+  }
+
+  const validID = (rule, value, callback) => {
+    if (!value) {
+      callback(new Error('请输入身份证号码'))
+    } else if (!isvalidID(value)) {
+      callback(new Error('请输入正确的身份证号码'))
     } else {
       callback()
     }
@@ -425,7 +435,7 @@
             {required: true, trigger: 'blur'}
           ],
           idNo: [
-            {required: true, trigger: 'blur'}
+            {required: true, trigger: 'blur', validator: validID}
           ],
           deptName: [
             {required: true, trigger: 'blur', message: '请选择部门'}
@@ -495,7 +505,8 @@
         positionId: '',
         delFlag: '',
         tableData: [],
-        tableHeader: []
+        tableHeader: [],
+        entryDate: []
       }
     },
     computed: {
@@ -511,7 +522,7 @@
     filters: {
       statusFilter(status) {
         const statusMap = {
-          0: '正常',
+          0: '在职',
           1: '离职',
           2: '异常'
         }
@@ -530,6 +541,8 @@
         this.listLoading = true
         this.listQuery.orderByField = '`user`.create_time'
         this.listQuery.isAsc = false
+        this.listQuery.startTime = this.entryDate[0]
+        this.listQuery.endTime = this.entryDate[1]
         this.handlePosition()
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
@@ -591,6 +604,7 @@
             this.role = row.roleList[0].roleDesc
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
+            this.form.positionId = 
             deptRoleList(response.data.deptId)
               .then(response => {
                 this.rolesOptions = response.data
@@ -681,11 +695,10 @@
       resetFilter() { // 重置搜索条件
         this.listQuery = {
           username: '',
-          statusId: '',
           positionId: '',
-          entryDate: '',
-          role: ''
-        }
+          delFlag: ''
+        },
+        this.entryDate = []
       },
       handleRemove(file, fileList) {
         console.log(file, fileList);

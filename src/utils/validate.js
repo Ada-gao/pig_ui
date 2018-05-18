@@ -36,3 +36,9 @@ export function isvalidMobile(str) {
   const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
   return reg.test(str)
 }
+
+/* 身份证号码 */
+export function isvalidID(str) {
+  const reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+  return reg.test(str)
+}
