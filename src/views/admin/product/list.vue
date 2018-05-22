@@ -41,9 +41,9 @@
           <el-checkbox-group v-model="listQuery.annualizedReturns">
             <el-checkbox-button v-for="item in productIncome" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
           </el-checkbox-group>
-          <el-checkbox-group v-model="listQuery.isFloat">
-            <el-checkbox-button v-for="item in productIncome1" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
-          </el-checkbox-group>
+          <!-- <el-checkbox-group v-model="listQuery.isFloat">
+            <el-checkbox-button :label="productIncome1.value" :key="productIncome1.value">{{productIncome1.label}}</el-checkbox-button>
+          </el-checkbox-group> -->
         </el-col>
       </el-row>
       
@@ -89,7 +89,7 @@
 
       <el-table-column align="center" label="风险等级" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.productRiskLevel}}</span>
+        <span>{{scope.row.productRiskLevel | productRiskLevelFilter}}</span>
         </template>
       </el-table-column>
 
@@ -168,8 +168,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="产品编号" prop="productId">
-              <el-input v-model="form.productId" placeholder="请输入产品编号"></el-input>
+            <el-form-item label="产品编号" prop="productCode">
+              <el-input v-model.number="form.productCode" placeholder="请输入产品编号"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -198,12 +198,12 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="产品LP数量" prop="productLp">
-              <el-input v-model="form.productLp" placeholder="请输入"></el-input>
+              <el-input v-model.number="form.productLp" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="产品业绩" prop="historyPerformance">
-              <el-input v-model="form.historyPerformance" placeholder="请输入"></el-input>
+              <el-input v-model.number="form.historyPerformance" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -228,13 +228,13 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="募集额度" prop="collectionAmount">
-              <el-input v-model="form.collectionAmount" placeholder="请输入"></el-input>
+              <el-input v-model.number="form.collectionAmount" placeholder="请输入"></el-input>
             </el-form-item>
             
           </el-col>
           <el-col :span="11">
             <el-form-item label="净值" prop="netValue">
-              <el-input v-model="form.netValue" placeholder="请输入"></el-input>
+              <el-input v-model.number="form.netValue" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -242,12 +242,12 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="起投金额" prop="minimalAmount">
-              <el-input v-model="form.minimalAmount" placeholder="请输入起投金额"></el-input>
+              <el-input v-model.number="form.minimalAmount" placeholder="请输入起投金额"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="追加金额" prop="minimalAddAmount">
-              <el-input v-model="form.minimalAddAmount"></el-input>
+              <el-input v-model.number="form.minimalAddAmount"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -255,7 +255,7 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="产品期限" prop="investmentHorizon">
-              <el-input v-model="form.investmentHorizon" style="width: 80%; margin-right: 20px;"></el-input><span>月</span>
+              <el-input v-model.number="form.investmentHorizon" style="width: 80%; margin-right: 20px;"></el-input><span>月</span>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -265,10 +265,10 @@
         <el-row :gutter="20">
           <el-col>
             <el-form-item label="收益" prop="isFloat">
-              <el-radio-group v-model="radio2" @change="radioChange">
-                <el-radio :label="3" style="display: inline-block">浮动收益率</el-radio>
-                <el-radio :label="6" style="display: inline-block">收益对标基准</el-radio>
-                <el-input style="display: inline-block; width: 100px; margin-left: 20px;" :disabled="isDisabled" v-model="form.annualizedReturn"></el-input>
+              <el-radio-group v-model="form.isFloat" @change="radioChange">
+                <el-radio :label="0" style="display: inline-block">浮动收益率</el-radio>
+                <el-radio :label="1" style="display: inline-block">收益对标基准</el-radio>
+                <el-input style="display: inline-block; width: 100px; margin-left: 20px;" :disabled="isDisabled" required="!isDisabled" v-model="form.annualizedReturn"></el-input>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -502,7 +502,8 @@
           // name: '',
           productTypeIds: [],
           productStatus: [],
-          annualizedReturns: []
+          annualizedReturns: [],
+          isFloat: null
         },
         role: undefined,
         form: {
@@ -587,14 +588,14 @@
               message: '请输入产品期限',
               trigger: 'blur'
             }
-          ],
-          isFloat: [
-            {
-              required: true,
-              message: '请选择收益',
-              trigger: 'blur'
-            }
-          ],
+          ]
+          // isFloat: [
+          //   {
+          //     required: true,
+          //     message: '请选择收益',
+          //     trigger: 'blur'
+          //   }
+          // ],
         },
         statusOptions: ['0', '1'],
         rolesOptions: [],
@@ -608,10 +609,10 @@
           update: '编辑产品',
           create: '新增产品'
         },
-        isDisabled: {
-          0: false,
-          1: true
-        },
+        // isDisabled: {
+        //   0: false,
+        //   1: true
+        // },
         tableKey: 0,
         sex: '',
         eduOptions: [
@@ -657,14 +658,16 @@
           {
             label: '15%以上',
             value: 2
-          }
-        ],
-        productIncome1: [
+          },
           {
             label: '浮动',
-            value: 0
+            value: 4
           }
         ],
+        // productIncome1: {
+        //     label: '浮动',
+        //     value: 1
+        // },
         input2: '',
         nextToUpdate: false,
         fileList: [],
@@ -675,7 +678,7 @@
         indexList2: [],
         indexList3: [],
         productStus: '',
-        radio2: null,
+        // radio2: null,
         profitTextarea: '',
         highlight: '',
         uploadData: {
@@ -684,7 +687,8 @@
         headers: {
           Authorization: 'Bearer ' + getToken()
         },
-        isDisabled: null
+        isDisabled: null,
+        form: []
       }
     },
     computed: {
@@ -695,14 +699,16 @@
       ])
     },
     filters: {
-      // statusFilter(status) {
-      //   const statusMap = {
-      //     0: '在职',
-      //     1: '离职',
-      //     9: '锁定'
-      //   }
-      //   return statusMap[status]
-      // },
+      productRiskLevelFilter(status) { // 产品风险等级
+        const statusMap = {
+          0: 'R1',
+          1: 'R2',
+          2: 'R3',
+          3: 'R4',
+          4: 'R5',
+        }
+        return statusMap[status]
+      },
       productTypeFilter(type) {
         fetchProductTypeList().then(res => { // 获取产品类型
           let obj = {}
@@ -715,7 +721,7 @@
           return type
         })
       },
-      statusFilter(status) {
+      statusFilter(status) { // 产品状态
         const statusMap = {
           0: '在建',
           1: '预热中',
@@ -752,6 +758,7 @@
         fetchProductTypeList().then(res => { // 获取产品类型
           this.productTypes = res.data
         })
+        this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         fetchList(this.listQuery).then(response => {
           let list = response.data.records
           this.total = response.data.total
@@ -815,27 +822,40 @@
         this.dialogFormVisible = true
         this.nextToUpdate = false
       },
-      handleUpdate(row) {
+      handleUpdate(row) { // 编辑
         this.nextToUpdate = false
+        // let _this = this
         getObj(row.productId)
           .then(response => {
             this.form = response.data
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
-            if(this.form.isFloat === 0) { // 0 代表 正常
-              this.radio2 = 3
-            } else if(this.form.isFloat === 1 || this.form.annualizedReturn) {
-              this.radio2 = 6
+            if(this.form.isFloat === 0) {
+              this.form.annualizedReturn = null
+              this.isDisabled = true
             } else {
-              this.radio2 = 1
+              this.isDisabled = false
             }
+            // if(this.form.isFloat === 0) { // 0 代表 正常
+            //   this.radio2 = 3
+            //   this.isDisabled = true
+            // } else if(this.form.isFloat === 1 || this.form.annualizedReturn) {
+            //   this.radio2 = 6
+            //   this.isDisabled = false
+            // } else {
+            //   this.radio2 = 1
+            // }
           })
         
       },
       create(formName) {
-        this.nextToUpdate = true
         const set = this.$refs
-        // this.form.role = this.role
+        
+        if(!this.form.isFloat) {
+          // this.radio2 === 3 ? 0 : 1
+          this.form.annualizedReturn = null
+          this.isDisabled = true
+        }
         set[formName].validate(valid => {
           if (valid) {
             addObj(this.form)
@@ -858,14 +878,17 @@
         this.dialogFormVisible = false
         this.$refs[formName].resetFields()
       },
-      update(formName) {
+      update(formName) { // 修改提交
         const set = this.$refs
-        this.form.role = this.role
         set[formName].validate(valid => {
           if (valid) {
             this.dialogFormVisible = true
-            this.form.password = undefined
+            // this.form.password = undefined
             let productId = this.form.productId
+            if(!this.form.isFloat) {
+              this.form.annualizedReturn = null
+              this.isDisabled = true
+            }
             putObj(this.form).then(response => {
               if(response.data) {
                 this.nextToUpdate = true
@@ -920,7 +943,8 @@
           // type: [],
           productTypeIds: [],
           annualizedReturns: [],
-          productStatus: []
+          productStatus: [],
+          isFloat: 0
         }
         this.getList()
       },
@@ -1002,7 +1026,7 @@
         })
       },
       radioChange(value) {
-        if(value === 3) {
+        if(value === 0) {
           this.isDisabled = true
         } else {
           this.isDisabled = false
