@@ -439,7 +439,7 @@
             {required: true, trigger: 'blur', validator: validID}
           ],
           deptName: [
-            {required: true, trigger: 'blur', message: '请选择部门'}
+            {required: true, trigger: 'blur,change', message: '请选择部门'}
           ],
           role: [
             {required: true, trigger: 'blur', message: '请选择角色'}
