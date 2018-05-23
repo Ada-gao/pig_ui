@@ -53,6 +53,16 @@
       </el-row>
     </div>
 
+    <el-upload
+      class="upload-demo"
+      :headers="headers"
+      :action="importFile4('product')"
+      :on-change="handleChange4"
+      :show-file-list="false">
+      <el-button size="small" type="primary">点击上传</el-button>
+    </el-upload>
+
+
     <div style="text-align: right">
       <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
     </div>
@@ -366,11 +376,11 @@
               :headers="headers"
               :action="importFile1('transaction')"
               :on-change="handleChange1"
-              :auto-upload="false"
               :show-file-list="false"
               accept=".pdf, .doc">
               <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
             </el-upload>
+            
             <el-button type="info" class="btn-padding" @click="delfiles1">删除材料</el-button>
           </el-row>
         </div>
@@ -409,11 +419,11 @@
               :action="importFile2('product')"
               :on-error="uploadError2"
               :on-change="handleChange2"
-              :auto-upload="false"
               :show-file-list="false"
               accept=".pdf, .doc">
               <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
             </el-upload>
+
             <el-button type="info" class="btn-padding" @click="delfiles2">删除材料</el-button>
           </el-row>
         </div>
@@ -451,7 +461,6 @@
               :headers="headers"
               :action="importFile3('announcement')"
               :on-change="handleChange3"
-              :auto-upload="false"
               :show-file-list="false"
               accept=".pdf, .doc">
               <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
@@ -688,7 +697,14 @@
           Authorization: 'Bearer ' + getToken()
         },
         isDisabled: null,
-        form: []
+        form: [],
+        fileList4: [{
+          name: 'food.jpeg',
+          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+        }, {
+          name: 'food2.jpeg',
+          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+        }]
       }
     },
     computed: {
@@ -771,16 +787,6 @@
               obj[key] = val.name
             })
             item.productTypeId = obj[item.productTypeId]
-              
-              // for(let key in obj) {
-              //   console.log(key)
-              //   if(item.productTypeId === key) {
-              //     item.productTypeName = obj[key]
-              //     console.log(item.productTypeName)
-              //   }
-              //   return item.productTypeId
-              // }
-            // })
           })
           this.list = list
         })
@@ -836,17 +842,7 @@
             } else {
               this.isDisabled = false
             }
-            // if(this.form.isFloat === 0) { // 0 代表 正常
-            //   this.radio2 = 3
-            //   this.isDisabled = true
-            // } else if(this.form.isFloat === 1 || this.form.annualizedReturn) {
-            //   this.radio2 = 6
-            //   this.isDisabled = false
-            // } else {
-            //   this.radio2 = 1
-            // }
           })
-        
       },
       create(formName) {
         const set = this.$refs
@@ -907,15 +903,17 @@
                   fileType: 'announcement'
                 }
                 getFiles(uploadData1).then(response => {
-                  this.fileList1 = response.data
+                  this.fileList1 = response.data || []
+                  console.log('this.fileList1')
+                  console.log(this.fileList1)
                 })
                 getFiles(uploadData2).then(response => {
                   // console.log(response.data)
-                  this.fileList2 = response.data
+                  this.fileList2 = response.data || []
                 })
                 getFiles(uploadData3).then(response => {
                   // console.log(response.data)
-                  this.fileList3 = response.data
+                  this.fileList3 = response.data || []
                 })
               }
               // this.$notify({
@@ -1043,9 +1041,16 @@
         let url = '/zuul/product/products/' + this.uploadData.productId + '/' + fileType + '/files'
         return url
       },
+      importFile4(fileType) {
+        let url = '/zuul/product/products/1/' + fileType + '/files'
+        return url
+      },
       importFile3(fileType) {
         let url = '/zuul/product/products/' + this.uploadData.productId + '/' + fileType + '/files'
         return url
+      },
+      handleChange4(file, fileList) {
+        this.fileList3 = fileList.slice(-3);
       }
     }
   }
