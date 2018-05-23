@@ -53,16 +53,6 @@
       </el-row>
     </div>
 
-    <el-upload
-      class="upload-demo"
-      :headers="headers"
-      :action="importFile4('product')"
-      :on-change="handleChange4"
-      :show-file-list="false">
-      <el-button size="small" type="primary">点击上传</el-button>
-    </el-upload>
-
-
     <div style="text-align: right">
       <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
     </div>

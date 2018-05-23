@@ -366,7 +366,7 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/potential'
+  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
@@ -578,7 +578,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        this.listQuery.orderByField = '`c`.create_time'
+        this.listQuery.orderByField = 'create_time'
         this.listQuery.isAsc = false
         this.handlePosition()
         fetchList(this.listQuery).then(response => {
@@ -734,6 +734,8 @@
       },
       resetFilter() { // 重置搜索条件
         this.listQuery = {
+          page: 1,
+          limit: 20,
           username: '',
           positionId: '',
           delFlag: ''

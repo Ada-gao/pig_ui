@@ -694,6 +694,8 @@
       },
       resetFilter() { // 重置搜索条件
         this.listQuery = {
+          page: 1,
+          limit: 20,
           username: '',
           positionId: '',
           delFlag: ''

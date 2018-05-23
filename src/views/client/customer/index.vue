@@ -37,11 +37,18 @@
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
           <el-form-item label="资产规模区间">
-            <el-select class="filter-item" v-model="listQuery.clientType" placeholder="请选择">
-              <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
+            <el-input
+              style="width: 48%; margin-right: 2%"
+              placeholder="请输入开始数字"
+              prefix-icon="el-icon-search"
+              v-model="listQuery.amountStart">
+            </el-input>-
+            <el-input
+              style="width: 48%"
+              placeholder="请输入结束数字"
+              prefix-icon="el-icon-search"
+              v-model="listQuery.amountEnd">
+            </el-input>
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
@@ -49,30 +56,21 @@
             <el-input
               placeholder="搜索客户证件号码"
               prefix-icon="el-icon-search"
-              v-model="listQuery.mobile">
+              v-model="listQuery.idNo">
             </el-input>
           </el-form-item>
         </el-col>
-        <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
-          <el-form-item label="实名认证状态">
-            <el-select class="filter-item" v-model="listQuery.realNameStatus" placeholder="请选择">
-              <el-option v-for="item in certificationStatus" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col> -->
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="部门">
-            <el-input v-model="listQuery.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
-            <input type="hidden" v-model="listQuery.deptId"/>
+            <!-- <input type="hidden" v-model="listQuery.deptId"/>  -->
             <el-cascader
+              style="width: 100%"
               :options="treeDeptData"
               :props="defaultProps"
               :show-all-levels="false"
               change-on-select
-              v-model="deptName"
-              @click="handleDept()"
+              v-model="deptId"
+              @change="changeDept"
             ></el-cascader>
           </el-form-item>
         </el-col>
@@ -96,14 +94,10 @@
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" v-if="listQuery.nationality === 0">
           <el-form-item label="地区">
-            <!-- <el-input
-              placeholder=" 省 市"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.email">
-            </el-input> -->
             <el-cascader
               size="large"
               :options="options"
+              :props="defaultProps2"
               v-model="listQuery.city"
               @change="handleChange">
             </el-cascader>
@@ -136,15 +130,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="实名认证状态">
+      <el-table-column align="center" label="客户性别">
         <template slot-scope="scope">
-          <span>{{scope.row.realnameStatus | certificationStatusFilter}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="投资者类型">
-        <template slot-scope="scope">
-          <span>{{scope.row.clientType | certificationTypeFilter}}</span>
+          <span>{{scope.row.gender}}</span>
         </template>
       </el-table-column>
 
@@ -154,15 +142,45 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" label="客户邮箱">
+        <template slot-scope="scope">
+          <span>{{scope.row.email}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="证件类型">
+        <template slot-scope="scope">
+          <span>{{scope.row.idType }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="证件号码">
+        <template slot-scope="scope">
+          <span>{{scope.row.idNo}}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" label="微信号">
         <template slot-scope="scope">
           <span>{{scope.row.wechat}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="邮箱">
+      <!-- <el-table-column align="center" label="实名认证状态">
         <template slot-scope="scope">
-          <span>{{scope.row.email}}</span>
+          <span>{{scope.row.realnameStatus | certificationStatusFilter}}</span>
+        </template>
+      </el-table-column> -->
+
+      <el-table-column align="center" label="投资者类型（风险级别）">
+        <template slot-scope="scope">
+          <span>{{scope.row.clientType | certificationTypeFilter}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="资产管理规模">
+        <template slot-scope="scope">
+          <span>{{scope.row.assetAmount}}</span>
         </template>
       </el-table-column>
 
@@ -181,17 +199,21 @@
       <el-table-column align="center" label="国籍（常住地区）" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.nationality}}</span>
+        <span>{{scope.row.city}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
           <el-button v-if="sys_user_upd" size="small" type="success"
+                     @click="handleRouter(scope.row.clientId)">查看
+          </el-button>
+          <el-button v-if="sys_user_upd" size="small" type="success"
                      @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button v-if="sys_user_del" size="small" type="danger"
+          <!-- <el-button v-if="sys_user_del" size="small" type="danger"
                      @click="deletes(scope.row)">删除
-          </el-button>
+          </el-button> -->
         </template>
       </el-table-column>
 
@@ -332,11 +354,9 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="职位" prop="positionId">
-              <!-- positionId -->
-              <el-select class="filter-item" v-model="form.positionName" placeholder="请选择" @focus="handlePosition()">
+              <!-- <el-select class="filter-item" v-model="form.positionName" placeholder="请选择" @focus="handlePosition()"> -->
                 <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId" :disabled="isDisabled[item.delFlag]">
                   <span style="float: left">{{ item.positionName }}</span>
-                  <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span> -->
                 </el-option>
               </el-select>
             </el-form-item>
@@ -398,7 +418,7 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/potential'
+  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
@@ -448,7 +468,10 @@
         defaultProps: {
           children: 'children',
           label: 'name',
-          value: 'name'
+          value: 'id'
+        },
+        defaultProps2: {
+          value: 'label'
         },
         list: null,
         total: null,
@@ -568,7 +591,8 @@
             label: '其他'
           },
         ],
-        deptName: []
+        deptName: [],
+        deptId: []
       }
     },
     computed: {
@@ -624,20 +648,31 @@
     methods: {
       getList() {
         this.listLoading = true
-        this.listQuery.orderByField = '`c`.create_time'
+        this.listQuery.orderByField = 'create_time'
         this.listQuery.isAsc = false
-        this.handlePosition()
+        this.handleDept()
+        if(this.deptId.length) {
+          this.listQuery.deptId = this.deptId[this.deptId.length - 1]
+        }
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
           this.list.forEach(item => {
+            item.nationality = item.nationality == 0 ? '中国' : '其他'
             let obj = {}
-            this.positionsOptions.forEach((val, idx) => {
-              let key = val.positionId
-              obj[key] = val.positionName
+            this.genderType.forEach((val, idx) => { // 性别
+              let key = val.value
+              obj[key] = val.label
             })
-            item.positionId = obj[item.positionId]
+            item.gender = obj[item.gender]
+
+            let objIdType = {}
+            this.idTypeOptions.forEach((val, idx) => { // 证件类型
+              let key = val.value
+              objIdType[key] = val.label
+            })
+            item.idType = objIdType[item.idType]
           })
         })
       },
@@ -650,17 +685,16 @@
             this.rolesOptions = response.data
           })
       },
-      handlePosition() {
-        getAllPositon().then(res => {
-          this.positionsOptions = res.data
-        })
-      },
+      // handlePosition() {
+      //   getAllPositon().then(res => {
+      //     this.positionsOptions = res.data
+      //   })
+      // },
       handleDept() {
         fetchDeptTree()
           .then(response => {
             this.treeDeptData = response.data
             this.dialogDeptVisible = true
-            console.log(this.treeDeptData)
           })
       },
       handleFilter() {
@@ -679,6 +713,11 @@
         this.resetTemp()
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
+      },
+      handleRouter(id) { // 查看跳转详情
+        this.$router.push({
+          path: '/client/customer/' + id
+        })
       },
       handleUpdate(row) { // 编辑查询
         getObj(row.userId)
@@ -780,6 +819,8 @@
       },
       resetFilter() { // 重置搜索条件
         this.listQuery = {
+          page: 1,
+          limit: 20,
           username: '',
           positionId: '',
           delFlag: '',
@@ -814,6 +855,14 @@
       },
       handleChange (value) {
         console.log(value)
+      },
+      changeDept(val) {
+        // if(val.length > 1) {
+        //   this.listQuery.deptId = val[1]
+        // }
+        // this.listQuery.deptId = val.pop()
+        // console.log(this.listQuery.deptId)
+
       }
     }
   }
