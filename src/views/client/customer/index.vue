@@ -70,7 +70,6 @@
               :show-all-levels="false"
               change-on-select
               v-model="deptId"
-              @change="changeDept"
             ></el-cascader>
           </el-form-item>
         </el-col>
@@ -226,201 +225,12 @@
                      layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-
-    <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDeptVisible">
-      <el-tree
-        class="filter-tree"
-        :data="treeDeptData"
-        :default-checked-keys="checkedKeys"
-        check-strictly
-        node-key="id"
-        highlight-current
-        ref="deptTree"
-        :props="defaultProps"
-        @node-click="getNodeData"
-      >
-      </el-tree>
-    </el-dialog> -->
-
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :model="form" :rules="rules" ref="form" label-width="100px">
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="姓名" prop="name">
-              <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="用户名" prop="username">
-              <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="工号" prop="empNo">
-              <el-input v-model="form.empNo" placeholder="请输入工号"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="入职日期" prop="date">
-              <el-date-picker
-                v-model="form.employeeDate"
-                type="date"
-                placeholder="选择日期">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="性别" prop="gender">
-              <el-select class="filter-item" v-model="form.gender" placeholder="请选择">
-                <el-option v-for="item in genderType" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="学历" prop="education">
-              <el-select class="filter-item" v-model="form.education" placeholder="请选择">
-                <el-option v-for="item in educationType" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="证件类型" prop="idType">
-              <el-select class="filter-item" v-model="form.idType" placeholder="请选择">
-                <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="婚姻状况" prop="marriageStatus">
-              <el-select class="filter-item" v-model="form.marriageStatus" placeholder="请选择">
-                <el-option v-for="item in marriageStatusOptions" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="证件号码" prop="idNo">
-              <el-input v-model="form.idNo" :maxlength="18" placeholder="请输入证件号码"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="手机号" prop="mobile">
-              <el-input v-model="form.mobile" :maxlength="11" placeholder="请输入手机号码"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="部门" prop="deptName">
-              <!-- deptId -->
-              <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
-              <input type="hidden" v-model="form.deptId"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="角色" prop="role">
-              <!-- role -->
-              <el-select class="filter-item" v-model="role" placeholder="请选择">
-                <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
-                  <span style="float: left">{{ item.roleDesc }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="职位" prop="positionId">
-              <!-- <el-select class="filter-item" v-model="form.positionName" placeholder="请选择" @focus="handlePosition()"> -->
-                <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId" :disabled="isDisabled[item.delFlag]">
-                  <span style="float: left">{{ item.positionName }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="邮箱" prop="email">
-              <el-input v-model="form.email"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="简历" prop="resumeUrl">
-              <!-- <el-input v-model="form.role"></el-input> -->
-              <el-upload
-                class="upload-demo"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                multiple
-                :limit="3"
-                :on-exceed="handleExceed"
-                :file-list="fileList"
-                :show-file-list="true"
-                :before-upload="beforeUpload"
-                accept="file">
-                <el-button size="small" type="primary">上传简历</el-button>
-                <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-              </el-upload>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="状态" v-if="dialogStatus == 'update' && sys_user_del " prop="delFlag" >
-              <el-select class="filter-item" v-model="form.delFlag" placeholder="请选择">
-                <el-option v-for="item in statusOptions" :key="item" :label="item | statusFilter" :value="item"> </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="22">
-            <el-form-item label="备注" prop="remark">
-              <el-input type="textarea" v-model="form.remark"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel('form')">取 消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
-        <el-button v-else type="primary" @click="update('form')">修 改</el-button>
-      </div>
-    </el-dialog>
-
   </div>
 </template>
 
 <script>
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
-  import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { parseTime } from '@/utils'
@@ -547,9 +357,6 @@
             {required: true, trigger: 'blur, change', validator: validMobile}
           ]
         },
-        statusOptions: ['0', '1', '2'],
-        positionsOptions: [],
-        rolesOptions: [],
         dialogFormVisible: false,
         dialogDeptVisible: false,
         userAdd: false,
@@ -600,10 +407,8 @@
         'certificationStatus',
         'certificationType',
         'permissions',
-        'educationType',
         'genderType',
         'idTypeOptions',
-        'marriageStatusOptions',
         'delFlagOptions'
       ])
     },
@@ -676,15 +481,6 @@
           })
         })
       },
-      getNodeData(data) { // 部门查询
-        this.dialogDeptVisible = false
-        this.listQuery.deptId = data.id
-        this.listQuery.deptName = data.name
-        deptRoleList(data.id)
-          .then(response => {
-            this.rolesOptions = response.data
-          })
-      },
       // handlePosition() {
       //   getAllPositon().then(res => {
       //     this.positionsOptions = res.data
@@ -716,7 +512,7 @@
       },
       handleRouter(id) { // 查看跳转详情
         this.$router.push({
-          path: '/client/customer/' + id
+          path: '/client/customer/detail/' + id
         })
       },
       handleUpdate(row) { // 编辑查询
@@ -727,87 +523,8 @@
             this.role = row.roleList[0].roleDesc
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
-            getPositionName(this.form.positionId).then(res => {
-              this.form.positionName = res.data
-            })
-            deptRoleList(response.data.deptId)
-              .then(response => {
-                this.rolesOptions = response.data
-              })
+            
           })
-      },
-      create(formName) {
-        const set = this.$refs
-        this.form.role = this.role
-        // this.form.idType = this.IDType
-        // this.form.marriageStatus = this.maritalStatus
-        set[formName].validate(valid => {
-          if (valid) {
-            addObj(this.form)
-              .then(() => {
-                this.dialogFormVisible = false
-                this.getList()
-                this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
-              })
-          } else {
-            return false
-          }
-        })
-      },
-      cancel(formName) {
-        this.dialogFormVisible = false
-        this.$refs[formName].resetFields()
-      },
-      update(formName) { // 编辑提交
-        const set = this.$refs
-        // this.form.role = this.role
-        set[formName].validate(valid => {
-          if (valid) {
-            this.dialogFormVisible = false
-            this.form.password = undefined
-            putObj(this.form).then(() => {
-              this.dialogFormVisible = false
-              this.getList()
-              this.$notify({
-                title: '成功',
-                message: '修改成功',
-                type: 'success',
-                duration: 2000
-              })
-            })
-          } else {
-            return false
-          }
-        })
-      },
-      deletes(row) {
-        this.$confirm('此操作将永久删除该用户(用户名:' + row.username + '), 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          delObj(row.userId).then(() => {
-            this.getList()
-            this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
-              duration: 2000
-            })
-          }).cache(() => {
-            this.$notify({
-              title: '失败',
-              message: '删除失败',
-              type: 'error',
-              duration: 2000
-            })
-          })
-        })
       },
       resetTemp() {
         this.form = {
@@ -829,40 +546,12 @@
         this.entryDate = []
         this.handleFilter()
       },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
-      },
-      handleExceed(files, fileList) {
-        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-      },
+      
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`);
       // },
-      beforeUpload(file) {
-        console.log(file)
-        const isFile = file.type === 'application/pdf'
-        if (!isFile) {
-          this.$message.error('只能上传pdf文档')
-        }
-        return isFile
-      },
-      selected(data) {
-        this.tableData = data.results
-        this.tableHeader = data.header
-      },
       handleChange (value) {
         console.log(value)
-      },
-      changeDept(val) {
-        // if(val.length > 1) {
-        //   this.listQuery.deptId = val[1]
-        // }
-        // this.listQuery.deptId = val.pop()
-        // console.log(this.listQuery.deptId)
-
       }
     }
   }
