@@ -277,7 +277,7 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="职位" prop="positionId">
+            <el-form-item label="职位" prop="positionName">
               <!-- positionId -->
               <el-select class="filter-item" v-model="form.positionName" placeholder="请选择" @focus="handlePosition()">
                 <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId" :disabled="isDisabled[item.delFlag]">
@@ -444,7 +444,7 @@
           role: [
             {required: true, trigger: 'blur', message: '请选择角色'}
           ],
-          positionId: [
+          positionName: [
             {required: true, trigger: 'blur'}
           ],
           email: [
