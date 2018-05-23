@@ -116,25 +116,29 @@ export const asyncRouterMap = [
     children: [
       { menuId: 38, path: 'currency', component: _import('admin/setting/currency'), name: '币种管理', meta: { title: '币种管理', icon: 'service' }},
     ]
+  },
+  {
+    menuId: 19,
+    path: '/client',
+    component: Layout,
+    name: '客户管理',
+    hidden: false,
+    redirect: '/client/potential',
+    // icon: 'table',
+    meta: {
+      title: '客户管理',
+      icon: 'table'
+    },
+    children: [
+      { menuId: 19, path: 'potential', component: _import('client/potential/index'), name: '潜客列表', meta: { title: '潜客列表', icon: 'user' }},
+      { menuId: 19, path: 'customer', component: _import('client/customer/index'), name: '客户列表', meta: { title: '客户列表', icon: 'user' }},
+      // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '实名认证审核', meta: { title: '实名认证审核', icon: 'user' }},
+      // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '普通投资者审核', meta: { title: '普通投资者审核', icon: 'user' }},
+      // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '专业投资者审核', meta: { title: '专业投资者审核', icon: 'user' }},
+      // { menuId: 18, path: 'potential', component: _import('client/potential/index'), name: '待分配顾问', meta: { title: '待分配顾问', icon: 'user' }},
+      // { menuId: 18, path: 'potential', component: _import('client/potential/index'), name: '客户异动分配', meta: { title: '客户异动分配', icon: 'user' }},
+      // { menuId: 18, path: 'potential', component: _import('client/potential/index'), name: '认证资料管理', meta: { title: '认证资料管理', icon: 'user' }}
+    ]
   }
-  // {
-  //   menuId: 19,
-  //   path: '/admin',
-  //   component: Layout,
-  //   name: '客户列表',
-  //   hidden: false,
-  //   redirect: '/admin/user',
-  //   // icon: 'table',
-  //   meta: {
-  //     title: '客户列表',
-  //     icon: 'table'
-  //   },
-  //   children: [
-  //     { menuId: 17, path: 'user', component: _import('admin/user/index'), name: '新增客户', meta: { title: '新增客户', icon: 'user' }},
-  //     { menuId: 18, path: 'user', component: _import('admin/user/index'), name: '待分配咨询顾问', meta: { title: '待分配咨询顾问', icon: 'user' }},
-  //     { menuId: 19, path: 'user', component: _import('admin/user/index'), name: '潜客列表', meta: { title: '潜客列表', icon: 'user' }},
-  //     { menuId: 20, path: 'user', component: _import('admin/user/index'), name: '认证审核', meta: { title: '认证审核', icon: 'user' }},
-  //   ]
-  // }
 ]
 
