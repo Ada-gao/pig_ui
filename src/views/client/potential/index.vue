@@ -106,13 +106,13 @@
 
       <el-table-column align="center" label="实名认证状态">
         <template slot-scope="scope">
-          <span>{{scope.row.realnameStatus | certificationStatusFilter}}</span>
+          <span>{{scope.row.realnameStatus}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="投资者类型">
         <template slot-scope="scope">
-          <span>{{scope.row.clientType | certificationTypeFilter}}</span>
+          <span>{{scope.row.clientType}}</span>
         </template>
       </el-table-column>
 
@@ -155,10 +155,10 @@
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
           <el-button v-if="sys_user_upd" size="small" type="success"
-                     @click="handleUpdate(scope.row)">编辑
+                     @click="handleRouter(scope.row.clientId)">查看
           </el-button>
-          <el-button v-if="sys_user_del" size="small" type="danger"
-                     @click="deletes(scope.row)">删除
+          <el-button v-if="sys_user_upd" size="small" type="success"
+                     @click="handleUpdate(scope.row)">编辑
           </el-button>
         </template>
       </el-table-column>
@@ -371,7 +371,7 @@
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime } from '@/utils'
+  import { parseTime, transformText } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -533,7 +533,9 @@
         'genderType',
         'idTypeOptions',
         'marriageStatusOptions',
-        'delFlagOptions'
+        'delFlagOptions',
+        'nationality',
+        'realnameStatus'
       ])
     },
     filters: {
@@ -557,15 +559,15 @@
           return statusMap[status]
         }
       },
-      certificationStatusFilter(status) {
-        const statusMap = {
-          0: '未认证',
-          1: '离职',
-          2: '异常',
-          3: '异常'
-        }
-        return statusMap[status]
-      }
+      // certificationStatusFilter(status) {
+      //   const statusMap = {
+      //     0: '未认证',
+      //     1: '离职',
+      //     2: '异常',
+      //     3: '异常'
+      //   }
+      //   return statusMap[status]
+      // }
     },
     created() {
       // this.handlePosition()
@@ -586,12 +588,16 @@
           this.total = response.data.total
           this.listLoading = false
           this.list.forEach(item => {
-            let obj = {}
-            this.positionsOptions.forEach((val, idx) => {
-              let key = val.positionId
-              obj[key] = val.positionName
-            })
-            item.positionId = obj[item.positionId]
+            // let obj = {}
+            // this.positionsOptions.forEach((val, idx) => {
+            //   let key = val.positionId
+            //   obj[key] = val.positionName
+            // })
+            // item.positionId = obj[item.positionId]
+            item.realnameStatus = transformText(this.realnameStatus, item.realnameStatus)
+            item.positionId = transformText(this.positionsOptions, item.positionId)
+            item.clientType = transformText(this.certificationType, item.clientType)
+            item.nationality = transformText(this.nationality, item.nationality)
           })
         })
       },
@@ -633,6 +639,11 @@
         this.resetTemp()
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
+      },
+      handleRouter(id) { // 查看跳转详情
+        this.$router.push({
+          path: '/client/customer/detail/' + id
+        })
       },
       handleUpdate(row) { // 编辑查询
         getObj(row.userId)

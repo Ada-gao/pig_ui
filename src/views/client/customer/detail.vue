@@ -2,287 +2,269 @@
   <div class="app-container calendar-list-container">
 
     <h3 v-if="type_is_update==1">修改产品</h3>
-    <h3 v-else>新增产品</h3>
+    <h3 v-else>客户详情</h3>
     <el-form v-if="!nextToUpdate" :model="form" :rules="rules" ref="form" label-width="100px">
+      <div style="border-bottom: 1px solid #ccc"></div>
+      <h5>客户信息</h5>
       <el-row :gutter="20">
         <el-col :span="11">
-          <el-form-item label="产品名称" prop="username">
-            <el-input v-model="form.username" placeholder="请输入产品名称"></el-input>
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="产品类型" prop="edu">
-            <el-select class="filter-item" v-model="edu" placeholder="请选择">
-              <el-option v-for="item in eduOptions" :key="item.value" :value="item.value" :label="item.label">
+          <el-form-item label="手机号" prop="mobile">
+            <el-input v-model="form.mobile" placeholder="请输入手机号"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="性别" prop="gender">
+            <el-select class="filter-item" v-model="form.gender" placeholder="请选择">
+              <el-option v-for="item in genderType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
           </el-form-item>
         </el-col>
-      </el-row>
-      
-      <el-row :gutter="20">
         <el-col :span="11">
-          <el-form-item label="起投金额" prop="username">
-            <el-input v-model="form.username" placeholder="请输入起投金额"></el-input>
+          <el-form-item label="国籍" prop="nationality">
+            <el-select class="filter-item" v-model="form.nationality" placeholder="请选择">
+              <el-option v-for="item in nationality" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="年化收益率" prop="date">
+          <el-form-item label="常住地区" prop="city">
+            <el-input v-model="form.city" placeholder="请输入邮箱"></el-input>
+            <!-- <el-cascader
+              size="large"
+              :options="options"
+              :props="defaultProps2"
+              v-model="form.city"
+              @change="handleChange">
+            </el-cascader> -->
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="form.email" placeholder="请输入邮箱"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="微信" prop="wechat">
+            <el-input v-model="form.wechat" placeholder="请输入微信"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="理财师" prop="userName">
+            <el-input v-model="form.userName" placeholder="请输入理财师" readonly></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="部门" prop="deptName">
+            <el-input v-model="form.deptName" placeholder="请输入部门" readonly></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="管理资产规模" prop="assetAmount">
+            <el-input v-model="form.assetAmount" placeholder="请输入资产规模" readonly></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <div style="border-bottom: 1px solid #ccc"></div>
+      
+      <h5>客户状态</h5>
+      <el-row :gutter="20">
+        <el-col :span="11">
+          <el-form-item label="实名认证状态" prop="username">
+            <el-select class="filter-item" v-model="form.realnameStatus" placeholder="请选择">
+              <el-option v-for="item in certificationStatus" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11" v-if="realnameStatus">
+          <el-form-item label="投资者身份" prop="certificationType">
+            <el-select class="filter-item" v-model="form.certificationType" placeholder="请选择">
+              <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11" v-if="realnameStatus">
+          <el-form-item label="证件类型" prop="idType">
+            <el-select class="filter-item" v-model="form.idType" placeholder="请选择">
+              <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11" v-if="realnameStatus & idType">
+          <el-form-item label="证件号码" prop="idNo">
+            <el-input v-model="form.idNo" placeholder="请输入证件号码" readonly></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11" v-if="realnameStatus & idType">
+          <el-form-item label="出生日期" prop="date">
             <el-date-picker
-              v-model="entryDate"
+              v-model="clientStatus.birthday"
+              type="birthday"
+              placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11" v-if="realnameStatus & idType">
+          <el-form-item label="证件有效期" prop="date">
+            <!-- idStartDate -->
+            <el-date-picker
+              v-model="clientStatus.idExpiration"
               type="date"
               placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
         </el-col>
-      </el-row>
-        
-      <el-row :gutter="20">
-        <el-col :span="11">
-          <el-form-item label="投资期限" prop="username">
-            <el-select class="filter-item" v-model="sex" placeholder="请选择">
-              <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
+        <el-col :span="11" v-if="realnameStatus & idType">
+          <el-form-item label="地址" prop="address">
+            <el-input v-model="form.address" placeholder="请输入地址" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="基金管理人" prop="edu">
-            <el-select class="filter-item" v-model="edu" placeholder="请选择">
-              <el-option v-for="item in eduOptions" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      
-      <el-row :gutter="20">
-        <el-col :span="11">
-          <el-form-item label="募集币种" prop="IDsType">
-            <el-select class="filter-item" v-model="IDsType" placeholder="请选择">
-              <el-option v-for="item in IDsTypeOptions" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="发行额度" prop="maritalStatus">
-            <el-select class="filter-item" v-model="maritalStatus" placeholder="请选择">
-              <el-option v-for="item in maritalStatusOptions" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-        
-      <el-row :gutter="20">
-        <el-col :span="11">
-          <el-form-item label="投资门槛" prop="username">
-            <el-input v-model="form.username" placeholder="请输入姓名"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="最低追加金额" prop="role">
-            <el-input v-model="form.role"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      
-      <el-row :gutter="20">
-        <el-col :span="11">
-          <el-form-item label="收益分配方式" prop="">
-            <el-select class="filter-item" v-model="role" placeholder="请选择">
-              <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
-                <span style="float: left">{{ item.roleDesc }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="风险评级" prop="role">
-            <el-select class="filter-item" v-model="role" placeholder="请选择">
-              <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
-                <span style="float: left">{{ item.roleDesc }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
-              </el-option>
-            </el-select>
+        <el-col :span="11" v-if="isCertificationType & realnameStatus & idType">
+          <el-form-item label="风险测评" prop="riskLevel">
+            <el-input v-model="clientStatus.riskLevel" placeholder="请输入风险测评" readonly></el-input>
           </el-form-item>
         </el-col>
       </el-row>
 
-      <el-row :gutter="20">
+      <div style="border-bottom: 1px solid #ccc"></div>
+      
+      <h5 v-if="realnameStatus">客户银行卡信息</h5>
+      <el-row v-if="realnameStatus">
         <el-col :span="11">
-          <el-form-item label="产品状态" prop="deptName">
-            <el-select class="filter-item" v-model="productStus" placeholder="请选择">
-              <el-option v-for="item in productStatus" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-            <!-- <el-input v-model="form.deptName" placeholder="请选择" @focus="handleDept()" readonly></el-input>
-            <input type="hidden" v-model="form.deptId"/> -->
+          <el-form-item label="开户银行" prop="bankName">
+            <el-input v-model="bankcardList.bankName" placeholder="请输入开户银行" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="form.email"></el-input>
+          <el-form-item label="银行卡号" prop="cardNo">
+            <el-input v-model="bankcardList.cardNo" placeholder="请输入银行卡号" readonly></el-input>
           </el-form-item>
         </el-col>
-      </el-row>
-      
-      <el-row>
-        <el-col :span="22">
-          <el-form-item label="备注" prop="role">
-            <el-input type="textarea" v-model="form.role"></el-input>
-          </el-form-item>
+        <el-col :span="8">
+          <el-card>
+            <img :src="bankcardList.cardFrontUrl" alt="">
+          </el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card>
+            <img :src="bankcardList.cardBackUrl" alt="">
+          </el-card>
         </el-col>
       </el-row>
+
+      <div style="border-bottom: 1px solid #ccc"></div>
       
-      <el-form-item label="状态" v-if="dialogStatus == 'update' && sys_user_del " prop="delFlag" >
-        <el-select class="filter-item" v-model="form.delFlag" placeholder="请选择">
-          <el-option v-for="item in statusOptions" :key="item" :label="item | statusFilter" :value="item"> </el-option>
-        </el-select>
-      </el-form-item>
+      <h5 v-if="realnameStatus">客户已购买产品</h5>
+      <el-table :data="productList" element-loading-text="给我一点时间" border fit
+        highlight-current-row style="width: 100%" v-if="realnameStatus">
+        <el-table-column align="center" label="产品名称">
+          <template slot-scope="scope">
+            <span>{{scope.row.productName}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="产品分类">
+          <template slot-scope="scope">
+            <span>{{scope.row.productTypeName}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="产品期限">
+          <template slot-scope="scope">
+            <span>{{scope.row.tradeDate}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="风险等级">
+          <template slot-scope="scope">
+            <span>{{scope.row.productRiskLevel}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="募集规模">
+          <template slot-scope="scope">
+            <span>{{scope.row.amount}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="年化收益率">
+          <template slot-scope="scope">
+            <span>{{scope.row.remark}}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <div style="border-bottom: 1px solid #ccc"></div>
+      
+      <h5>客户备注</h5>
+      <el-table :data="remarkList" element-loading-text="给我一点时间" border fit
+        highlight-current-row style="width: 100%">
+        <el-table-column align="center" label="备注信息">
+          <template slot-scope="scope">
+            <span>{{scope.row.remark}}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+      
+
+      <div style="border-bottom: 1px solid #ccc"></div>
+      
+      <h5>客户理财师变动列表</h5>
+      <el-table :data="plannerList" element-loading-text="给我一点时间" border fit
+        highlight-current-row style="width: 100%">
+
+        <el-table-column align="center" label="时间">
+          <template slot-scope="scope">
+            <span>{{scope.row.createTime}}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="状态">
+          <template slot-scope="scope">
+            <span>{{scope.row.changeReason}}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="理财师">
+          <template slot-scope="scope">
+            <span>{{scope.row.plannerName}}</span>
+          </template>
+        </el-table-column>
+
+      </el-table>
+
+      <!-- <div style="border-bottom: 1px solid #ccc"></div> -->
+      
+      <!-- <h5>客户已购买产品列表</h5> -->
     </el-form>
 
-    <div v-if="!nextToUpdate" slot="footer" class="dialog-footer" style="text-align: right;">
+    <!-- <div v-if="!nextToUpdate" slot="footer" class="dialog-footer" style="text-align: right;">
       <el-button @click="cancel('form')">取 消</el-button>
       <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
       <el-button v-else type="primary" @click="update('form')">修 改</el-button>
-    </div>
-
-    <div class="upfile-group" v-if="nextToUpdate">
-      <div class="trade-item">
-        <h3>交易所需材料</h3>
-        <el-table
-          :data="fileList1"
-          @select="handleSelectionChange1"
-          border
-          style="width: 100%">
-          <el-table-column
-            type="selection"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            label="材料名称"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="size"
-            label="大小/k"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="uid"
-            label="附件">
-          </el-table-column>
-        </el-table>
-        <el-row style="text-align: right;">
-          <el-upload
-            class="upload-demo"
-            style="display: inline-block;"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-change="handleChange1"
-            :show-file-list="false">
-            <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
-          </el-upload>
-          <el-button type="info" class="btn-padding" @click="delfiles1">删除材料</el-button>
-        </el-row>
-      </div>
-
-      <div class="trade-item">
-        <h3>产品说明所需材料</h3>
-        <el-table
-          :data="fileList2"
-          @select="handleSelectionChange2"
-          border
-          style="width: 100%">
-          <el-table-column
-            type="selection"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            label="材料名称"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="size"
-            label="大小/k"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="uid"
-            label="附件">
-          </el-table-column>
-        </el-table>
-        <el-row style="text-align: right;">
-          <el-upload
-            class="upload-demo"
-            style="display: inline-block;"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-change="handleChange2"
-            :show-file-list="false">
-            <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
-          </el-upload>
-          <el-button type="info" class="btn-padding" @click="delfiles2">删除材料</el-button>
-        </el-row>
-      </div>
-
-      <div class="trade-item">
-        <h3>产品公告</h3>
-        <el-table
-          :data="fileList3"
-          @select="handleSelectionChange3"
-          border
-          style="width: 100%">
-          <el-table-column
-            type="selection"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            label="材料名称"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="size"
-            label="大小/k"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="uid"
-            label="附件">
-          </el-table-column>
-        </el-table>
-        <el-row style="text-align: right;">
-          <el-upload
-            class="upload-demo"
-            style="display: inline-block;"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-change="handleChange3"
-            :show-file-list="false">
-            <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
-          </el-upload>
-          <el-button type="info" class="btn-padding" @click="delfiles3">删除材料</el-button>
-        </el-row>
-      </div>
-    </div>
+    </div> -->
 
   </div>
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/user'
+  import { 
+    fetchList, getObj, addObj, putObj, delObj, getClientStatus, getClientRemark, getClientPlanner, getClientBankcard, getClientProducts
+  } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
+  import { transformText } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -303,19 +285,13 @@
           children: 'children',
           label: 'name'
         },
-        total: null,
         listLoading: true,
         listQuery: {
           page: 1,
           limit: 20
         },
         role: undefined,
-        form: {
-          username: undefined,
-          password: undefined,
-          delFlag: undefined,
-          deptId: undefined
-        },
+        form: {},
         rules: {
           username: [
             {
@@ -374,67 +350,10 @@
           0: false,
           1: true
         },
-        sexOptions: [
-          {
-            label: '男',
-            value: 1
-          }, {
-            label: '女',
-            value: 2
-          }
-        ],
         sex: '',
-        eduOptions: [
-          {
-            label: '博士',
-            value: 1
-          }, {
-            label: '硕士',
-            value: 2
-          }, {
-            label: '本科',
-            value: 3
-          }, {
-            label: '大专',
-            value: 4
-          }, {
-            label: '高中',
-            value: 5
-          }, {
-            label: '初中',
-            value: 6
-          }, {
-            label: '小学',
-            value: 7
-          }
-        ],
         edu: '',
-        IDsTypeOptions: [
-          {
-            label: '二代居民身份证',
-            value: 1
-          }, {
-            label: '护照',
-            value: 2
-          }, {
-            label: '军官证',
-            value: 3
-          }
-        ],
         IDsType: '',
         entryDate: '',
-        maritalStatusOptions: [
-          {
-            label: '已婚',
-            value: 1
-          }, {
-            label: '未婚',
-            value: 2
-          }, {
-            label: '保密',
-            value: 3
-          }
-        ],
         maritalStatus: '',
         fileList: [],
         fileList1: [],
@@ -442,13 +361,28 @@
         fileList3: [],
         indexList: [],
         type_is_update: '',
-        productStus: ''
+        productStus: '',
+        clientStatus: {
+          riskLevel: ''
+        },
+        remarkList: [],
+        plannerList: [],
+        bankcardList: [],
+        productList: [],
+        realnameStatus: '',
+        idType: '',
+        isCertificationType: ''
       }
     },
     computed: {
       ...mapGetters([
         'permissions',
-        'productStatus'
+        'productStatus',
+        'genderType',
+        'certificationStatus',
+        'certificationType',
+        'idTypeOptions',
+        'nationality'
       ])
     },
     filters: {
@@ -467,17 +401,40 @@
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
       this.type_is_update = this.$route.path.substr(-1)
-      console.log(this.type_is_update)
     },
     methods: {
       getList() {
-        this.listLoading = true
-        this.listQuery.orderByField = '`user`.create_time'
-        this.listQuery.isAsc = false
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.records
-          this.total = response.data.total
-          this.listLoading = false
+        let id = this.$route.params.id
+        getClientStatus(id).then(response => {
+          this.clientStatus = response.data
+        })
+        getObj(id).then(response => {
+          this.form = response.data
+
+          this.realnameStatus = this.form.realnameStatus != 0 ? true : false // 认证状态判断
+          this.idType = this.form.idType == 0 ? true : false // 证件类型判断
+          this.isCertificationType = this.form.certificationType == 0 ? true : false// 投资者类型判断
+
+          this.form.gender = transformText(this.genderType, this.form.gender)
+          this.form.realnameStatus = transformText(this.certificationStatus, this.form.realnameStatus)
+          this.form.certificationType = transformText(this.certificationType, this.form.certificationType)
+          this.form.idType = transformText(this.idTypeOptions, this.form.idType)
+          this.form.nationality = transformText(this.nationality, this.form.nationality)
+          if(this.realnameStatus) {
+            getClientBankcard(id).then(response => {
+              this.bankcardList = response.data
+            })
+          }
+        })
+        getClientRemark(id).then(response => {
+          this.remarkList = response.data
+        })
+        getClientPlanner(id).then(response => {
+          this.plannerList = response.data
+        })
+       
+        getClientProducts(id).then(response => {
+          this.productList = response.data
         })
       },
       handleDept() {

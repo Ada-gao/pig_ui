@@ -132,7 +132,7 @@ export const asyncRouterMap = [
     children: [
       { menuId: 19, path: 'potential', component: _import('client/potential/index'), name: '潜客列表', meta: { title: '潜客列表', icon: 'user' }},
       { menuId: 19, path: 'customer', component: _import('client/customer/index'), name: '客户列表', meta: { title: '客户列表', icon: 'user' }},
-      { path: 'customer/:id', component: _import('client/customer/detail'), name: '客户详情', meta: { title: '客户详情', icon: 'user' }},
+      { menuId: 19, path: 'customer/detail/:id', component: _import('client/customer/detail'), name: '客户详情', meta: { title: '客户详情', icon: 'user' }},
       // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '实名认证审核', meta: { title: '实名认证审核', icon: 'user' }},
       // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '普通投资者审核', meta: { title: '普通投资者审核', icon: 'user' }},
       // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '专业投资者审核', meta: { title: '专业投资者审核', icon: 'user' }},

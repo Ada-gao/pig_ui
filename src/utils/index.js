@@ -263,3 +263,16 @@ export function deepClone(source) {
   }
   return targetObj
 }
+
+export function transformText(source, k) {
+  if (!source && typeof source !== 'object') {
+    throw new Error('error arguments', 'shallowClone')
+  }
+  let obj = {}
+  source.forEach((val, idx) => {
+    let key = val.value
+    obj[key] = val.label
+  })
+  k = obj[k]
+  return k
+}

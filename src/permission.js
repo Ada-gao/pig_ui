@@ -35,7 +35,7 @@ router.beforeEach((to, from, next) => { // 开启Progress
         })
         const params = {
           page: 1,
-          limit: 40,
+          limit: 60,
           isAsc: false
         }
         store.dispatch('FetchList', params) // 获取字典信息

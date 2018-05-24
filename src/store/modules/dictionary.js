@@ -10,7 +10,10 @@ const dictionary = {
     genderType: [],
     educationType: [],
     productRiskLevel: [],
-    delFlag: []
+    delFlag: [],
+    nationality: [],
+    riskLevel: [],
+    realnameStatus: []
   },
 
   mutations: {
@@ -40,6 +43,15 @@ const dictionary = {
     },
     SET_DEL_FLAG: (state, delFlag) => {
       state.delFlag = delFlag
+    },
+    SET_NATIONALITY: (state, nationality) => {
+      state.nationality = nationality
+    },
+    SET_RISK_LEVEL: (state, riskLevel) => {
+      state.riskLevel = riskLevel
+    },
+    SET_REALNAME_STATUS: (state, realnameStatus) => {
+      state.realnameStatus = realnameStatus
     }
   },
 
@@ -59,6 +71,9 @@ const dictionary = {
           let educationTypeList = []
           let productRiskLevelList = []
           let delFlagList = []
+          let nationalityList = []
+          let riskLevelList = []
+          let realnameStatusList = []
           
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -87,6 +102,15 @@ const dictionary = {
 
             } else if(data[i].type === 'del_flag') {
               delFlagList.push(data[i])
+
+            } else if(data[i].type === 'nationality') {
+              nationalityList.push(data[i])
+
+            } else if(data[i].type === 'risk_level') {
+              riskLevelList.push(data[i])
+
+            } else if(data[i].type === 'realname_status') {
+              realnameStatusList.push(data[i])
             }
           }
           commit('SET_ID_TYPE', idTypeList)
@@ -98,6 +122,9 @@ const dictionary = {
           commit('SET_EDUCATION_TYPE', educationTypeList)
           commit('SET_PRODUCT_RISK_LEVEL', productRiskLevelList)
           commit('SET_DEL_FLAG', delFlagList)
+          commit('SET_NATIONALITY', nationalityList)
+          commit('SET_RISK_LEVEL', riskLevelList)
+          commit('SET_REALNAME_STATUS', realnameStatusList)
           resolve()
         }).catch(error => {
           reject(error)
