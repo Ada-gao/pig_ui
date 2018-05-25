@@ -279,7 +279,7 @@
           <el-col :span="11">
             <el-form-item label="职位" prop="positionName">
               <!-- positionId -->
-              <el-select class="filter-item" v-model="form.positionName" placeholder="请选择" @focus="handlePosition()">
+              <el-select class="filter-item" v-model="form.positionName" placeholder="请选择" @focus="handlePosition">
                 <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId" :disabled="isDisabled[item.delFlag]">
                   <span style="float: left">{{ item.positionName }}</span>
                   <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span> -->
@@ -349,7 +349,7 @@
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime } from '@/utils'
+  import { parseTime, transformText } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -439,13 +439,13 @@
             {required: true, trigger: 'blur', validator: validID}
           ],
           deptName: [
-            {required: true, trigger: 'blur,change', message: '请选择部门'}
+            {required: true, trigger: 'change', message: '请选择部门'}
           ],
           role: [
             {required: true, trigger: 'blur', message: '请选择角色'}
           ],
           positionName: [
-            {required: true, trigger: 'blur'}
+            {required: true, trigger: 'change', message: '请选择职位'}
           ],
           email: [
             {required: true, trigger: 'blur'}
@@ -498,7 +498,8 @@
         delFlag: '',
         tableData: [],
         tableHeader: [],
-        entryDate: []
+        entryDate: [],
+        // positionName: ''
       }
     },
     computed: {
@@ -540,19 +541,28 @@
           this.listQuery.startTime = ''
           this.listQuery.endTime = ''
         } 
-        this.handlePosition()
+        // this.handlePosition()
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
-          this.list.forEach(item => {
-            let obj = {}
-            this.positionsOptions.forEach((val, idx) => {
-              let key = val.positionId
-              obj[key] = val.positionName
+          getAllPositon().then(res => {
+            this.positionsOptions = res.data
+
+            this.list.forEach(item => {
+              item.positionId = transformText(this.positionsOptions, item.positionId)
             })
-            item.positionId = obj[item.positionId]
           })
+          // this.list.forEach(item => {
+            
+            // let obj = {}
+            // this.positionsOptions.forEach((val, idx) => {
+            //   let key = val.positionId
+            //   obj[key] = val.positionName
+            // })
+            // item.positionId = obj[item.positionId]
+            
+          // })
         })
       },
       getNodeData(data) { // 部门查询
@@ -567,7 +577,6 @@
       handlePosition() {
         getAllPositon().then(res => {
           this.positionsOptions = res.data
-          console.log(res.data)
         })
       },
       handleDept() {
@@ -603,7 +612,7 @@
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
             getPositionName(this.form.positionId).then(res => {
-              this.form.positionName = res.data
+              this.form.positionName = res.data.positionName
             })
             deptRoleList(response.data.deptId)
               .then(response => {
@@ -614,6 +623,7 @@
       create(formName) {
         const set = this.$refs
         this.form.role = this.role
+        this.form.positionId = this.form.positionName
         // this.form.idType = this.IDType
         // this.form.marriageStatus = this.maritalStatus
         set[formName].validate(valid => {
@@ -644,7 +654,7 @@
         set[formName].validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
-            this.form.password = undefined
+            this.form.positionId = this.form.positionName
             putObj(this.form).then(() => {
               this.dialogFormVisible = false
               this.getList()
