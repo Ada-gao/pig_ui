@@ -26,40 +26,6 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
-          <el-form-item label="投资者类型">
-            <el-select class="filter-item" v-model="listQuery.clientType" placeholder="请选择">
-              <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
-          <el-form-item label="资产规模区间">
-            <el-input
-              style="width: 48%; margin-right: 2%"
-              placeholder="请输入开始数字"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.amountStart">
-            </el-input>-
-            <el-input
-              style="width: 48%"
-              placeholder="请输入结束数字"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.amountEnd">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索客户证件号码"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.idNo">
-            </el-input>
-          </el-form-item>
-        </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="部门">
             <!-- <input type="hidden" v-model="listQuery.deptId"/>  -->
@@ -83,23 +49,12 @@
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="国籍">
-            <el-select class="filter-item" v-model="listQuery.nationality" placeholder="请选择">
-              <el-option v-for="item in nationalityType" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" v-if="listQuery.nationality === 0">
-          <el-form-item label="地区">
-            <el-cascader
-              size="large"
-              :options="options"
-              :props="defaultProps2"
-              v-model="listQuery.city"
-              @change="handleChange">
-            </el-cascader>
+          <el-form-item label="搜索">
+            <el-input
+              placeholder="搜索客户证件号码"
+              prefix-icon="el-icon-search"
+              v-model="listQuery.idNo">
+            </el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -129,57 +84,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="客户性别">
+      <el-table-column align="center" label="实名认证状态">
         <template slot-scope="scope">
-          <span>{{scope.row.gender}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="手机号">
-        <template slot-scope="scope">
-          <span>{{scope.row.mobile}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="客户邮箱">
-        <template slot-scope="scope">
-          <span>{{scope.row.email}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="证件类型">
-        <template slot-scope="scope">
-          <span>{{scope.row.idType }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="证件号码">
-        <template slot-scope="scope">
-          <span>{{scope.row.idNo}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="微信号">
-        <template slot-scope="scope">
-          <span>{{scope.row.wechat}}</span>
-        </template>
-      </el-table-column>
-
-      <!-- <el-table-column align="center" label="实名认证状态">
-        <template slot-scope="scope">
-          <span>{{scope.row.realnameStatus | certificationStatusFilter}}</span>
-        </template>
-      </el-table-column> -->
-
-      <el-table-column align="center" label="投资者类型（风险级别）">
-        <template slot-scope="scope">
-          <span>{{scope.row.clientType | certificationTypeFilter}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="资产管理规模">
-        <template slot-scope="scope">
-          <span>{{scope.row.assetAmount}}</span>
+          <span>{{scope.row.realnameStatus}}</span>
         </template>
       </el-table-column>
 
@@ -207,12 +114,6 @@
           <el-button v-if="sys_user_upd" size="small" type="success"
                      @click="handleRouter(scope.row.clientId)">查看
           </el-button>
-          <el-button v-if="sys_user_upd" size="small" type="success"
-                     @click="handleUpdate(scope.row)">编辑
-          </el-button>
-          <!-- <el-button v-if="sys_user_del" size="small" type="danger"
-                     @click="deletes(scope.row)">删除
-          </el-button> -->
         </template>
       </el-table-column>
 
@@ -240,26 +141,6 @@
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import { isvalidMobile, isvalidID } from '@/utils/validate'
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
-
-  const validMobile = (rule, value, callback) => {
-    if (!value) {
-      callback(new Error('请输入电话号码'))
-    } else if (!isvalidMobile(value)) {
-      callback(new Error('请输入正确的11位手机号'))
-    } else {
-      callback()
-    }
-  }
-
-  const validID = (rule, value, callback) => {
-    if (!value) {
-      callback(new Error('请输入身份证号码'))
-    } else if (!isvalidID(value)) {
-      callback(new Error('请输入正确的身份证号码'))
-    } else {
-      callback()
-    }
-  }
 
   export default {
     components: {
@@ -292,81 +173,12 @@
           type: 1 // 1：客户，0：潜客
         },
         role: undefined,
-        form: {
-          name: 'rank',
-          username: undefined,
-          password: undefined,
-          delFlag: undefined,
-          deptId: undefined
-        },
-        rules: {
-          name: [
-            {required: true, trigger: 'blur'}
-          ],
-          username: [
-            {required: true, trigger: 'blur', message: '请输入用户名'},
-            {min: 3, max: 20, trigger: 'blur', message: '长度在 3 到 20 个字符'}
-          ],
-          empNo: [
-            {required: true, trigger: 'blur'}
-          ],
-          // date: [
-          //   {required: true, trigger: 'blur'}
-          // ],
-          gender: [
-            {required: true, trigger: 'blur'}
-          ],
-          education: [
-            {required: true, trigger: 'blur'}
-          ],
-          idType: [
-            // {required: true, trigger: 'blur'}
-          ],
-          marriageStatus: [
-            {required: true, trigger: 'blur'}
-          ],
-          idNo: [
-            {required: true, trigger: 'blur', validator: validID}
-          ],
-          deptName: [
-            {required: true, trigger: 'blur', message: '请选择部门'}
-          ],
-          role: [
-            {required: true, trigger: 'blur', message: '请选择角色'}
-          ],
-          positionId: [
-            {required: true, trigger: 'blur'}
-          ],
-          email: [
-            {required: true, trigger: 'blur'}
-          ],
-          // password: [
-          //   {
-          //     required: true,
-          //     message: '请输入密码',
-          //     trigger: 'blur'
-          //   },
-          //   {
-          //     min: 5,
-          //     max: 20,
-          //     message: '长度在 5 到 20 个字符',
-          //     trigger: 'blur'
-          //   }
-          // ],
-          mobile: [
-            {required: true, trigger: 'blur, change', validator: validMobile}
-          ]
-        },
         dialogFormVisible: false,
         dialogDeptVisible: false,
         userAdd: false,
         userUpd: false,
         userDel: false,
         dialogStatus: '',
-        textMap: {
-          update: '编辑员工',
-          create: '新增员工'
-        },
         isDisabled: {
           0: false,
           1: true
@@ -388,16 +200,6 @@
         entryDate: [],
         options: provinceAndCityData,
         selectedOptions: [],
-        nationalityType: [
-          {
-            value: 0,
-            label: '中国'
-          },
-          {
-            value: 1,
-            label: '其他'
-          },
-        ],
         deptName: [],
         deptId: []
       }
@@ -411,37 +213,6 @@
         'idTypeOptions',
         'delFlagOptions'
       ])
-    },
-    filters: {
-      statusFilter(status) {
-        const statusMap = {
-          0: '在职',
-          1: '离职',
-          2: '异常',
-          3: '异常'
-        }
-        return statusMap[status]
-      },
-      certificationTypeFilter(status) {
-        const statusMap = {
-          0: '普通投资者',
-          1: '专业投资者'
-        }
-        if(status === null) {
-          return '无'
-        } else {
-          return statusMap[status]
-        }
-      },
-      certificationStatusFilter(status) {
-        const statusMap = {
-          0: '未认证',
-          1: '离职',
-          2: '异常',
-          3: '异常'
-        }
-        return statusMap[status]
-      }
     },
     created() {
       // this.handlePosition()
@@ -459,21 +230,6 @@
         if(this.deptId.length) {
           this.listQuery.deptId = this.deptId[this.deptId.length - 1]
         }
-
-        let amountStart = this.listQuery.amountStart || -1
-        let amountEnd = this.listQuery.amountEnd || -1
-        this.listQuery.amount = [amountStart, amountEnd]
-
-        // if(this.listQuery.city) {
-        //   // console.log(this.listQuery.city)
-        //   if(this.listQuery.city[1] === '市辖区') {
-        //     this.listQuery.city = this.listQuery.city[0]
-
-        //   } else if(this.listQuery.city[0].indexOf('省')) {
-        //     this.listQuery.city = this.listQuery.city[1]
-        //   }
-        // }
-        
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
@@ -496,11 +252,6 @@
           })
         })
       },
-      // handlePosition() {
-      //   getAllPositon().then(res => {
-      //     this.positionsOptions = res.data
-      //   })
-      // },
       handleDept() {
         fetchDeptTree()
           .then(response => {

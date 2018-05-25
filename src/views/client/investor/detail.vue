@@ -2,10 +2,10 @@
   <div class="app-container calendar-list-container">
 
     <h3 v-if="type_is_update==1">修改产品</h3>
-    <h3 v-else>客户详情</h3>
+    <h3 v-else>客户审核信息</h3>
     <el-form v-if="!nextToUpdate" :model="form" :rules="rules" ref="form" label-width="100px">
       <div style="border-bottom: 1px solid #ccc"></div>
-      <h5>客户信息</h5>
+      <h5>风险测评问卷审核</h5>
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item label="姓名" prop="name">
@@ -37,7 +37,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="常住地区" prop="city">
-            <el-input v-model="form.city" placeholder="请输入邮箱"></el-input>
+            <el-input v-model="form.city" placeholder="请输入地区"></el-input>
             <!-- <el-cascader
               size="large"
               :options="options"
@@ -67,16 +67,16 @@
             <el-input v-model="form.deptName" placeholder="请输入部门" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
+        <!-- <el-col :span="11">
           <el-form-item label="管理资产规模" prop="assetAmount">
             <el-input v-model="form.assetAmount" placeholder="请输入资产规模" readonly></el-input>
           </el-form-item>
-        </el-col>
+        </el-col> -->
       </el-row>
 
       <div style="border-bottom: 1px solid #ccc"></div>
       
-      <h5>客户状态</h5>
+      <h5>过往客户审核日志</h5>
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item label="实名认证状态" prop="username">
@@ -87,7 +87,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus">
+        <el-col :span="11">
           <el-form-item label="投资者身份" prop="certificationType">
             <el-select class="filter-item" v-model="form.certificationType" placeholder="请选择">
               <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
@@ -96,7 +96,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus">
+        <el-col :span="11">
           <el-form-item label="证件类型" prop="idType">
             <el-select class="filter-item" v-model="form.idType" placeholder="请选择">
               <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
@@ -105,12 +105,12 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus & idType">
+        <el-col :span="11" v-if="idType">
           <el-form-item label="证件号码" prop="idNo">
             <el-input v-model="form.idNo" placeholder="请输入证件号码" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus & idType">
+        <el-col :span="11" v-if="idType">
           <el-form-item label="出生日期" prop="date">
             <el-date-picker
               v-model="clientStatus.birthday"
@@ -119,7 +119,7 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus & idType">
+        <el-col :span="11" v-if="idType">
           <el-form-item label="证件有效期" prop="date">
             <!-- idStartDate -->
             <el-date-picker
@@ -129,145 +129,31 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus & idType">
+        <el-col :span="11" v-if="idType">
           <el-form-item label="地址" prop="address">
             <el-input v-model="form.address" placeholder="请输入地址" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="isCertificationType & realnameStatus & idType">
+        <el-col :span="11" v-if="idType">
+          <el-form-item label="身份证截图" prop="address">
+            <el-input v-model="form.address" placeholder="" readonly></el-input>
+          </el-form-item>
+        </el-col>
+        <!-- <el-col :span="11" v-if="isCertificationType & idType">
           <el-form-item label="风险测评" prop="riskLevel">
             <el-input v-model="clientStatus.riskLevel" placeholder="请输入风险测评" readonly></el-input>
           </el-form-item>
-        </el-col>
-      </el-row>
-
-      <div style="border-bottom: 1px solid #ccc"></div>
-      
-      <h5 v-if="realnameStatus">客户银行卡信息</h5>
-      <el-row v-if="realnameStatus">
-        <el-col :span="11">
-          <el-form-item label="开户银行" prop="bankName">
-            <el-input v-model="bankcardList.bankName" placeholder="请输入开户银行" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="银行卡号" prop="cardNo">
-            <el-input v-model="bankcardList.cardNo" placeholder="请输入银行卡号" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="22">
-          <el-form-item label="银行卡截图" prop="cardPic">
-            <el-col :span="8">
-              <el-card>
-                <img :src="bankcardList.cardFrontUrl" alt="">
-              </el-card>
-            </el-col>
-            <el-col :span="8" style="margin-left: 10%">
-              <el-card>
-                <img :src="bankcardList.cardBackUrl" alt="">
-              </el-card>
-            </el-col>
-            <!-- <el-card>
-              <img :src="bankcardList.cardFrontUrl" alt="">
-            </el-card> -->
-          </el-form-item>
-        </el-col>
-        <!-- <el-col :span="8">
-          
-        </el-col>
-        <el-col :span="8">
-          <el-card>
-            <img :src="bankcardList.cardBackUrl" alt="">
-          </el-card>
         </el-col> -->
       </el-row>
 
       <div style="border-bottom: 1px solid #ccc"></div>
-      
-      <h5 v-if="realnameStatus">客户已购买产品</h5>
-      <el-table :data="productList" element-loading-text="给我一点时间" border fit
-        highlight-current-row style="width: 100%" v-if="realnameStatus">
-        <el-table-column align="center" label="产品名称">
-          <template slot-scope="scope">
-            <span>{{scope.row.productName}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="产品分类">
-          <template slot-scope="scope">
-            <span>{{scope.row.productTypeName}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="产品期限">
-          <template slot-scope="scope">
-            <span>{{scope.row.tradeDate}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="风险等级">
-          <template slot-scope="scope">
-            <span>{{scope.row.productRiskLevel}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="募集规模">
-          <template slot-scope="scope">
-            <span>{{scope.row.amount}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="年化收益率">
-          <template slot-scope="scope">
-            <span>{{scope.row.remark}}</span>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <div style="border-bottom: 1px solid #ccc"></div>
-      
-      <h5>客户备注</h5>
-      <el-table :data="remarkList" element-loading-text="给我一点时间" border fit
-        highlight-current-row style="width: 100%">
-        <el-table-column align="center" label="备注信息">
-          <template slot-scope="scope">
-            <span>{{scope.row.remark}}</span>
-          </template>
-        </el-table-column>
-      </el-table>
-      
-
-      <div style="border-bottom: 1px solid #ccc"></div>
-      
-      <h5>客户理财师变动列表</h5>
-      <el-table :data="plannerList" element-loading-text="给我一点时间" border fit
-        highlight-current-row style="width: 100%">
-
-        <el-table-column align="center" label="时间">
-          <template slot-scope="scope">
-            <span>{{scope.row.createTime}}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column align="center" label="状态">
-          <template slot-scope="scope">
-            <span>{{scope.row.changeReason}}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column align="center" label="理财师">
-          <template slot-scope="scope">
-            <span>{{scope.row.plannerName}}</span>
-          </template>
-        </el-table-column>
-
-      </el-table>
-
-      <!-- <div style="border-bottom: 1px solid #ccc"></div> -->
-      
-      <!-- <h5>客户已购买产品列表</h5> -->
     </el-form>
 
-    <!-- <div v-if="!nextToUpdate" slot="footer" class="dialog-footer" style="text-align: right;">
-      <el-button @click="cancel('form')">取 消</el-button>
-      <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
-      <el-button v-else type="primary" @click="update('form')">修 改</el-button>
-    </div> -->
+    <div v-if="!nextToUpdate" slot="footer" class="dialog-footer" style="text-align: right;">
+      <el-button @click="cancel('form')">通 过</el-button>
+      <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">不通过</el-button>
+      <!-- <el-button v-else type="primary" @click="update('form')">修 改</el-button> -->
+    </div>
 
   </div>
 </template>
@@ -420,12 +306,14 @@
     methods: {
       getList() {
         let id = this.$route.params.id
-        
+        getClientStatus(id).then(response => {
+          this.clientStatus = response.data
+        })
         getObj(id).then(response => {
           this.form = response.data
 
           this.realnameStatus = this.form.realnameStatus == 2 ? true : false // 认证状态判断
-          this.idType = this.form.idType == 0 ? true : false // 证件类型判断
+          this.idType = this.form.idType == 0 ? true : false // 证件类型判断(0: 身份证)
           this.isCertificationType = this.form.certificationType == 0 ? true : false// 投资者类型判断
 
           this.form.gender = transformText(this.genderType, this.form.gender)
@@ -436,11 +324,6 @@
           if(this.realnameStatus) {
             getClientBankcard(id).then(response => {
               this.bankcardList = response.data
-            })
-          }
-          if(this.realnameStatus == 2) {
-            getClientStatus(id).then(response => {
-              this.clientStatus = response.data
             })
           }
         })

@@ -55,28 +55,6 @@
             </el-input>
           </el-form-item>
         </el-col>
-      <!-- </el-row> -->
-      <!-- <el-row :gutter="10"> -->
-        <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="入职时间">
-            <el-date-picker
-              v-model="entryDate"
-              type="daterange"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :default-time="['00:00:00', '23:59:59']">
-            </el-date-picker>
-          </el-form-item>
-        </el-col> -->
-        <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="角色">
-            <el-select class="filter-item" v-model="listQuery.role" placeholder="请选择">
-              <el-option v-for="item in rolesOptions" :key="item.roleId" :value="item.roleId" :label="item.roleName">
-                <span style="float: left">{{ item.roleName }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col> -->
       </el-row>
       <el-row style="text-align: center;">
         <el-button type="info" style="padding: 10px 60px;" @click="handleFilter">查询</el-button>
@@ -86,7 +64,7 @@
     </div>
 
     <div style="text-align: right">
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+      <!-- <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
       <!-- <upload-excel-component @on-selected-file='selected'></upload-excel-component> -->
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -613,7 +591,6 @@
       handlePosition() {
         getAllPositon().then(res => {
           this.positionsOptions = res.data
-          console.log(res.data)
         })
       },
       handleDept() {

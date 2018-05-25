@@ -111,7 +111,7 @@
     </div>
 
     <div style="text-align: right">
-      <!-- <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
+      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
       <!-- <upload-excel-component @on-selected-file='selected'></upload-excel-component> -->
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -459,21 +459,9 @@
         if(this.deptId.length) {
           this.listQuery.deptId = this.deptId[this.deptId.length - 1]
         }
-
         let amountStart = this.listQuery.amountStart || -1
         let amountEnd = this.listQuery.amountEnd || -1
         this.listQuery.amount = [amountStart, amountEnd]
-
-        // if(this.listQuery.city) {
-        //   // console.log(this.listQuery.city)
-        //   if(this.listQuery.city[1] === '市辖区') {
-        //     this.listQuery.city = this.listQuery.city[0]
-
-        //   } else if(this.listQuery.city[0].indexOf('省')) {
-        //     this.listQuery.city = this.listQuery.city[1]
-        //   }
-        // }
-        
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
@@ -578,4 +566,3 @@
   width: 100%;
 }
 </style>
-

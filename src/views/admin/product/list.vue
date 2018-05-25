@@ -8,8 +8,8 @@
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
       <el-row>
-        <el-col :lg="2" class="query-title">产品名称</el-col>
-        <el-col :md="12" :lg="6">
+        <el-col :sm="2" :lg="2" class="query-title">产品名称</el-col>
+        <el-col :sm="12" :lg="6">
           <el-input
             placeholder="请输入产品名称"
             v-model="listQuery.name">
@@ -18,8 +18,8 @@
       </el-row>
 
       <el-row style="margin-top: 20px;">
-        <el-col :lg="2" class="query-title">产品分类</el-col>
-        <el-col :lg="20">
+        <el-col :sm="2" :lg="2" class="query-title">产品分类</el-col>
+        <el-col :sm="20">
           <el-checkbox-group v-model="listQuery.productTypeIds">
             <el-checkbox-button v-for="item in productTypes" :label="item.productTypeId" :key="item.productTypeId">{{item.name}}</el-checkbox-button>
           </el-checkbox-group>
@@ -27,8 +27,8 @@
       </el-row>
 
       <el-row style="margin-top: 20px;">
-        <el-col :lg="2" class="query-title">产品状态</el-col>
-        <el-col :lg="21">
+        <el-col :sm="2" :lg="2" class="query-title">产品状态</el-col>
+        <el-col :sm="21">
           <el-checkbox-group v-model="listQuery.productStatus">
             <el-checkbox-button v-for="status in productStatus" :label="status.value" :key="status.value">{{status.label}}</el-checkbox-button>
           </el-checkbox-group>
@@ -36,8 +36,8 @@
       </el-row>
 
       <el-row style="margin-top: 20px;">
-        <el-col :lg="2" class="query-title">年化收益</el-col>
-        <el-col :lg="20">
+        <el-col :sm="2" :lg="2" class="query-title">年化收益</el-col>
+        <el-col :sm="20">
           <el-checkbox-group v-model="listQuery.annualizedReturns">
             <el-checkbox-button v-for="item in productIncome" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
           </el-checkbox-group>
@@ -89,7 +89,7 @@
 
       <el-table-column align="center" label="风险等级" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.productRiskLevel | productRiskLevelFilter}}</span>
+        <span>{{scope.row.productRiskLevel}}</span>
         </template>
       </el-table-column>
 
@@ -114,7 +114,7 @@
       <el-table-column align="center" class-name="status-col" label="产品状态">
         <template slot-scope="scope">
           <!-- <el-tag>{{scope.row.delFlag | statusFilter}}</el-tag> -->
-          {{scope.row.productStatus | statusFilter}}
+          {{scope.row.productStatus}}
         </template>
       </el-table-column>
 
@@ -255,7 +255,7 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="产品期限" prop="investmentHorizon">
-              <el-input v-model.number="form.investmentHorizon" style="width: 80%; margin-right: 20px;"></el-input><span>月</span>
+              <el-input v-model.number="form.investmentHorizon" style="width: 60%; margin-right: 20px;"></el-input><span>月</span>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -472,6 +472,7 @@
   import { getToken } from '@/utils/auth'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
+  import { transformText } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -715,29 +716,18 @@
         }
         return statusMap[status]
       },
-      productTypeFilter(type) {
-        fetchProductTypeList().then(res => { // 获取产品类型
-          let obj = {}
-          res.data.forEach((val, idx) => {
-            let key = val.productTypeId
-            obj[key] = val.name
+      // productTypeFilter(type) {
+      //   fetchProductTypeList().then(res => { // 获取产品类型
+      //     let obj = {}
+      //     res.data.forEach((val, idx) => {
+      //       let key = val.productTypeId
+      //       obj[key] = val.name
 
-            type = obj[type]
-          })
-          return type
-        })
-      },
-      statusFilter(status) { // 产品状态
-        const statusMap = {
-          0: '在建',
-          1: '预热中',
-          2: '募集中',
-          3: '募集完成',
-          4: '存续期',
-          5: '已下架'
-        }
-        return statusMap[status]
-      }
+      //       type = obj[type]
+      //     })
+      //     return type
+      //   })
+      // }
     },
     created() {
       // console.log(this.productStatus)
@@ -747,38 +737,32 @@
       this.sys_user_del = this.permissions['sys_user_del']
     },
     methods: {
-      productTypeFilter(type) {
-        fetchProductTypeList().then(res => { // 获取产品类型
-          let obj = {}
-          res.data.forEach((val, idx) => {
-            let key = val.productTypeId
-            obj[key] = val.name
-
-            type = obj[type]
-          })
-          return type
-        })
-      },
       getList() {
         this.listLoading = true
-        fetchProductTypeList().then(res => { // 获取产品类型
-          this.productTypes = res.data
-        })
+        
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         fetchList(this.listQuery).then(response => {
-          let list = response.data.records
+          this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
-          list.forEach(item => {
-            let obj = {}
-            // fetchProductTypeList().then(res => { // 获取产品类型
-            this.productTypes.forEach((val, idx) => {
-              let key = val.productTypeId
-              obj[key] = val.name
+          fetchProductTypeList().then(res => { // 获取产品类型
+            this.productTypes = res.data
+            this.list.forEach(item => {
+              item.productTypeId = transformText(this.productTypes, item.productTypeId)
+              item.productStatus = transformText(this.productStatus, item.productStatus)
             })
-            item.productTypeId = obj[item.productTypeId]
           })
-          this.list = list
+          // list.forEach(item => {
+          //   let obj = {}
+          //   // fetchProductTypeList().then(res => { // 获取产品类型
+          //   this.productTypes.forEach((val, idx) => {
+          //     let key = val.productTypeId
+          //     obj[key] = val.name
+          //   })
+          //   item.productTypeId = obj[item.productTypeId]
+          //   // item.productRiskLevel = transformText(this.productRiskLevel, item.productRiskLevel)
+          // })
+          // this.list = list
         })
         fetchCurrency(this.listQuery).then(response => {
           this.currencyList = response.data.records
