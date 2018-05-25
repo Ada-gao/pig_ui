@@ -36,18 +36,17 @@ service.interceptors.response.use(
     if (res.status === 478 || res.status === 403) {
       message(res.status + '： ' + res.data.msg, 'error')
     } else if (res.status === 400) {
-      message(res.status + '： ' + res.data.error_description, 'error')
-    } else if (res.status === 202 ) { //三方未绑定
-      this.$router.push({path: '/'})
-    } else if (res.status === 503 ) {//服务异常
+      message(res.status + '： ' + (res.data.error_description || res.data.msg), 'error')
+    } else if (res.status === 202) { // 三方未绑定
+      this.$router.push({ path: '/' })
+    } else if (res.status === 503) { // 服务异常
       message(res.status + '： ' + res.data, 'error')
     } else {
-      message(res.status + '： ' + res.data.message, 'error')
+      message(res.status + '： ' + (res.data.message || res.data.msg), 'error')
     }
     return Promise.reject(error)
   }
 )
-
 
 export function message(text, type) {
   Message({
