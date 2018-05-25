@@ -157,14 +157,14 @@
         </el-col>
         <el-col :span="22">
           <el-form-item label="银行卡截图" prop="cardPic">
-            <el-col :span="8">
+            <el-col :span="5">
               <el-card>
-                <img :src="bankcardList.cardFrontUrl" alt="">
+                <img style="width: 100%" :src="bankcardList.cardFrontUrl" alt="">
               </el-card>
             </el-col>
-            <el-col :span="8" style="margin-left: 10%">
+            <el-col :span="5" style="margin-left: 5%">
               <el-card>
-                <img :src="bankcardList.cardBackUrl" alt="">
+                <img style="width: 100%" :src="bankcardList.cardBackUrl" alt="">
               </el-card>
             </el-col>
             <!-- <el-card>
