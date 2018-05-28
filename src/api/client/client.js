@@ -78,7 +78,7 @@ export function addObj(obj) {
 export function getObj(clientId) {
   return request({
     url: '/client/client/' + clientId,
-    method: 'get'
+    method: 'get',
   })
 }
 

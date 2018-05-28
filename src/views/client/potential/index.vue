@@ -619,7 +619,7 @@
       },
       handleRouter(id) { // 查看跳转详情
         this.$router.push({
-          path: '/client/customer/detail/' + id
+          path: '/client/detail/' + id
         })
       },
       handleUpdate(row) { // 编辑查询

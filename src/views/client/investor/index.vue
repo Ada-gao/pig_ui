@@ -26,7 +26,7 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
+        <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
           <el-form-item label="投资者类型">
             <el-select class="filter-item" v-model="listQuery.clientType" placeholder="请选择">
               <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
@@ -34,8 +34,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
+        </el-col> -->
+        <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
           <el-form-item label="资产规模区间">
             <el-input
               style="width: 48%; margin-right: 2%"
@@ -50,7 +50,7 @@
               v-model="listQuery.amountEnd">
             </el-input>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="搜索">
             <el-input
@@ -82,7 +82,7 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="国籍">
             <el-select class="filter-item" v-model="listQuery.nationality" placeholder="请选择">
               <el-option v-for="item in nationalityType" :key="item.value" :value="item.value" :label="item.label">
@@ -101,7 +101,7 @@
               @change="handleChange">
             </el-cascader>
           </el-form-item>
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row style="text-align: center;">
         <el-button type="info" style="padding: 10px 60px;" @click="handleFilter">查询</el-button>
@@ -171,15 +171,9 @@
         </template>
       </el-table-column> -->
 
-      <el-table-column align="center" label="投资者类型（风险级别）">
+      <el-table-column align="center" label="客户类型">
         <template slot-scope="scope">
           <span>{{scope.row.clientType | certificationTypeFilter}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="资产管理规模">
-        <template slot-scope="scope">
-          <span>{{scope.row.assetAmount}}</span>
         </template>
       </el-table-column>
 
@@ -229,7 +223,7 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/client'
+  import { fetchList, getObj, putObj } from '@/api/client/investor'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
@@ -289,7 +283,10 @@
         listQuery: {
           page: 1,
           limit: 20,
-          type: 1 // 1：客户，0：潜客
+          // clientType: 0 // 1：专业，0：普通
+          certificationType: 0, //0: 普通， 1: 专业
+          certificationStatus: 1,
+          realNameStatus: 2 // 实名认证
         },
         role: undefined,
         form: {
@@ -459,9 +456,9 @@
         if(this.deptId.length) {
           this.listQuery.deptId = this.deptId[this.deptId.length - 1]
         }
-        let amountStart = this.listQuery.amountStart || -1
-        let amountEnd = this.listQuery.amountEnd || -1
-        this.listQuery.amount = [amountStart, amountEnd]
+        // let amountStart = this.listQuery.amountStart || -1
+        // let amountEnd = this.listQuery.amountEnd || -1
+        // this.listQuery.amount = [amountStart, amountEnd]
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
@@ -515,7 +512,7 @@
       },
       handleRouter(id) { // 查看跳转详情
         this.$router.push({
-          path: '/client/customer/detail/' + id
+          path: '/client/detail/' + id
         })
       },
       handleUpdate(row) { // 编辑查询

@@ -130,11 +130,11 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/client'
+  import { fetchList, getObj } from '@/api/client/realname'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime } from '@/utils'
+  import { parseTime, transformText } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -170,7 +170,7 @@
         listQuery: {
           page: 1,
           limit: 20,
-          type: 1 // 1：客户，0：潜客
+          realNameStatus: 1 // 待审核
         },
         role: undefined,
         dialogFormVisible: false,
@@ -210,8 +210,8 @@
         'certificationType',
         'permissions',
         'genderType',
-        'idTypeOptions',
-        'delFlagOptions'
+        'delFlagOptions',
+        'realnameStatus'
       ])
     },
     created() {
@@ -243,12 +243,7 @@
             })
             item.gender = obj[item.gender]
 
-            let objIdType = {}
-            this.idTypeOptions.forEach((val, idx) => { // 证件类型
-              let key = val.value
-              objIdType[key] = val.label
-            })
-            item.idType = objIdType[item.idType]
+            item.realnameStatus = transformText(this.realnameStatus, item.realnameStatus)
           })
         })
       },
@@ -278,7 +273,7 @@
       },
       handleRouter(id) { // 查看跳转详情
         this.$router.push({
-          path: '/client/customer/detail/' + id
+          path: '/client/realnameDetail/' + id
         })
       },
       handleUpdate(row) { // 编辑查询

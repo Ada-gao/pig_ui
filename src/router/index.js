@@ -29,6 +29,35 @@ export const constantRouterMap = [
     children: [
       { path: 'dashboard', component: _import('dashboard/index'), name: '首页', meta: { title: '首页', icon: 'dashboard', noCache: true }},
       { path: 'upload', component: _import('admin/user/info'), name: '修改信息', meta: { title: '修改信息', icon: '', noCache: true }}]
+  },
+  {
+    menuId: 19,
+    path: '/client',
+    component: Layout,
+    name: '客户管理',
+    hidden: true,
+    redirect: '/client/potential',
+    // icon: 'table',
+    meta: {
+      title: '客户管理',
+      icon: 'table'
+    },
+    children: [
+      { 
+        path: 'detail/:id',
+        component: _import('client/customer/detail'),
+        name: '详情页',
+        meta: { title: '客户详情', icon: '', noCache: true },
+        hidden: true
+      },
+      { 
+        path: 'realnameDetail/:id',
+        component: _import('client/realname/detail'),
+        name: '详情页',
+        meta: { title: '实名认证审核信息', icon: '', noCache: true },
+        hidden: true
+      }
+    ]
   }
 ]
 
@@ -59,7 +88,7 @@ export const asyncRouterMap = [
       { menuId: 10, path: 'dept', component: _import('admin/dept/index'), name: '部门管理', meta: { title: '部门管理', icon: 'dept' }},
       { menuId: 9, path: 'dict', component: _import('admin/dict/index'), name: '字典管理', meta: { title: '字典管理', icon: 'dict' }},
       { menuId: 8, path: 'log', component: _import('admin/log/index'), name: '日志管理', meta: { title: '日志管理', icon: 'log' }},
-      { menuId: 100, path: 'uploadUser', component: _import('admin/user/uploadExcel'), name: '用户批量导入', meta: { title: '用户批量导入', icon: 'user' }}
+      { menuId: 2, path: 'uploadUser', component: _import('admin/user/uploadExcel'), name: '用户批量导入', meta: { title: '用户批量导入', icon: 'user' }}
     ]
   },
   {
@@ -132,9 +161,10 @@ export const asyncRouterMap = [
     children: [
       { menuId: 19, path: 'potential', component: _import('client/potential/index'), name: '潜客列表', meta: { title: '潜客列表', icon: 'user' }},
       { menuId: 20, path: 'customer', component: _import('client/customer/index'), name: '客户列表', meta: { title: '客户列表', icon: 'user' }},
-      { menuId: 100, path: 'realname', component: _import('client/realname/index'), name: '实名认证审核', meta: { title: '实名认证审核', icon: 'user' }},
-      { menuId: 100, path: 'investor', component: _import('client/investor/index'), name: '普通投资者审核', meta: { title: '普通投资者审核', icon: 'user' }},
-      { menuId: 22, path: 'customer/detail/:id', component: _import('client/customer/detail'), name: '客户详情', meta: { title: '客户详情', icon: 'user' }},
+      { menuId: 21, path: 'realname', component: _import('client/realname/index'), name: '实名认证审核', meta: { title: '实名认证审核', icon: 'user' }},
+      { menuId: 22, path: 'investor', component: _import('client/investor/index'), name: '普通投资者审核', meta: { title: '普通投资者审核', icon: 'user' }},
+      { menuId: 23, path: 'allocated', component: _import('client/allocated/index'), name: '待分配客户', meta: { title: '待分配客户', icon: 'user' }},
+      // { menuId: 22, path: 'detail/:id', component: _import('client/customer/detail'), name: '客户详情', meta: { title: '客户详情', icon: 'user' }},
       // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '实名认证审核', meta: { title: '实名认证审核', icon: 'user' }},
       // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '普通投资者审核', meta: { title: '普通投资者审核', icon: 'user' }},
       // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '专业投资者审核', meta: { title: '专业投资者审核', icon: 'user' }},

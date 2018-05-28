@@ -188,24 +188,21 @@
       </el-row>
 
       <div style="border-bottom: 1px solid #ccc"></div>
-      
-      <h5>客户备注</h5>
-      <el-table :data="remarkList" element-loading-text="给我一点时间" border fit
-        highlight-current-row style="width: 100%">
-        <el-table-column align="center" label="备注信息">
-          <template slot-scope="scope">
-            <span>{{scope.row.remark}}</span>
-          </template>
-        </el-table-column>
-      </el-table>
-      
-
-      <div style="border-bottom: 1px solid #ccc"></div>
+      <el-row>
+        <el-col>
+          <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="请输入内容"
+            v-model="failReason">
+          </el-input>
+        </el-col>
+      </el-row>
     </el-form>
 
-    <div v-if="!nextToUpdate" slot="footer" class="dialog-footer" style="text-align: right;">
-      <el-button @click="cancel('form')">通 过</el-button>
-      <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">不通过</el-button>
+    <div v-if="!nextToUpdate" slot="footer" class="dialog-footer" style="text-align: center;">
+      <el-button @click="submitResult('2')">通 过</el-button>
+      <el-button v-if="dialogStatus=='create'" type="primary" @click="submitResult('3')">不通过</el-button>
       <!-- <el-button v-else type="primary" @click="update('form')">修 改</el-button> -->
     </div>
 
@@ -213,9 +210,8 @@
 </template>
 
 <script>
-  import { 
-    fetchList, getObj, addObj, putObj, delObj, getClientStatus, getClientRemark, getClientPlanner, getClientBankcard, getClientProducts
-  } from '@/api/client/client'
+  import { fetchList, getObj, getClientStatus, getClientBankcard, putObj } from '@/api/client/realname'
+  // import { getClientStatus, getClientBankcard } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
@@ -326,7 +322,8 @@
         productList: [],
         realnameStatus: '',
         idType: '',
-        isCertificationType: ''
+        isCertificationType: '',
+        failReason: ''
       }
     },
     computed: {
@@ -360,10 +357,15 @@
     methods: {
       getList() {
         let id = this.$route.params.id
-        getClientStatus(id).then(response => {
+        let obj = {
+          clientId: id,
+          type: 1
+        }
+        getClientStatus(id, '1').then(response => {
           this.clientStatus = response.data
         })
-        getObj(id).then(response => {
+
+        getObj(id, '1').then(response => {
           this.form = response.data
 
           this.realnameStatus = this.form.realnameStatus != 0 ? true : false // 认证状态判断
@@ -376,27 +378,36 @@
           this.form.idType = transformText(this.idTypeOptions, this.form.idType)
           this.form.nationality = transformText(this.nationality, this.form.nationality)
           if(this.realnameStatus) {
-            getClientBankcard(id).then(response => {
+            getClientBankcard(id, '1').then(response => {
               this.bankcardList = response.data
             })
           }
         })
-        getClientRemark(id).then(response => {
-          this.remarkList = response.data
-        })
-        getClientPlanner(id).then(response => {
-          this.plannerList = response.data
-        })
-       
-        getClientProducts(id).then(response => {
-          this.productList = response.data
-        })
+        
       },
       handleDept() {
         console.log('产品状态')
       },
-      create(formName) { // 产品新增
-        this.nextToUpdate = true
+      submitResult(result) { // 
+        if(result == 3 & !this.failReason) return false
+        let params = {
+          // failId: this.form.clientId,
+          failReason: this.failReason,
+          result: result
+        }
+        putObj(this.form.clientId, params).then(response => {
+          if(response.code === 0) {
+            this.$notify({
+              title: '成功',
+              message: '审核完成',
+              type: 'success',
+              duration: 2000
+            })
+            this.$router.push({path: '/client/realname'})
+          }
+          
+        })
+        // this.nextToUpdate = true
         // const set = this.$refs
         // this.form.role = this.role
         // set[formName].validate(valid => {
@@ -450,74 +461,6 @@
           password: '',
           role: undefined
         }
-      },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
-      },
-      handleExceed(files, fileList) {
-        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-      },
-      // beforeRemove(file, fileList) {
-      //   return this.$confirm(`确定移除 ${ file.name }？`);
-      // },
-      beforeUpload(file) { // 限制上传文档类型
-        console.log(file)
-        const isFile = file.type === 'application/pdf'
-        if (!isFile) {
-          this.$message.error('只能上传pdf文档')
-        }
-        return isFile
-      },
-      handleChange1(file, fileList) { // 上传材料，列表展示
-        this.fileList1 = fileList.slice(-3)
-      },
-      handleSelectionChange1(selection, row) { // 选中材料
-        let uid = row.uid
-        this.indexList.push(uid)
-      },
-      delfiles1() { // 删除材料
-        this.indexList.forEach(id => {
-          this.fileList1.forEach((item, index) => {
-            if(item.uid === id) {
-              this.fileList1.splice(index, 1)
-            }
-          })
-        })
-      },
-      handleChange2(file, fileList) { // 上传材料，列表展示
-        this.fileList2 = fileList.slice(-3)
-      },
-      handleSelectionChange2(selection, row) { // 选中材料
-        let uid = row.uid
-        this.indexList.push(uid)
-      },
-      delfiles2() { // 删除材料
-        this.indexList.forEach(id => {
-          this.fileList2.forEach((item, index) => {
-            if(item.uid === id) {
-              this.fileList2.splice(index, 1)
-            }
-          })
-        })
-      },
-      handleChange3(file, fileList) { // 上传材料，列表展示
-        this.fileList3 = fileList.slice(-3)
-      },
-      handleSelectionChange3(selection, row) { // 选中材料
-        let uid = row.uid
-        this.indexList.push(uid)
-      },
-      delfiles3() { // 删除材料
-        this.indexList.forEach(id => {
-          this.fileList3.forEach((item, index) => {
-            if(item.uid === id) {
-              this.fileList3.splice(index, 1)
-            }
-          })
-        })
       }
     }
     // mounted() {
