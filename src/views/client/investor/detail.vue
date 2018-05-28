@@ -2,156 +2,95 @@
   <div class="app-container calendar-list-container">
 
     <h3 v-if="type_is_update==1">修改产品</h3>
-    <h3 v-else>客户审核信息</h3>
-    <el-form v-if="!nextToUpdate" :model="form" :rules="rules" ref="form" label-width="100px">
+    <h3 v-else>审核信息</h3>
+    <el-form v-if="!nextToUpdate" :model="form" ref="form" label-width="100px">
       <div style="border-bottom: 1px solid #ccc"></div>
       <h5>风险测评问卷审核</h5>
-      <el-row :gutter="20">
-        <el-col :span="11">
-          <el-form-item label="姓名" prop="name">
-            <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="手机号" prop="mobile">
-            <el-input v-model="form.mobile" placeholder="请输入手机号"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="性别" prop="gender">
-            <el-select class="filter-item" v-model="form.gender" placeholder="请选择">
-              <el-option v-for="item in genderType" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
+      <el-table :data="certInfo" v-loading="listLoading" element-loading-text="给我一点时间" border fit
+                highlight-current-row style="width: 100%">
+        <el-table-column align="center" label="风险评级">
+          <template slot-scope="scope">
+            <el-select v-model="scope.row.riskLevel" @change="handleChange">
+              <el-option label="c1" value="c1"></el-option>
+              <el-option label="c2" value="c2"></el-option>
+              <el-option label="c3" value="c3"></el-option>
+              <el-option label="c4" value="c4"></el-option>
+              <el-option label="c5" value="c5"></el-option>
             </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="国籍" prop="nationality">
-            <el-select class="filter-item" v-model="form.nationality" placeholder="请选择">
-              <el-option v-for="item in nationality" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="常住地区" prop="city">
-            <el-input v-model="form.city" placeholder="请输入地区"></el-input>
-            <!-- <el-cascader
-              size="large"
-              :options="options"
-              :props="defaultProps2"
-              v-model="form.city"
-              @change="handleChange">
-            </el-cascader> -->
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="form.email" placeholder="请输入邮箱"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="微信" prop="wechat">
-            <el-input v-model="form.wechat" placeholder="请输入微信"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="理财师" prop="userName">
-            <el-input v-model="form.userName" placeholder="请输入理财师" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="部门" prop="deptName">
-            <el-input v-model="form.deptName" placeholder="请输入部门" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <!-- <el-col :span="11">
-          <el-form-item label="管理资产规模" prop="assetAmount">
-            <el-input v-model="form.assetAmount" placeholder="请输入资产规模" readonly></el-input>
-          </el-form-item>
-        </el-col> -->
-      </el-row>
+          </template>
+        </el-table-column>
 
-      <div style="border-bottom: 1px solid #ccc"></div>
+        <el-table-column label="风险测评问卷（图片）">
+          <template slot-scope="scope">
+            <div v-for="item in scope.row.urls" style="display: inline-block; margin-right: 10px">
+              <img :src="item" alt="" style="width: 50px">
+            </div>
+          </template>
+        </el-table-column>
+
+      </el-table>
+
+      <div style="border-bottom: 1px solid #ccc; margin-top: 20px"></div>
       
       <h5>过往客户审核日志</h5>
-      <el-row :gutter="20">
-        <el-col :span="11">
-          <el-form-item label="实名认证状态" prop="username">
-            <el-select class="filter-item" v-model="form.realnameStatus" placeholder="请选择">
-              <el-option v-for="item in certificationStatus" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="投资者身份" prop="certificationType">
-            <el-select class="filter-item" v-model="form.certificationType" placeholder="请选择">
-              <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="证件类型" prop="idType">
-            <el-select class="filter-item" v-model="form.idType" placeholder="请选择">
-              <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11" v-if="idType">
-          <el-form-item label="证件号码" prop="idNo">
-            <el-input v-model="form.idNo" placeholder="请输入证件号码" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11" v-if="idType">
-          <el-form-item label="出生日期" prop="date">
-            <el-date-picker
-              v-model="clientStatus.birthday"
-              type="birthday"
-              placeholder="选择日期">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11" v-if="idType">
-          <el-form-item label="证件有效期" prop="date">
-            <!-- idStartDate -->
-            <el-date-picker
-              v-model="clientStatus.idExpiration"
-              type="date"
-              placeholder="选择日期">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11" v-if="idType">
-          <el-form-item label="地址" prop="address">
-            <el-input v-model="form.address" placeholder="请输入地址" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11" v-if="idType">
-          <el-form-item label="身份证截图" prop="address">
-            <el-input v-model="form.address" placeholder="" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <!-- <el-col :span="11" v-if="isCertificationType & idType">
-          <el-form-item label="风险测评" prop="riskLevel">
-            <el-input v-model="clientStatus.riskLevel" placeholder="请输入风险测评" readonly></el-input>
-          </el-form-item>
-        </el-col> -->
-      </el-row>
+      <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
+                highlight-current-row style="width: 100%">
 
-      <div style="border-bottom: 1px solid #ccc"></div>
+        <el-table-column align="center" label="提交时间">
+          <template slot-scope="scope">
+            <span>{{scope.row.commitDate}}</span>
+          </template>
+        </el-table-column>
+        
+        <el-table-column align="center" label="认证客户">
+          <template slot-scope="scope">
+            <span>{{scope.row.clientName}}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="投资者类型">
+          <template slot-scope="scope">
+            <span>{{scope.row.certificationType}}</span>
+          </template>
+        </el-table-column>
+        
+        <el-table-column align="center" label="审核人">
+          <template slot-scope="scope">
+            <span>{{scope.row.auditName}}</span>
+          </template>
+        </el-table-column>
+        
+        <el-table-column align="center" label="审核时间">
+          <template slot-scope="scope">
+            <span>{{scope.row.auditDate}}</span>
+          </template>
+        </el-table-column>
+        
+        <el-table-column align="center" label="审核结果">
+          <template slot-scope="scope">
+            <span>{{scope.row.auditFailReason}}</span>
+          </template>
+        </el-table-column>
+
+      </el-table>
+
+      <div style="border-bottom: 1px solid #ccc; margin-top: 20px"></div>
+      <h5>备注：</h5>
+      <el-row>
+        <el-col>
+          <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="请输入内容"
+            v-model="failReason">
+          </el-input>
+        </el-col>
+      </el-row>
     </el-form>
 
-    <div v-if="!nextToUpdate" slot="footer" class="dialog-footer" style="text-align: right;">
-      <el-button @click="cancel('form')">通 过</el-button>
-      <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">不通过</el-button>
+    <div v-if="!nextToUpdate" slot="footer" class="dialog-footer" style="text-align: center;">
+      <el-button @click="submitResult('2')">通 过</el-button>
+      <el-button v-if="dialogStatus=='create'" type="primary" @click="submitResult('3')">不通过</el-button>
       <!-- <el-button v-else type="primary" @click="update('form')">修 改</el-button> -->
     </div>
 
@@ -159,10 +98,7 @@
 </template>
 
 <script>
-  import { 
-    fetchList, getObj, addObj, putObj, delObj, getClientStatus, getClientRemark, getClientPlanner, getClientBankcard, getClientProducts
-  } from '@/api/client/client'
-  import { deptRoleList, fetchDeptTree } from '@/api/role'
+  import { getCertHistory, getCertInfo, putObj } from '@/api/client/investor'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
   import { transformText } from '@/utils'
@@ -193,48 +129,6 @@
         },
         role: undefined,
         form: {},
-        rules: {
-          username: [
-            {
-              required: false,
-              message: '请输入账户',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 20,
-              message: '长度在 3 到 20 个字符',
-              trigger: 'blur'
-            }
-          ],
-          password: [
-            {
-              required: false,
-              message: '请输入密码',
-              trigger: 'blur'
-            },
-            {
-              min: 5,
-              max: 20,
-              message: '长度在 5 到 20 个字符',
-              trigger: 'blur'
-            }
-          ],
-          deptId: [
-            {
-              required: false,
-              message: '请选择部门',
-              trigger: 'blur'
-            }
-          ],
-          role: [
-            {
-              required: false,
-              message: '请选择角色',
-              trigger: 'blur'
-            }
-          ]
-        },
         statusOptions: ['0', '1'],
         rolesOptions: [],
         nextToUpdate: false,
@@ -256,23 +150,23 @@
         IDsType: '',
         entryDate: '',
         maritalStatus: '',
-        fileList: [],
-        fileList1: [],
-        fileList2: [],
-        fileList3: [],
         indexList: [],
         type_is_update: '',
         productStus: '',
-        clientStatus: {
-          riskLevel: ''
-        },
-        remarkList: [],
-        plannerList: [],
-        bankcardList: [],
-        productList: [],
         realnameStatus: '',
         idType: '',
-        isCertificationType: ''
+        isCertificationType: '',
+        list: [],
+        certInfo: [
+          {
+              clientId: 152,
+              riskLevel: null,
+              urls: ['/static/img/01.png', '/static/img/01.png']
+            }
+        ],
+        failReason: '',
+        riskLevel: '',
+        clientId: ''
       }
     },
     computed: {
@@ -305,171 +199,65 @@
     },
     methods: {
       getList() {
-        let id = this.$route.params.id
-        getClientStatus(id).then(response => {
-          this.clientStatus = response.data
+        this.clientId = this.$route.params.id
+        let type = this.$route.params.type
+        // let params = {
+        //   type: '0' // 0: 普通投资者
+        // }
+      
+        getCertHistory(this.clientId, type).then(response => {
+          this.list = response.data
+          this.listLoading = false
         })
-        getObj(id).then(response => {
-          this.form = response.data
-
-          this.realnameStatus = this.form.realnameStatus == 2 ? true : false // 认证状态判断
-          this.idType = this.form.idType == 0 ? true : false // 证件类型判断(0: 身份证)
-          this.isCertificationType = this.form.certificationType == 0 ? true : false// 投资者类型判断
-
-          this.form.gender = transformText(this.genderType, this.form.gender)
-          this.form.realnameStatus = transformText(this.certificationStatus, this.form.realnameStatus)
-          this.form.certificationType = transformText(this.certificationType, this.form.certificationType)
-          this.form.idType = transformText(this.idTypeOptions, this.form.idType)
-          this.form.nationality = transformText(this.nationality, this.form.nationality)
-          if(this.realnameStatus) {
-            getClientBankcard(id).then(response => {
-              this.bankcardList = response.data
-            })
-          }
-        })
-        getClientRemark(id).then(response => {
-          this.remarkList = response.data
-        })
-        getClientPlanner(id).then(response => {
-          this.plannerList = response.data
+        getCertInfo(this.clientId, type).then(response => {
+          this.listLoading = false
+          // this.certInfo = response.data
+          this.certInfo = [
+            {
+              clientId: 152,
+              riskLevel: null,
+              urls: ['/static/img/01.png', '/static/img/01.png']
+            }
+          ]
+          // this.clientId = this.certInfo[0].clientId
         })
        
-        getClientProducts(id).then(response => {
-          this.productList = response.data
-        })
       },
-      handleDept() {
-        console.log('产品状态')
-      },
-      create(formName) { // 产品新增
-        this.nextToUpdate = true
-        // const set = this.$refs
-        // this.form.role = this.role
-        // set[formName].validate(valid => {
-        //   if (valid) {
-        //     addObj(this.form)
-        //       .then(() => {
-        //         this.nextToUpdate = true
-        //         this.getList()
-        //         this.$notify({
-        //           title: '成功',
-        //           message: '创建成功',
-        //           type: 'success',
-        //           duration: 2000
-        //         })
-        //       })
-        //   } else {
-        //     return false
-        //   }
-        // })
-      },
-      cancel(formName) {
-        this.dialogFormVisible = false
-        this.$refs[formName].resetFields()
-      },
-      update(formName) {
-        const set = this.$refs
-        this.form.role = this.role
-        set[formName].validate(valid => {
-          if (valid) {
-            this.dialogFormVisible = false
-            this.form.password = undefined
-            putObj(this.form).then(() => {
-              this.nextToUpdate = true
-              this.getList()
-              this.$notify({
-                title: '成功',
-                message: '修改成功',
-                type: 'success',
-                duration: 2000
-              })
+      submitResult(result) { // 
+        if(result == 3 & !this.failReason) return false
+        let params = {
+          // failId: this.form.clientId,
+          failReason: this.failReason,
+          result: result,
+          riskLevel: this.riskLevel
+        }
+        
+        window.history.back() // 测试后修改
+
+        putObj(this.clientId, params).then(response => {
+          // this.$notify({
+            //   title: '成功',
+            //   message: response.msg,
+            //   type: 'success',
+            //   duration: 2000
+            // })
+          
+          console.log(response.code)
+          if(response.code === 0) {
+            this.$notify({
+              title: '成功',
+              message: '审核完成',
+              type: 'success',
+              duration: 2000
             })
-          } else {
-            return false
+            // this.$router.push({path: '/client/investor'})
           }
         })
       },
-      resetTemp() {
-        this.form = {
-          id: undefined,
-          username: '',
-          password: '',
-          role: undefined
-        }
-      },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
-      },
-      handleExceed(files, fileList) {
-        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-      },
-      // beforeRemove(file, fileList) {
-      //   return this.$confirm(`确定移除 ${ file.name }？`);
-      // },
-      beforeUpload(file) { // 限制上传文档类型
-        console.log(file)
-        const isFile = file.type === 'application/pdf'
-        if (!isFile) {
-          this.$message.error('只能上传pdf文档')
-        }
-        return isFile
-      },
-      handleChange1(file, fileList) { // 上传材料，列表展示
-        this.fileList1 = fileList.slice(-3)
-      },
-      handleSelectionChange1(selection, row) { // 选中材料
-        let uid = row.uid
-        this.indexList.push(uid)
-      },
-      delfiles1() { // 删除材料
-        this.indexList.forEach(id => {
-          this.fileList1.forEach((item, index) => {
-            if(item.uid === id) {
-              this.fileList1.splice(index, 1)
-            }
-          })
-        })
-      },
-      handleChange2(file, fileList) { // 上传材料，列表展示
-        this.fileList2 = fileList.slice(-3)
-      },
-      handleSelectionChange2(selection, row) { // 选中材料
-        let uid = row.uid
-        this.indexList.push(uid)
-      },
-      delfiles2() { // 删除材料
-        this.indexList.forEach(id => {
-          this.fileList2.forEach((item, index) => {
-            if(item.uid === id) {
-              this.fileList2.splice(index, 1)
-            }
-          })
-        })
-      },
-      handleChange3(file, fileList) { // 上传材料，列表展示
-        this.fileList3 = fileList.slice(-3)
-      },
-      handleSelectionChange3(selection, row) { // 选中材料
-        let uid = row.uid
-        this.indexList.push(uid)
-      },
-      delfiles3() { // 删除材料
-        this.indexList.forEach(id => {
-          this.fileList3.forEach((item, index) => {
-            if(item.uid === id) {
-              this.fileList3.splice(index, 1)
-            }
-          })
-        })
+      handleChange(val) {
+        this.riskLevel = val
       }
     }
-    // mounted() {
-    //   console.log(this.$route.params)
-    //   this.type_is_update = this.$route.params
-    // }
   }
 </script>
 

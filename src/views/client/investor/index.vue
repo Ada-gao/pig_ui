@@ -223,7 +223,7 @@
 </template>
 
 <script>
-  import { fetchList, getObj, putObj } from '@/api/client/investor'
+  import { fetchList } from '@/api/client/investor'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
@@ -512,7 +512,7 @@
       },
       handleRouter(id) { // 查看跳转详情
         this.$router.push({
-          path: '/client/detail/' + id
+          path: '/client/investorDetail/' + id + '/0'
         })
       },
       handleUpdate(row) { // 编辑查询
@@ -538,10 +538,10 @@
         this.listQuery = {
           page: 1,
           limit: 20,
-          username: '',
-          positionId: '',
-          delFlag: '',
-          type: 1
+          // clientType: 0 // 1：专业，0：普通
+          certificationType: 0, //0: 普通， 1: 专业
+          certificationStatus: 1,
+          realNameStatus: 2 // 实名认证
         },
         this.entryDate = []
         this.handleFilter()

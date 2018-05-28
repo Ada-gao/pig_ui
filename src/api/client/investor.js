@@ -12,12 +12,11 @@ export function fetchList(query) {
 }
 
 /**
- * 查询实名认证审核详情
- * type: 1
+ * 查询投资者认证资料
  */
-export function getObj(clientId, type) {
+export function getCertInfo(clientId, type) {
   return request({
-    url: '/client/client/' + clientId,
+    url: '/client/' + clientId + '/certInfo',
     method: 'get',
     params: {
       type: type
@@ -26,11 +25,11 @@ export function getObj(clientId, type) {
 }
 
 /**
- * 查询客户银行卡信息
+ * 查询用户审核历史
  */
-export function getClientBankcard(clientId, type) {
+export function getCertHistory(clientId, type) {
   return request({
-    url: '/client/bankcard/' + clientId ,
+    url: '/client/' + clientId + '/certHistory',
     method: 'get',
     params: {
       type: type
@@ -39,24 +38,11 @@ export function getClientBankcard(clientId, type) {
 }
 
 /**
- * 查询客户状态
- */
-export function getClientStatus(clientId, type) {
-  return request({
-    url: '/client/client/status/' + clientId,
-    method: 'get',
-    params: {
-      type: type
-    }
-  })
-}
-
-/**
- * 实名认证审核
+ * 投资者认证审核
  */
 export function putObj(clientId, query) {
   return request({
-    url: '/client/' + clientId + '/realname',
+    url: '/client/' + clientId + '/investor',
     method: 'put',
     data: query
   })

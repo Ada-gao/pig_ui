@@ -396,6 +396,7 @@
           result: result
         }
         putObj(this.form.clientId, params).then(response => {
+          console.log(response.code)
           if(response.code === 0) {
             this.$notify({
               title: '成功',
@@ -405,7 +406,6 @@
             })
             this.$router.push({path: '/client/realname'})
           }
-          
         })
         // this.nextToUpdate = true
         // const set = this.$refs

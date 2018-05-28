@@ -26,46 +26,16 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
-          <el-form-item label="实名认证状态">
+        <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
+          <el-form-item label="投资者类型">
             <el-select class="filter-item" v-model="listQuery.clientType" placeholder="请选择">
               <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
           </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="部门">
-            <el-cascader
-              style="width: 100%"
-              :options="treeDeptData"
-              :props="defaultProps"
-              :show-all-levels="false"
-              change-on-select
-              v-model="deptId"
-            ></el-cascader>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索客户证件号码"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.idNo">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="客户类型">
-            <el-select class="filter-item" v-model="listQuery.nationality" placeholder="请选择">
-              <el-option v-for="item in nationalityType" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
+        </el-col> -->
+        <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
           <el-form-item label="资产规模区间">
             <el-input
               style="width: 48%; margin-right: 2%"
@@ -80,6 +50,28 @@
               v-model="listQuery.amountEnd">
             </el-input>
           </el-form-item>
+        </el-col> -->
+        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+          <el-form-item label="搜索">
+            <el-input
+              placeholder="搜索客户证件号码"
+              prefix-icon="el-icon-search"
+              v-model="listQuery.idNo">
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+          <el-form-item label="部门">
+            <!-- <input type="hidden" v-model="listQuery.deptId"/>  -->
+            <el-cascader
+              style="width: 100%"
+              :options="treeDeptData"
+              :props="defaultProps"
+              :show-all-levels="false"
+              change-on-select
+              v-model="deptId"
+            ></el-cascader>
+          </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="理财师">
@@ -90,7 +82,7 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="国籍">
             <el-select class="filter-item" v-model="listQuery.nationality" placeholder="请选择">
               <el-option v-for="item in nationalityType" :key="item.value" :value="item.value" :label="item.label">
@@ -109,7 +101,7 @@
               @change="handleChange">
             </el-cascader>
           </el-form-item>
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row style="text-align: center;">
         <el-button type="info" style="padding: 10px 60px;" @click="handleFilter">查询</el-button>
@@ -119,7 +111,7 @@
     </div>
 
     <div style="text-align: right">
-      <!-- <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
+      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
       <!-- <upload-excel-component @on-selected-file='selected'></upload-excel-component> -->
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -134,6 +126,12 @@
       <el-table-column align="center" label="客户姓名">
         <template slot-scope="scope">
           <span>{{scope.row.name}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="客户性别">
+        <template slot-scope="scope">
+          <span>{{scope.row.gender}}</span>
         </template>
       </el-table-column>
 
@@ -161,30 +159,23 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="客户类型">
+      <el-table-column align="center" label="微信号">
         <template slot-scope="scope">
-          <span>{{scope.row.clientType}}</span>
+          <span>{{scope.row.wechat}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="资产管理规模">
-        <template slot-scope="scope">
-          <span>{{scope.row.assetAmount}}</span>
-        </template>
-      </el-table-column>
-      
       <!-- <el-table-column align="center" label="实名认证状态">
         <template slot-scope="scope">
           <span>{{scope.row.realnameStatus | certificationStatusFilter}}</span>
         </template>
       </el-table-column> -->
 
-      <!-- <el-table-column align="center" label="投资者类型（风险级别）">
+      <el-table-column align="center" label="客户类型">
         <template slot-scope="scope">
           <span>{{scope.row.clientType | certificationTypeFilter}}</span>
         </template>
-      </el-table-column> -->
-
+      </el-table-column>
 
       <el-table-column align="center" label="理财师">
         <template slot-scope="scope">
@@ -211,7 +202,7 @@
                      @click="handleRouter(scope.row.clientId)">查看
           </el-button>
           <el-button v-if="sys_user_upd" size="small" type="success"
-                     @click="handleUpdate(scope.row)">分配
+                     @click="handleRouter(scope.row.clientId)">审核
           </el-button>
           <!-- <el-button v-if="sys_user_del" size="small" type="danger"
                      @click="deletes(scope.row)">删除
@@ -232,11 +223,11 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/client'
+  import { fetchList } from '@/api/client/investor'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime, transformText } from '@/utils'
+  import { parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -292,7 +283,10 @@
         listQuery: {
           page: 1,
           limit: 20,
-          type: 1 // 1：客户，0：潜客
+          // clientType: 0 // 1：专业，0：普通
+          certificationType: 1, //0: 普通， 1: 专业投资者
+          certificationStatus: 1,
+          realNameStatus: 2 // 实名认证
         },
         role: undefined,
         form: {
@@ -462,21 +456,9 @@
         if(this.deptId.length) {
           this.listQuery.deptId = this.deptId[this.deptId.length - 1]
         }
-
-        let amountStart = this.listQuery.amountStart || -1
-        let amountEnd = this.listQuery.amountEnd || -1
-        this.listQuery.amount = [amountStart, amountEnd]
-
-        // if(this.listQuery.city) {
-        //   // console.log(this.listQuery.city)
-        //   if(this.listQuery.city[1] === '市辖区') {
-        //     this.listQuery.city = this.listQuery.city[0]
-
-        //   } else if(this.listQuery.city[0].indexOf('省')) {
-        //     this.listQuery.city = this.listQuery.city[1]
-        //   }
-        // }
-        
+        // let amountStart = this.listQuery.amountStart || -1
+        // let amountEnd = this.listQuery.amountEnd || -1
+        // this.listQuery.amount = [amountStart, amountEnd]
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
@@ -496,8 +478,6 @@
               objIdType[key] = val.label
             })
             item.idType = objIdType[item.idType]
-
-            item.clientType = transformText()
           })
         })
       },
@@ -532,7 +512,7 @@
       },
       handleRouter(id) { // 查看跳转详情
         this.$router.push({
-          path: '/client/detail/' + id
+          path: '/client/investorDetail/' + id + '/1'
         })
       },
       handleUpdate(row) { // 编辑查询
@@ -558,10 +538,10 @@
         this.listQuery = {
           page: 1,
           limit: 20,
-          username: '',
-          positionId: '',
-          delFlag: '',
-          type: 1
+          // clientType: 0 // 1：专业，0：普通
+          certificationType: 1, //0: 普通， 1: 专业
+          certificationStatus: 1,
+          realNameStatus: 2 // 实名认证
         },
         this.entryDate = []
         this.handleFilter()
@@ -583,4 +563,3 @@
   width: 100%;
 }
 </style>
-
