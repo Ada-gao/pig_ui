@@ -79,12 +79,12 @@ export const asyncRouterMap = [
     menuId: 1,
     path: '/admin',
     component: Layout,
-    name: '系统管理',
+    name: '员工管理',
     hidden: false,
     redirect: '/admin/user',
     // icon: 'table',
     meta: {
-      title: '系统管理',
+      title: '员工管理',
       icon: 'table'
     },
     children: [
@@ -93,8 +93,6 @@ export const asyncRouterMap = [
       { menuId: 7, path: 'role', component: _import('admin/role/index'), name: '角色管理', meta: { title: '角色管理', icon: 'role' }},
       { menuId: 43, path: 'posi', component: _import('admin/posi/index'), name: '职位管理', meta: { title: '职位管理', icon: 'log' }},
       { menuId: 10, path: 'dept', component: _import('admin/dept/index'), name: '部门管理', meta: { title: '部门管理', icon: 'dept' }},
-      { menuId: 9, path: 'dict', component: _import('admin/dict/index'), name: '字典管理', meta: { title: '字典管理', icon: 'dict' }},
-      { menuId: 8, path: 'log', component: _import('admin/log/index'), name: '日志管理', meta: { title: '日志管理', icon: 'log' }},
       { menuId: 2, path: 'uploadUser', component: _import('admin/user/uploadExcel'), name: '用户批量导入', meta: { title: '用户批量导入', icon: 'user' }}
     ]
   },
@@ -151,6 +149,8 @@ export const asyncRouterMap = [
     },
     children: [
       { menuId: 38, path: 'currency', component: _import('admin/setting/currency'), name: '币种管理', meta: { title: '币种管理', icon: 'service' }},
+      { menuId: 9, path: 'dict', component: _import('admin/dict/index'), name: '字典管理', meta: { title: '字典管理', icon: 'dict' }},
+      { menuId: 8, path: 'log', component: _import('admin/log/index'), name: '日志管理', meta: { title: '日志管理', icon: 'log' }},
     ]
   },
   {

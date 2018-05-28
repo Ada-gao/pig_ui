@@ -266,6 +266,7 @@ export function deepClone(source) {
 
 export function transformText(source, k) {
   if (!source && typeof source !== 'object') {
+    return null
     throw new Error('error arguments', 'shallowClone')
   }
   let obj = {}
