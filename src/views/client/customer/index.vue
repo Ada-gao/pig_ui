@@ -83,7 +83,7 @@
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="国籍">
+          <el-form-item label="国籍" style="margin-bottom: 10px;">
             <el-select class="filter-item" v-model="listQuery.nationality" placeholder="请选择">
               <el-option v-for="item in nationalityType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -241,6 +241,7 @@
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import { isvalidMobile, isvalidID } from '@/utils/validate'
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
+  import Bus from '@/assets/js/bus'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
@@ -491,6 +492,7 @@
         this.$router.push({
           path: '/client/detail/' + id
         })
+        Bus.$emit('activeIndex', '/client/customer')
       },
       handleUpdate(row) { // 编辑查询
         getObj(row.userId)

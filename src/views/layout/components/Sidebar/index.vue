@@ -1,6 +1,6 @@
 <template>
   <scroll-bar>
-    <el-menu mode="vertical" unique-opened :default-active="$route.path" :collapse="isCollapse" background-color="#304156" text-color="#fff" active-text-color="#409EFF">
+    <el-menu mode="vertical" unique-opened :default-active="defaultActive" :collapse="isCollapse" background-color="#304156" text-color="#fff" active-text-color="#409EFF">
       <sidebar-item :routes="permission_routers"></sidebar-item>
     </el-menu>
   </scroll-bar>
@@ -10,6 +10,7 @@
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
 import ScrollBar from '@/components/ScrollBar'
+import Bus from '@/assets/js/bus'
 
 export default {
   components: { SidebarItem, ScrollBar },
@@ -23,6 +24,17 @@ export default {
     },
     isCollapse() {
       return !this.sidebar.opened
+    }
+  },
+  mounted() {
+    Bus.$on('activeIndex', defaultActive => {
+      this.defaultActive = defaultActive
+    })
+    console.log(this.defaultActive)
+  },
+  data() {
+    return {
+      defaultActive: this.$route.path
     }
   }
 }

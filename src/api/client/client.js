@@ -36,7 +36,7 @@ export function getClientRemark(clientId) {
  */
 export function getClientPlanner(clientId) {
   return request({
-    url: '/client/planner/' + clientId ,
+    url: '/client/' + clientId + '/planner' ,
     method: 'get'
   })
 }

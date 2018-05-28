@@ -27,7 +27,7 @@
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
-          <el-form-item label="实名认证状态">
+          <el-form-item label="实名认证状态" style="margin-bottom: 10px;">
             <el-select class="filter-item" v-model="listQuery.realNameStatus" placeholder="请选择">
               <el-option v-for="item in certificationStatus" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -151,195 +151,6 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDeptVisible">
-      <el-tree
-        class="filter-tree"
-        :data="treeDeptData"
-        :default-checked-keys="checkedKeys"
-        check-strictly
-        node-key="id"
-        highlight-current
-        ref="deptTree"
-        :props="defaultProps"
-        @node-click="getNodeData"
-      >
-      </el-tree>
-    </el-dialog>
-
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :model="form" :rules="rules" ref="form" label-width="100px">
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="姓名" prop="name">
-              <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="用户名" prop="username">
-              <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="工号" prop="empNo">
-              <el-input v-model="form.empNo" placeholder="请输入工号"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="入职日期" prop="date">
-              <el-date-picker
-                v-model="form.employeeDate"
-                type="date"
-                placeholder="选择日期">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="性别" prop="gender">
-              <el-select class="filter-item" v-model="form.gender" placeholder="请选择">
-                <el-option v-for="item in genderType" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="学历" prop="education">
-              <el-select class="filter-item" v-model="form.education" placeholder="请选择">
-                <el-option v-for="item in educationType" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="证件类型" prop="idType">
-              <el-select class="filter-item" v-model="form.idType" placeholder="请选择">
-                <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="婚姻状况" prop="marriageStatus">
-              <el-select class="filter-item" v-model="form.marriageStatus" placeholder="请选择">
-                <el-option v-for="item in marriageStatusOptions" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="证件号码" prop="idNo">
-              <el-input v-model="form.idNo" :maxlength="18" placeholder="请输入证件号码"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="手机号" prop="mobile">
-              <el-input v-model="form.mobile" :maxlength="11" placeholder="请输入手机号码"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="部门" prop="deptName">
-              <!-- deptId -->
-              <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
-              <input type="hidden" v-model="form.deptId"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="角色" prop="role">
-              <!-- role -->
-              <el-select class="filter-item" v-model="role" placeholder="请选择">
-                <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
-                  <span style="float: left">{{ item.roleDesc }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="职位" prop="positionId">
-              <!-- positionId -->
-              <el-select class="filter-item" v-model="form.positionName" placeholder="请选择" @focus="handlePosition()">
-                <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId" :disabled="isDisabled[item.delFlag]">
-                  <span style="float: left">{{ item.positionName }}</span>
-                  <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span> -->
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="邮箱" prop="email">
-              <el-input v-model="form.email"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-          <el-col :span="11">
-            <el-form-item label="简历" prop="resumeUrl">
-              <!-- <el-input v-model="form.role"></el-input> -->
-              <el-upload
-                class="upload-demo"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                multiple
-                :limit="3"
-                :on-exceed="handleExceed"
-                :file-list="fileList"
-                :show-file-list="true"
-                :before-upload="beforeUpload"
-                accept="file">
-                <el-button size="small" type="primary">上传简历</el-button>
-                <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-              </el-upload>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="状态" v-if="dialogStatus == 'update' && sys_user_del " prop="delFlag" >
-              <el-select class="filter-item" v-model="form.delFlag" placeholder="请选择">
-                <el-option v-for="item in statusOptions" :key="item" :label="item | statusFilter" :value="item"> </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="22">
-            <el-form-item label="备注" prop="remark">
-              <el-input type="textarea" v-model="form.remark"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel('form')">取 消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
-        <el-button v-else type="primary" @click="update('form')">修 改</el-button>
-      </div>
-    </el-dialog>
-
   </div>
 </template>
 
@@ -355,6 +166,7 @@
   import ElOption from "element-ui/packages/select/src/option"
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import { isvalidMobile, isvalidID } from '@/utils/validate'
+  import Bus from '@/assets/js/bus'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
@@ -410,64 +222,6 @@
           delFlag: undefined,
           deptId: undefined
         },
-        rules: {
-          name: [
-            {required: true, trigger: 'blur'}
-          ],
-          username: [
-            {required: true, trigger: 'blur', message: '请输入用户名'},
-            {min: 3, max: 20, trigger: 'blur', message: '长度在 3 到 20 个字符'}
-          ],
-          empNo: [
-            {required: true, trigger: 'blur'}
-          ],
-          // date: [
-          //   {required: true, trigger: 'blur'}
-          // ],
-          gender: [
-            {required: true, trigger: 'blur'}
-          ],
-          education: [
-            {required: true, trigger: 'blur'}
-          ],
-          idType: [
-            // {required: true, trigger: 'blur'}
-          ],
-          marriageStatus: [
-            {required: true, trigger: 'blur'}
-          ],
-          idNo: [
-            {required: true, trigger: 'blur', validator: validID}
-          ],
-          deptName: [
-            {required: true, trigger: 'blur', message: '请选择部门'}
-          ],
-          role: [
-            {required: true, trigger: 'blur', message: '请选择角色'}
-          ],
-          positionId: [
-            {required: true, trigger: 'blur'}
-          ],
-          email: [
-            {required: true, trigger: 'blur'}
-          ],
-          // password: [
-          //   {
-          //     required: true,
-          //     message: '请输入密码',
-          //     trigger: 'blur'
-          //   },
-          //   {
-          //     min: 5,
-          //     max: 20,
-          //     message: '长度在 5 到 20 个字符',
-          //     trigger: 'blur'
-          //   }
-          // ],
-          mobile: [
-            {required: true, trigger: 'blur, change', validator: validMobile}
-          ]
-        },
         statusOptions: ['0', '1', '2'],
         positionsOptions: [],
         rolesOptions: [],
@@ -516,37 +270,6 @@
         'realnameStatus'
       ])
     },
-    filters: {
-      statusFilter(status) {
-        const statusMap = {
-          0: '在职',
-          1: '离职',
-          2: '异常',
-          3: '异常'
-        }
-        return statusMap[status]
-      },
-      certificationTypeFilter(status) {
-        const statusMap = {
-          0: '普通投资者',
-          1: '专业投资者'
-        }
-        if(status === null) {
-          return '无'
-        } else {
-          return statusMap[status]
-        }
-      },
-      // certificationStatusFilter(status) {
-      //   const statusMap = {
-      //     0: '未认证',
-      //     1: '离职',
-      //     2: '异常',
-      //     3: '异常'
-      //   }
-      //   return statusMap[status]
-      // }
-    },
     created() {
       // this.handlePosition()
       this.getList()
@@ -566,12 +289,7 @@
           this.total = response.data.total
           this.listLoading = false
           this.list.forEach(item => {
-            // let obj = {}
-            // this.positionsOptions.forEach((val, idx) => {
-            //   let key = val.positionId
-            //   obj[key] = val.positionName
-            // })
-            // item.positionId = obj[item.positionId]
+            
             item.realnameStatus = transformText(this.realnameStatus, item.realnameStatus)
             item.positionId = transformText(this.positionsOptions, item.positionId)
             item.clientType = transformText(this.certificationType, item.clientType)
@@ -621,6 +339,7 @@
         this.$router.push({
           path: '/client/detail/' + id
         })
+        Bus.$emit('activeIndex', '/client/potential')
       },
       handleUpdate(row) { // 编辑查询
         getObj(row.userId)

@@ -27,7 +27,7 @@
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
-          <el-form-item label="实名认证状态">
+          <el-form-item label="实名认证状态" style="margin-bottom: 10px;">
             <el-select class="filter-item" v-model="listQuery.clientType" placeholder="请选择">
               <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -57,9 +57,9 @@
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="客户类型">
+          <el-form-item label="客户类型" style="margin-bottom: 10px;">
             <el-select class="filter-item" v-model="listQuery.nationality" placeholder="请选择">
-              <el-option v-for="item in nationalityType" :key="item.value" :value="item.value" :label="item.label">
+              <el-option v-for="item in nationality" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
@@ -91,9 +91,9 @@
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="国籍">
+          <el-form-item label="国籍" style="margin-bottom: 10px;">
             <el-select class="filter-item" v-model="listQuery.nationality" placeholder="请选择">
-              <el-option v-for="item in nationalityType" :key="item.value" :value="item.value" :label="item.label">
+              <el-option v-for="item in nationality" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
@@ -292,7 +292,7 @@
         listQuery: {
           page: 1,
           limit: 20,
-          type: 1 // 1：客户，0：潜客
+          plannerStatus: 1
         },
         role: undefined,
         form: {
@@ -391,16 +391,6 @@
         entryDate: [],
         options: provinceAndCityData,
         selectedOptions: [],
-        nationalityType: [
-          {
-            value: 0,
-            label: '中国'
-          },
-          {
-            value: 1,
-            label: '其他'
-          },
-        ],
         deptName: [],
         deptId: []
       }
@@ -412,39 +402,9 @@
         'permissions',
         'genderType',
         'idTypeOptions',
-        'delFlagOptions'
+        'delFlagOptions',
+        'nationality'
       ])
-    },
-    filters: {
-      statusFilter(status) {
-        const statusMap = {
-          0: '在职',
-          1: '离职',
-          2: '异常',
-          3: '异常'
-        }
-        return statusMap[status]
-      },
-      certificationTypeFilter(status) {
-        const statusMap = {
-          0: '普通投资者',
-          1: '专业投资者'
-        }
-        if(status === null) {
-          return '无'
-        } else {
-          return statusMap[status]
-        }
-      },
-      certificationStatusFilter(status) {
-        const statusMap = {
-          0: '未认证',
-          1: '离职',
-          2: '异常',
-          3: '异常'
-        }
-        return statusMap[status]
-      }
     },
     created() {
       // this.handlePosition()

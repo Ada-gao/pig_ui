@@ -141,6 +141,7 @@
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import { isvalidMobile, isvalidID } from '@/utils/validate'
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
+  import Bus from '@/assets/js/bus'
 
   export default {
     components: {
@@ -275,6 +276,7 @@
         this.$router.push({
           path: '/client/realnameDetail/' + id
         })
+        Bus.$emit('activeIndex', '/client/realname')
       },
       handleUpdate(row) { // 编辑查询
         getObj(row.userId)

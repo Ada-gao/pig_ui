@@ -18,7 +18,7 @@
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="职位">
+          <el-form-item label="职位" style="margin-bottom: 10px;">
             <el-select class="filter-item" v-model="listQuery.positionId" placeholder="请选择" @focus="handlePosition()">
               <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName" :disabled="isDisabled[item.delFlag]">
                 <span style="float: left">{{ item.positionName }}</span>
@@ -27,7 +27,7 @@
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="工作状态">
+          <el-form-item label="工作状态" style="margin-bottom: 10px;">
             <el-select class="filter-item" v-model="listQuery.delFlag" placeholder="请选择">
               <el-option v-for="item in delFlagOptions" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -277,10 +277,10 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="职位" prop="positionName">
+            <el-form-item label="职位" prop="positionId">
               <!-- positionId -->
-              <el-select class="filter-item" v-model="form.positionName" placeholder="请选择" @focus="handlePosition">
-                <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId" :disabled="isDisabled[item.delFlag]">
+              <el-select class="filter-item" v-model="form.positionId" placeholder="请选择" @focus="handlePosition" @change="handleChange">
+                <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId">
                   <span style="float: left">{{ item.positionName }}</span>
                   <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span> -->
                 </el-option>
@@ -309,7 +309,7 @@
                 :file-list="fileList"
                 :show-file-list="true"
                 :before-upload="beforeUpload"
-                accept="file">
+                accept=".pdf, .doc">
                 <el-button size="small" type="primary">上传简历</el-button>
                 <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
               </el-upload>
@@ -430,10 +430,10 @@
             {required: true, trigger: 'blur'}
           ],
           idType: [
-            // {required: true, trigger: 'blur'}
+            {required: true, trigger: 'blur'}
           ],
           marriageStatus: [
-            {required: true, trigger: 'blur'}
+            {required: false, trigger: 'blur'}
           ],
           idNo: [
             {required: true, trigger: 'blur', validator: validID}
@@ -611,9 +611,7 @@
             this.role = row.roleList[0].roleDesc
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
-            getPositionName(this.form.positionId).then(res => {
-              this.form.positionName = res.data.positionName
-            })
+            
             deptRoleList(response.data.deptId)
               .then(response => {
                 this.rolesOptions = response.data
@@ -654,7 +652,7 @@
         set[formName].validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
-            this.form.positionId = this.form.positionName
+            // this.form.positionId = this.form.positionName
             putObj(this.form).then(() => {
               this.dialogFormVisible = false
               this.getList()
@@ -736,6 +734,9 @@
       selected(data) {
         this.tableData = data.results
         this.tableHeader = data.header
+      },
+      handleChange(val) {
+        this.form.positionId = val
       }
     }
   }

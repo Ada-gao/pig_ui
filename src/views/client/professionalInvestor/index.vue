@@ -234,6 +234,7 @@
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import { isvalidMobile, isvalidID } from '@/utils/validate'
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
+  import Bus from '@/assets/js/bus'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
@@ -514,6 +515,7 @@
         this.$router.push({
           path: '/client/investorDetail/' + id + '/1'
         })
+        Bus.$emit('activeIndex', '/client/professionalInvestor')
       },
       handleUpdate(row) { // 编辑查询
         getObj(row.userId)

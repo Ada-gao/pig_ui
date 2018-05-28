@@ -42,8 +42,7 @@
               size="large"
               :options="options"
               :props="defaultProps2"
-              v-model="form.city"
-              @change="handleChange">
+              v-model="form.city">
             </el-cascader> -->
           </el-form-item>
         </el-col>
@@ -278,6 +277,7 @@
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
+  import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
 
   export default {
     components: {
@@ -381,7 +381,11 @@
         productList: [],
         realnameStatus: '',
         idType: '',
-        isCertificationType: ''
+        isCertificationType: '',
+        defaultProps2: {
+          value: 'label'
+        },
+        options: provinceAndCityData,
       }
     },
     computed: {
@@ -394,16 +398,6 @@
         'idTypeOptions',
         'nationality'
       ])
-    },
-    filters: {
-      statusFilter(status) {
-        const statusMap = {
-          0: '正常',
-          1: '离职',
-          9: '异常'
-        }
-        return statusMap[status]
-      }
     },
     created() {
       this.getList()
