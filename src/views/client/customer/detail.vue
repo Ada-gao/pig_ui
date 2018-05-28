@@ -37,7 +37,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="常住地区" prop="city">
-            <el-input v-model="form.city" placeholder="请输入邮箱"></el-input>
+            <el-input v-model="form.city" placeholder="请选择地区"></el-input>
             <!-- <el-cascader
               size="large"
               :options="options"
@@ -67,7 +67,7 @@
             <el-input v-model="form.deptName" placeholder="请输入部门" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
+        <el-col :span="11" v-show="form.clientClass">
           <el-form-item label="管理资产规模" prop="assetAmount">
             <el-input v-model="form.assetAmount" placeholder="请输入资产规模" readonly></el-input>
           </el-form-item>
@@ -160,11 +160,6 @@
             <el-col :span="5">
               <el-card>
                 <img style="width: 100%" :src="bankcardList.cardFrontUrl" alt="">
-              </el-card>
-            </el-col>
-            <el-col :span="5" style="margin-left: 5%">
-              <el-card>
-                <img style="width: 100%" :src="bankcardList.cardBackUrl" alt="">
               </el-card>
             </el-col>
             <!-- <el-card>

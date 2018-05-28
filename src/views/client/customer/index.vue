@@ -27,7 +27,7 @@
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
-          <el-form-item label="投资者类型">
+          <el-form-item label="投资者类型" style="margin-bottom: 10px">
             <el-select class="filter-item" v-model="listQuery.clientType" placeholder="请选择">
               <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -173,7 +173,8 @@
 
       <el-table-column align="center" label="投资者类型（风险级别）">
         <template slot-scope="scope">
-          <span>{{scope.row.clientType | certificationTypeFilter}}</span>
+          <span>{{scope.row.clientType}}</span>
+          <span v-show="scope.row.clientType == 0">({{scope.row.riskLevel}})</span>
         </template>
       </el-table-column>
 
@@ -233,7 +234,7 @@
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime } from '@/utils'
+  import { parseTime, transformText } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -409,39 +410,9 @@
         'permissions',
         'genderType',
         'idTypeOptions',
-        'delFlagOptions'
+        'delFlagOptions',
+        'nationality'
       ])
-    },
-    filters: {
-      statusFilter(status) {
-        const statusMap = {
-          0: '在职',
-          1: '离职',
-          2: '异常',
-          3: '异常'
-        }
-        return statusMap[status]
-      },
-      certificationTypeFilter(status) {
-        const statusMap = {
-          0: '普通投资者',
-          1: '专业投资者'
-        }
-        if(status === null) {
-          return '无'
-        } else {
-          return statusMap[status]
-        }
-      },
-      certificationStatusFilter(status) {
-        const statusMap = {
-          0: '未认证',
-          1: '离职',
-          2: '异常',
-          3: '异常'
-        }
-        return statusMap[status]
-      }
     },
     created() {
       // this.handlePosition()
@@ -479,20 +450,11 @@
           this.total = response.data.total
           this.listLoading = false
           this.list.forEach(item => {
-            item.nationality = item.nationality == 0 ? '中国' : '其他'
-            let obj = {}
-            this.genderType.forEach((val, idx) => { // 性别
-              let key = val.value
-              obj[key] = val.label
-            })
-            item.gender = obj[item.gender]
 
-            let objIdType = {}
-            this.idTypeOptions.forEach((val, idx) => { // 证件类型
-              let key = val.value
-              objIdType[key] = val.label
-            })
-            item.idType = objIdType[item.idType]
+            item.clientType = transformText(this.certificationType, item.clientType)
+            item.idType = transformText(this.idTypeOptions, item.idType)
+            item.gender = transformText(this.genderType, item.gender)
+            item.nationality = transformText(this.nationality, item.nationality)
           })
         })
       },
