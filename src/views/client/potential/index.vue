@@ -8,7 +8,7 @@
       <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
       <el-form label-position="right" label-width="80px">
       <el-row :gutter="20">
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <el-col :sm="12" :lg="8">
           <el-form-item label="搜索">
             <el-input
               placeholder="搜索客户姓名、编号"
@@ -17,7 +17,7 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <el-col :sm="12" :lg="8">
           <el-form-item label="搜索">
             <el-input
               placeholder="搜索客户手机号"
@@ -26,8 +26,8 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
-          <el-form-item label="实名认证状态" style="margin-bottom: 10px;">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap">
+          <el-form-item label="实名认证状态">
             <el-select class="filter-item" v-model="listQuery.realNameStatus" placeholder="请选择">
               <el-option v-for="item in certificationStatus" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -35,18 +35,21 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <el-col :sm="12" :lg="8">
           <el-form-item label="部门">
-            <!-- <el-select class="filter-item" v-model="listQuery.positionId" placeholder="请选择" @focus="handleDept()"> -->
-              <!-- <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName" :disabled="isDisabled[item.delFlag]">
-                <span style="float: left">{{ item.positionName }}</span>
-              </el-option> -->
-            <!-- </el-select> -->
-            <el-input v-model="listQuery.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
+            <el-cascader
+              style="width: 100%"
+              :options="treeDeptData"
+              :props="defaultProps"
+              :show-all-levels="false"
+              change-on-select
+              v-model="deptId"
+            ></el-cascader>
+            <!-- <el-input v-model="listQuery.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input> -->
             <input type="hidden" v-model="listQuery.deptId"/>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <el-col :sm="12" :lg="8">
           <el-form-item label="理财师">
             <el-input
               placeholder="搜索理财师邮箱前缀"
@@ -204,7 +207,8 @@
         checkedKeys: [],
         defaultProps: {
           children: 'children',
-          label: 'name'
+          label: 'name',
+          value: 'id'
         },
         list: null,
         total: null,
@@ -253,7 +257,8 @@
         delFlag: '',
         tableData: [],
         tableHeader: [],
-        entryDate: []
+        entryDate: [],
+        deptId: []
       }
     },
     computed: {
@@ -284,6 +289,10 @@
         this.listQuery.orderByField = 'create_time'
         this.listQuery.isAsc = false
         this.handlePosition()
+        this.handleDept()
+        if(this.deptId.length) {
+          this.listQuery.deptId = this.deptId[this.deptId.length - 1]
+        }
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total

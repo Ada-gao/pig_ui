@@ -13,7 +13,8 @@ const dictionary = {
     delFlag: [],
     nationality: [],
     riskLevel: [],
-    realnameStatus: []
+    realnameStatus: [],
+    clientClass: []
   },
 
   mutations: {
@@ -52,6 +53,9 @@ const dictionary = {
     },
     SET_REALNAME_STATUS: (state, realnameStatus) => {
       state.realnameStatus = realnameStatus
+    },
+    SET_CLIENT_CLASS: (state, clientClass) => {
+      state.clientClass = clientClass
     }
   },
 
@@ -74,6 +78,7 @@ const dictionary = {
           let nationalityList = []
           let riskLevelList = []
           let realnameStatusList = []
+          let clientClassList = []
           
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -111,6 +116,9 @@ const dictionary = {
 
             } else if(data[i].type === 'realname_status') {
               realnameStatusList.push(data[i])
+
+            } else if(data[i].type === 'client_class') {
+              clientClassList.push(data[i])
             }
           }
           commit('SET_ID_TYPE', idTypeList)
@@ -125,6 +133,7 @@ const dictionary = {
           commit('SET_NATIONALITY', nationalityList)
           commit('SET_RISK_LEVEL', riskLevelList)
           commit('SET_REALNAME_STATUS', realnameStatusList)
+          commit('SET_CLIENT_CLASS', clientClassList)
           resolve()
         }).catch(error => {
           reject(error)

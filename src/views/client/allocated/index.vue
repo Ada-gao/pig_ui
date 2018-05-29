@@ -27,7 +27,7 @@
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
-          <el-form-item label="实名认证状态" style="margin-bottom: 10px;">
+          <el-form-item label="实名认证状态">
             <el-select class="filter-item" v-model="listQuery.clientType" placeholder="请选择">
               <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -57,9 +57,9 @@
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="客户类型" style="margin-bottom: 10px;">
-            <el-select class="filter-item" v-model="listQuery.nationality" placeholder="请选择">
-              <el-option v-for="item in nationality" :key="item.value" :value="item.value" :label="item.label">
+          <el-form-item label="客户类型">
+            <el-select class="filter-item" v-model="listQuery.type" placeholder="请选择">
+              <el-option v-for="item in clientClass" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
@@ -163,7 +163,7 @@
 
       <el-table-column align="center" label="客户类型">
         <template slot-scope="scope">
-          <span>{{scope.row.clientType}}</span>
+          <span>{{scope.row.clientClass}}</span>
         </template>
       </el-table-column>
 
@@ -211,7 +211,7 @@
                      @click="handleRouter(scope.row.clientId)">查看
           </el-button>
           <el-button v-if="sys_user_upd" size="small" type="success"
-                     @click="handleUpdate(scope.row)">分配
+                     @click="handleUpdate(scope.row.clientId)">分配
           </el-button>
           <!-- <el-button v-if="sys_user_del" size="small" type="danger"
                      @click="deletes(scope.row)">删除
@@ -228,13 +228,54 @@
                      layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
+
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form :model="modal" label-width="100px">
+        <el-row :gutter="20">
+          <el-col :span="11">
+            <el-form-item label="部门">
+              <el-cascader
+                style="width: 100%"
+                :options="treeDeptData"
+                :props="defaultProps"
+                :show-all-levels="false"
+                @change="changeDept"
+                change-on-select
+                v-model="modal.deptId"
+              ></el-cascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="理财师" prop="name" >
+              <el-select class="filter-item" v-model="modal.name" placeholder="请选择" @change="changetest">
+                <el-option v-for="item in plannerList" :key="item.userId" :label="item.name" :value="item.userId"> </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="22">
+            <el-form-item label="备注" prop="reason">
+              <el-input type="textarea" v-model="modal.reason"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form> 
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="changeCancle()">取 消</el-button>
+        <el-button type="primary" @click="changePlanner()">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/client'
+  import { putPlanner } from '@/api/client/planner'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getAllPositon } from '@/api/queryConditions'
+  import { getPlannerList } from '@/api/user'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { parseTime, transformText } from '@/utils'
   import { mapGetters } from 'vuex'
@@ -243,6 +284,7 @@
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import { isvalidMobile, isvalidID } from '@/utils/validate'
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
+  import Bus from '@/assets/js/bus'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
@@ -316,9 +358,6 @@
           // date: [
           //   {required: true, trigger: 'blur'}
           // ],
-          gender: [
-            {required: true, trigger: 'blur'}
-          ],
           education: [
             {required: true, trigger: 'blur'}
           ],
@@ -368,7 +407,8 @@
         dialogStatus: '',
         textMap: {
           update: '编辑员工',
-          create: '新增员工'
+          create: '新增员工',
+          change: '分配理财师'
         },
         isDisabled: {
           0: false,
@@ -376,7 +416,6 @@
         },
         tableKey: 0,
         input2: '',
-        gender: '',
         value13: '',
         eduOptions: [],
         education: '',
@@ -392,7 +431,9 @@
         options: provinceAndCityData,
         selectedOptions: [],
         deptName: [],
-        deptId: []
+        deptId: [],
+        modal: {},
+        plannerList: []
       }
     },
     computed: {
@@ -400,10 +441,10 @@
         'certificationStatus',
         'certificationType',
         'permissions',
-        'genderType',
         'idTypeOptions',
         'delFlagOptions',
-        'nationality'
+        'nationality',
+        'clientClass'
       ])
     },
     created() {
@@ -442,22 +483,10 @@
           this.total = response.data.total
           this.listLoading = false
           this.list.forEach(item => {
-            item.nationality = item.nationality == 0 ? '中国' : '其他'
-            let obj = {}
-            this.genderType.forEach((val, idx) => { // 性别
-              let key = val.value
-              obj[key] = val.label
-            })
-            item.gender = obj[item.gender]
 
-            let objIdType = {}
-            this.idTypeOptions.forEach((val, idx) => { // 证件类型
-              let key = val.value
-              objIdType[key] = val.label
-            })
-            item.idType = objIdType[item.idType]
-
-            item.clientType = transformText()
+            item.clientClass = transformText(this.clientClass, item.clientClass)
+            item.nationality = transformText(this.nationality, item.nationality)
+            item.idType = transformText(this.idTypeOptions, item.idType)
           })
         })
       },
@@ -485,26 +514,66 @@
         this.listQuery.page = val
         this.getList()
       },
-      handleCreate() {
-        this.resetTemp()
-        this.dialogStatus = 'create'
-        this.dialogFormVisible = true
-      },
+      // handleCreate() {
+      //   this.resetTemp()
+      //   this.dialogStatus = 'create'
+      //   this.dialogFormVisible = true
+      // },
       handleRouter(id) { // 查看跳转详情
         this.$router.push({
           path: '/client/detail/' + id
         })
+        Bus.$emit('activeIndex', '/client/allocated')
       },
-      handleUpdate(row) { // 编辑查询
-        getObj(row.userId)
-          .then(response => {
-            this.form = response.data
-            this.form.role = row.roleList[0].roleId
-            this.role = row.roleList[0].roleDesc
-            this.dialogFormVisible = true
-            this.dialogStatus = 'update'
+      handleUpdate(id) { // 分配查询
+        this.dialogStatus = 'change'
+        this.dialogFormVisible = true
+        this.modal.clientId = id
+        this.getPlannerList()
+        // getObj(row.userId)
+        //   .then(response => {
+        //     this.form = response.data
+        //     this.form.role = row.roleList[0].roleId
+        //     this.role = row.roleList[0].roleDesc
+        //     this.dialogFormVisible = true
+        //     this.dialogStatus = 'update'
             
-          })
+        //   })
+      },
+      changeDept(val) {
+        console.log(val)
+        this.modal.name = ''
+        this.getPlannerList(val)
+      },
+      getPlannerList(deptId = '') {
+        let params = {
+          deptId: deptId[deptId.length-1],
+          status: 0
+        }
+        getPlannerList(params).then(response => {
+          this.plannerList = response.data
+          console.log(this.plannerList)
+        })
+      },
+      changePlanner() {
+        let params = {
+          plannerId: this.modal.name,
+          reason: this.modal.reason
+        }
+        putPlanner(this.modal.clientId, params).then(response => {
+          if(response.status === 200) {
+            this.$notify({
+                  title: '成功',
+                  message: '分配成功',
+                  type: 'success',
+                  duration: 2000
+                })
+            this.dialogFormVisible = false
+          }
+        })
+      },
+      changeCancle() {
+        this.dialogFormVisible = false
       },
       resetTemp() {
         this.form = {
@@ -521,8 +590,9 @@
           username: '',
           positionId: '',
           delFlag: '',
-          type: 1
+          deptId: ''
         },
+        this.deptId = []
         this.entryDate = []
         this.handleFilter()
       },
@@ -532,6 +602,9 @@
       // },
       handleChange (value) {
         console.log(value)
+      },
+      changetest(val) {
+        this.plannerList = this.plannerList.slice(0)
       }
     }
   }

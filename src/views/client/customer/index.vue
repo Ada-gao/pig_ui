@@ -8,7 +8,7 @@
       <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
       <el-form label-position="right" label-width="80px">
       <el-row :gutter="20">
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <el-col :sm="12" :lg="8">
           <el-form-item label="搜索">
             <el-input
               placeholder="搜索客户姓名、编号"
@@ -17,7 +17,7 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <el-col :sm="12" :lg="8">
           <el-form-item label="搜索">
             <el-input
               placeholder="搜索客户手机号"
@@ -26,8 +26,8 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
-          <el-form-item label="投资者类型" style="margin-bottom: 10px">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap">
+          <el-form-item label="投资者类型">
             <el-select class="filter-item" v-model="listQuery.clientType" placeholder="请选择">
               <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -35,7 +35,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap">
           <el-form-item label="资产规模区间">
             <el-input
               style="width: 48%; margin-right: 2%"
@@ -51,7 +51,7 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <el-col :sm="12" :lg="8">
           <el-form-item label="搜索">
             <el-input
               placeholder="搜索客户证件号码"
@@ -60,7 +60,7 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <el-col :sm="12" :lg="8">
           <el-form-item label="部门">
             <!-- <input type="hidden" v-model="listQuery.deptId"/>  -->
             <el-cascader
@@ -73,7 +73,7 @@
             ></el-cascader>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <el-col :sm="12" :lg="8">
           <el-form-item label="理财师">
             <el-input
               placeholder="搜索理财师邮箱前缀"
@@ -82,7 +82,7 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <el-col :sm="12" :lg="8">
           <el-form-item label="国籍" style="margin-bottom: 10px;">
             <el-select class="filter-item" v-model="listQuery.nationality" placeholder="请选择">
               <el-option v-for="item in nationalityType" :key="item.value" :value="item.value" :label="item.label">
@@ -91,7 +91,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" v-if="listQuery.nationality === 0">
+        <el-col :sm="12" :lg="8" v-if="listQuery.nationality === 0">
           <el-form-item label="地区">
             <el-cascader
               size="large"

@@ -23,6 +23,7 @@ const getters = {
   delFlagOptions: state => state.dictionary.delFlag,
   nationality: state => state.dictionary.nationality,
   customerRiskLevel: state => state.dictionary.riskLevel,
-  realnameStatus: state => state.dictionary.realnameStatus
+  realnameStatus: state => state.dictionary.realnameStatus,
+  clientClass: state => state.dictionary.clientClass
 }
 export default getters

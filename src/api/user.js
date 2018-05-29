@@ -9,6 +9,17 @@ export function fetchList(query) {
 }
 
 /**
+ * 查询理财里列表（不分页）
+ */
+export function getPlannerList(query) {
+  return request({
+    url: '/admin/user/financialPlanners',
+    method: 'get',
+    params: query
+  })
+}
+
+/**
  * 新增用户
  */
 export function addObj(obj) {
