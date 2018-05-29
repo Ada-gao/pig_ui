@@ -8,6 +8,13 @@ export function fetchCurrency(query) {
   })
 }
 
+export function getObjList() {
+  return request({
+    url: '/admin/currency/list',
+    method: 'get',
+  })
+}
+
 export function addObj(obj) {
   return request({
     url: '/admin/currency/',

@@ -134,9 +134,9 @@
           <el-button v-if="sys_user_upd" size="small" type="success"
                      @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button v-if="sys_user_del" size="small" type="danger"
+          <!-- <el-button v-if="sys_user_del" size="small" type="danger"
                      @click="deletes(scope.row)">删除
-          </el-button>
+          </el-button> -->
         </template>
       </el-table-column>
 
@@ -316,9 +316,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="状态" v-if="dialogStatus == 'update' && sys_user_del " prop="delFlag" >
+            <!-- <el-form-item label="状态" v-if="dialogStatus == 'update' && sys_user_del " prop="delFlag" > -->
+            <el-form-item label="状态" v-if="dialogStatus == 'update' " prop="delFlag" >
               <el-select class="filter-item" v-model="form.delFlag" placeholder="请选择">
-                <el-option v-for="item in statusOptions" :key="item" :label="item | statusFilter" :value="item"> </el-option>
+                <el-option v-for="item in delFlagOptions" :key="item.value" :label="item.label" :value="item.value"> </el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -611,7 +612,7 @@
             this.role = row.roleList[0].roleDesc
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
-            
+
             deptRoleList(response.data.deptId)
               .then(response => {
                 this.rolesOptions = response.data

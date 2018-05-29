@@ -42,3 +42,9 @@ export function isvalidID(str) {
   const reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
   return reg.test(str)
 }
+
+/* 两位小数 */
+export function decimals(str) {
+  const reg = /(^[0-9]{1,2}$)|(^[0-9]{1,2}[\.]{1}[0-9]{1,2}$)/
+  return reg.test(str)
+}

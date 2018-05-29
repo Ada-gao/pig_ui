@@ -65,6 +65,35 @@ export const constantRouterMap = [
         hidden: true
       }
     ]
+  },
+  {
+    menuId: 3,
+    path: '/admin',
+    component: Layout,
+    name: '产品管理',
+    hidden: true,
+    redirect: '/admin/product',
+    // icon: 'table',
+    meta: {
+      title: '产品管理',
+      icon: 'table'
+    },
+    children: [
+      { 
+        path: 'productDetail/:id',
+        component: _import('admin/product/detail'),
+        name: '详情页',
+        meta: { title: '产品详情', icon: '', noCache: true },
+        hidden: true
+      },
+      { 
+        path: 'productDetail',
+        component: _import('admin/product/detail'),
+        name: '详情页',
+        meta: { title: '产品详情', icon: '', noCache: true },
+        hidden: true
+      }
+    ]
   }
 ]
 
@@ -109,8 +138,8 @@ export const asyncRouterMap = [
       icon: 'table'
     },
     children: [
-      { menuId: 48, path: 'product/list', component: _import('admin/product/list'), name: '产品管理', meta: { title: '产品管理', icon: 'user' }},
-      { menuId: 49, path: 'product/type', component: _import('admin/product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'user' }},
+      { menuId: 48, path: 'product', component: _import('admin/product/list'), name: '产品管理', meta: { title: '产品管理', icon: 'user' }},
+      { menuId: 49, path: 'productType', component: _import('admin/product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'user' }},
     ]
   },
   {

@@ -3,7 +3,7 @@
 
     <h3 v-if="type_is_update==1">修改产品</h3>
     <h3 v-else>客户详情</h3>
-    <el-form v-if="!nextToUpdate" :model="form" :rules="rules" ref="form" label-width="100px">
+    <el-form :model="form" :rules="rules" ref="form" label-width="100px">
       <div style="border-bottom: 1px solid #ccc"></div>
       <h5>客户信息</h5>
       <el-row :gutter="20">
