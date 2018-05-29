@@ -81,7 +81,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="产品期限" show-overflow-tooltip>
+      <el-table-column align="center" label="产品期限（月）" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.investmentHorizon}}</span>
         </template>
@@ -93,19 +93,19 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="募集规模" show-overflow-tooltip>
+      <el-table-column align="center" label="募集规模（万）" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.collectionAmount}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="起投金额">
+      <el-table-column align="center" label="起投金额（万）">
         <template slot-scope="scope">
           <span>{{scope.row.minimalAmount}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="年化收益率">
+      <el-table-column align="center" label="收益对标基准（%）">
         <template slot-scope="scope">
           <span>{{scope.row.annualizedReturn}}</span>
         </template>
@@ -364,7 +364,7 @@
               class="upload-demo"
               style="display: inline-block;"
               :headers="headers"
-              :action="importFile1('transaction')"
+              :action="importFile('transaction')"
               :on-change="handleChange1"
               :show-file-list="false"
               accept=".pdf, .doc">
@@ -406,7 +406,7 @@
               class="upload-demo"
               style="display: inline-block;"
               :headers="headers"
-              :action="importFile2('product')"
+              :action="importFile('product')"
               :on-error="uploadError2"
               :on-change="handleChange2"
               :show-file-list="false"
@@ -449,7 +449,7 @@
               class="upload-demo"
               style="display: inline-block;"
               :headers="headers"
-              :action="importFile3('announcement')"
+              :action="importFile('announcement')"
               :on-change="handleChange3"
               :show-file-list="false"
               accept=".pdf, .doc">
@@ -467,7 +467,7 @@
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/product/product'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
-  import { getFiles, delFiles } from '@/api/qiniu'
+  import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
   import { fetchCurrency } from '@/api/currency'
   import { getToken } from '@/utils/auth'
   import waves from '@/directive/waves/index.js' // 水波纹指令
@@ -1007,21 +1007,8 @@
       uploadError2(err, file, fileList) {
         console.log(err)
       },
-      importFile1(fileType) {
-        let url = '/zuul/product/products/' + this.uploadData.productId + '/' + fileType + '/files'
-        return url
-      },
-      importFile2(fileType) {
-        let url = '/zuul/product/products/' + this.uploadData.productId + '/' + fileType + '/files'
-        return url
-      },
-      importFile4(fileType) {
-        let url = '/zuul/product/products/1/' + fileType + '/files'
-        return url
-      },
-      importFile3(fileType) {
-        let url = '/zuul/product/products/' + this.uploadData.productId + '/' + fileType + '/files'
-        return url
+      importFile(fileType) {
+        return uploadFiles(this.uploadData.productId, fileType)
       },
       handleChange4(file, fileList) {
         this.fileList3 = fileList.slice(-3);

@@ -22,7 +22,7 @@
 
         <el-table-column label="风险测评问卷（图片）">
           <template slot-scope="scope">
-            <div v-for="item in scope.row.urls" style="display: inline-block; margin-right: 10px">
+            <div v-for="item in scope.row.urls" :data="scope.row.urls" style="display: inline-block; margin-right: 10px">
               <img :src="item" alt="" style="width: 50px">
             </div>
           </template>
@@ -161,7 +161,7 @@
           {
               clientId: 152,
               riskLevel: null,
-              urls: ['/static/img/01.png', '/static/img/01.png']
+              urls: []
             }
         ],
         failReason: '',
@@ -216,7 +216,7 @@
             {
               clientId: 152,
               riskLevel: null,
-              urls: ['/static/img/01.png', '/static/img/01.png']
+              urls: []
             }
           ]
           // this.clientId = this.certInfo[0].clientId

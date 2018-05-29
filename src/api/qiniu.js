@@ -20,3 +20,10 @@ export function delFiles(obj) {
     method: 'delete'
   })
 }
+
+/**
+ * 上传材料
+ */
+export function uploadFiles(productId, fileType) {
+  return '/zuul/product/products/' + productId + '/' + fileType + '/files'
+}
