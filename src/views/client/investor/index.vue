@@ -68,10 +68,9 @@
       </el-form>
     </div> -->
 
-    <div style="text-align: right">
+    <!-- <div style="text-align: right">
       <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
-      <!-- <upload-excel-component @on-selected-file='selected'></upload-excel-component> -->
-    </div>
+    </div> -->
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
@@ -410,11 +409,11 @@
         this.listQuery.page = val
         this.getList()
       },
-      handleCreate() {
-        this.resetTemp()
-        this.dialogStatus = 'create'
-        this.dialogFormVisible = true
-      },
+      // handleCreate() {
+      //   this.resetTemp()
+      //   this.dialogStatus = 'create'
+      //   this.dialogFormVisible = true
+      // },
       handleRouter(id, isView) { // 查看跳转详情
         this.$router.push({
           path: '/client/investorDetail/' + id + '/0/' + isView
@@ -456,9 +455,6 @@
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`);
       // },
-      handleChange (value) {
-        console.log(value)
-      },
       serachList(data) {
         this.listQuery = data
         // this.listQuery.type = 0

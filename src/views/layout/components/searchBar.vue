@@ -195,7 +195,7 @@ export default {
     this.handleDept()
   },
   methods: {
-    handleFilter() {
+    handleFilter() { // 搜索
       this.listQuery.page = 1
 
       let amountStart = this.listQuery.amountStart || -1
@@ -230,7 +230,7 @@ export default {
       this.entryDate = []
       this.handleFilter()
     },
-    handleDept() {
+    handleDept() { // 获取部门
       fetchDeptTree()
         .then(response => {
           this.treeDeptData = response.data

@@ -10,9 +10,9 @@
       >
     </search-bar-component>
 
-    <div style="text-align: right">
+    <!-- <div style="text-align: right">
       <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
-    </div>
+    </div> -->
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
@@ -232,11 +232,6 @@
           })
         })
       },
-      // handlePosition() {
-      //   getAllPositon().then(res => {
-      //     this.positionsOptions = res.data
-      //   })
-      // },
       handleDept() {
         fetchDeptTree()
           .then(response => {
@@ -244,10 +239,10 @@
             this.dialogDeptVisible = true
           })
       },
-      handleFilter() {
-        this.listQuery.page = 1
-        this.getList()
-      },
+      // handleFilter() {
+      //   this.listQuery.page = 1
+      //   this.getList()
+      // },
       handleSizeChange(val) {
         this.listQuery.limit = val
         this.getList()
@@ -256,11 +251,11 @@
         this.listQuery.page = val
         this.getList()
       },
-      handleCreate() {
-        this.resetTemp()
-        this.dialogStatus = 'create'
-        this.dialogFormVisible = true
-      },
+      // handleCreate() {
+      //   this.resetTemp()
+      //   this.dialogStatus = 'create'
+      //   this.dialogFormVisible = true
+      // },
       handleRouter(id, isView) { // 查看跳转-->详情/审核
         this.$router.push({
           path: '/client/investorDetail/' + id + '/1/' + isView
@@ -275,25 +270,21 @@
           role: undefined
         }
       },
-      resetFilter() { // 重置搜索条件
-        this.listQuery = {
-          page: 1,
-          limit: 20,
-          // clientType: 0 // 1：专业，0：普通
-          certificationType: 1, //0: 普通， 1: 专业
-          certificationStatus: 1,
-          realNameStatus: 2 // 实名认证
-        },
-        this.entryDate = []
-        this.handleFilter()
-      },
-      
+      // resetFilter() { // 重置搜索条件
+      //   this.listQuery = {
+      //     page: 1,
+      //     limit: 20,
+      //     // clientType: 0 // 1：专业，0：普通
+      //     certificationType: 1, //0: 普通， 1: 专业
+      //     certificationStatus: 1,
+      //     realNameStatus: 2 // 实名认证
+      //   },
+      //   this.entryDate = []
+      //   this.handleFilter()
+      // },
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`);
       // },
-      handleChange (value) {
-        console.log(value)
-      },
       serachList(data) {
         this.listQuery = data
         // this.listQuery.type = 0
