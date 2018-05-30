@@ -123,15 +123,9 @@
         </template>
       </el-table-column>
 
-      <!-- <el-table-column align="center" label="实名认证状态">
-        <template slot-scope="scope">
-          <span>{{scope.row.realnameStatus | certificationStatusFilter}}</span>
-        </template>
-      </el-table-column> -->
-
       <el-table-column align="center" label="客户类型">
         <template slot-scope="scope">
-          <span>{{scope.row.clientType | certificationTypeFilter}}</span>
+          <span>{{scope.row.clientType}}</span>
         </template>
       </el-table-column>
 
@@ -186,7 +180,7 @@
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime } from '@/utils'
+  import { parseTime, transformText } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -344,16 +338,6 @@
         entryDate: [],
         options: provinceAndCityData,
         selectedOptions: [],
-        nationalityType: [
-          {
-            value: 0,
-            label: '中国'
-          },
-          {
-            value: 1,
-            label: '其他'
-          },
-        ],
         deptName: [],
         deptId: []
       }
@@ -364,40 +348,11 @@
         'certificationType',
         'permissions',
         'genderType',
-        'idTypeOptions'
+        'idTypeOptions',
+        'nationality',
+        'clientType'
         // 'delFlagOptions'
       ])
-    },
-    filters: {
-      statusFilter(status) {
-        const statusMap = {
-          0: '在职',
-          1: '离职',
-          2: '异常',
-          3: '异常'
-        }
-        return statusMap[status]
-      },
-      certificationTypeFilter(status) {
-        const statusMap = {
-          0: '普通投资者',
-          1: '专业投资者'
-        }
-        if(status === null) {
-          return '无'
-        } else {
-          return statusMap[status]
-        }
-      },
-      certificationStatusFilter(status) {
-        const statusMap = {
-          0: '未认证',
-          1: '离职',
-          2: '异常',
-          3: '异常'
-        }
-        return statusMap[status]
-      }
     },
     created() {
       // this.handlePosition()
@@ -427,6 +382,7 @@
             item.idType = transformText(this.idTypeOptions, item.idType)
             item.nationality = transformText(this.nationality, item.nationality)
             item.gender = transformText(this.genderType, item.gender)
+            item.clientType = transformText(this.clientType, item.clientType)
           })
         })
       },
@@ -485,19 +441,18 @@
           role: undefined
         }
       },
-      resetFilter() { // 重置搜索条件
-        this.listQuery = {
-          page: 1,
-          limit: 20,
-          // clientType: 0 // 1：专业，0：普通
-          certificationType: 0, //0: 普通， 1: 专业
-          certificationStatus: 1,
-          realNameStatus: 2 // 实名认证
-        },
-        this.entryDate = []
-        this.handleFilter()
-      },
-      
+      // resetFilter() { // 重置搜索条件
+      //   this.listQuery = {
+      //     page: 1,
+      //     limit: 20,
+      //     // clientType: 0 // 1：专业，0：普通
+      //     certificationType: 0, //0: 普通， 1: 专业
+      //     certificationStatus: 1,
+      //     realNameStatus: 2 // 实名认证
+      //   },
+      //   this.entryDate = []
+      //   this.handleFilter()
+      // },
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`);
       // },
@@ -507,6 +462,9 @@
       serachList(data) {
         this.listQuery = data
         // this.listQuery.type = 0
+        this.listQuery.certificationType = 0, //0: 普通， 1: 专业
+        this.listQuery.certificationStatus = 1,
+        this.listQuery.realNameStatus = 2 // 实名认证
         this.getList()
       }
     }
