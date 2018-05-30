@@ -199,10 +199,10 @@
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
           <el-button v-if="sys_user_upd" size="small" type="success"
-                     @click="handleRouter(scope.row.clientId)">查看
+                     @click="handleRouter(scope.row.clientId, '0')">查看
           </el-button>
           <el-button v-if="sys_user_upd" size="small" type="success"
-                     @click="handleRouter(scope.row.clientId)">审核
+                     @click="handleRouter(scope.row.clientId, '1')">审核
           </el-button>
           <!-- <el-button v-if="sys_user_del" size="small" type="danger"
                      @click="deletes(scope.row)">删除
@@ -511,22 +511,11 @@
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
       },
-      handleRouter(id) { // 查看跳转详情
+      handleRouter(id, isView) { // 查看跳转-->详情/审核
         this.$router.push({
-          path: '/client/investorDetail/' + id + '/1'
+          path: '/client/investorDetail/' + id + '/1/' + isView
         })
         Bus.$emit('activeIndex', '/client/professionalInvestor')
-      },
-      handleUpdate(row) { // 编辑查询
-        getObj(row.userId)
-          .then(response => {
-            this.form = response.data
-            this.form.role = row.roleList[0].roleId
-            this.role = row.roleList[0].roleDesc
-            this.dialogFormVisible = true
-            this.dialogStatus = 'update'
-            
-          })
       },
       resetTemp() {
         this.form = {

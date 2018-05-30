@@ -46,22 +46,22 @@ export const constantRouterMap = [
       { 
         path: 'detail/:id',
         component: _import('client/customer/detail'),
-        name: '详情页',
+        name: '客户详情页',
         meta: { title: '客户详情', icon: '', noCache: true },
         hidden: true
       },
       { 
         path: 'realnameDetail/:id',
         component: _import('client/realname/detail'),
-        name: '详情页',
+        name: '实名认证审核详情页',
         meta: { title: '实名认证审核信息', icon: '', noCache: true },
         hidden: true
       },
       { 
-        path: 'investorDetail/:id/:type',
+        path: 'investorDetail/:id/:type/:isView',
         component: _import('client/investor/detail'),
-        name: '详情页',
-        meta: { title: '普通投资者审核信息', icon: '', noCache: true },
+        name: '投资者审核详情页',
+        meta: { title: '投资者审核信息', icon: '', noCache: true },
         hidden: true
       }
     ]
@@ -82,14 +82,14 @@ export const constantRouterMap = [
       { 
         path: 'productDetail/:id',
         component: _import('admin/product/detail'),
-        name: '详情页',
+        name: '产品详情页',
         meta: { title: '产品详情', icon: '', noCache: true },
         hidden: true
       },
       { 
         path: 'productDetail',
         component: _import('admin/product/detail'),
-        name: '详情页',
+        name: '产品新建页',
         meta: { title: '产品详情', icon: '', noCache: true },
         hidden: true
       }

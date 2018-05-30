@@ -5,30 +5,46 @@
     <h3 v-else>审核信息</h3>
     <el-form v-if="!nextToUpdate" :model="form" ref="form" label-width="100px">
       <div style="border-bottom: 1px solid #ccc"></div>
-      <h5>风险测评问卷审核</h5>
-      <el-table :data="certInfo" v-loading="listLoading" element-loading-text="给我一点时间" border fit
+
+      <div class="general-investor" v-if="investorType == 0">
+        <h5>风险测评问卷审核</h5>
+        <el-table :data="certInfo" v-loading="listLoading" element-loading-text="给我一点时间" border fit
                 highlight-current-row style="width: 100%">
-        <el-table-column align="center" label="风险评级">
-          <template slot-scope="scope">
-            <el-select v-model="scope.row.riskLevel" @change="handleChange">
-              <el-option label="c1" value="c1"></el-option>
-              <el-option label="c2" value="c2"></el-option>
-              <el-option label="c3" value="c3"></el-option>
-              <el-option label="c4" value="c4"></el-option>
-              <el-option label="c5" value="c5"></el-option>
-            </el-select>
-          </template>
-        </el-table-column>
+          <el-table-column align="center" label="风险评级">
+            <template slot-scope="scope">
+              <el-select v-model="scope.row.riskLevel" @change="handleChange">
+                <el-option label="c1" value="c1"></el-option>
+                <el-option label="c2" value="c2"></el-option>
+                <el-option label="c3" value="c3"></el-option>
+                <el-option label="c4" value="c4"></el-option>
+                <el-option label="c5" value="c5"></el-option>
+              </el-select>
+            </template>
+          </el-table-column>
 
-        <el-table-column label="风险测评问卷（图片）">
-          <template slot-scope="scope">
-            <div v-for="item in scope.row.urls" :data="scope.row.urls" style="display: inline-block; margin-right: 10px">
-              <img :src="item" alt="" style="width: 50px">
-            </div>
-          </template>
-        </el-table-column>
+          <el-table-column label="风险测评问卷（图片）">
+            <template slot-scope="scope">
+              <div v-for="item in scope.row.urls" :data="scope.row.urls" style="display: inline-block; margin-right: 10px">
+                <img :src="item" alt="" style="width: 50px">
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
-      </el-table>
+      <div class="professional-investor" v-else>
+        <h5>上传资料审核</h5>
+        <el-table :data="certInfo" v-loading="listLoading" element-loading-text="给我一点时间" border fit
+                highlight-current-row style="width: 100%">
+          <el-table-column label="（图片）">
+            <template slot-scope="scope">
+              <div v-for="item in scope.row.urls" :data="scope.row.urls" style="display: inline-block; margin-right: 10px">
+                <img :src="item" alt="" style="width: 50px">
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
       <div style="border-bottom: 1px solid #ccc; margin-top: 20px"></div>
       
@@ -74,24 +90,26 @@
 
       </el-table>
 
-      <div style="border-bottom: 1px solid #ccc; margin-top: 20px"></div>
-      <h5>备注：</h5>
-      <el-row>
-        <el-col>
-          <el-input
-            type="textarea"
-            :rows="2"
-            placeholder="请输入内容"
-            v-model="failReason">
-          </el-input>
-        </el-col>
-      </el-row>
+      <div v-if="isView == 1">
+        <div style="border-bottom: 1px solid #ccc; margin-top: 20px"></div>
+        <h5>备注：</h5>
+        <el-row>
+          <el-col>
+            <el-input
+              type="textarea"
+              :rows="2"
+              placeholder="请输入内容"
+              v-model="failReason">
+            </el-input>
+          </el-col>
+        </el-row>
+      </div>
+      
     </el-form>
 
-    <div v-if="!nextToUpdate" slot="footer" class="dialog-footer" style="text-align: center;">
+    <div v-if="isView == 1" slot="footer" class="dialog-footer" style="text-align: center; margin-top: 20px">
       <el-button @click="submitResult('2')">通 过</el-button>
-      <el-button v-if="dialogStatus=='create'" type="primary" @click="submitResult('3')">不通过</el-button>
-      <!-- <el-button v-else type="primary" @click="update('form')">修 改</el-button> -->
+      <el-button type="primary" @click="submitResult('3')">不通过</el-button>
     </div>
 
   </div>
@@ -157,16 +175,12 @@
         idType: '',
         isCertificationType: '',
         list: [],
-        certInfo: [
-          {
-              clientId: 152,
-              riskLevel: null,
-              urls: []
-            }
-        ],
+        certInfo: [],
         failReason: '',
         riskLevel: '',
-        clientId: ''
+        clientId: '',
+        investorType: '',
+        isView: ''
       }
     },
     computed: {
@@ -201,9 +215,12 @@
       getList() {
         this.clientId = this.$route.params.id
         let type = this.$route.params.type
+        this.isView = this.$route.params.isView
+        this.investorType = this.$route.params.type
         // let params = {
-        //   type: '0' // 0: 普通投资者
+        //   type: '0' // 0: 普通投资者, 1:专业投资者
         // }
+        // isView  0:查看， 1:审核
       
         getCertHistory(this.clientId, type).then(response => {
           this.list = response.data
@@ -211,14 +228,14 @@
         })
         getCertInfo(this.clientId, type).then(response => {
           this.listLoading = false
-          // this.certInfo = response.data
-          this.certInfo = [
-            {
-              clientId: 152,
-              riskLevel: null,
-              urls: []
-            }
-          ]
+          this.certInfo = response.data
+          // this.certInfo = [
+          //   {
+          //     clientId: 152,
+          //     riskLevel: null,
+          //     urls: []
+          //   }
+          // ]
           // this.clientId = this.certInfo[0].clientId
         })
        
