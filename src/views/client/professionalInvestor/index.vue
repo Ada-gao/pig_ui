@@ -1,118 +1,17 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <!-- <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名"
-                v-model="listQuery.username">
-      </el-input>
-      <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
-      <el-form label-position="right" label-width="80px">
-      <el-row :gutter="20">
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索客户姓名、编号"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.keyword">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索客户手机号"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.mobile">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
-          <el-form-item label="投资者类型">
-            <el-select class="filter-item" v-model="listQuery.clientType" placeholder="请选择">
-              <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col> -->
-        <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" style="white-space: nowrap">
-          <el-form-item label="资产规模区间">
-            <el-input
-              style="width: 48%; margin-right: 2%"
-              placeholder="请输入开始数字"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.amountStart">
-            </el-input>-
-            <el-input
-              style="width: 48%"
-              placeholder="请输入结束数字"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.amountEnd">
-            </el-input>
-          </el-form-item>
-        </el-col> -->
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索客户证件号码"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.idNo">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="部门">
-            <!-- <input type="hidden" v-model="listQuery.deptId"/>  -->
-            <el-cascader
-              style="width: 100%"
-              :options="treeDeptData"
-              :props="defaultProps"
-              :show-all-levels="false"
-              change-on-select
-              v-model="deptId"
-            ></el-cascader>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="理财师">
-            <el-input
-              placeholder="搜索理财师邮箱前缀"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.email">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="国籍">
-            <el-select class="filter-item" v-model="listQuery.nationality" placeholder="请选择">
-              <el-option v-for="item in nationalityType" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8" v-if="listQuery.nationality === 0">
-          <el-form-item label="地区">
-            <el-cascader
-              size="large"
-              :options="options"
-              :props="defaultProps2"
-              v-model="listQuery.city"
-              @change="handleChange">
-            </el-cascader>
-          </el-form-item>
-        </el-col> -->
-      </el-row>
-      <el-row style="text-align: center;">
-        <el-button type="info" style="padding: 10px 60px;" @click="handleFilter">查询</el-button>
-        <el-button type="info" style="padding: 10px 60px" @click="resetFilter">重置</el-button>
-      </el-row>
-      </el-form>
-    </div>
+    <search-bar-component @search-list="serachList"
+      :searchClientClass="false"
+      :searchAmount="false"
+      :searchNationality="false"
+      :searchCity="false"
+      :searchClientType="false"
+      :searchRealNameStatus="false"
+      >
+    </search-bar-component>
 
     <div style="text-align: right">
       <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
-      <!-- <upload-excel-component @on-selected-file='selected'></upload-excel-component> -->
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
@@ -165,15 +64,9 @@
         </template>
       </el-table-column>
 
-      <!-- <el-table-column align="center" label="实名认证状态">
-        <template slot-scope="scope">
-          <span>{{scope.row.realnameStatus | certificationStatusFilter}}</span>
-        </template>
-      </el-table-column> -->
-
       <el-table-column align="center" label="客户类型">
         <template slot-scope="scope">
-          <span>{{scope.row.clientType | certificationTypeFilter}}</span>
+          <span>{{scope.row.clientType}}</span>
         </template>
       </el-table-column>
 
@@ -223,44 +116,23 @@
 </template>
 
 <script>
+  import searchBarComponent from '@/views/layout/components/searchBar'
   import { fetchList } from '@/api/client/investor'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime } from '@/utils'
+  import { parseTime, transformText } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
-  import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { isvalidMobile, isvalidID } from '@/utils/validate'
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
   import Bus from '@/assets/js/bus'
-
-  const validMobile = (rule, value, callback) => {
-    if (!value) {
-      callback(new Error('请输入电话号码'))
-    } else if (!isvalidMobile(value)) {
-      callback(new Error('请输入正确的11位手机号'))
-    } else {
-      callback()
-    }
-  }
-
-  const validID = (rule, value, callback) => {
-    if (!value) {
-      callback(new Error('请输入身份证号码'))
-    } else if (!isvalidID(value)) {
-      callback(new Error('请输入正确的身份证号码'))
-    } else {
-      callback()
-    }
-  }
 
   export default {
     components: {
       ElOption,
       ElRadioGroup,
-      UploadExcelComponent
+      searchBarComponent
     },
     name: 'table_user',
     directives: {
@@ -297,78 +169,12 @@
           // delFlag: undefined,
           deptId: undefined
         },
-        rules: {
-          name: [
-            {required: true, trigger: 'blur'}
-          ],
-          username: [
-            {required: true, trigger: 'blur', message: '请输入用户名'},
-            {min: 3, max: 20, trigger: 'blur', message: '长度在 3 到 20 个字符'}
-          ],
-          empNo: [
-            {required: true, trigger: 'blur'}
-          ],
-          // date: [
-          //   {required: true, trigger: 'blur'}
-          // ],
-          gender: [
-            {required: true, trigger: 'blur'}
-          ],
-          education: [
-            {required: true, trigger: 'blur'}
-          ],
-          idType: [
-            // {required: true, trigger: 'blur'}
-          ],
-          marriageStatus: [
-            {required: true, trigger: 'blur'}
-          ],
-          idNo: [
-            {required: true, trigger: 'blur', validator: validID}
-          ],
-          deptName: [
-            {required: true, trigger: 'blur', message: '请选择部门'}
-          ],
-          role: [
-            {required: true, trigger: 'blur', message: '请选择角色'}
-          ],
-          positionId: [
-            {required: true, trigger: 'blur'}
-          ],
-          email: [
-            {required: true, trigger: 'blur'}
-          ],
-          // password: [
-          //   {
-          //     required: true,
-          //     message: '请输入密码',
-          //     trigger: 'blur'
-          //   },
-          //   {
-          //     min: 5,
-          //     max: 20,
-          //     message: '长度在 5 到 20 个字符',
-          //     trigger: 'blur'
-          //   }
-          // ],
-          mobile: [
-            {required: true, trigger: 'blur, change', validator: validMobile}
-          ]
-        },
         dialogFormVisible: false,
         dialogDeptVisible: false,
         userAdd: false,
         userUpd: false,
         userDel: false,
         dialogStatus: '',
-        textMap: {
-          update: '编辑员工',
-          create: '新增员工'
-        },
-        isDisabled: {
-          0: false,
-          1: true
-        },
         tableKey: 0,
         input2: '',
         gender: '',
@@ -386,16 +192,6 @@
         entryDate: [],
         options: provinceAndCityData,
         selectedOptions: [],
-        nationalityType: [
-          {
-            value: 0,
-            label: '中国'
-          },
-          {
-            value: 1,
-            label: '其他'
-          },
-        ],
         deptName: [],
         deptId: []
       }
@@ -406,40 +202,11 @@
         'certificationType',
         'permissions',
         'genderType',
-        'idTypeOptions'
+        'idTypeOptions',
+        'nationality',
+        'clientType'
         // 'delFlagOptions'
       ])
-    },
-    filters: {
-      statusFilter(status) {
-        const statusMap = {
-          0: '在职',
-          1: '离职',
-          2: '异常',
-          3: '异常'
-        }
-        return statusMap[status]
-      },
-      certificationTypeFilter(status) {
-        const statusMap = {
-          0: '普通投资者',
-          1: '专业投资者'
-        }
-        if(status === null) {
-          return '无'
-        } else {
-          return statusMap[status]
-        }
-      },
-      certificationStatusFilter(status) {
-        const statusMap = {
-          0: '未认证',
-          1: '离职',
-          2: '异常',
-          3: '异常'
-        }
-        return statusMap[status]
-      }
     },
     created() {
       // this.handlePosition()
@@ -451,34 +218,17 @@
     methods: {
       getList() {
         this.listLoading = true
-        this.listQuery.orderByField = 'create_time'
-        this.listQuery.isAsc = false
         this.handleDept()
-        if(this.deptId.length) {
-          this.listQuery.deptId = this.deptId[this.deptId.length - 1]
-        }
-        // let amountStart = this.listQuery.amountStart || -1
-        // let amountEnd = this.listQuery.amountEnd || -1
-        // this.listQuery.amount = [amountStart, amountEnd]
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
           this.list.forEach(item => {
-            item.nationality = item.nationality == 0 ? '中国' : '其他'
-            let obj = {}
-            this.genderType.forEach((val, idx) => { // 性别
-              let key = val.value
-              obj[key] = val.label
-            })
-            item.gender = obj[item.gender]
 
-            let objIdType = {}
-            this.idTypeOptions.forEach((val, idx) => { // 证件类型
-              let key = val.value
-              objIdType[key] = val.label
-            })
-            item.idType = objIdType[item.idType]
+            item.idType = transformText(this.idTypeOptions, item.idType)
+            item.nationality = transformText(this.nationality, item.nationality)
+            item.gender = transformText(this.genderType, item.gender)
+            item.clientType = transformText(this.clientType, item.clientType)
           })
         })
       },
@@ -543,6 +293,14 @@
       // },
       handleChange (value) {
         console.log(value)
+      },
+      serachList(data) {
+        this.listQuery = data
+        // this.listQuery.type = 0
+        this.listQuery.certificationType = 1, //0: 普通， 1: 专业
+        this.listQuery.certificationStatus = 1,
+        this.listQuery.realNameStatus = 2 // 实名认证
+        this.getList()
       }
     }
   }
