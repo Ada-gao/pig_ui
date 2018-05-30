@@ -31,7 +31,7 @@
       </el-row>
 
       <el-row style="margin-top: 20px;">
-        <el-col :sm="2" :lg="2" class="query-title">年化收益</el-col>
+        <el-col :sm="2" :lg="2" class="query-title">收益对标基准</el-col>
         <el-col :sm="20">
           <el-checkbox-group v-model="listQuery.annualizedReturns">
             <el-checkbox-button v-for="item in productIncome" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
@@ -108,7 +108,6 @@
 
       <el-table-column align="center" class-name="status-col" label="产品状态">
         <template slot-scope="scope">
-          <!-- <el-tag>{{scope.row.delFlag | statusFilter}}</el-tag> -->
           {{scope.row.productStatus}}
         </template>
       </el-table-column>
@@ -197,7 +196,7 @@
         form: {
           name: undefined,
           password: undefined,
-          delFlag: undefined,
+          // delFlag: undefined,
           deptId: undefined
         },
         rules: {

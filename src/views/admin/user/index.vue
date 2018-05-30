@@ -18,18 +18,19 @@
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="职位" style="margin-bottom: 10px;">
+          <el-form-item label="职位">
             <el-select class="filter-item" v-model="listQuery.positionId" placeholder="请选择" @focus="handlePosition()">
-              <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName" :disabled="isDisabled[item.delFlag]">
+              <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName">
+              <!-- <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName" :disabled="isDisabled[item.delFlag]"> -->
                 <span style="float: left">{{ item.positionName }}</span>
               </el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="工作状态" style="margin-bottom: 10px;">
-            <el-select class="filter-item" v-model="listQuery.delFlag" placeholder="请选择">
-              <el-option v-for="item in delFlagOptions" :key="item.value" :value="item.value" :label="item.label">
+          <el-form-item label="工作状态">
+            <el-select class="filter-item" v-model="listQuery.status" placeholder="请选择">
+              <el-option v-for="item in workStatus" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
@@ -113,7 +114,7 @@
 
       <el-table-column align="center" class-name="status-col" label="状态">
         <template slot-scope="scope">
-          <el-tag>{{scope.row.delFlag | statusFilter}}</el-tag>
+          <el-tag>{{scope.row.status}}</el-tag>
         </template>
       </el-table-column>
 
@@ -266,7 +267,8 @@
             <el-form-item label="角色" prop="role">
               <!-- role -->
               <el-select class="filter-item" v-model="role" placeholder="请选择">
-                <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]">
+                <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId">
+                <!-- <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]"> -->
                   <span style="float: left">{{ item.roleDesc }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
                 </el-option>
@@ -317,9 +319,9 @@
           </el-col>
           <el-col :span="11">
             <!-- <el-form-item label="状态" v-if="dialogStatus == 'update' && sys_user_del " prop="delFlag" > -->
-            <el-form-item label="状态" v-if="dialogStatus == 'update' " prop="delFlag" >
-              <el-select class="filter-item" v-model="form.delFlag" placeholder="请选择">
-                <el-option v-for="item in delFlagOptions" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+            <el-form-item label="状态" v-if="dialogStatus == 'update' " prop="status" >
+              <el-select class="filter-item" v-model="form.status" placeholder="请选择">
+                <el-option v-for="item in workStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -407,7 +409,7 @@
           name: 'rank',
           username: undefined,
           password: undefined,
-          delFlag: undefined,
+          status: undefined,
           deptId: undefined
         },
         rules: {
@@ -496,7 +498,7 @@
         maritalStatus: '',
         fileList: [],
         positionId: '',
-        delFlag: '',
+        status: '',
         tableData: [],
         tableHeader: [],
         entryDate: [],
@@ -510,19 +512,19 @@
         'genderType',
         'idTypeOptions',
         'marriageStatusOptions',
-        'delFlagOptions'
+        'workStatus'
       ])
     },
-    filters: {
-      statusFilter(status) {
-        const statusMap = {
-          0: '在职',
-          1: '离职',
-          2: '异常'
-        }
-        return statusMap[status]
-      }
-    },
+    // filters: {
+    //   statusFilter(status) {
+    //     const statusMap = {
+    //       0: '在职',
+    //       1: '离职',
+    //       2: '异常'
+    //     }
+    //     return statusMap[status]
+    //   }
+    // },
     created() {
       // this.handlePosition()
       this.getList()
@@ -552,6 +554,7 @@
 
             this.list.forEach(item => {
               item.positionId = transformText(this.positionsOptions, item.positionId)
+              item.status = transformText(this.workStatus, item.status)
             })
           })
           // this.list.forEach(item => {
@@ -707,7 +710,7 @@
           limit: 20,
           username: '',
           positionId: '',
-          delFlag: ''
+          status: ''
         },
         this.entryDate = []
         this.handleFilter()
