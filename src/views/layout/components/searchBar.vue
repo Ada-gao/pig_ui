@@ -2,7 +2,7 @@
   <div class="filter-container">
     <el-form label-position="right" label-width="100px">
       <el-row :gutter="20">
-        <el-col :sm="12" :lg="8" v-if="is_keyword">
+        <el-col :sm="12" :lg="8" v-if="searchKeyword">
           <el-form-item label="搜索">
             <el-input
               placeholder="搜索客户姓名、编号"
@@ -11,8 +11,8 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :sm="12" :lg="8" v-if="is_mobile">
-          <el-form-item label="搜索">
+        <el-col :sm="12" :lg="8" v-if="searchMobile">
+          <el-form-item label="手机号">
             <el-input
               placeholder="搜索客户手机号"
               prefix-icon="el-icon-search"
@@ -20,16 +20,25 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="is_clientType">
-          <el-form-item label="实名认证状态">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="searchClientType">
+          <el-form-item label="投资者类型">
             <el-select v-model="listQuery.clientType" style="width: 100%" placeholder="请选择">
-              <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
+              <el-option v-for="item in clientType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :sm="12" :lg="8" v-if="is_deptId">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="searchRealNameStatus">
+          <el-form-item label="实名认证状态">
+            <el-select v-model="listQuery.realNameStatus" style="width: 100%" placeholder="请选择">
+              <el-option v-for="item in realnameStatus" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :sm="12" :lg="8" v-if="searchDeptId">
           <el-form-item label="部门">
             <el-cascader
               style="width: 100%"
@@ -41,8 +50,8 @@
             ></el-cascader>
           </el-form-item>
         </el-col>
-        <el-col :sm="12" :lg="8" v-if="is_idNo">
-          <el-form-item label="搜索">
+        <el-col :sm="12" :lg="8" v-if="searchIdNo">
+          <el-form-item label="客户证件号码">
             <el-input
               placeholder="搜索客户证件号码"
               prefix-icon="el-icon-search"
@@ -50,7 +59,7 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :sm="12" :lg="8" v-if="is_clientClass">
+        <el-col :sm="12" :lg="8" v-if="searchClientClass">
           <el-form-item label="客户类型">
             <el-select v-model="listQuery.type" style="width: 100%" placeholder="请选择">
               <el-option v-for="item in clientClass" :key="item.value" :value="item.value" :label="item.label">
@@ -59,7 +68,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="is_amount">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="searchAmount">
           <el-form-item label="资产规模区间">
             <el-input
               style="width: 48%; margin-right: 2%"
@@ -75,7 +84,7 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :sm="12" :lg="8" v-if="is_email">
+        <el-col :sm="12" :lg="8" v-if="searchEmail">
           <el-form-item label="理财师">
             <el-input
               placeholder="搜索理财师邮箱前缀"
@@ -84,7 +93,7 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :sm="12" :lg="8" v-if="is_nationality">
+        <el-col :sm="12" :lg="8" v-if="searchNationality">
           <el-form-item label="国籍" style="margin-bottom: 10px;">
             <el-select v-model="listQuery.nationality" style="width: 100%" placeholder="请选择">
               <el-option v-for="item in nationality" :key="item.value" :value="item.value" :label="item.label">
@@ -93,7 +102,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :sm="12" :lg="8" v-if="listQuery.nationality == 0 & is_city">
+        <el-col :sm="12" :lg="8" v-if="listQuery.nationality == 0 & searchCity">
           <el-form-item label="地区">
             <el-cascader
               size="large"
@@ -119,34 +128,37 @@ import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
 
 export default {
   props: {
-    is_keyword: {
+    searchKeyword: {
       default: true
     },
-    is_mobile: {
+    searchMobile: {
       default: true
     },
-    is_clientType: {
+    searchClientType: {
       default: true
     },
-    is_deptId: {
+    searchRealNameStatus: {
       default: true
     },
-    is_idNo: {
+    searchDeptId: {
       default: true
     },
-    is_clientClass: {
+    searchIdNo: {
       default: true
     },
-    is_amount: {
+    searchClientClass: {
       default: true
     },
-    is_email: {
+    searchAmount: {
       default: true
     },
-    is_nationality: {
+    searchEmail: {
       default: true
     },
-    is_city: {
+    searchNationality: {
+      default: true
+    },
+    searchCity: {
       default: true
     },
   },
@@ -172,10 +184,11 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'certificationType',
+      'realnameStatus',
       'idTypeOptions',
       'nationality',
-      'clientClass'
+      'clientClass',
+      'clientType'
     ])
   },
   created() {
@@ -200,6 +213,8 @@ export default {
       this.listQuery.orderByField = 'create_time'
       this.listQuery.isAsc = false
 
+      console.log('this.listQuery')
+      console.log(this.listQuery)
       this.$emit('search-list', this.listQuery)
     },
     resetFilter() { // 重置搜索条件

@@ -1,114 +1,10 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <!-- <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名"
-                v-model="listQuery.username">
-      </el-input>
-      <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
-      <el-form label-position="right" label-width="80px">
-      <el-row :gutter="20">
-        <el-col :sm="12" :lg="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索客户姓名、编号"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.keyword">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :sm="12" :lg="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索客户手机号"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.mobile">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap">
-          <el-form-item label="投资者类型">
-            <el-select class="filter-item" v-model="listQuery.clientType" placeholder="请选择">
-              <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap">
-          <el-form-item label="资产规模区间">
-            <el-input
-              style="width: 48%; margin-right: 2%"
-              placeholder="请输入开始数字"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.amountStart">
-            </el-input>-
-            <el-input
-              style="width: 48%"
-              placeholder="请输入结束数字"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.amountEnd">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :sm="12" :lg="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索客户证件号码"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.idNo">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :sm="12" :lg="8">
-          <el-form-item label="部门">
-            <!-- <input type="hidden" v-model="listQuery.deptId"/>  -->
-            <el-cascader
-              style="width: 100%"
-              :options="treeDeptData"
-              :props="defaultProps"
-              :show-all-levels="false"
-              change-on-select
-              v-model="deptId"
-            ></el-cascader>
-          </el-form-item>
-        </el-col>
-        <el-col :sm="12" :lg="8">
-          <el-form-item label="理财师">
-            <el-input
-              placeholder="搜索理财师邮箱前缀"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.email">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :sm="12" :lg="8">
-          <el-form-item label="国籍" style="margin-bottom: 10px;">
-            <el-select class="filter-item" v-model="listQuery.nationality" placeholder="请选择">
-              <el-option v-for="item in nationalityType" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :sm="12" :lg="8" v-if="listQuery.nationality === 0">
-          <el-form-item label="地区">
-            <el-cascader
-              size="large"
-              :options="options"
-              :props="defaultProps2"
-              v-model="listQuery.city"
-              @change="handleChange">
-            </el-cascader>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row style="text-align: center;">
-        <el-button type="info" style="padding: 10px 60px;" @click="handleFilter">查询</el-button>
-        <el-button type="info" style="padding: 10px 60px" @click="resetFilter">重置</el-button>
-      </el-row>
-      </el-form>
-    </div>
+    <search-bar-component @search-list="serachList"
+      :searchClientClass="false"
+      :searchRealNameStatus="false"
+      >
+    </search-bar-component>
 
     <div style="text-align: right">
       <!-- <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
@@ -174,7 +70,7 @@
       <el-table-column align="center" label="投资者类型（风险级别）">
         <template slot-scope="scope">
           <span>{{scope.row.clientType}}</span>
-          <span v-show="scope.row.clientType == 0">({{scope.row.riskLevel}})</span>
+          <span v-show="scope.row.clientType == '专业投资者认证'">（{{scope.row.riskLevel}}）</span>
         </template>
       </el-table-column>
 
@@ -230,6 +126,7 @@
 </template>
 
 <script>
+  import searchBarComponent from '@/views/layout/components/searchBar'
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getAllPositon } from '@/api/queryConditions'
@@ -238,7 +135,6 @@
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
-  import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import { isvalidMobile, isvalidID } from '@/utils/validate'
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
   import Bus from '@/assets/js/bus'
@@ -267,7 +163,7 @@
     components: {
       ElOption,
       ElRadioGroup,
-      UploadExcelComponent
+      searchBarComponent
     },
     name: 'table_user',
     directives: {
@@ -425,26 +321,16 @@
     methods: {
       getList() {
         this.listLoading = true
-        this.listQuery.orderByField = 'create_time'
-        this.listQuery.isAsc = false
+        // this.listQuery.orderByField = 'create_time'
+        // this.listQuery.isAsc = false
         this.handleDept()
-        if(this.deptId.length) {
-          this.listQuery.deptId = this.deptId[this.deptId.length - 1]
-        }
-
-        let amountStart = this.listQuery.amountStart || -1
-        let amountEnd = this.listQuery.amountEnd || -1
-        this.listQuery.amount = [amountStart, amountEnd]
-
-        // if(this.listQuery.city) {
-        //   // console.log(this.listQuery.city)
-        //   if(this.listQuery.city[1] === '市辖区') {
-        //     this.listQuery.city = this.listQuery.city[0]
-
-        //   } else if(this.listQuery.city[0].indexOf('省')) {
-        //     this.listQuery.city = this.listQuery.city[1]
-        //   }
+        // if(this.deptId.length) {
+        //   this.listQuery.deptId = this.deptId[this.deptId.length - 1]
         // }
+
+        // let amountStart = this.listQuery.amountStart || -1
+        // let amountEnd = this.listQuery.amountEnd || -1
+        // this.listQuery.amount = [amountStart, amountEnd]
         
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
@@ -531,6 +417,11 @@
       // },
       handleChange (value) {
         console.log(value)
+      },
+      serachList(data) {
+        this.listQuery = data
+        this.listQuery.type = 1
+        this.getList()
       }
     }
   }

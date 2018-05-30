@@ -1,69 +1,14 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <!-- <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名"
-                v-model="listQuery.username">
-      </el-input>
-      <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
-      <el-form label-position="right" label-width="80px">
-      <el-row :gutter="20">
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索客户姓名、编号"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.keyword">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索客户手机号"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.mobile">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="部门">
-            <!-- <input type="hidden" v-model="listQuery.deptId"/>  -->
-            <el-cascader
-              style="width: 100%"
-              :options="treeDeptData"
-              :props="defaultProps"
-              :show-all-levels="false"
-              change-on-select
-              v-model="deptId"
-            ></el-cascader>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="理财师">
-            <el-input
-              placeholder="搜索理财师邮箱前缀"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.email">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索客户证件号码"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.idNo">
-            </el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row style="text-align: center;">
-        <el-button type="info" style="padding: 10px 60px;" @click="handleFilter">查询</el-button>
-        <el-button type="info" style="padding: 10px 60px" @click="resetFilter">重置</el-button>
-      </el-row>
-      </el-form>
-    </div>
+    <search-bar-component @search-list="serachList"
+      :searchIdNo="false"
+      :searchClientClass="false"
+      :searchAmount="false"
+      :searchNationality="false"
+      :searchCity="false"
+      :searchClientType="false"
+      >
+    </search-bar-component>
 
     <div style="text-align: right">
       <!-- <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
@@ -130,6 +75,7 @@
 </template>
 
 <script>
+  import searchBarComponent from '@/views/layout/components/searchBar'
   import { fetchList, getObj } from '@/api/client/realname'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getAllPositon } from '@/api/queryConditions'
@@ -138,7 +84,6 @@
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
-  import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import { isvalidMobile, isvalidID } from '@/utils/validate'
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
   import Bus from '@/assets/js/bus'
@@ -147,7 +92,7 @@
     components: {
       ElOption,
       ElRadioGroup,
-      UploadExcelComponent
+      searchBarComponent
     },
     name: 'table_user',
     directives: {
@@ -212,7 +157,8 @@
         'permissions',
         'genderType',
         // 'delFlagOptions',
-        'realnameStatus'
+        'realnameStatus',
+        'nationality'
       ])
     },
     created() {
@@ -225,26 +171,21 @@
     methods: {
       getList() {
         this.listLoading = true
-        this.listQuery.orderByField = 'create_time'
-        this.listQuery.isAsc = false
+        // this.listQuery.orderByField = 'create_time'
+        // this.listQuery.isAsc = false
         this.handleDept()
-        if(this.deptId.length) {
-          this.listQuery.deptId = this.deptId[this.deptId.length - 1]
-        }
+        // if(this.deptId.length) {
+        //   this.listQuery.deptId = this.deptId[this.deptId.length - 1]
+        // }
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
           this.list.forEach(item => {
-            item.nationality = item.nationality == 0 ? '中国' : '其他'
-            let obj = {}
-            this.genderType.forEach((val, idx) => { // 性别
-              let key = val.value
-              obj[key] = val.label
-            })
-            item.gender = obj[item.gender]
 
             item.realnameStatus = transformText(this.realnameStatus, item.realnameStatus)
+            item.nationality = transformText(this.nationality, item.nationality)
+            item.gender = transformText(this.genderType, item.gender)
           })
         })
       },
@@ -315,6 +256,10 @@
       // },
       handleChange (value) {
         console.log(value)
+      },
+      serachList(data) {
+        this.listQuery = data
+        this.getList()
       }
     }
   }

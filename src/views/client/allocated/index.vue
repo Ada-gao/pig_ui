@@ -468,7 +468,8 @@
       //   })
       // },
       serachList(data) {
-        console.log(data)
+        this.listQuery = data
+        this.getList()
       },
       handleDept() {
         fetchDeptTree()
