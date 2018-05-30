@@ -83,7 +83,7 @@
                      @click="handleRouter(scope.row.clientId)">查看
           </el-button>
           <el-button v-if="sys_user_upd" size="small" type="success"
-                     @click="handleUpdate(scope.row)">编辑
+                     @click="handleUpdate(scope.row.clientId)">编辑
           </el-button>
         </template>
       </el-table-column>
@@ -289,27 +289,33 @@
       },
       handleRouter(id) { // 查看跳转详情
         this.$router.push({
+          path: '/client/readDetail/' + id
+        })
+        Bus.$emit('activeIndex', '/client/potential')
+      },
+      handleUpdate(id) { // 编辑跳转详情
+        this.$router.push({
           path: '/client/detail/' + id
         })
         Bus.$emit('activeIndex', '/client/potential')
       },
-      handleUpdate(row) { // 编辑查询
-        getObj(row.userId)
-          .then(response => {
-            this.form = response.data
-            this.form.role = row.roleList[0].roleId
-            this.role = row.roleList[0].roleDesc
-            this.dialogFormVisible = true
-            this.dialogStatus = 'update'
-            getPositionName(this.form.positionId).then(res => {
-              this.form.positionName = res.data
-            })
-            deptRoleList(response.data.deptId)
-              .then(response => {
-                this.rolesOptions = response.data
-              })
-          })
-      },
+      // handleUpdate(row) { // 编辑查询
+      //   getObj(row.userId)
+      //     .then(response => {
+      //       this.form = response.data
+      //       this.form.role = row.roleList[0].roleId
+      //       this.role = row.roleList[0].roleDesc
+      //       this.dialogFormVisible = true
+      //       this.dialogStatus = 'update'
+      //       getPositionName(this.form.positionId).then(res => {
+      //         this.form.positionName = res.data
+      //       })
+      //       deptRoleList(response.data.deptId)
+      //         .then(response => {
+      //           this.rolesOptions = response.data
+      //         })
+      //     })
+      // },
       create(formName) {
         const set = this.$refs
         this.form.role = this.role

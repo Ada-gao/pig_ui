@@ -105,7 +105,7 @@
                      @click="handleRouter(scope.row.clientId)">查看
           </el-button>
           <el-button v-if="sys_user_upd" size="small" type="success"
-                     @click="handleUpdate(scope.row)">编辑
+                     @click="handleUpdate(scope.row.clientId)">编辑
           </el-button>
           <!-- <el-button v-if="sys_user_del" size="small" type="danger"
                      @click="deletes(scope.row)">删除
@@ -376,21 +376,27 @@
       },
       handleRouter(id) { // 查看跳转详情
         this.$router.push({
+          path: '/client/readDetail/' + id
+        })
+        Bus.$emit('activeIndex', '/client/customer')
+      },
+      handleUpdate(id) { // 编辑查询
+        this.$router.push({
           path: '/client/detail/' + id
         })
         Bus.$emit('activeIndex', '/client/customer')
       },
-      handleUpdate(row) { // 编辑查询
-        getObj(row.userId)
-          .then(response => {
-            this.form = response.data
-            this.form.role = row.roleList[0].roleId
-            this.role = row.roleList[0].roleDesc
-            this.dialogFormVisible = true
-            this.dialogStatus = 'update'
+      // handleUpdate(row) { // 编辑查询
+      //   getObj(row.userId)
+      //     .then(response => {
+      //       this.form = response.data
+      //       this.form.role = row.roleList[0].roleId
+      //       this.role = row.roleList[0].roleDesc
+      //       this.dialogFormVisible = true
+      //       this.dialogStatus = 'update'
             
-          })
-      },
+      //     })
+      // },
       resetTemp() {
         this.form = {
           id: undefined,

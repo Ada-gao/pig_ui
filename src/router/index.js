@@ -51,6 +51,13 @@ export const constantRouterMap = [
         hidden: true
       },
       { 
+        path: 'readDetail/:id',
+        component: _import('client/customer/readOnlyDetail'),
+        name: '客户详情页',
+        meta: { title: '客户详情', icon: '', noCache: true },
+        hidden: true
+      },
+      { 
         path: 'realnameDetail/:id',
         component: _import('client/realname/detail'),
         name: '实名认证审核详情页',

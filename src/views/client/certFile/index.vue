@@ -1,62 +1,6 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <!-- <el-form label-position="right" label-width="80px">
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="搜索">
-              <el-input
-                placeholder="搜索客户姓名、编号"
-                prefix-icon="el-icon-search"
-                v-model="listQuery.keyword">
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="搜索">
-              <el-input
-                placeholder="搜索客户手机号"
-                prefix-icon="el-icon-search"
-                v-model="listQuery.mobile">
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="搜索">
-              <el-input
-                placeholder="搜索客户证件号码"
-                prefix-icon="el-icon-search"
-                v-model="listQuery.idNo">
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="部门">
-              <el-cascader
-                style="width: 100%"
-                :options="treeDeptData"
-                :props="defaultProps"
-                :show-all-levels="false"
-                change-on-select
-                v-model="deptId"
-              ></el-cascader>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="理财师">
-              <el-input
-                placeholder="搜索理财师邮箱前缀"
-                prefix-icon="el-icon-search"
-                v-model="listQuery.email">
-              </el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row style="text-align: center;">
-          <el-button type="info" style="padding: 10px 60px;" @click="handleFilter">查询</el-button>
-          <el-button type="info" style="padding: 10px 60px" @click="resetFilter">重置</el-button>
-        </el-row>
-      </el-form> -->
       <el-tabs v-model="type" type="card" @tab-click="handleClick">
         <el-tab-pane label="普通投资者" name="0"></el-tab-pane>
         <el-tab-pane label="专业投资者" name="1"></el-tab-pane>
@@ -64,7 +8,6 @@
     </div>
 
     <div style="text-align: right">
-      <!-- <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">新增资料</el-button> -->
       <el-upload
               class="upload-demo"
               style="display: inline-block;"
@@ -94,7 +37,7 @@
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
           <el-button v-if="sys_user_upd" size="small" type="success"
-                     @click="handleRouter(scope.row.certFileId)">查看
+                    :href="scope.row.fileUrl"><a :href="scope.row.fileUrl" target="_blank">查看</a>
           </el-button>
           <el-button v-if="sys_user_upd" size="small" type="success"
                      @click="deletes(scope.row.certFileId)">删除
@@ -104,13 +47,16 @@
 
     </el-table>
 
-    <!-- <div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                     :current-page.sync="listQuery.page"
-                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
-                     layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
-    </div> -->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%">
+      <span>确认删除该认证资料吗？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="todeletes">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -201,6 +147,8 @@
         headers: {
           Authorization: 'Bearer ' + getToken()
         },
+        id: '',
+        dialogVisible: false
       }
     },
     computed: {
@@ -252,22 +200,6 @@
             this.dialogDeptVisible = true
           })
       },
-      handleRouter(id) { // 查看跳转详情
-        this.$router.push({
-          path: '/client/investorDetail/' + id + '/1'
-        })
-      },
-      handleUpdate(row) { // 编辑查询
-        getObj(row.userId)
-          .then(response => {
-            this.form = response.data
-            this.form.role = row.roleList[0].roleId
-            this.role = row.roleList[0].roleDesc
-            this.dialogFormVisible = true
-            this.dialogStatus = 'update'
-            
-          })
-      },
       resetTemp() {
         this.form = {
           id: undefined,
@@ -285,7 +217,11 @@
         this.getList()
       },
       deletes(id) {
-        delObj(id).then(response => {
+        this.dialogVisible = true
+        this.id = id
+      },
+      todeletes() {
+        delObj(this.id).then(response => {
           if(response.status === 200) {
             this.getList()
             this.$notify({
@@ -294,6 +230,7 @@
                 type: 'success',
                 duration: 2000
               })
+            this.dialogVisible = false
           }
         })
       }
