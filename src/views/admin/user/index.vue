@@ -746,7 +746,6 @@
         this.form.positionId = val
       },
       covertPY(l1) { // 汉字转拼音
-      // debugger
         let l2 = l1.length
         let I1 = ""
         let reg = new RegExp('[a-zA-Z0-9\- ]')
@@ -765,7 +764,7 @@
          }
          return I1
       },
-      arraySearch(l1, l2) {
+      arraySearch(l1, l2) { // 搜索对象
         for (var name in l2) {
           if (l2[name].indexOf(l1) != -1) {
               return name
@@ -775,10 +774,7 @@
         return false
       },
       getPYCode(val) {
-        console.log('jinlail')
-        console.log(val)
         this.form.username = this.covertPY(val)
-        console.log(this.form.username)
       }
     }
   }

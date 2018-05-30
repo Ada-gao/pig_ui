@@ -166,7 +166,7 @@
           name: 'rank',
           username: undefined,
           password: undefined,
-          delFlag: undefined,
+          // delFlag: undefined,
           deptId: undefined
         },
         dialogFormVisible: false,
@@ -194,7 +194,7 @@
         maritalStatus: '',
         fileList: [],
         positionId: '',
-        delFlag: '',
+        // delFlag: '',
         tableData: [],
         tableHeader: [],
         type: 0,
@@ -210,7 +210,7 @@
         'permissions',
         'genderType',
         'idTypeOptions',
-        'delFlagOptions'
+        // 'delFlagOptions'
       ])
     },
     created() {

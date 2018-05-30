@@ -1,11 +1,6 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <!-- <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名"
-                v-model="listQuery.username">
-      </el-input>
-      <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
+    <!-- <div class="filter-container">
       <el-form label-position="right" label-width="80px">
         <el-row :gutter="20">
           <el-col :sm="12" :lg="8">
@@ -116,11 +111,11 @@
           <el-button type="info" style="padding: 10px 60px" @click="resetFilter">重置</el-button>
         </el-row>
       </el-form>
-    </div>
+    </div> -->
+    <search-bar-component @search-list="serachList"></search-bar-component>
 
     <div style="text-align: right">
       <!-- <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
-      <!-- <upload-excel-component @on-selected-file='selected'></upload-excel-component> -->
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
@@ -258,6 +253,7 @@
 </template>
 
 <script>
+  import searchBarComponent from '@/views/layout/components/searchBar'
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/client'
   import { putPlanner } from '@/api/client/planner'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
@@ -268,7 +264,6 @@
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
-  import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import { isvalidMobile, isvalidID } from '@/utils/validate'
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
   import Bus from '@/assets/js/bus'
@@ -297,7 +292,7 @@
     components: {
       ElOption,
       ElRadioGroup,
-      UploadExcelComponent
+      searchBarComponent
     },
     name: 'table_user',
     directives: {
@@ -444,16 +439,16 @@
     methods: {
       getList() {
         this.listLoading = true
-        this.listQuery.orderByField = 'create_time'
-        this.listQuery.isAsc = false
+        // this.listQuery.orderByField = 'create_time'
+        // this.listQuery.isAsc = false
         this.handleDept()
-        if(this.deptId.length) {
-          this.listQuery.deptId = this.deptId[this.deptId.length - 1]
-        }
+        // if(this.deptId.length) {
+        //   this.listQuery.deptId = this.deptId[this.deptId.length - 1]
+        // }
 
-        let amountStart = this.listQuery.amountStart || -1
-        let amountEnd = this.listQuery.amountEnd || -1
-        this.listQuery.amount = [amountStart, amountEnd]
+        // let amountStart = this.listQuery.amountStart || -1
+        // let amountEnd = this.listQuery.amountEnd || -1
+        // this.listQuery.amount = [amountStart, amountEnd]
         
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
@@ -472,6 +467,9 @@
       //     this.positionsOptions = res.data
       //   })
       // },
+      serachList(data) {
+        console.log(data)
+      },
       handleDept() {
         fetchDeptTree()
           .then(response => {
@@ -479,10 +477,10 @@
             this.dialogDeptVisible = true
           })
       },
-      handleFilter() {
-        this.listQuery.page = 1
-        this.getList()
-      },
+      // handleFilter() {
+      //   this.listQuery.page = 1
+      //   this.getList()
+      // },
       handleSizeChange(val) {
         this.listQuery.limit = val
         this.getList()
@@ -571,7 +569,7 @@
         },
         this.deptId = []
         this.entryDate = []
-        this.handleFilter()
+        // this.handleFilter()
       },
       
       // beforeRemove(file, fileList) {
