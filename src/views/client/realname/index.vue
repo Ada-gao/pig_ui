@@ -195,7 +195,7 @@
         maritalStatus: '',
         fileList: [],
         positionId: '',
-        delFlag: '',
+        // delFlag: '',
         tableData: [],
         tableHeader: [],
         entryDate: [],
@@ -211,7 +211,7 @@
         'certificationType',
         'permissions',
         'genderType',
-        'delFlagOptions',
+        // 'delFlagOptions',
         'realnameStatus'
       ])
     },
@@ -303,7 +303,7 @@
           limit: 20,
           username: '',
           positionId: '',
-          delFlag: '',
+          // delFlag: '',
           type: 1
         },
         this.entryDate = []

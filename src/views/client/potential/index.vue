@@ -223,7 +223,7 @@
           name: 'rank',
           username: undefined,
           password: undefined,
-          delFlag: undefined,
+          // delFlag: undefined,
           deptId: undefined
         },
         statusOptions: ['0', '1', '2'],
@@ -254,7 +254,7 @@
         maritalStatus: '',
         fileList: [],
         positionId: '',
-        delFlag: '',
+        // delFlag: '',
         tableData: [],
         tableHeader: [],
         entryDate: [],
@@ -270,7 +270,7 @@
         'genderType',
         'idTypeOptions',
         'marriageStatusOptions',
-        'delFlagOptions',
+        // 'delFlagOptions',
         'nationality',
         'realnameStatus'
       ])
@@ -453,8 +453,8 @@
           page: 1,
           limit: 20,
           username: '',
-          positionId: '',
-          delFlag: ''
+          positionId: ''
+          // delFlag: ''
         },
         this.entryDate = []
         this.handleFilter()

@@ -298,7 +298,7 @@
           name: 'rank',
           username: undefined,
           password: undefined,
-          delFlag: undefined,
+          // delFlag: undefined,
           deptId: undefined
         },
         rules: {
@@ -384,7 +384,7 @@
         maritalStatus: '',
         fileList: [],
         positionId: '',
-        delFlag: '',
+        // delFlag: '',
         tableData: [],
         tableHeader: [],
         entryDate: [],
@@ -411,7 +411,7 @@
         'permissions',
         'genderType',
         'idTypeOptions',
-        'delFlagOptions',
+        // 'delFlagOptions',
         'nationality'
       ])
     },
@@ -519,7 +519,7 @@
           limit: 20,
           username: '',
           positionId: '',
-          delFlag: '',
+          // delFlag: '',
           type: 1
         },
         this.entryDate = []

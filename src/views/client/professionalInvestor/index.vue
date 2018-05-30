@@ -294,7 +294,7 @@
           name: 'rank',
           username: undefined,
           password: undefined,
-          delFlag: undefined,
+          // delFlag: undefined,
           deptId: undefined
         },
         rules: {
@@ -380,7 +380,7 @@
         maritalStatus: '',
         fileList: [],
         positionId: '',
-        delFlag: '',
+        // delFlag: '',
         tableData: [],
         tableHeader: [],
         entryDate: [],
@@ -406,8 +406,8 @@
         'certificationType',
         'permissions',
         'genderType',
-        'idTypeOptions',
-        'delFlagOptions'
+        'idTypeOptions'
+        // 'delFlagOptions'
       ])
     },
     filters: {
