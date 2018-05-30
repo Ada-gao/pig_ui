@@ -20,10 +20,11 @@ const getters = {
   genderType: state => state.dictionary.genderType,
   educationType: state => state.dictionary.educationType,
   productRiskLevel: state => state.dictionary.productRiskLevel,
-  delFlagOptions: state => state.dictionary.delFlag,
+  // delFlagOptions: state => state.dictionary.delFlag,
   nationality: state => state.dictionary.nationality,
   customerRiskLevel: state => state.dictionary.riskLevel,
   realnameStatus: state => state.dictionary.realnameStatus,
-  clientClass: state => state.dictionary.clientClass
+  clientClass: state => state.dictionary.clientClass,
+  workStatus: state => state.dictionary.status
 }
 export default getters

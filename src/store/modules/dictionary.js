@@ -10,11 +10,12 @@ const dictionary = {
     genderType: [],
     educationType: [],
     productRiskLevel: [],
-    delFlag: [],
+    // delFlag: [], 暂时废弃
     nationality: [],
     riskLevel: [],
     realnameStatus: [],
-    clientClass: []
+    clientClass: [],
+    status: []
   },
 
   mutations: {
@@ -42,9 +43,9 @@ const dictionary = {
     SET_PRODUCT_RISK_LEVEL: (state, productRiskLevel) => {
       state.productRiskLevel = productRiskLevel
     },
-    SET_DEL_FLAG: (state, delFlag) => {
-      state.delFlag = delFlag
-    },
+    // SET_DEL_FLAG: (state, delFlag) => {
+    //   state.delFlag = delFlag
+    // },
     SET_NATIONALITY: (state, nationality) => {
       state.nationality = nationality
     },
@@ -56,6 +57,9 @@ const dictionary = {
     },
     SET_CLIENT_CLASS: (state, clientClass) => {
       state.clientClass = clientClass
+    },
+    SET_STATUS: (state, status) => {
+      state.status = status
     }
   },
 
@@ -74,11 +78,12 @@ const dictionary = {
           let genderTypeList = []
           let educationTypeList = []
           let productRiskLevelList = []
-          let delFlagList = []
+          // let delFlagList = []
           let nationalityList = []
           let riskLevelList = []
           let realnameStatusList = []
           let clientClassList = []
+          let statusList = []
           
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -105,8 +110,8 @@ const dictionary = {
             } else if(data[i].type === 'product_risk_level') {
               productRiskLevelList.push(data[i])
 
-            } else if(data[i].type === 'del_flag') {
-              delFlagList.push(data[i])
+            // } else if(data[i].type === 'del_flag') {
+            //   delFlagList.push(data[i])
 
             } else if(data[i].type === 'nationality') {
               nationalityList.push(data[i])
@@ -119,6 +124,9 @@ const dictionary = {
 
             } else if(data[i].type === 'client_class') {
               clientClassList.push(data[i])
+
+            } else if(data[i].type === 'status') {
+              statusList.push(data[i])
             }
           }
           commit('SET_ID_TYPE', idTypeList)
@@ -129,11 +137,12 @@ const dictionary = {
           commit('SET_GENDER_TYPE', genderTypeList)
           commit('SET_EDUCATION_TYPE', educationTypeList)
           commit('SET_PRODUCT_RISK_LEVEL', productRiskLevelList)
-          commit('SET_DEL_FLAG', delFlagList)
+          // commit('SET_DEL_FLAG', delFlagList)
           commit('SET_NATIONALITY', nationalityList)
           commit('SET_RISK_LEVEL', riskLevelList)
           commit('SET_REALNAME_STATUS', realnameStatusList)
           commit('SET_CLIENT_CLASS', clientClassList)
+          commit('SET_STATUS', statusList)
           resolve()
         }).catch(error => {
           reject(error)
