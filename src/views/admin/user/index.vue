@@ -173,7 +173,7 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="姓名" prop="name">
-              <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
+              <el-input v-model="form.name" placeholder="请输入姓名" @change="getPYCode"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -358,6 +358,7 @@
   import ElOption from "element-ui/packages/select/src/option"
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import { isvalidMobile, isvalidID } from '@/utils/validate'
+  import { getPYData } from '@/assets/data'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
@@ -502,7 +503,8 @@
         tableData: [],
         tableHeader: [],
         entryDate: [],
-        // positionName: ''
+        // positionName: '',
+        PYCode: ''
       }
     },
     computed: {
@@ -606,6 +608,7 @@
         this.resetTemp()
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
+        this.PYCode = getPYData() // 获取拼音数据
       },
       handleUpdate(row) { // 编辑查询
         getObj(row.userId)
@@ -716,16 +719,16 @@
         this.handleFilter()
       },
       handleRemove(file, fileList) {
-        console.log(file, fileList);
+        console.log(file, fileList)
       },
       handlePreview(file) {
-        console.log(file);
+        console.log(file)
       },
       handleExceed(files, fileList) {
-        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
       },
       // beforeRemove(file, fileList) {
-      //   return this.$confirm(`确定移除 ${ file.name }？`);
+      //   return this.$confirm(`确定移除 ${ file.name }？`)
       // },
       beforeUpload(file) {
         console.log(file)
@@ -741,6 +744,41 @@
       },
       handleChange(val) {
         this.form.positionId = val
+      },
+      covertPY(l1) { // 汉字转拼音
+      // debugger
+        let l2 = l1.length
+        let I1 = ""
+        let reg = new RegExp('[a-zA-Z0-9\- ]')
+        for (let i = 0; i < l2; i++) {
+            let val = l1.substr(i, 1)
+            let name = this.arraySearch(val, this.PYCode)
+            if (reg.test(val)) {
+                I1 += val
+            } else if (name !== false) {
+                I1 += name
+            }
+         }
+         I1 = I1.replace(/ /g, '-')
+         while (I1.indexOf('--') > 0) {
+             I1 = I1.replace('--', '-')
+         }
+         return I1
+      },
+      arraySearch(l1, l2) {
+        for (var name in l2) {
+          if (l2[name].indexOf(l1) != -1) {
+              return name
+              break
+          }
+        }
+        return false
+      },
+      getPYCode(val) {
+        console.log('jinlail')
+        console.log(val)
+        this.form.username = this.covertPY(val)
+        console.log(this.form.username)
       }
     }
   }
