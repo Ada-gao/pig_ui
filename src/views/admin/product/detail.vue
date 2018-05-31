@@ -155,7 +155,7 @@
         <h3>交易所需材料</h3>
         <el-table
           :data="fileList1"
-          @select="handleSelectionChange1"
+          @selection-change="handleSelectionChange1"
           border
           style="width: 100%">
           <el-table-column
@@ -197,7 +197,7 @@
         <h3>产品说明所需材料</h3>
         <el-table
           :data="fileList2"
-          @select="handleSelectionChange2"
+          @selection-change="handleSelectionChange2"
           border
           style="width: 100%">
           <el-table-column
@@ -240,7 +240,7 @@
         <h3>产品公告</h3>
         <el-table
           :data="fileList3"
-          @select="handleSelectionChange3"
+          @selection-change="handleSelectionChange3"
           border
           style="width: 100%">
           <el-table-column
@@ -640,13 +640,15 @@
           this.fileList1 = response.data
         })
       },
-      handleSelectionChange1(selection, row) { // 选中材料
-        let productFileId = row.productFileId
-        this.indexList1.push(productFileId)
+      handleSelectionChange1(row) { // 选中材料
+        // let productFileId = row.productFileId
+        // debugger
+        // this.indexList1.push(productFileId)
+        this.indexList1 = row
       },
       delfiles1() { // 删除材料
-        this.indexList1.forEach(id => {
-          delFiles({fileType: 'transaction', productFileId: id}).then(response => {
+        this.indexList1.forEach(item => {
+          delFiles({fileType: 'transaction', productFileId: item.productFileId}).then(response => {
             this.handleChange1()
           })
         })
@@ -658,14 +660,15 @@
           this.fileList2 = response.data
         })
       },
-      handleSelectionChange2(selection, row) { // 选中材料
-        let productFileId = row.productFileId
-        console.log(productFileId)
-        this.indexList2.push(productFileId)
+      handleSelectionChange2(row) { // 选中材料
+        // let productFileId = row.productFileId
+        // console.log(productFileId)
+        // this.indexList2.push(productFileId)
+        this.indexList2 = row
       },
       delfiles2() { // 删除材料
-        this.indexList2.forEach(id => {
-          delFiles({fileType: 'product', productFileId: id}).then(response => {
+        this.indexList2.forEach(item => {
+          delFiles({fileType: 'product', productFileId: item.productFileId}).then(response => {
             this.handleChange2()
           })
         })
@@ -677,13 +680,15 @@
           this.fileList3 = response.data
         })
       },
-      handleSelectionChange3(selection, row) { // 选中材料
-        let productFileId = row.productFileId
-        this.indexList3.push(productFileId)
+      // handleSelectionChange3(selection, row) { // 选中材料
+      handleSelectionChange3(row) { // 选中材料
+        // let productFileId = row.productFileId
+        // this.indexList3.push(productFileId)
+        this.indexList3 = row
       },
       delfiles3() { // 删除材料
-        this.indexList3.forEach(id => {
-          delFiles({fileType: 'announcement', productFileId: id}).then(response => {
+        this.indexList3.forEach(item => {
+          delFiles({fileType: 'announcement', productFileId: item.productFileId}).then(response => {
             this.handleChange3()
           })
         })
