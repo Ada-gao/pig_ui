@@ -108,7 +108,7 @@
               size="large"
               :options="options"
               :props="defaultProps2"
-              v-model="listQuery.city">
+              v-model="city">
             </el-cascader>
           </el-form-item>
         </el-col>
@@ -180,6 +180,7 @@ export default {
       defaultProps2: {
         value: 'label'
       },
+      city: []
     }
   },
   computed: {
@@ -206,15 +207,13 @@ export default {
         this.listQuery.deptId = this.deptId[this.deptId.length - 1]
       }
 
-      if(this.listQuery.city) {
-        this.listQuery.city = this.listQuery.city[1] == '市辖区' ? this.listQuery.city[0] : this.listQuery.city[1]
+      if(this.city.length) {
+        this.listQuery.city = this.city[1] == '市辖区' ? this.city[0] : this.city[1]
       }
 
       this.listQuery.orderByField = 'create_time'
       this.listQuery.isAsc = false
 
-      console.log('this.listQuery')
-      console.log(this.listQuery)
       this.$emit('search-list', this.listQuery)
     },
     resetFilter() { // 重置搜索条件
