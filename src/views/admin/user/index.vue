@@ -73,10 +73,10 @@
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
-      <el-table-column align="center" label="序号">
-        <template slot-scope="scope">
-          <span>{{scope.row.userId}}</span>
-        </template>
+      <el-table-column align="center" label="序号" type="index">
+        <!-- <template slot-scope="scope"> -->
+          <!-- <span>{{scope.row.userId}}</span> -->
+        <!-- </template> -->
       </el-table-column>
 
       <el-table-column align="center" label="用户名">
@@ -302,9 +302,10 @@
               <!-- <el-input v-model="form.role"></el-input> -->
               <el-upload
                 class="upload-demo"
-                action="https://jsonplaceholder.typicode.com/posts/"
+                action="/zuul/admin/user/upload"
                 :on-preview="handlePreview"
                 :on-remove="handleRemove"
+                :headers="headers"
                 multiple
                 :limit="3"
                 :on-exceed="handleExceed"
@@ -359,6 +360,7 @@
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import { isvalidMobile, isvalidID } from '@/utils/validate'
   import { getPYData } from '@/assets/data'
+  import { getToken } from '@/utils/auth'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
@@ -504,7 +506,10 @@
         tableHeader: [],
         entryDate: [],
         // positionName: '',
-        PYCode: ''
+        PYCode: '',
+        headers: {
+          Authorization: 'Bearer ' + getToken()
+        },
       }
     },
     computed: {

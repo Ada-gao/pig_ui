@@ -279,7 +279,7 @@
     </div>
 
     <div slot="footer" class="dialog-footer" style="text-align: center;">
-      <el-button @click="cancel('form')">取 消</el-button>
+      <el-button @click="cancel()">取 消</el-button>
       <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
       <el-button v-else type="primary" @click="update('form')">修 改</el-button>
     </div>
@@ -546,7 +546,8 @@
       },
       cancel(formName) {
         // this.dialogFormVisible = false
-        this.$refs[formName].resetFields()
+        // this.$refs[formName].resetFields()
+        this.$router.push({path: '/admin/product'})
       },
       update(formName) { // 修改提交
         const set = this.$refs

@@ -21,7 +21,7 @@
                         autoComplete="on"
                       placeholder="密码"></el-input>
             <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye"/></span>
-            <a class="forget-psd" @click="pwdStep=2">忘记密码</a>
+            <!-- <a class="forget-psd" @click="pwdStep=2">忘记密码</a> -->
           </el-form-item>
               
           <input name="randomStr" type="hidden" v-model="loginForm.randomStr"/>

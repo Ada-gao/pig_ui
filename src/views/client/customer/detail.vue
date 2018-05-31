@@ -63,7 +63,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="部门" prop="deptName">
-            <el-input v-model="form.deptName" placeholder="请输入部门" readonly></el-input>
+            <el-input v-model="form.deptName" placeholder="请选择部门" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11" v-show="form.clientClass">
