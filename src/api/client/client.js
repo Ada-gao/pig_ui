@@ -82,6 +82,17 @@ export function getObj(clientId) {
   })
 }
 
+/**
+ * 查询客户详情(不打掩码)
+ */
+export function getCompleteObj(clientId, type) {
+  return request({
+    url: '/client/client/' + clientId,
+    method: 'get',
+    params: type
+  })
+}
+
 export function delObj(id) {
   return request({
     url: '/client/client/' + id,
@@ -89,9 +100,9 @@ export function delObj(id) {
   })
 }
 
-export function putObj(obj) {
+export function putObj(clientId, obj) {
   return request({
-    url: '/client/client',
+    url: '/client/client/' + clientId,
     method: 'put',
     data: obj
   })

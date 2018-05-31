@@ -67,13 +67,14 @@
 
       <el-table-column align="center" label="部门" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.userDeptName}}</span>
+          <span>{{scope.row.userDeptName}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="国籍（常住地区）" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.nationality}}</span>
+          <span>{{scope.row.nationality}}</span>
+          <span>{{scope.row.city}}</span>
         </template>
       </el-table-column>
 

@@ -469,6 +469,7 @@
       // },
       serachList(data) {
         this.listQuery = data
+        this.listQuery.plannerStatus = 1
         this.getList()
       },
       handleDept() {

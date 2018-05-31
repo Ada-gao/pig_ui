@@ -90,10 +90,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="11" v-if="realnameStatus">
-          <el-form-item label="投资者身份" prop="certificationType">
-            <span>{{form.certificationType}}</span>
-            <!-- <el-select class="filter-item" v-model="form.certificationType" placeholder="请选择">
-              <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
+          <el-form-item label="投资者身份" prop="clientType">
+            <span>{{form.clientType}}</span>
+            <!-- <el-select class="filter-item" v-model="form.clientType" placeholder="请选择">
+              <el-option v-for="item in clientType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select> -->
@@ -142,7 +142,7 @@
             <!-- <el-input v-model="form.address" placeholder="请输入地址" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="isCertificationType & realnameStatus & idType">
+        <el-col :span="11" v-if="isClientType & realnameStatus & idType">
           <el-form-item label="风险测评" prop="riskLevel">
             <span>{{clientStatus.riskLevel}}</span>
             <!-- <el-input v-model="clientStatus.riskLevel" placeholder="请输入风险测评" readonly></el-input> -->
@@ -280,7 +280,7 @@
 
 <script>
   import { 
-    fetchList, getObj, addObj, putObj, delObj, getClientStatus, getClientRemark, getClientPlanner, getClientBankcard, getClientProducts
+    fetchList, getObj, addObj, delObj, getClientStatus, getClientRemark, getClientPlanner, getClientBankcard, getClientProducts
   } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
@@ -351,7 +351,7 @@
         productList: [],
         realnameStatus: '',
         idType: '',
-        isCertificationType: '',
+        isClientType: '',
         defaultProps2: {
           value: 'label'
         },
@@ -364,7 +364,7 @@
         'productStatus',
         'genderType',
         'certificationStatus',
-        'certificationType',
+        'clientType',
         'idTypeOptions',
         'nationality'
       ])
@@ -385,11 +385,11 @@
 
           this.realnameStatus = this.form.realnameStatus == 2 ? true : false // 认证状态判断
           this.idType = this.form.idType == 0 ? true : false // 证件类型判断
-          this.isCertificationType = this.form.certificationType == 0 ? true : false// 投资者类型判断
+          this.isClientType = this.form.clientType == 0 ? true : false// 投资者类型判断
 
           this.form.gender = transformText(this.genderType, this.form.gender)
           this.form.realnameStatus = transformText(this.certificationStatus, this.form.realnameStatus)
-          this.form.certificationType = transformText(this.certificationType, this.form.certificationType)
+          this.form.clientType = transformText(this.clientType, this.form.clientType)
           this.form.idType = transformText(this.idTypeOptions, this.form.idType)
           this.form.nationality = transformText(this.nationality, this.form.nationality)
           if(this.realnameStatus) {

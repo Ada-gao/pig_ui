@@ -259,7 +259,10 @@
           <el-col :span="11">
             <el-form-item label="部门" prop="deptName">
               <!-- deptId -->
-              <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
+              <el-input v-model="form.deptName" placeholder="选择部门" 
+                @focus="handleDept"
+                @change="changeDept"
+                readonly></el-input>
               <input type="hidden" v-model="form.deptId"/>
             </el-form-item>
           </el-col>
@@ -470,7 +473,7 @@
           //   }
           // ],
           mobile: [
-            {required: true, trigger: 'blur, change', validator: validMobile}
+            {required: true, trigger: 'change', validator: validMobile}
           ]
         },
         statusOptions: ['0', '1', '2'],
@@ -583,6 +586,7 @@
         deptRoleList(data.id)
           .then(response => {
             this.rolesOptions = response.data
+            this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
           })
       },
       handlePosition() {
@@ -596,6 +600,10 @@
             this.treeDeptData = response.data
             this.dialogDeptVisible = true
           })
+      },
+      changeDept() {
+        this.role = ''
+        this.form.role = ''
       },
       handleFilter() {
         this.listQuery.page = 1

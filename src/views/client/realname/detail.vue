@@ -80,7 +80,7 @@
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item label="实名认证状态" prop="username">
-            <el-select class="filter-item" v-model="form.realnameStatus" placeholder="请选择">
+            <el-select class="filter-item" v-model="clientStatus.realnameStatus" placeholder="请选择">
               <el-option v-for="item in certificationStatus" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -88,9 +88,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="投资者身份" prop="certificationType">
-            <el-select class="filter-item" v-model="form.certificationType" placeholder="请选择">
-              <el-option v-for="item in certificationType" :key="item.value" :value="item.value" :label="item.label">
+          <el-form-item label="投资者身份" prop="clientType">
+            <el-select class="filter-item" v-model="clientStatus.clientType" placeholder="请选择">
+              <el-option v-for="item in clientType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
@@ -98,7 +98,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="证件类型" prop="idType">
-            <el-select class="filter-item" v-model="form.idType" placeholder="请选择">
+            <el-select class="filter-item" v-model="clientStatus.idType" placeholder="请选择">
               <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -107,7 +107,7 @@
         </el-col>
         <el-col :span="11" v-if="idType">
           <el-form-item label="证件号码" prop="idNo">
-            <el-input v-model="form.idNo" placeholder="请输入证件号码" readonly></el-input>
+            <el-input v-model="clientStatus.idNo" placeholder="请输入证件号码" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11" v-if="idType">
@@ -139,7 +139,7 @@
             <el-input v-model="form.address" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="11" v-if="isCertificationType & idType">
+        <!-- <el-col :span="11" v-if="isClientType & idType">
           <el-form-item label="风险测评" prop="riskLevel">
             <el-input v-model="clientStatus.riskLevel" placeholder="请输入风险测评" readonly></el-input>
           </el-form-item>
@@ -164,14 +164,14 @@
           <el-form-item label="银行卡截图" prop="cardPic">
             <el-col :span="8">
               <el-card>
-                <img :src="bankcardList.cardFrontUrl" alt="">
+                <img :src="bankcardList.cardFrontUrl" alt="" style="max-height: 100px;">
               </el-card>
             </el-col>
-            <el-col :span="8" style="margin-left: 10%">
+            <!-- <el-col :span="8" style="margin-left: 10%">
               <el-card>
                 <img :src="bankcardList.cardBackUrl" alt="">
               </el-card>
-            </el-col>
+            </el-col> -->
             <!-- <el-card>
               <img :src="bankcardList.cardFrontUrl" alt="">
             </el-card> -->
@@ -323,7 +323,7 @@
         productList: [],
         realnameStatus: '',
         idType: '',
-        isCertificationType: '',
+        isClientType: '',
         failReason: ''
       }
     },
@@ -333,7 +333,7 @@
         'productStatus',
         'genderType',
         'certificationStatus',
-        'certificationType',
+        'clientType',
         'idTypeOptions',
         'nationality'
       ])
@@ -364,18 +364,18 @@
         }
         getClientStatus(id, '1').then(response => {
           this.clientStatus = response.data
+          this.realnameStatus = this.clientStatus.realnameStatus != 0 ? true : false // 认证状态判断
+          this.isClientType = this.clientStatus.clientType == 0 ? true : false// 投资者类型判断
+          this.idType = this.clientStatus.idType == 0 ? true : false // 证件类型判断(0: 身份证)
         })
 
         getObj(id, '1').then(response => {
           this.form = response.data
 
-          this.realnameStatus = this.form.realnameStatus != 0 ? true : false // 认证状态判断
-          this.idType = this.form.idType == 0 ? true : false // 证件类型判断(0: 身份证)
-          this.isCertificationType = this.form.certificationType == 0 ? true : false// 投资者类型判断
 
           this.form.gender = transformText(this.genderType, this.form.gender)
           this.form.realnameStatus = transformText(this.certificationStatus, this.form.realnameStatus)
-          this.form.certificationType = transformText(this.certificationType, this.form.certificationType)
+          this.form.clientType = transformText(this.clientType, this.form.clientType)
           this.form.idType = transformText(this.idTypeOptions, this.form.idType)
           this.form.nationality = transformText(this.nationality, this.form.nationality)
           if(this.realnameStatus) {

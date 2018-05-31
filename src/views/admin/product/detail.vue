@@ -281,6 +281,7 @@
     <div slot="footer" class="dialog-footer" style="text-align: center;">
       <el-button @click="cancel()">取 消</el-button>
       <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
+      <el-button v-if="dialogStatus=='create' & uploadData.productId" type="primary" @click="createRouter">确 定</el-button>
       <el-button v-else type="primary" @click="update('form')">修 改</el-button>
     </div>
 
@@ -494,6 +495,7 @@
         })
         getObjList().then(response => { // 获取币种
           this.currencyList = response.data
+          this.form.currencyId = 2
         })
         if(this.uploadData.productId) {
           getObj(this.uploadData.productId)
@@ -536,13 +538,15 @@
                   duration: 2000
                 })
                 this.uploadData.productId = response.data.productId
-                console.log('this.uploadData.productId')
-                console.log(this.uploadData.productId)
+
               })
           } else {
             return false
           }
         })
+      },
+      createRouter() {
+        this.$router.push({path: '/admin/product'})
       },
       cancel(formName) {
         // this.dialogFormVisible = false

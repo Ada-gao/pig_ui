@@ -1,12 +1,12 @@
 <template>
   <div class="app-container calendar-list-container">
     <search-bar-component @search-list="serachList"
-      :searchIdNo="false"
       :searchClientClass="false"
       :searchAmount="false"
       :searchNationality="false"
       :searchCity="false"
       :searchClientType="false"
+      :searchRealNameStatus="false"
       >
     </search-bar-component>
 
@@ -196,10 +196,10 @@
             this.dialogDeptVisible = true
           })
       },
-      handleFilter() {
-        this.listQuery.page = 1
-        this.getList()
-      },
+      // handleFilter() {
+      //   this.listQuery.page = 1
+      //   this.getList()
+      // },
       handleSizeChange(val) {
         this.listQuery.limit = val
         this.getList()
@@ -238,18 +238,18 @@
           role: undefined
         }
       },
-      resetFilter() { // 重置搜索条件
-        this.listQuery = {
-          page: 1,
-          limit: 20,
-          username: '',
-          positionId: '',
-          // delFlag: '',
-          type: 1
-        },
-        this.entryDate = []
-        this.handleFilter()
-      },
+      // resetFilter() { // 重置搜索条件
+      //   this.listQuery = {
+      //     page: 1,
+      //     limit: 20,
+      //     username: '',
+      //     positionId: '',
+      //     // delFlag: '',
+      //     type: 1
+      //   },
+      //   this.entryDate = []
+      //   this.handleFilter()
+      // },
       
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`);
@@ -259,6 +259,7 @@
       },
       serachList(data) {
         this.listQuery = data
+        this.listQuery.realNameStatus = 1
         this.getList()
       }
     }
