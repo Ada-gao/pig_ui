@@ -396,6 +396,10 @@
               required: true,
               message: '请输入募集额度',
               trigger: 'blur'
+            },
+            { 
+              type: 'number',
+              message: '年龄必须为数字值'
             }
           ],
           minimalAmount: [
@@ -529,7 +533,6 @@
       },
       create(formName) { // 创建提交
         const set = this.$refs
-        debugger
         if(!this.form.isFloat) {
           // this.radio2 === 3 ? 0 : 1
           this.form.annualizedReturn = null

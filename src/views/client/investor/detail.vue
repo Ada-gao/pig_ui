@@ -92,15 +92,18 @@
 
       <div v-if="isView == 1">
         <div style="border-bottom: 1px solid #ccc; margin-top: 20px"></div>
-        <h5>备注：</h5>
-        <el-row>
-          <el-col>
-            <el-input
-              type="textarea"
-              :rows="2"
-              placeholder="请输入内容"
-              v-model="failReason">
+        <!-- <h5>备注：</h5> -->
+        <el-row style="margin-top: 20px">
+          <el-col :span="22">
+            <el-form-item label="备注" prop="bankName">
+              <el-input
+                type="textarea"
+                :rows="2"
+                placeholder="请输入内容"
+                v-model="failReason">
             </el-input>
+            </el-form-item>
+            <span v-show="tip">请输入备注</span>
           </el-col>
         </el-row>
       </div>
