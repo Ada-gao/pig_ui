@@ -101,6 +101,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
+            <!-- <el-form-item label="状态" v-if="dialogStatus == 'update' && sys_user_del " prop="delFlag" > -->
+            <el-form-item label="产品状态" v-if="dialogStatus == 'update' " prop="productStatus" >
+              <el-select class="filter-item" v-model="form.productStatus" placeholder="请选择">
+                <el-option v-for="item in productStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
         </el-row>
         
@@ -295,6 +301,7 @@
   import { getToken } from '@/utils/auth'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
+  import { transformText } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -510,6 +517,7 @@
             } else {
               this.isDisabled = false
             }
+            this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
           })
           this.getAllFiles(this.uploadData.productId)
         }
@@ -575,6 +583,8 @@
                 type: 'success',
                 duration: 2000
               })
+              this.$router.push({path: '/admin/product'})
+              
             })
           } else {
             return false
