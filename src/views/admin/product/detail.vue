@@ -286,8 +286,8 @@
 
     <div slot="footer" class="dialog-footer" style="text-align: center;">
       <el-button @click="cancel()">取 消</el-button>
-      <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
-      <el-button v-if="dialogStatus=='create' & uploadData.productId" type="primary" @click="createRouter">确 定</el-button>
+      <el-button v-if="dialogStatus=='create'&!nextToUpdate" type="primary" @click="create('form')">确 定</el-button>
+      <el-button v-if="dialogStatus=='create'&nextToUpdate" type="primary" @click="createRouter">确 定</el-button>
       <el-button v-if="dialogStatus=='update'" type="primary" @click="update('form')">修 改</el-button>
     </div>
 
@@ -356,7 +356,7 @@
               trigger: 'blur'
             }
           ],
-          productId: [
+          productCode: [
             {
               required: true,
               message: '请输入产品编号',
@@ -529,7 +529,7 @@
       },
       create(formName) { // 创建提交
         const set = this.$refs
-        
+        debugger
         if(!this.form.isFloat) {
           // this.radio2 === 3 ? 0 : 1
           this.form.annualizedReturn = null

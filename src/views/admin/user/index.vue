@@ -273,7 +273,6 @@
               <!-- role -->
               <el-select class="filter-item" v-model="role" placeholder="请选择">
                 <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId">
-                <!-- <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId" :disabled="isDisabled[item.delFlag]"> -->
                   <span style="float: left">{{ item.roleDesc }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
                 </el-option>
@@ -289,7 +288,6 @@
               <el-select class="filter-item" v-model="form.positionId" placeholder="请选择" @focus="handlePosition" @change="handleChange">
                 <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId">
                   <span style="float: left">{{ item.positionName }}</span>
-                  <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span> -->
                 </el-option>
               </el-select>
             </el-form-item>
@@ -312,7 +310,7 @@
                 :on-remove="handleRemove"
                 :headers="headers"
                 multiple
-                :limit="3"
+                :limit="1"
                 :on-exceed="handleExceed"
                 :on-success="handleSuccess"
                 :file-list="fileList"
@@ -400,11 +398,6 @@
           <el-col :span="11">
             <el-form-item label="婚姻状况" prop="marriageStatus">
               <span>{{form.marriageStatus}}</span>
-              <!-- <el-select class="filter-item" v-model="form.marriageStatus" placeholder="请选择">
-                <el-option v-for="item in marriageStatusOptions" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -413,13 +406,11 @@
           <el-col :span="11">
             <el-form-item label="证件号码" prop="idNo">
               <span>{{form.idNo}}</span>
-              <!-- <el-input v-model="form.idNo" :maxlength="18" placeholder="请输入证件号码"></el-input> -->
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="手机号" prop="mobile">
               <span>{{form.mobile}}</span>
-              <!-- <el-input v-model="form.mobile" :maxlength="11" placeholder="请输入手机号码"></el-input> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -428,22 +419,12 @@
           <el-col :span="11">
             <el-form-item label="部门" prop="deptName">
               <span>{{form.deptName}}</span>
-              <!-- <el-input v-model="form.deptName" placeholder="选择部门" 
-                @focus="handleDept"
-                @change="changeDept"
-                readonly></el-input> -->
               <input type="hidden" v-model="form.deptId"/>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="角色" prop="role">
               <span>{{role}}</span>
-              <!-- <el-select class="filter-item" v-model="role" placeholder="请选择">
-                <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId">
-                  <span style="float: left">{{ item.roleDesc }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
-                </el-option>
-              </el-select> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -452,17 +433,11 @@
           <el-col :span="11">
             <el-form-item label="职位" prop="positionId">
               <span>{{form.positionId}}</span>
-              <!-- <el-select class="filter-item" v-model="form.positionId" placeholder="请选择" @focus="handlePosition" @change="handleChange">
-                <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId">
-                  <span style="float: left">{{ item.positionName }}</span>
-                </el-option>
-              </el-select> -->
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="邮箱" prop="email">
               <span>{{form.email}}</span>
-              <!-- <el-input v-model="form.email"></el-input> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -471,21 +446,6 @@
           <el-col :span="11">
             <el-form-item label="简历:" prop="resumeUrl">
               <a :href="form.resumeUrl">{{form.resumeName}}</a>
-              <!-- <el-upload
-                class="upload-demo"
-                action="/zuul/admin/user/upload"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :headers="headers"
-                multiple
-                :limit="3"
-                :on-exceed="handleExceed"
-                :file-list="fileList"
-                :show-file-list="true"
-                :before-upload="beforeUpload"
-                accept=".pdf, .doc">
-                <el-button size="small" type="primary">上传简历</el-button>
-              </el-upload> -->
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -773,9 +733,13 @@
               name: this.form.resumeName,
               url: this.form.resumeUrl
             }
-            this.fileList.push(obj)
-            // this.fileList.push(this.form.resumeUrl)
-              // this.fileList = this.fileList || []
+            if(!obj.name) {
+              this.fileList = []
+            } else {
+              this.fileList.push(obj)
+              this.fileList.length = 1
+              console.log(this.fileList)
+            }
             deptRoleList(response.data.deptId)
               .then(response => {
                 this.rolesOptions = response.data
@@ -817,8 +781,15 @@
         set[formName].validate(valid => {
           if (valid) {
             // this.form.positionId = this.form.positionName
-            this.form.resumeName = this.fileList[0].response.fileName
-            this.form.resumeUrl = this.fileList[0].response.fileUrl
+            if(this.fileList.length) {
+              this.form.resumeName = this.fileList[0].name
+              // this.form.resumeName = this.fileList[0].response.fileName
+              this.form.resumeUrl = this.fileList[0].response.fileUrl
+            } else {
+              this.form.resumeName = ''
+              this.form.resumeUrl =''
+              this.fileList = []
+            }
             putObj(this.form).then(() => {
               this.dialogFormVisible = false
               this.getList()
@@ -878,7 +849,8 @@
         this.handleFilter()
       },
       handleRemove(file, fileList) {
-        // console.log(file, fileList)
+        this.fileList = []
+        console.log(file, fileList)
       },
       handlePreview(file) {
         // console.log(file)
