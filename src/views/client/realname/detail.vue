@@ -197,6 +197,7 @@
             placeholder="请输入内容"
             v-model="failReason">
           </el-input>
+          <span v-show="tip">请输入备注</span>
         </el-col>
       </el-row>
     </el-form>
@@ -324,7 +325,8 @@
         realnameStatus: '',
         idType: '',
         isClientType: '',
-        failReason: ''
+        failReason: '',
+        tip: false
       }
     },
     computed: {
@@ -390,7 +392,11 @@
         console.log('产品状态')
       },
       submitResult(result) { // 
-        if(result == 3 & !this.failReason) return false
+        if(result == 3 & !this.failReason) {
+          this.tip = true
+          return
+        }
+        this.tip = false
         let params = {
           // failId: this.form.clientId,
           failReason: this.failReason,
@@ -398,7 +404,7 @@
         }
         putObj(this.form.clientId, params).then(response => {
           console.log(response.code)
-          if(response.code === 0) {
+          if(response.status == 200) {
             this.$notify({
               title: '成功',
               message: '审核完成',
