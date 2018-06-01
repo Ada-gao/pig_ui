@@ -495,7 +495,7 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="简历:" prop="resumeUrl">
-              <span>{{form.resumeUrl}}</span>
+              <a :href="form.resumeUrl">{{form.resumeName}}</a>
               <!-- <el-upload
                 class="upload-demo"
                 action="/zuul/admin/user/upload"
@@ -838,7 +838,8 @@
         set[formName].validate(valid => {
           if (valid) {
             // this.form.positionId = this.form.positionName
-            this.form.resumeUrl = this.fileList[0].response.filename
+            this.form.resumeName = this.fileList[0].response.fileName
+            this.form.resumeUrl = this.fileList[0].response.fileUrl
             putObj(this.form).then(() => {
               this.dialogFormVisible = false
               this.getList()

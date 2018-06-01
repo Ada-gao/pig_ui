@@ -478,6 +478,7 @@
         indexList1: [],
         indexList2: [],
         indexList3: [],
+        productStatusNo: ''
       }
     },
     computed: {
@@ -517,6 +518,7 @@
             } else {
               this.isDisabled = false
             }
+            this.productStatusNo = this.form.productStatus
             this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
           })
           this.getAllFiles(this.uploadData.productId)
@@ -572,6 +574,9 @@
               this.form.annualizedReturn = null
               this.isDisabled = true
             }
+            if(this.form.productStatus.length > 1) {
+              this.form.productStatus = this.productStatusNo
+            }
             putObj(this.form).then(response => {
               if(response.data) {
                 this.nextToUpdate = true
@@ -584,7 +589,7 @@
                 duration: 2000
               })
               this.$router.push({path: '/admin/product'})
-              
+
             })
           } else {
             return false
