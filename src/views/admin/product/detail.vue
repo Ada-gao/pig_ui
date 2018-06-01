@@ -70,13 +70,13 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="募集额度" prop="collectionAmount">
-              <el-input v-model.number="form.collectionAmount" placeholder="请输入" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input v-model.number="form.collectionAmount" placeholder="请输入" style="width: 85%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
             
           </el-col>
           <el-col :span="11">
             <el-form-item label="净值" prop="netValue">
-              <el-input v-model.number="form.netValue" :maxlength="5" placeholder="请输入" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input v-model.number="form.netValue" :maxlength="5" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -84,12 +84,12 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="起投金额" prop="minimalAmount">
-              <el-input v-model.number="form.minimalAmount" placeholder="请输入起投金额" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input v-model.number="form.minimalAmount" placeholder="请输入起投金额" style="width: 85%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="追加金额" prop="minimalAddAmount">
-              <el-input v-model.number="form.minimalAddAmount" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input v-model.number="form.minimalAddAmount" style="width: 85%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -97,7 +97,7 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="产品期限" prop="investmentHorizon">
-              <el-input v-model.number="form.investmentHorizon" style="width: 75%; margin-right: 10px;"></el-input><span>月</span>
+              <el-input v-model.number="form.investmentHorizon" style="width: 85%; margin-right: 10px;"></el-input><span>月</span>
             </el-form-item>
           </el-col>
           <el-col :span="11">

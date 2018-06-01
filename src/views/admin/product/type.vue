@@ -17,7 +17,7 @@
         </template> -->
       </el-table-column>
 
-      <el-table-column align="center" label="产品类型名称">
+      <el-table-column align="center" label="产品类型名称" prop="name">
         <template slot-scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
@@ -45,7 +45,7 @@
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :model="form" ref="form" label-width="100px">
+      <el-form :model="form" :rules="rules" ref="form" label-width="100px">
         
         <el-form-item label="产品类型" prop="name">
           <el-input v-model="form.name"></el-input>
@@ -112,7 +112,12 @@
           update: '编辑产品类型',
           create: '新增产品类型'
         },
-        tableKey: 0
+        tableKey: 0,
+        rules: {
+          name: [
+            {required: true, trigger: 'blur'}
+          ]
+        }
       }
     },
     computed: {

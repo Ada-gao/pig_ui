@@ -95,7 +95,7 @@
         </el-col>
         <el-col :sm="12" :lg="8" v-if="searchNationality">
           <el-form-item label="国籍" style="margin-bottom: 10px;">
-            <el-select v-model="listQuery.nationality" style="width: 100%" placeholder="请选择">
+            <el-select v-model="listQuery.nationality" @change="changeNation" style="width: 100%" placeholder="请选择">
               <el-option v-for="item in nationality" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -235,6 +235,9 @@ export default {
           this.treeDeptData = response.data
           this.dialogDeptVisible = true
         })
+    },
+    changeNation() {
+      this.city = []
     }
   }
 }
