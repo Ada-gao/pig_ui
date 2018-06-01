@@ -320,12 +320,10 @@
                 :before-upload="beforeUpload"
                 accept=".pdf, .doc">
                 <el-button size="small" type="primary">上传简历</el-button>
-                <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
               </el-upload>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <!-- <el-form-item label="状态" v-if="dialogStatus == 'update' && sys_user_del " prop="delFlag" > -->
             <el-form-item label="状态" v-if="dialogStatus == 'update' " prop="status" >
               <el-select class="filter-item" v-model="form.status" placeholder="请选择">
                 <el-option v-for="item in workStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
@@ -358,13 +356,11 @@
           <el-col :span="11">
             <el-form-item label="姓名" prop="name">
               <span>{{form.name}}</span>
-              <!-- <el-input v-model="form.name" placeholder="请输入姓名" @change="getPYCode"></el-input> -->
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="用户名" prop="username">
               <span>{{form.username}}</span>
-              <!-- <el-input v-model="form.username" placeholder="请输入用户名"></el-input> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -373,17 +369,11 @@
           <el-col :span="11">
             <el-form-item label="工号" prop="empNo">
               <span>{{form.empNo}}</span>
-              <!-- <el-input v-model="form.empNo" placeholder="请输入工号"></el-input> -->
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="入职日期" prop="date">
               <span>{{form.employeeDate}}</span>
-              <!-- <el-date-picker
-                v-model="form.employeeDate"
-                type="date"
-                placeholder="选择日期">
-              </el-date-picker> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -392,21 +382,11 @@
           <el-col :span="11">
             <el-form-item label="性别" prop="gender">
               <span>{{form.gender}}</span>
-              <!-- <el-select class="filter-item" v-model="form.gender" placeholder="请选择">
-                <el-option v-for="item in genderType" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select> -->
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="学历" prop="education">
               <span>{{form.education}}</span>
-              <!-- <el-select class="filter-item" v-model="form.education" placeholder="请选择">
-                <el-option v-for="item in educationType" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -415,11 +395,6 @@
           <el-col :span="11">
             <el-form-item label="证件类型" prop="idType">
               <span>{{form.idType}}</span>
-              <!-- <el-select class="filter-item" v-model="form.idType" placeholder="请选择">
-                <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select> -->
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -794,7 +769,11 @@
               this.dialogFormVisible = true
               this.dialogStatus = 'update'
             }
-
+            let obj = {
+              name: this.form.resumeName,
+              url: this.form.resumeUrl
+            }
+            this.fileList.push(obj)
             // this.fileList.push(this.form.resumeUrl)
               // this.fileList = this.fileList || []
             deptRoleList(response.data.deptId)
