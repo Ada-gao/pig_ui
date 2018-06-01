@@ -314,6 +314,7 @@
                 multiple
                 :limit="3"
                 :on-exceed="handleExceed"
+                :on-success="handleSuccess"
                 :file-list="fileList"
                 :show-file-list="true"
                 :before-upload="beforeUpload"
@@ -829,7 +830,7 @@
       cancel(formName) {
         console.log(this.$refs[formName])
         this.dialogFormVisible = false
-        // this.$refs[formName].resetFields()
+        this.$refs[formName].resetFields()
       },
       update(formName) { // 编辑提交
         const set = this.$refs
@@ -837,6 +838,7 @@
         set[formName].validate(valid => {
           if (valid) {
             // this.form.positionId = this.form.positionName
+            this.form.resumeUrl = this.fileList[0].response.filename
             putObj(this.form).then(() => {
               this.dialogFormVisible = false
               this.getList()
@@ -896,13 +898,18 @@
         this.handleFilter()
       },
       handleRemove(file, fileList) {
-        console.log(file, fileList)
+        // console.log(file, fileList)
       },
       handlePreview(file) {
-        console.log(file)
+        // console.log(file)
       },
       handleExceed(files, fileList) {
         this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+      },
+      handleSuccess(files, fileList) {
+        this.fileList.push(fileList)
+        // console.log(files)
+        console.log(this.fileList)
       },
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`)
