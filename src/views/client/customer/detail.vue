@@ -9,17 +9,18 @@
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item label="姓名" prop="name">
-            <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
+            <el-input v-model="form.name" placeholder="请输入姓名" :readonly="isReadonly"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="手机号" prop="mobile">
-            <el-input v-model="form.mobile" placeholder="请输入手机号"></el-input>
+            <el-input v-model="form.mobile" placeholder="请输入手机号" :readonly="isReadonly"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="性别" prop="gender">
-            <el-select class="filter-item" v-model="form.gender" placeholder="请选择">
+            <el-input v-if="isReadonly" v-model="form.gender" placeholder="" :readonly="isReadonly"></el-input>
+            <el-select v-else class="filter-item" v-model="form.gender" placeholder="请选择">
               <el-option v-for="item in genderType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -28,7 +29,8 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="国籍" prop="nationality">
-            <el-select class="filter-item" v-model="form.nationality" placeholder="请选择" @change="changeNation">
+            <el-input v-if="isReadonly" v-model="form.nationality" placeholder="" :readonly="isReadonly"></el-input>
+            <el-select v-else class="filter-item" v-model="form.nationality" placeholder="请选择" @change="changeNation">
               <el-option v-for="item in nationality" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -37,8 +39,9 @@
         </el-col>
         <el-col :span="11" v-show="showCity">
           <el-form-item label="常住地区" prop="city">
-            <!-- <el-input v-model="form.city" placeholder="请选择地区"></el-input> -->
+            <el-input v-if="isReadonly" v-model="form.city" placeholder="" :readonly="isReadonly"></el-input>
             <el-cascader
+              v-else
               size="large"
               style="width: 100%"
               :options="options"
@@ -49,12 +52,12 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="邮箱" prop="email">
-            <el-input v-model="form.email" placeholder="请输入邮箱"></el-input>
+            <el-input v-model="form.email" placeholder="请输入邮箱" :readonly="isReadonly"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="微信" prop="wechat">
-            <el-input v-model="form.wechat" placeholder="请输入微信"></el-input>
+            <el-input v-model="form.wechat" placeholder="" :readonly="isReadonly"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -76,7 +79,7 @@
       
     </el-form>
 
-    <div slot="footer" class="dialog-footer" style="text-align: center">
+    <div v-if="!isReadonly" slot="footer" class="dialog-footer" style="text-align: center">
       <el-button @click="cancel('form')">取 消</el-button>
       <!-- <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button> -->
       <el-button type="primary" @click="update('form')">修 改</el-button>
@@ -183,7 +186,8 @@
         },
         options: provinceAndCityData,
         showCity: false,
-        city: []
+        city: [],
+        isReadonly: false
       }
     },
     computed: {
@@ -203,6 +207,14 @@
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
       this.type_is_update = this.$route.path.substr(-1)
+
+      if(this.$route.params.isView == 0) {
+        // 查看
+        this.isReadonly = true
+      } else {
+        // 编辑
+        this.isReadonly = false
+      }
     },
     methods: {
       getList() {
@@ -219,7 +231,6 @@
 
           let arr = []
           arr.push(this.form.city)
-          console.log(arr)
           this.city = arr
 
           // this.realnameStatus = this.form.realnameStatus == 2 ? true : false // 认证状态判断

@@ -44,7 +44,7 @@ export const constantRouterMap = [
     },
     children: [
       { 
-        path: 'detail/:id',
+        path: 'detail/:id/:isView',
         component: _import('client/customer/detail'),
         name: '客户详情页',
         meta: { title: '客户详情', icon: '', noCache: true },

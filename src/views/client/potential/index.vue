@@ -290,13 +290,13 @@
       },
       handleRouter(id) { // 查看跳转详情
         this.$router.push({
-          path: '/client/readDetail/' + id
+          path: '/client/detail/' + id + '/0'
         })
         Bus.$emit('activeIndex', '/client/potential')
       },
       handleUpdate(id) { // 编辑跳转详情
         this.$router.push({
-          path: '/client/detail/' + id
+          path: '/client/detail/' + id + '/1'
         })
         Bus.$emit('activeIndex', '/client/potential')
       },

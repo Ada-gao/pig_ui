@@ -183,7 +183,8 @@
         riskLevel: '',
         clientId: '',
         investorType: '',
-        isView: ''
+        isView: '',
+        tip: false
       }
     },
     computed: {
@@ -232,19 +233,14 @@
         getCertInfo(this.clientId, type).then(response => {
           this.listLoading = false
           this.certInfo = response.data
-          // this.certInfo = [
-          //   {
-          //     clientId: 152,
-          //     riskLevel: null,
-          //     urls: []
-          //   }
-          // ]
-          // this.clientId = this.certInfo[0].clientId
         })
        
       },
       submitResult(result) { // 
-        if(result == 3 & !this.failReason) return false
+        if(result == 3 & !this.failReason) {
+          this.tip = true
+          return false
+        }
         let params = {
           // failId: this.form.clientId,
           failReason: this.failReason,
@@ -252,8 +248,6 @@
           riskLevel: this.riskLevel
         }
         
-        window.history.back() // 测试后修改
-
         putObj(this.clientId, params).then(response => {
           // this.$notify({
             //   title: '成功',
@@ -262,15 +256,20 @@
             //   duration: 2000
             // })
           
-          console.log(response.code)
-          if(response.code === 0) {
+          // console.log(response.code)
+          if(response.status == 200) {
             this.$notify({
               title: '成功',
               message: '审核完成',
               type: 'success',
               duration: 2000
             })
-            // this.$router.push({path: '/client/investor'})
+            if(this.$route.params.type == 0) {
+              this.$router.push({path: '/client/investor'})
+            } else {
+              this.$router.push({path: '/client/professionalInvestor'})
+            }
+            
           }
         })
       },
