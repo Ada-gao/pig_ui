@@ -1,8 +1,8 @@
 <template>
   <div class="app-container calendar-list-container">
 
-    <h3>编辑客户信息</h3>
-    <!-- <h3 v-else>客户详情</h3> -->
+    <h3 v-if="!isReadonly">编辑客户信息</h3>
+    <h3 v-else>客户详情</h3>
     <el-form :model="form" :rules="rules" ref="form" label-width="100px">
       <div style="border-bottom: 1px solid #ccc"></div>
       <h5>客户信息</h5>
@@ -76,7 +76,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      
+
     </el-form>
 
     <div v-if="!isReadonly" slot="footer" class="dialog-footer" style="text-align: center">
@@ -187,7 +187,8 @@
         options: provinceAndCityData,
         showCity: false,
         city: [],
-        isReadonly: false
+        isReadonly: false,
+        backClientClass: 0 // 0:潜客，1:客户
       }
     },
     computed: {
@@ -224,6 +225,7 @@
         getObj(id, type).then(response => {
           this.form = response.data
           // this.city = response.data.city
+          this.backClientClass = this.form.clientClass
 
           if(this.form.city) {
             this.showCity = true
@@ -275,7 +277,11 @@
                 type: 'success',
                 duration: 2000
               })
-              this.$router.push({path: '/client/potential'})
+              if(this.backClientClass) {
+                this.$router.push({path: '/client/customer'})
+              } else {
+                this.$router.push({path: '/client/potential'})
+              }
             })
           } else {
             return false

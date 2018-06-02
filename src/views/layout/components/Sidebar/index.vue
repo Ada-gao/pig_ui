@@ -30,10 +30,12 @@ export default {
     Bus.$on('activeIndex', defaultActive => {
       this.defaultActive = defaultActive
     })
+    console.log('this.defaultActive')
+    console.log(this.$route)
   },
   data() {
     return {
-      defaultActive: this.$route.path
+      defaultActive: this.$route.matched[0].redirect
     }
   }
 }

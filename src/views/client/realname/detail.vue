@@ -66,7 +66,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="部门" prop="deptName">
-            <el-input v-model="form.deptName" placeholder="请输入部门" readonly></el-input>
+            <el-input v-model="form.userDeptName" placeholder="请输入部门" readonly></el-input>
           </el-form-item>
         </el-col>
         <!-- <el-col :span="11">
@@ -82,7 +82,7 @@
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item label="实名认证状态" prop="username">
-            <el-input v-model="clientStatus.realnameStatus" placeholder="请输入手机号" readonly></el-input>
+            <el-input v-model="clientStatus.realnameStatus" placeholder="" readonly></el-input>
             <!-- <el-select class="filter-item" v-model="clientStatus.realnameStatus" placeholder="请选择">
               <el-option v-for="item in certificationStatus" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -92,7 +92,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="投资者身份" prop="clientType">
-            <el-input v-model="clientStatus.clientType" placeholder="请输入手机号" readonly></el-input>
+            <el-input v-model="clientStatus.clientType" placeholder="" readonly></el-input>
             <!-- <el-select class="filter-item" v-model="clientStatus.clientType" placeholder="请选择">
               <el-option v-for="item in clientType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -112,22 +112,22 @@
         </el-col>
         <el-col :span="11" v-if="idType">
           <el-form-item label="证件号码" prop="idNo">
-            <el-input v-model="clientStatus.idNo" placeholder="请输入证件号码" readonly></el-input>
+            <el-input v-model="clientStatus.idNo" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11" v-if="idType">
           <el-form-item label="出生日期" prop="date">
-            <el-input v-model="clientStatus.birthday" placeholder="请输入证件号码" readonly></el-input>
+            <el-input v-model="clientStatus.birthday" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11" v-if="idType">
           <el-form-item label="证件有效期" prop="date">
-            <el-input v-model="clientStatus.idExpiration" placeholder="请输入证件号码" readonly></el-input>
+            <el-input v-model="clientStatus.idExpiration" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11" v-if="idType">
           <el-form-item label="地址" prop="address">
-            <el-input v-model="form.address" placeholder="请输入地址" readonly></el-input>
+            <el-input v-model="clientStatus.address" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
         
@@ -355,16 +355,16 @@
           this.realnameStatus = this.clientStatus.realnameStatus != 0 ? true : false // 认证状态判断
           this.isClientType = this.clientStatus.clientType == 0 ? true : false// 投资者类型判断
           this.idType = this.clientStatus.idType == 0 ? true : false // 证件类型判断(0: 身份证)
+
+          this.clientStatus.realnameStatus = transformText(this.certificationStatus, this.clientStatus.realnameStatus)
+          this.clientStatus.clientType = transformText(this.clientType, this.clientStatus.clientType)
+          this.clientStatus.idType = transformText(this.idTypeOptions, this.clientStatus.idType)
         })
 
         getObj(id, '1').then(response => {
           this.form = response.data
 
-
           this.form.gender = transformText(this.genderType, this.form.gender)
-          this.form.realnameStatus = transformText(this.certificationStatus, this.form.realnameStatus)
-          this.form.clientType = transformText(this.clientType, this.form.clientType)
-          this.form.idType = transformText(this.idTypeOptions, this.form.idType)
           this.form.nationality = transformText(this.nationality, this.form.nationality)
           if(this.realnameStatus) {
             getClientBankcard(id, '1').then(response => {

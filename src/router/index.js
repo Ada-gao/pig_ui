@@ -46,15 +46,15 @@ export const constantRouterMap = [
       { 
         path: 'detail/:id/:isView',
         component: _import('client/customer/detail'),
-        name: '客户详情页',
-        meta: { title: '客户详情', icon: '', noCache: true },
+        name: '编辑客户详情页',
+        meta: { title: '编辑客户详情', icon: '', noCache: true },
         hidden: true
       },
       { 
-        path: 'readDetail/:id',
+        path: 'readDetail/:id/:isView',
         component: _import('client/customer/readOnlyDetail'),
         name: '客户详情页',
-        meta: { title: '客户详情', icon: '', noCache: true },
+        meta: { title: '查看客户详情', icon: '', noCache: true },
         hidden: true
       },
       { 

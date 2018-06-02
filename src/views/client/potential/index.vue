@@ -80,9 +80,9 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <el-button v-if="sys_user_upd" size="small" type="success"
+          <a v-if="sys_user_upd" size="small" type="success"
                      @click="handleRouter(scope.row.clientId)">查看
-          </el-button>
+          </a>
           <el-button v-if="sys_user_upd" size="small" type="success"
                      @click="handleUpdate(scope.row.clientId)">编辑
           </el-button>
@@ -290,7 +290,7 @@
       },
       handleRouter(id) { // 查看跳转详情
         this.$router.push({
-          path: '/client/detail/' + id + '/0'
+          path: '/client/readDetail/' + id + '/0'
         })
         Bus.$emit('activeIndex', '/client/potential')
       },

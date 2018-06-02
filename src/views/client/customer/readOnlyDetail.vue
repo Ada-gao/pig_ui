@@ -1,25 +1,28 @@
 <template>
   <div class="app-container calendar-list-container">
 
-    <h3 v-if="type_is_update==1">修改产品</h3>
-    <h3 v-else>客户详情</h3>
+    <!-- <h3 v-if="type_is_update==1">修改产品</h3> -->
+    <h3>客户详情</h3>
     <el-form :model="form" ref="form" label-width="100px">
       <div style="border-bottom: 1px solid #ccc"></div>
       <h5>客户信息</h5>
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item label="姓名" prop="name">
-            <span>{{form.name}}</span>
+            <!-- <span>{{form.name}}</span> -->
+            <el-input v-model="form.name" placeholder="请输入邮箱"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="手机号" prop="mobile">
-            <span>{{form.mobile}}</span>
+            <!-- <span>{{form.mobile}}</span> -->
+            <el-input v-model="form.mobile" placeholder="请输入邮箱"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="性别" prop="gender">
-            <span>{{form.gender}}</span>
+            <!-- <span>{{form.gender}}</span> -->
+            <el-input v-model="form.gender" placeholder="请输入邮箱"></el-input>
             <!-- <el-select class="filter-item" v-model="form.gender" placeholder="请选择">
               <el-option v-for="item in genderType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -29,7 +32,8 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="国籍" prop="nationality">
-            <span>{{form.nationality}}</span>
+            <!-- <span>{{form.nationality}}</span> -->
+            <el-input v-model="form.nationality" placeholder="请输入邮箱"></el-input>
             <!-- <el-select class="filter-item" v-model="form.nationality" placeholder="请选择">
               <el-option v-for="item in nationality" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -39,38 +43,38 @@
         </el-col>
         <el-col :span="11" v-show="form.city">
           <el-form-item label="常住地区" prop="city">
-            <span>{{form.city}}</span>
-            <!-- <el-input v-model="form.city" placeholder="请选择地区"></el-input> -->
+            <!-- <span>{{form.city}}</span> -->
+            <el-input v-model="form.city" placeholder="请选择地区"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="邮箱" prop="email">
-            <span>{{form.email}}</span>
-            <!-- <el-input v-model="form.email" placeholder="请输入邮箱"></el-input> -->
+            <!-- <span>{{form.email}}</span> -->
+            <el-input v-model="form.email" placeholder="请输入邮箱"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="微信" prop="wechat">
-            <span>{{form.wechat}}</span>
-            <!-- <el-input v-model="form.wechat" placeholder="请输入微信"></el-input> -->
+            <!-- <span>{{form.wechat}}</span> -->
+            <el-input v-model="form.wechat" placeholder="请输入微信"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="理财师" prop="userName">
-            <span>{{form.userName}}</span>
-            <!-- <el-input v-model="form.userName" placeholder="请输入理财师" readonly></el-input> -->
+            <!-- <span>{{form.userName}}</span> -->
+            <el-input v-model="form.userName" placeholder="请输入理财师" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="部门" prop="deptName">
-            <span>{{form.deptName}}</span>
-            <!-- <el-input v-model="form.deptName" placeholder="请输入部门" readonly></el-input> -->
+            <!-- <span>{{form.deptName}}</span> -->
+            <el-input v-model="form.deptName" placeholder="请输入部门" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11" v-show="form.clientClass">
           <el-form-item label="管理资产规模" prop="assetAmount">
-            <span>{{form.assetAmount}}</span>
-            <!-- <el-input v-model="form.assetAmount" placeholder="请输入资产规模" readonly></el-input> -->
+            <!-- <span>{{form.assetAmount}}</span> -->
+            <el-input v-model="form.assetAmount" placeholder="请输入资产规模" readonly></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -81,7 +85,8 @@
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item label="实名认证状态" prop="username">
-            <span>{{form.realnameStatus}}</span>
+            <!-- <span>{{form.realnameStatus}}</span> -->
+            <el-input v-model="form.realnameStatus" placeholder="请输入证件号码" readonly></el-input>
             <!-- <el-select class="filter-item" v-model="form.realnameStatus" placeholder="请选择">
               <el-option v-for="item in certificationStatus" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -91,7 +96,8 @@
         </el-col>
         <el-col :span="11" v-if="realnameStatus">
           <el-form-item label="投资者身份" prop="clientType">
-            <span>{{form.clientType}}</span>
+            <!-- <span>{{form.clientType}}</span> -->
+            <el-input v-model="form.clientType" placeholder="请输入证件号码" readonly></el-input>
             <!-- <el-select class="filter-item" v-model="form.clientType" placeholder="请选择">
               <el-option v-for="item in clientType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -101,7 +107,8 @@
         </el-col>
         <el-col :span="11" v-if="realnameStatus">
           <el-form-item label="证件类型" prop="idType">
-            <span>{{form.idType}}</span>
+            <!-- <span>{{form.idType}}</span> -->
+            <el-input v-model="form.idType" placeholder="请输入证件号码" readonly></el-input>
             <!-- <el-select class="filter-item" v-model="form.idType" placeholder="请选择">
               <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -111,13 +118,14 @@
         </el-col>
         <el-col :span="11" v-if="realnameStatus & idType">
           <el-form-item label="证件号码" prop="idNo">
-            <span>{{form.idNo}}</span>
-            <!-- <el-input v-model="form.idNo" placeholder="请输入证件号码" readonly></el-input> -->
+            <!-- <span>{{form.idNo}}</span> -->
+            <el-input v-model="form.idNo" placeholder="请输入证件号码" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11" v-if="realnameStatus & idType">
           <el-form-item label="出生日期" prop="date">
-            <span>{{clientStatus.birthday}}</span>
+            <!-- <span>{{clientStatus.birthday}}</span> -->
+            <el-input v-model="clientStatus.birthday" placeholder="请输入地址" readonly></el-input>
             <!-- <el-date-picker
               v-model="clientStatus.birthday"
               type="birthday"
@@ -127,7 +135,8 @@
         </el-col>
         <el-col :span="11" v-if="realnameStatus & idType">
           <el-form-item label="证件有效期" prop="date">
-            <span>{{clientStatus.idExpiration}}</span>
+            <!-- <span>{{clientStatus.idExpiration}}</span> -->
+            <el-input v-model="clientStatus.idExpiration" placeholder="请输入地址" readonly></el-input>
             <!-- idStartDate -->
             <!-- <el-date-picker
               v-model="clientStatus.idExpiration"
@@ -138,14 +147,14 @@
         </el-col>
         <el-col :span="11" v-if="realnameStatus & idType">
           <el-form-item label="地址" prop="address">
-            <span>{{form.address}}</span>
-            <!-- <el-input v-model="form.address" placeholder="请输入地址" readonly></el-input> -->
+            <!-- <span>{{form.address}}</span> -->
+            <el-input v-model="form.address" placeholder="请输入地址" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11" v-if="isClientType & realnameStatus & idType">
           <el-form-item label="风险测评" prop="riskLevel">
-            <span>{{clientStatus.riskLevel}}</span>
-            <!-- <el-input v-model="clientStatus.riskLevel" placeholder="请输入风险测评" readonly></el-input> -->
+            <!-- <span>{{clientStatus.riskLevel}}</span> -->
+            <el-input v-model="clientStatus.riskLevel" placeholder="请输入风险测评" readonly></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -156,14 +165,14 @@
       <el-row v-if="realnameStatus">
         <el-col :span="11">
           <el-form-item label="开户银行" prop="bankName">
-            <span>{{bankcardList.bankName}}</span>
-            <!-- <el-input v-model="bankcardList.bankName" placeholder="请输入开户银行" readonly></el-input> -->
+            <!-- <span>{{bankcardList.bankName}}</span> -->
+            <el-input v-model="bankcardList.bankName" placeholder="请输入开户银行" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="银行卡号" prop="cardNo">
-            <span>{{bankcardList.cardNo}}</span>
-            <!-- <el-input v-model="bankcardList.cardNo" placeholder="请输入银行卡号" readonly></el-input> -->
+            <!-- <span>{{bankcardList.cardNo}}</span> -->
+            <el-input v-model="bankcardList.cardNo" placeholder="请输入银行卡号" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="22">
@@ -173,19 +182,8 @@
                 <img style="width: 100%" :src="bankcardList.cardFrontUrl" alt="">
               </el-card>
             </el-col>
-            <!-- <el-card>
-              <img :src="bankcardList.cardFrontUrl" alt="">
-            </el-card> -->
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="8">
-          
-        </el-col>
-        <el-col :span="8">
-          <el-card>
-            <img :src="bankcardList.cardBackUrl" alt="">
-          </el-card>
-        </el-col> -->
       </el-row>
 
       <div style="border-bottom: 1px solid #ccc"></div>
@@ -431,6 +429,9 @@
   .btn-padding {
     @include padding;
   }
+}
+.app-container {
+  border-color: #fff;
 }
 </style>
 
