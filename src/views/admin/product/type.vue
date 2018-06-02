@@ -25,9 +25,9 @@
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <el-button v-if="sys_user_upd" size="small" type="success"
+          <a v-if="sys_user_upd" size="small" class="common_btn"
                      @click="handleUpdate(scope.row)">编辑
-          </el-button>
+          </a>
           <!-- <el-button v-if="sys_user_del" size="small" type="danger"
                      @click="deletes(scope.row)">删除
           </el-button> -->

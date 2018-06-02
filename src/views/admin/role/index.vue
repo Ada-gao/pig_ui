@@ -44,17 +44,19 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="220">
+      <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
-          <el-button size="mini" type="success"
+          <a size="mini" class="common_btn"
                      @click="handleUpdate(scope.row)">编辑
-          </el-button>
-          <el-button size="mini" type="danger"
+          </a>
+          <span class="space_line"> | </span>
+          <a size="mini" class="danger_btn"
                      @click="handleDelete(scope.row)">删除
-          </el-button>
-          <el-button size="mini" type="info" plain
+          </a>
+          <span class="space_line"> | </span>
+          <a size="mini" class="info_btn" plain
                      @click="handlePermission(scope.row)">权限
-          </el-button>
+          </a>
         </template>
       </el-table-column>
 
