@@ -149,12 +149,13 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <el-button v-if="sys_user_upd" size="small" type="success"
+          <a v-if="sys_user_upd" size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId, '0')">查看
-          </el-button>
-          <el-button v-if="sys_user_upd" size="small" type="success"
+          </a>
+          <span class="space_line"> | </span>
+          <a v-if="sys_user_upd" size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId, '1')">审核
-          </el-button>
+          </a>
           <!-- <el-button v-if="sys_user_del" size="small" type="danger"
                      @click="deletes(scope.row)">删除
           </el-button> -->

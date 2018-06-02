@@ -233,6 +233,7 @@
         getCertInfo(this.clientId, type).then(response => {
           this.listLoading = false
           this.certInfo = response.data
+          console.log(this.certInfo)
         })
        
       },

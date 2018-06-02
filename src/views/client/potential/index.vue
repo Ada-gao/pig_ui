@@ -80,12 +80,13 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <a v-if="sys_user_upd" size="small" type="success"
+          <a v-if="sys_user_upd" size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId)">查看
           </a>
-          <el-button v-if="sys_user_upd" size="small" type="success"
+          <span class="space_line"> | </span>
+          <a v-if="sys_user_upd" size="small" class="common_btn"
                      @click="handleUpdate(scope.row.clientId)">编辑
-          </el-button>
+          </a>
         </template>
       </el-table-column>
 

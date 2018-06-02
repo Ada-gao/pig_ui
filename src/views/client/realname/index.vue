@@ -56,9 +56,9 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <el-button v-if="sys_user_upd" size="small" type="success"
+          <a v-if="sys_user_upd" size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId)">审核
-          </el-button>
+          </a>
         </template>
       </el-table-column>
 
