@@ -59,14 +59,14 @@
         </el-col> -->
       </el-row>
       <el-row style="text-align: center;">
-        <el-button type="info" style="padding: 10px 60px;" @click="handleFilter">查询</el-button>
-        <el-button type="info" style="padding: 10px 60px" @click="resetFilter">重置</el-button>
+        <el-button class="search_btn" style="padding: 10px 30px;" @click="handleFilter">查询</el-button>
+        <el-button class="search_btn" style="padding: 10px 30px;" @click="resetFilter">重置</el-button>
       </el-row>
       </el-form>
     </div>
 
     <div style="text-align: right">
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+      <el-button v-if="sys_user_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" icon="edit">添加</el-button>
       <!-- <upload-excel-component @on-selected-file='selected'></upload-excel-component> -->
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit

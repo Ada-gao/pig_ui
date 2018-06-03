@@ -322,7 +322,11 @@
     .el-tabs__item.is-active {
       color: $light_gray;
     }
+    .el-tabs__active-bar {
+      background-color: $light_gray;
+    }
     background-image: url($bg);
+    background-size: cover;
     // background-color: $bg;
     input:-webkit-autofill {
       // -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
@@ -415,5 +419,16 @@
   }
   .btn_light:hover {
     background-color: $light_gray;
+  }
+  .el-button--primary {
+    background-color: $light_gray;
+    border-color: $light_gray;
+    outline: none;
+  }
+  .el-button--primary:focus,
+  .el-button--primary:hover {
+    background-color: $light_gray;
+    border-color: $light_gray;
+    outline: none;
   }
 </style>

@@ -71,13 +71,31 @@ a:hover {
 .dialog-footer {
   margin-top: 20px;
 }
-
+$btn: #0299CC;
 .common_btn {
-  color: #0299CC;
+  color: $btn;
 }
 .danger_btn {
   color: #FF4949;
 }
 .space_line {
   color: #8F8F8F;
+}
+.el-button--primary {
+  background-color: $btn;
+}
+.add_btn,
+.add_btn:hover,
+.add_btn:active,
+.add_btn:focus {
+  background-color: $btn;
+  color: #fff;
+  outline: none;
+}
+.search_btn,
+.search_btn:focus,
+.search_btn:hover {
+  background-color: #fff;
+  border-color: $btn;
+  color: $btn;
 }
