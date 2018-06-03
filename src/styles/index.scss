@@ -71,12 +71,19 @@ a:hover {
 .dialog-footer {
   margin-top: 20px;
 }
+
+//全局按钮
+.el-table {
+  margin-top: 10px;
+}
 $btn: #0299CC;
 .common_btn {
   color: $btn;
+  padding: 0 5px;
 }
 .danger_btn {
   color: #FF4949;
+  padding: 0 5px;
 }
 .space_line {
   color: #8F8F8F;

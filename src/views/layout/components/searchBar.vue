@@ -114,8 +114,8 @@
         </el-col>
       </el-row>
       <el-row style="text-align: center;">
-        <el-button type="info" style="padding: 10px 60px;" @click="handleFilter">查询</el-button>
-        <el-button type="info" style="padding: 10px 60px" @click="resetFilter">重置</el-button>
+        <el-button class="search_btn btn-padding" type="info" @click="handleFilter">查询</el-button>
+        <el-button class="search_btn btn-padding" type="info" @click="resetFilter">重置</el-button>
       </el-row>
     </el-form>
   </div>
@@ -242,4 +242,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import "src/styles/mixin.scss";
+
+.btn-padding {
+  @include padding;
+}
+</style>
 

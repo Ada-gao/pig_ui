@@ -1,10 +1,21 @@
 <template>
   <div>
     <input id="excel-upload-input" type="file" accept=".xlsx, .xls" class="c-hide" @change="handkeFileChange">
-    <div id="drop" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">
-      Drop excel file here or
-      <el-button style="margin-left:16px;" size="mini" type="primary" @click="handleUpload">browse</el-button>
+    <div id="drop" class="el-upload-dragger" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">
+      <i class="el-icon-upload"></i>
+      <div class="el-upload__text">将文件拖到此处，或<em @click="handleUpload">点击导入</em></div>
+      <!-- <el-button style="margin-left:16px;" size="mini" type="primary" @click="handleUpload">browse</el-button> -->
     </div>
+    <!-- <el-upload
+      class="upload-demo"
+      drag
+      action="https://jsonplaceholder.typicode.com/posts/"
+      :on-success="handkeFileChange"
+      multiple>
+      <i class="el-icon-upload"></i>
+      <div class="el-upload__text">将文件拖到此处，或<em>点击导入</em></div>
+      <div class="el-upload__tip" slot="tip">只能导入 Excel 文件 <a href="javascript:;">下载 Excel 模版</a></div>
+    </el-upload> -->
   </div>
 </template>
 
@@ -117,5 +128,13 @@ export default {
   text-align: center;
   color: #bbb;
   position: relative;
+}
+.el-upload__text {
+  position: absolute;
+  line-height: 20px;
+  height: 20px;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>
