@@ -54,6 +54,9 @@
                      @click="handleDelete(scope.row)">删除
           </a>
           <span class="space_line"> | </span>
+          <span class="svg-container">
+            <svg-icon icon-class="user"/>
+          </span>
           <a size="mini" class="info_btn" plain
                      @click="handlePermission(scope.row)">权限
           </a>

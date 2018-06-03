@@ -35,12 +35,12 @@
               <el-input name="code" type="text" v-model="loginForm.code" autoComplete="on" placeholder="验证码"/>
             </el-col>
             <el-col :span="10" align="right">
-              <img :src="src" style="padding-bottom: 1px" @click="refreshCode"/>
+              <img :src="src" style="padding-bottom: 1px;vertical-align: -webkit-baseline-middle;" @click="refreshCode"/>
             </el-col>
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
+            <el-button type="primary" class="btn_light" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
               登录
             </el-button>
           </el-form-item>
@@ -67,7 +67,7 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleMobileLogin">
+            <el-button type="primary" class="btn_light" style="width:100%;" :loading="loading" @click.native.prevent="handleMobileLogin">
               登录
             </el-button>
           </el-form-item>
@@ -308,23 +308,26 @@
 <style rel="stylesheet/scss" lang="scss">
   @import "src/styles/mixin.scss";
 
-  $bg: #2d3a4b;
+  $bg: '/static/img/banner.jpg';
+  // $bg: #2d3a4b;
   $dark_gray: #889aa4;
-  $light_gray: #eee;
+  $light_gray: #00C1DF;
 
   .login-container {
     @include relative;
     height: 100vh;
     .el-tabs__item {
-      color: #fff;
+      color: #707070;
     }
     .el-tabs__item.is-active {
-      color: #409EFF;
+      color: $light_gray;
     }
-    background-color: $bg;
+    background-image: url($bg);
+    // background-color: $bg;
     input:-webkit-autofill {
-      -webkit-box-shadow: 0 0 0px 1000px #293444 inset !important;
-      -webkit-text-fill-color: #fff !important;
+      // -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+      box-shadow: 0 0 0 400px #fff inset;
+      -webkit-text-fill-color: #000 !important;
     }
     input {
       background: transparent;
@@ -332,7 +335,7 @@
       -webkit-appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
-      color: $light_gray;
+      color: #000;
       height: 47px;
     }
     .el-input {
@@ -370,10 +373,11 @@
       width: 400px;
       padding: 35px 35px 15px 35px;
       margin: 120px auto;
+      background-color: rgba(255, 255, 255, 0.9)
     }
     .el-form-item {
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(0, 0, 0, 0.1);
+      // border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #fff;
       border-radius: 5px;
       color: #454545;
     }
@@ -405,5 +409,11 @@
   .image {
     width: 100%;
     display: block;
+  }
+  .btn_light {
+    background-color: $light_gray;
+  }
+  .btn_light:hover {
+    background-color: $light_gray;
   }
 </style>
