@@ -62,7 +62,7 @@
               <el-input name="smsCode" type="text" v-model="loginForm.smsCode" autoComplete="on" placeholder="验证码"/>
             </el-col>
             <el-col :span="10" align="right">
-              <a @click="getMobileCode">{{text}}</a>
+              <a class="certText" @click="getMobileCode">{{text}}</a>
             </el-col>
           </el-form-item>
 
@@ -434,5 +434,10 @@
     background-color: #0299CC;
     border-color: #0299CC;
     outline: none;
+  }
+  .certText {
+    display: inline-block;
+    vertical-align: -webkit-baseline-middle;
+    color: $light_gray;
   }
 </style>

@@ -193,7 +193,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="入职日期" prop="date">
+            <el-form-item label="入职日期" prop="employeeDate">
               <el-date-picker
                 v-model="form.employeeDate"
                 type="date"
@@ -602,29 +602,29 @@
         },
         rules: {
           name: [
-            {required: true, trigger: 'blur'}
+            {required: true, trigger: 'blur', message: '请输入姓名'}
           ],
           username: [
             {required: true, trigger: 'blur', message: '请输入用户名'},
             {min: 3, max: 20, trigger: 'blur', message: '长度在 3 到 20 个字符'}
           ],
           empNo: [
-            {required: true, trigger: 'blur'}
+            {required: true, trigger: 'blur', message: '请输入工号'}
           ],
-          // date: [
-          //   {required: true, trigger: 'blur'}
-          // ],
+          employeeDate: [
+            {required: true, trigger: 'blur', message: '请选择入职日期'}
+          ],
           gender: [
-            {required: true, trigger: 'blur'}
+            {required: true, trigger: 'blur', message: '请选择性别'}
           ],
           education: [
-            {required: true, trigger: 'blur'}
+            {required: true, trigger: 'blur', message: '请选择学历'}
           ],
           idType: [
-            {required: true, trigger: 'blur'}
+            {required: true, trigger: 'blur', message: '请输入证件类型'}
           ],
           marriageStatus: [
-            {required: false, trigger: 'blur'}
+            {required: false, trigger: 'blur', message: '请选择婚姻状况'}
           ],
           idNo: [
             {required: true, trigger: 'blur', validator: validID}
@@ -639,7 +639,7 @@
             {required: true, trigger: 'change', message: '请选择职位'}
           ],
           email: [
-            {required: true, trigger: 'blur'}
+            {required: true, trigger: 'blur', message: '请输入邮箱'}
           ],
           mobile: [
             {required: true, trigger: 'change', validator: validMobile}
