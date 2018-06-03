@@ -495,6 +495,19 @@
     text-align: center;
     vertical-align: center;
   }
+  .el-checkbox-button:hover {
+    color: #00C1DF;
+  }
+  .el-checkbox-button__inner:hover {
+    color: #00C1DF;
+  }
+  .el-checkbox-button__inner:active {
+    background-color: #00C1DF;
+    color: #fff;
+  }
+  .el-checkbox-button.is-checked .el-checkbox-button__inner {
+    background-color: #00C1DF;
+  }
 }
 .btn-padding {
   @include padding;

@@ -73,6 +73,9 @@ a:hover {
 }
 
 //全局按钮
+$hover_add: #00C1DF;
+$danger_btn: #FF4949;
+
 .el-table {
   margin-top: 10px;
 }
@@ -81,8 +84,19 @@ $btn: #0299CC;
   color: $btn;
   padding: 0 5px;
 }
+.common_btn:hover {
+  color: $hover_add;
+  padding: 0 5px;
+}
+.info_btn:hover {
+  color: $hover_add;
+}
 .danger_btn {
-  color: #FF4949;
+  color: $danger_btn;
+  padding: 0 5px;
+}
+.danger_btn:hover {
+  color: #FF8686;
   padding: 0 5px;
 }
 .space_line {
@@ -99,10 +113,25 @@ $btn: #0299CC;
   color: #fff;
   outline: none;
 }
+.add_btn:hover {
+  background-color: rgba($color: $hover_add, $alpha: 1.0);
+  color: #fff;
+  outline: none;
+}
 .search_btn,
 .search_btn:focus,
 .search_btn:hover {
   background-color: #fff;
   border-color: $btn;
   color: $btn;
+}
+$hover_search: #00C1DF;
+.search_btn:hover {
+  background-color: rgba($color: $hover_search, $alpha: 0.1);
+  border-color: $hover_search;
+  color: $btn;
+}
+
+.el-table__header-wrapper thead tr th {
+  background-color: #F7F8FA;
 }

@@ -425,10 +425,14 @@
     border-color: $light_gray;
     outline: none;
   }
-  .el-button--primary:focus,
-  .el-button--primary:hover {
+  .el-button--primary:focus {
     background-color: $light_gray;
     border-color: $light_gray;
+    outline: none;
+  }
+  .el-button--primary:hover {
+    background-color: #0299CC;
+    border-color: #0299CC;
     outline: none;
   }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名"
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入币种"
                 v-model="listQuery.name">
       </el-input>
       <el-button class="filter-item search_btn" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
@@ -11,7 +11,7 @@
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
-      <el-table-column align="center" label="序号">
+      <el-table-column align="center" label="序号" width="50">
         <template slot-scope="scope">
           <span>{{scope.row.currencyId}}</span>
         </template>

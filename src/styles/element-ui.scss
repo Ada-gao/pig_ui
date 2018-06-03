@@ -9,6 +9,8 @@
   display: none;
 }
 
+// 多选按钮
+$hover_check: #00C1DF;
 .el-checkbox-group {
   .el-checkbox-button {
     margin-right: 20px;
@@ -17,6 +19,20 @@
     .el-checkbox-button__inner {
       border-radius: 4px;
       border-left: 1px solid #dcdfe6;
+    }
+    .el-checkbox-button__inner:active {
+      background-color:$hover_check;
+      color: #fff;
+    }
+    .el-checkbox-button__inner:hover {
+      color:$hover_check;
+    }
+  }
+  .el-checkbox-button.is-checked .el-checkbox-button__inner {
+    background-color: $hover_check;
+    border-color: $hover_check;
+    &:hover {
+      color: #fff;
     }
   }
 }
@@ -39,3 +55,23 @@
     }
   }
 }
+
+// 输入框
+.el-input__inner:focus,
+.el-select .el-input__inner:focus,
+.el-select .el-input.is-focus .el-input__inner,
+.el-range-editor.is-active,
+.el-range-editor.is-active:hover {
+  border-color: $hover_check;
+}
+
+//
+// .el-menu {
+//   .router-link-active li {
+//     background-color: $hover_check !important;
+//   }
+// }
+// #app .nest-menu .el-submenu > .el-submenu__title, #app .el-submenu .el-menu-item {
+//   background-color: $hover_check !important;
+// }
+

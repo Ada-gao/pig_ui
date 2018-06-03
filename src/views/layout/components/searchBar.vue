@@ -249,5 +249,21 @@ export default {
 .btn-padding {
   @include padding;
 }
+// .el-form-item__content:focus,
+// .el-input__inner:focus,
+// .el-input:focus,
+// .el-input:active {
+//   outline: 1px solid #00C1DF;
+//   border-radius: 4px;
+// }
+.el-form-item__content:focus,
+.el-input:focus {
+  border: 1px solid #00C1DF;
+  border-radius: 4px;
+}
+.el-input.is-active .el-input__inner, .el-input__inner:focus {
+    border-color: #00C1DF;
+    outline: 0;
+}
 </style>
 

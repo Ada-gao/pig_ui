@@ -8,13 +8,13 @@
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
-      <el-table-column align="center" label="序号" type="index">
+      <el-table-column align="center" label="序号" type="index" width="50">
         <!-- <template slot-scope="scope">
           <span>{{scope.row.roleId}}</span>
         </template> -->
       </el-table-column>
 
-      <el-table-column label="角色名称">
+      <el-table-column align="center" label="角色名称">
         <template slot-scope="scope">
           <span>{{scope.row.roleName}}</span>
         </template>
