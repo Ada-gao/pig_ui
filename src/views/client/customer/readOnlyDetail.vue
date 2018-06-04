@@ -10,19 +10,19 @@
         <el-col :span="11">
           <el-form-item label="姓名" prop="name">
             <!-- <span>{{form.name}}</span> -->
-            <el-input v-model="form.name" placeholder=""></el-input>
+            <el-input v-model="form.name" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="手机号" prop="mobile">
             <!-- <span>{{form.mobile}}</span> -->
-            <el-input v-model="form.mobile" placeholder=""></el-input>
+            <el-input v-model="form.mobile" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="性别" prop="gender">
             <!-- <span>{{form.gender}}</span> -->
-            <el-input v-model="form.gender" placeholder=""></el-input>
+            <el-input v-model="form.gender" placeholder="" readonly></el-input>
             <!-- <el-select class="filter-item" v-model="form.gender" placeholder="请选择">
               <el-option v-for="item in genderType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -33,7 +33,7 @@
         <el-col :span="11">
           <el-form-item label="国籍" prop="nationality">
             <!-- <span>{{form.nationality}}</span> -->
-            <el-input v-model="form.nationality" placeholder=""></el-input>
+            <el-input v-model="form.nationality" placeholder="" readonly></el-input>
             <!-- <el-select class="filter-item" v-model="form.nationality" placeholder="请选择">
               <el-option v-for="item in nationality" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -44,19 +44,19 @@
         <el-col :span="11" v-show="form.city">
           <el-form-item label="常住地区" prop="city">
             <!-- <span>{{form.city}}</span> -->
-            <el-input v-model="form.city" placeholder=""></el-input>
+            <el-input v-model="form.city" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="邮箱" prop="email">
             <!-- <span>{{form.email}}</span> -->
-            <el-input v-model="form.email" placeholder=""></el-input>
+            <el-input v-model="form.email" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="微信" prop="wechat">
             <!-- <span>{{form.wechat}}</span> -->
-            <el-input v-model="form.wechat" placeholder=""></el-input>
+            <el-input v-model="form.wechat" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
