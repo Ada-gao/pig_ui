@@ -55,6 +55,7 @@ export default {
       console.log(this.tableHeader)
       console.log(this.tableData)
       this.formData = data.formData
+      console.log(this.formData)
     },
     submit() {
       let config = {

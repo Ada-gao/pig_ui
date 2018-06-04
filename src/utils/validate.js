@@ -48,3 +48,9 @@ export function decimals(str) {
   const reg = /(^[0-9]{1,2}$)|(^[0-9]{1,2}[\.]{1}[0-9]{1,2}$)/
   return reg.test(str)
 }
+
+/* 只能输入数字 */
+export function isNumber(str) {
+  const reg = /^[0-9]{1,10}$/
+  return reg.test(str)
+}

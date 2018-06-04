@@ -70,7 +70,7 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="募集额度" prop="collectionAmount">
-              <el-input v-model.number="form.collectionAmount" placeholder="请输入" style="width: 85%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" style="width: 85%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
             
           </el-col>
@@ -84,12 +84,12 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="起投金额" prop="minimalAmount">
-              <el-input v-model.number="form.minimalAmount" placeholder="请输入起投金额" style="width: 85%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额" style="width: 85%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="追加金额" prop="minimalAddAmount">
-              <el-input v-model.number="form.minimalAddAmount" style="width: 85%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input v-model.number="form.minimalAddAmount" :maxlength="10" style="width: 85%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -305,7 +305,7 @@
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
-  import { decimals } from '@/utils/validate'
+  import { decimals, isNumber } from '@/utils/validate'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
 
   const twoDecimals = (rule, value, callback) => {
@@ -313,6 +313,16 @@
       return null
     } else if (!decimals(value)) {
       callback(new Error('请输入正确的净值数字'))
+    } else {
+      callback()
+    }
+  }
+
+  const certNumber = (rule, value, callback) => {
+    if (!value) {
+      return null
+    } else if (!isNumber(value)) {
+      callback(new Error('请输入10位以内的数字'))
     } else {
       callback()
     }
@@ -395,25 +405,42 @@
             {
               required: true,
               message: '请输入募集额度',
-              trigger: 'blur'
+              trigger: 'change'
             },
             { 
               type: 'number',
-              message: '年龄必须为数字值'
+              message: '金额必须为数字值',
+              validator: certNumber
             }
           ],
           minimalAmount: [
             {
               required: true,
               message: '请输入起投金额',
-              trigger: 'blur'
+              trigger: 'change'
+            },
+            { 
+              type: 'number',
+              message: '金额必须为数字值',
+              validator: certNumber
             }
           ],
           minimalAddAmount: [
+            // {
+            //   required: true,
+            //   message: '请输入追加金额',
+            //   trigger: 'change',
+            //   validator: certNumber
+            // }
             {
               required: true,
               message: '请输入追加金额',
-              trigger: 'blur'
+              trigger: 'change'
+            },
+            { 
+              type: 'number',
+              message: '金额必须为数字值',
+              validator: certNumber
             }
           ],
           productCode: [
@@ -442,7 +469,7 @@
           //   {
           //     required: true,
           //     message: '请选择收益',
-          //     trigger: 'blur'
+          //     trigger: 'change'
           //   }
           // ],
         },

@@ -112,7 +112,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 #excel-upload-input{
   display: none;
   z-index: -9999;
@@ -136,5 +136,9 @@ export default {
   top: 70%;
   left: 50%;
   transform: translate(-50%, -50%);
+  em {
+    color: #0299CC;
+    font-weight: bold;
+  }
 }
 </style>

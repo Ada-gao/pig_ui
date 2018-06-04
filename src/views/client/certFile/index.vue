@@ -16,7 +16,7 @@
               :on-success="handleChange1"
               :show-file-list="false"
               accept=".pdf, .doc">
-              <el-button size="small" class="btn-padding" type="primary">新增资料</el-button>
+              <el-button size="small" class="btn-padding add_btn" type="primary">新增资料</el-button>
             </el-upload>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -40,7 +40,7 @@
                     :href="scope.row.fileUrl"><a :href="scope.row.fileUrl" target="_blank">查看</a>
           </a>
           <span class="space_line"> | </span>
-          <a v-if="sys_user_upd" size="small" class="common_btn"
+          <a v-if="sys_user_upd" size="small" class="danger_btn"
                      @click="deletes(scope.row.certFileId)">删除
           </a>
         </template>

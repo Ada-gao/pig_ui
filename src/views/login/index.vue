@@ -325,7 +325,7 @@
     .el-tabs__active-bar {
       background-color: $light_gray;
     }
-    background-image: url($bg);
+    background-image: url('/static/img/banner.jpg');
     background-size: cover;
     // background-color: $bg;
     input:-webkit-autofill {

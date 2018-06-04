@@ -70,7 +70,7 @@
       <!-- <upload-excel-component @on-selected-file='selected'></upload-excel-component> -->
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
-              highlight-current-row style="width: 100%">
+              highlight-current-row style="width: 100%" :cell-class-name="getCellClass">
 
       <el-table-column align="center" label="序号" type="index" width="50">
         <!-- <template slot-scope="scope"> -->
@@ -979,6 +979,13 @@
       },
       getPYCode(val) {
         this.form.username = this.covertPY(val)
+      },
+      getCellClass({ row, column, columnIndex }) {
+        if (columnIndex === 1 && row.avator) {
+          return 'red'
+        } else {
+          return ''
+        }
       }
     }
   }
