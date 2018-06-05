@@ -40,7 +40,7 @@ export const constantRouterMap = [
     // icon: 'table',
     meta: {
       title: '客户管理',
-      icon: 'table'
+      icon: 'client'
     },
     children: [
       { 
@@ -83,7 +83,7 @@ export const constantRouterMap = [
     // icon: 'table',
     meta: {
       title: '产品管理',
-      icon: 'table'
+      icon: 'product_mg'
     },
     children: [
       { 
