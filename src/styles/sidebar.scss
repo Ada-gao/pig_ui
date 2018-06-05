@@ -86,12 +86,26 @@
       }
     }
   }
-  .nest-menu .el-submenu>.el-submenu__title,
+  
+  $menuTitle: #42485B;
   .el-submenu .el-menu-item {
     min-width: 180px!important;
-    background-color: $subMenuBg!important;
+    background-color: $menuBg!important;
+    &:hover {
+      background-color: $menuTitle!important;
+      color: #fff;
+    }
+  }
+  .el-submenu .el-menu-item.is-active {
+    background-color: $menuHover!important;
+    color: #fff!important;
+  }
+  .el-submenu>.el-submenu__title {
+    min-width: 180px!important;
+    background-color: $menuTitle!important;
     &:hover {
       background-color: $menuHover!important;
+      color: #fff;
     }
   }
   .el-menu--collapse .el-menu .el-submenu{

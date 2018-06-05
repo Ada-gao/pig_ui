@@ -1,6 +1,6 @@
 <template>
   <scroll-bar>
-    <el-menu mode="vertical" unique-opened :default-active="defaultActive" :collapse="isCollapse" background-color="#304156" text-color="#fff" active-text-color="#00C1DF" @select="handleSelect">
+    <el-menu mode="vertical" unique-opened :default-active="defaultActive" :collapse="isCollapse" background-color="#343744" text-color="#fff" active-text-color="#00C1DF" @select="handleSelect">
       <sidebar-item :routes="permission_routers"></sidebar-item>
     </el-menu>
   </scroll-bar>

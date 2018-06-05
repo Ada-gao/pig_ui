@@ -29,7 +29,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="国籍" prop="nationality">
-            <el-input v-model="form.nationality" placeholder="请输入手机号" readonly></el-input>
+            <el-input v-model="form.nationality" placeholder="" readonly></el-input>
             <!-- <el-select class="filter-item" v-model="form.nationality" placeholder="请选择">
               <el-option v-for="item in nationality" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>

@@ -75,3 +75,61 @@ $hover_check: #00C1DF;
 //   background-color: $hover_check !important;
 // }
 
+// 表格状态
+$normal_status: #009801;
+$unusual_status: #F7BA2A;
+$leave_status: #FF4C4C;
+.el-tag {
+  border: none;
+  background-color: transparent;
+  color: $normal_status;
+  // &::before {
+  //   width: 5px;
+  //   height: 5px;
+  //   background-color: $normal_status;
+  //   content: '';
+  //   display: inline-block;
+  //   border-radius: 50%;
+  //   margin-right: 5px;
+  // }
+}
+.el-tag.normal {
+  color: $normal_status;
+  &::before {
+    width: 5px;
+    height: 5px;
+    background-color: $normal_status;
+    content: '';
+    display: inline-block;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+}
+.el-tag.leave {
+  color: $leave_status;
+  &::before {
+    width: 5px;
+    height: 5px;
+    background-color: $leave_status;
+    content: '';
+    display: inline-block;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+}
+.el-tag.unusual {
+  color: $unusual_status;
+  &::before {
+    width: 5px;
+    height: 5px;
+    background-color: $unusual_status;
+    content: '';
+    display: inline-block;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+}
+
+.el-table td.left {
+  text-align: left!important;
+}

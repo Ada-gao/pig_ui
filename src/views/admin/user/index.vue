@@ -78,7 +78,7 @@
         <!-- </template> -->
       </el-table-column>
 
-      <el-table-column align="center" label="用户名">
+      <el-table-column align="center" label="用户名" class-name="left">
         <template slot-scope="scope">
           <span>
             <img v-if="scope.row.avatar" class="user-avatar" style="width: 20px; height: 20px; border-radius: 50%;" :src="scope.row.avatar+'?imageView2/1/w/20/h/20'">
@@ -113,7 +113,13 @@
 
       <el-table-column align="center" class-name="status-col" label="状态">
         <template slot-scope="scope">
-          <el-tag>{{scope.row.status}}</el-tag>
+          <!-- <el-tag :class="'leave': scope.row.statusNum == 0,
+                          'normal': scope.row.statusNum == 1,
+                          'unusual': scope.row.statusNum == 2"
+          >{{scope.row.status}}</el-tag> -->
+          <el-tag v-if="scope.row.statusNum == 0" class="normal">{{scope.row.status}}</el-tag>
+          <el-tag v-if="scope.row.statusNum == 1" class="leave">{{scope.row.status}}</el-tag>
+          <el-tag v-if="scope.row.statusNum == 2" class="unusual">{{scope.row.status}}</el-tag>
         </template>
       </el-table-column>
 
@@ -318,7 +324,7 @@
                 :show-file-list="true"
                 :before-upload="beforeUpload"
                 accept=".pdf, .doc">
-                <el-button size="small" type="primary">上传简历</el-button>
+                <el-button size="small" class="add_btn">上传简历</el-button>
               </el-upload>
             </el-form-item>
           </el-col>
@@ -341,9 +347,9 @@
         
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel('form')">取 消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
-        <el-button v-else type="primary" @click="update('form')">修 改</el-button>
+        <el-button class="search_btn" @click="cancel('form')">取 消</el-button>
+        <el-button class="add_btn" v-if="dialogStatus=='create'" @click="create('form')">确 定</el-button>
+        <el-button class="add_btn" v-else @click="update('form')">修 改</el-button>
       </div>
     </el-dialog>
 
@@ -730,9 +736,9 @@
           this.listLoading = false
           getAllPositon().then(res => {
             this.positionsOptions = res.data
-
             this.list.forEach(item => {
               item.positionId = transformText(this.positionsOptions, item.positionId)
+              item.statusNum = item.status
               item.status = transformText(this.workStatus, item.status)
             })
           })
@@ -1004,9 +1010,6 @@
 .el-select,
 .el-date-editor {
   width: 100%;
-}
-.red {
-  color: red;
 }
 </style>
 

@@ -192,7 +192,7 @@
             :on-change="handleChange1"
             :show-file-list="false"
             accept=".pdf, .doc">
-            <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
+            <el-button size="small" class="btn-padding add_btn">追加材料</el-button>
           </el-upload>
           
           <el-button type="info" class="btn-padding" @click="delfiles1">删除材料</el-button>
@@ -235,7 +235,7 @@
             :on-change="handleChange2"
             :show-file-list="false"
             accept=".pdf, .doc">
-            <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
+            <el-button size="small" class="btn-padding add_btn">追加材料</el-button>
           </el-upload>
 
           <el-button type="info" class="btn-padding" @click="delfiles2">删除材料</el-button>
@@ -277,7 +277,7 @@
             :on-change="handleChange3"
             :show-file-list="false"
             accept=".pdf, .doc">
-            <el-button size="small" class="btn-padding" type="primary">追加材料</el-button>
+            <el-button size="small" class="btn-padding add_btn">追加材料</el-button>
           </el-upload>
           <el-button type="info" class="btn-padding" @click="delfiles3">删除材料</el-button>
         </el-row>
@@ -285,10 +285,10 @@
     </div>
 
     <div slot="footer" class="dialog-footer" style="text-align: center;">
-      <el-button @click="cancel()">取 消</el-button>
-      <el-button v-if="dialogStatus=='create'&!nextToUpdate" type="primary" @click="create('form')">确 定</el-button>
-      <el-button v-if="dialogStatus=='create'&nextToUpdate" type="primary" @click="createRouter">确 定</el-button>
-      <el-button v-if="dialogStatus=='update'" type="primary" @click="update('form')">修 改</el-button>
+      <el-button class="search_btn" @click="cancel()">取 消</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='create'&!nextToUpdate" type="primary" @click="create('form')">确 定</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='create'&nextToUpdate" type="primary" @click="createRouter">确 定</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'" type="primary" @click="update('form')">修 改</el-button>
     </div>
 
   </div>

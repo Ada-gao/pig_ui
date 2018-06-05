@@ -132,6 +132,35 @@ export const asyncRouterMap = [
     ]
   },
   {
+    menuId: 19,
+    path: '/client',
+    component: Layout,
+    name: '客户管理',
+    hidden: false,
+    redirect: '/client/potential',
+    // icon: 'table',
+    meta: {
+      title: '客户管理',
+      icon: 'client'
+    },
+    children: [
+      { menuId: 19, path: 'potential', component: _import('client/potential/index'), name: '潜客列表', meta: { title: '潜客列表', icon: 'potential' }},
+      { menuId: 20, path: 'customer', component: _import('client/customer/index'), name: '客户列表', meta: { title: '客户列表', icon: 'customer' }},
+      { menuId: 25, path: 'realname', component: _import('client/realname/index'), name: '实名认证审核', meta: { title: '实名认证审核', icon: 'realname' }},
+      { menuId: 22, path: 'investor', component: _import('client/investor/index'), name: '普通投资者审核', meta: { title: '普通投资者审核', icon: 'investor' }},
+      { menuId: 22, path: 'professionalInvestor', component: _import('client/professionalInvestor/index'), name: '专业投资者审核', meta: { title: '专业投资者审核', icon: 'professionalInvestor' }},
+      { menuId: 23, path: 'allocated', component: _import('client/allocated/index'), name: '待分配客户', meta: { title: '待分配客户', icon: 'allocated' }},
+      { menuId: 24, path: 'certFile', component: _import('client/certFile/index'), name: '认证资料管理', meta: { title: '认证资料管理', icon: 'certFile' }},
+      // { menuId: 22, path: 'detail/:id', component: _import('client/customer/detail'), name: '客户详情', meta: { title: '客户详情', icon: 'user' }},
+      // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '实名认证审核', meta: { title: '实名认证审核', icon: 'user' }},
+      // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '普通投资者审核', meta: { title: '普通投资者审核', icon: 'user' }},
+      // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '专业投资者审核', meta: { title: '专业投资者审核', icon: 'user' }},
+      // { menuId: 18, path: 'potential', component: _import('client/potential/index'), name: '待分配顾问', meta: { title: '待分配顾问', icon: 'user' }},
+      // { menuId: 18, path: 'potential', component: _import('client/potential/index'), name: '客户异动分配', meta: { title: '客户异动分配', icon: 'user' }},
+      // { menuId: 18, path: 'potential', component: _import('client/potential/index'), name: '认证资料管理', meta: { title: '认证资料管理', icon: 'user' }}
+    ]
+  },
+  {
     menuId: 3,
     path: '/admin',
     component: Layout,
@@ -146,28 +175,6 @@ export const asyncRouterMap = [
     children: [
       { menuId: 48, path: 'product', component: _import('admin/product/list'), name: '产品管理', meta: { title: '产品管理', icon: 'product' }},
       { menuId: 49, path: 'productType', component: _import('admin/product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'productType' }},
-    ]
-  },
-  {
-    menuId: 2,
-    path: '/monitor',
-    component: Layout,
-    name: '系统监控',
-    redirect: '/monitor/service',
-    hidden: false,
-    // icon: 'table',
-    meta: {
-      title: '系统监控',
-      icon: 'monitor'
-    },
-    children: [
-      { menuId: 11, path: 'service', component: _import('admin/monitor/service'), name: '服务状态', meta: { title: '服务状态', icon: 'service' }},
-      { menuId: 12, path: 'zipkin', component: _import('admin/monitor/zipkin'), name: 'zipkin监控', meta: { title: 'zipkin监控', icon: 'zipkin' }},
-      { menuId: 13, path: 'pinpoint', component: _import('admin/monitor/pinpoint'), name: 'pinpoint监控', meta: { title: 'pinpoint监控', icon: 'pinpoint' }},
-      { menuId: 14, path: 'cache', component: _import('admin/monitor/cache'), name: '缓存状态', meta: { title: '缓存状态', icon: 'cache' }},
-      { menuId: 15, path: 'elk', component: _import('admin/monitor/elk'), name: 'ELK状态', meta: { title: 'ELK状态', icon: 'elk' }},
-      { menuId: 16, path: 'swagger', component: _import('admin/monitor/swagger'), name: '接口文档', meta: { title: '接口文档', icon: 'swagger' }},
-      { menuId: 17, path: 'daemon', component: _import('admin/monitor/daemon'), name: '任务监控', meta: { title: '任务监控', icon: 'daemon' }}
     ]
   },
   {
@@ -190,32 +197,25 @@ export const asyncRouterMap = [
     ]
   },
   {
-    menuId: 19,
-    path: '/client',
+    menuId: 2,
+    path: '/monitor',
     component: Layout,
-    name: '客户管理',
+    name: '系统监控',
+    redirect: '/monitor/service',
     hidden: false,
-    redirect: '/client/potential',
     // icon: 'table',
     meta: {
-      title: '客户管理',
-      icon: 'client'
+      title: '系统监控',
+      icon: 'monitor'
     },
     children: [
-      { menuId: 19, path: 'potential', component: _import('client/potential/index'), name: '潜客列表', meta: { title: '潜客列表', icon: 'potential' }},
-      { menuId: 20, path: 'customer', component: _import('client/customer/index'), name: '客户列表', meta: { title: '客户列表', icon: 'customer' }},
-      { menuId: 25, path: 'realname', component: _import('client/realname/index'), name: '实名认证审核', meta: { title: '实名认证审核', icon: 'user' }},
-      { menuId: 22, path: 'investor', component: _import('client/investor/index'), name: '普通投资者审核', meta: { title: '普通投资者审核', icon: 'investor' }},
-      { menuId: 22, path: 'professionalInvestor', component: _import('client/professionalInvestor/index'), name: '专业投资者审核', meta: { title: '专业投资者审核', icon: 'professionalInvestor' }},
-      { menuId: 23, path: 'allocated', component: _import('client/allocated/index'), name: '待分配客户', meta: { title: '待分配客户', icon: 'allocated' }},
-      { menuId: 24, path: 'certFile', component: _import('client/certFile/index'), name: '认证资料管理', meta: { title: '认证资料管理', icon: 'certFile' }},
-      // { menuId: 22, path: 'detail/:id', component: _import('client/customer/detail'), name: '客户详情', meta: { title: '客户详情', icon: 'user' }},
-      // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '实名认证审核', meta: { title: '实名认证审核', icon: 'user' }},
-      // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '普通投资者审核', meta: { title: '普通投资者审核', icon: 'user' }},
-      // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '专业投资者审核', meta: { title: '专业投资者审核', icon: 'user' }},
-      // { menuId: 18, path: 'potential', component: _import('client/potential/index'), name: '待分配顾问', meta: { title: '待分配顾问', icon: 'user' }},
-      // { menuId: 18, path: 'potential', component: _import('client/potential/index'), name: '客户异动分配', meta: { title: '客户异动分配', icon: 'user' }},
-      // { menuId: 18, path: 'potential', component: _import('client/potential/index'), name: '认证资料管理', meta: { title: '认证资料管理', icon: 'user' }}
+      { menuId: 11, path: 'service', component: _import('admin/monitor/service'), name: '服务状态', meta: { title: '服务状态', icon: 'service' }},
+      { menuId: 12, path: 'zipkin', component: _import('admin/monitor/zipkin'), name: 'zipkin监控', meta: { title: 'zipkin监控', icon: 'zipkin' }},
+      { menuId: 13, path: 'pinpoint', component: _import('admin/monitor/pinpoint'), name: 'pinpoint监控', meta: { title: 'pinpoint监控', icon: 'pinpoint' }},
+      { menuId: 14, path: 'cache', component: _import('admin/monitor/cache'), name: '缓存状态', meta: { title: '缓存状态', icon: 'cache' }},
+      { menuId: 15, path: 'elk', component: _import('admin/monitor/elk'), name: 'ELK状态', meta: { title: 'ELK状态', icon: 'elk' }},
+      { menuId: 16, path: 'swagger', component: _import('admin/monitor/swagger'), name: '接口文档', meta: { title: '接口文档', icon: 'swagger' }},
+      { menuId: 17, path: 'daemon', component: _import('admin/monitor/daemon'), name: '任务监控', meta: { title: '任务监控', icon: 'daemon' }}
     ]
   }
 ]

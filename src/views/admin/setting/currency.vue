@@ -53,9 +53,9 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel('form')">取 消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
-        <el-button v-else type="primary" @click="update('form')">修 改</el-button>
+        <el-button class="search_btn" @click="cancel('form')">取 消</el-button>
+        <el-button class="add_btn" v-if="dialogStatus=='create'" @click="create('form')">确 定</el-button>
+        <el-button class="add_btn" v-else @click="update('form')">修 改</el-button>
       </div>
     </el-dialog>
 
