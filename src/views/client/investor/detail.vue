@@ -111,8 +111,8 @@
     </el-form>
 
     <div v-if="isView == 1" slot="footer" class="dialog-footer" style="text-align: center; margin-top: 20px">
-      <el-button @click="submitResult('2')">通 过</el-button>
-      <el-button type="primary" @click="submitResult('3')">不通过</el-button>
+      <el-button class="search_btn" @click="submitResult('2')">通 过</el-button>
+      <el-button class="add_btn" @click="submitResult('3')">不通过</el-button>
     </div>
 
   </div>

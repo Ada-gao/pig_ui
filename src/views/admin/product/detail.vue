@@ -70,7 +70,7 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="募集额度" prop="collectionAmount">
-              <el-input v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" style="width: 85%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" style="width: 80%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
             
           </el-col>
@@ -84,12 +84,12 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="起投金额" prop="minimalAmount">
-              <el-input v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额" style="width: 85%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额" style="width: 80%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="追加金额" prop="minimalAddAmount">
-              <el-input v-model.number="form.minimalAddAmount" :maxlength="10" style="width: 85%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input v-model.number="form.minimalAddAmount" :maxlength="10" style="width: 80%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -97,7 +97,12 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="产品期限" prop="investmentHorizon">
-              <el-input v-model.number="form.investmentHorizon" style="width: 85%; margin-right: 10px;"></el-input><span>月</span>
+              <el-input v-model.number="form.investmentHorizon" style="width: 80%; margin-right: 10px;"></el-input>
+              <el-select v-model="form.ym" style="width: 15%;">
+                <el-option v-for="item in dateWay" :key="item.value" :value="item.value" :label="item.label">
+                  <!-- <span style="float: left">{{ item.label }}</span> -->
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -509,7 +514,16 @@
         indexList1: [],
         indexList2: [],
         indexList3: [],
-        productStatusNo: ''
+        productStatusNo: '',
+        dateWay: [
+          {
+            value: '0',
+            label: '年'
+          },{
+            value: '1',
+            label: '月'
+          }
+        ]
       }
     },
     computed: {

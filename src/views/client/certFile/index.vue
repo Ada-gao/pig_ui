@@ -54,8 +54,8 @@
       width="30%">
       <span>确认删除该认证资料吗？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="todeletes">确 定</el-button>
+        <el-button class="search_btn" @click="dialogVisible = false">取 消</el-button>
+        <el-button class="add_btn" @click="todeletes">确 定</el-button>
       </span>
     </el-dialog>
   </div>

@@ -193,8 +193,8 @@
     </el-form>
 
     <div v-if="!nextToUpdate" slot="footer" class="dialog-footer" style="text-align: center;">
-      <el-button @click="submitResult('2')">通 过</el-button>
-      <el-button v-if="dialogStatus=='create'" type="primary" @click="submitResult('3')">不通过</el-button>
+      <el-button class="search_btn" @click="submitResult('2')">通 过</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='create'" @click="submitResult('3')">不通过</el-button>
       <!-- <el-button v-else type="primary" @click="update('form')">修 改</el-button> -->
     </div>
 
