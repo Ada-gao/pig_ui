@@ -183,7 +183,11 @@
               v-model="failReason">
           </el-input>
           </el-form-item>
-          <span v-show="tip">请输入备注</span>
+        </el-col>
+        <el-col :span="22">
+          <el-form-item>
+            <span v-show="tip" class="warn_tip">请输入备注</span>
+          </el-form-item>
         </el-col>
       </el-row>
     </el-form>

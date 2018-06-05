@@ -82,25 +82,22 @@ $danger_btn: #FF4949;
 $btn: #0299CC;
 .common_btn {
   color: $btn;
-  padding: 0 5px;
 }
 .common_btn:hover {
   color: $hover_add;
-  padding: 0 5px;
 }
 .info_btn:hover {
   color: $hover_add;
 }
 .danger_btn {
   color: $danger_btn;
-  padding: 0 5px;
 }
 .danger_btn:hover {
   color: #FF8686;
-  padding: 0 5px;
 }
 .space_line {
   color: #8F8F8F;
+  margin: 0 5px;
 }
 .el-button--primary {
   background-color: $btn;

@@ -55,7 +55,7 @@
           </a>
           <span class="space_line"> | </span>
           <span class="svg-container">
-            <svg-icon icon-class="user"/>
+            <svg-icon icon-class="authority"/>
           </span>
           <a size="mini" class="info_btn" plain
                      @click="handlePermission(scope.row)">权限

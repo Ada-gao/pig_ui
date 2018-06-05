@@ -121,14 +121,14 @@ export const asyncRouterMap = [
     // icon: 'table',
     meta: {
       title: '员工管理',
-      icon: 'table'
+      icon: 'user_mg'
     },
     children: [
       { menuId: 5, path: 'user', component: _import('admin/user/index'), name: '用户管理', meta: { title: '用户管理', icon: 'user' }},
       { menuId: 7, path: 'role', component: _import('admin/role/index'), name: '角色管理', meta: { title: '角色管理', icon: 'role' }},
-      { menuId: 43, path: 'posi', component: _import('admin/posi/index'), name: '职位管理', meta: { title: '职位管理', icon: 'log' }},
+      { menuId: 43, path: 'posi', component: _import('admin/posi/index'), name: '职位管理', meta: { title: '职位管理', icon: 'position' }},
       { menuId: 10, path: 'dept', component: _import('admin/dept/index'), name: '部门管理', meta: { title: '部门管理', icon: 'dept' }},
-      { menuId: 2, path: 'uploadUser', component: _import('admin/user/uploadExcel'), name: '用户批量导入', meta: { title: '用户批量导入', icon: 'user' }}
+      { menuId: 2, path: 'uploadUser', component: _import('admin/user/uploadExcel'), name: '用户批量导入', meta: { title: '用户批量导入', icon: 'upload' }}
     ]
   },
   {
@@ -141,11 +141,11 @@ export const asyncRouterMap = [
     // icon: 'table',
     meta: {
       title: '产品管理',
-      icon: 'table'
+      icon: 'product_mg'
     },
     children: [
-      { menuId: 48, path: 'product', component: _import('admin/product/list'), name: '产品管理', meta: { title: '产品管理', icon: 'user' }},
-      { menuId: 49, path: 'productType', component: _import('admin/product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'user' }},
+      { menuId: 48, path: 'product', component: _import('admin/product/list'), name: '产品管理', meta: { title: '产品管理', icon: 'product' }},
+      { menuId: 49, path: 'productType', component: _import('admin/product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'productType' }},
     ]
   },
   {
@@ -180,10 +180,10 @@ export const asyncRouterMap = [
     // icon: 'table',
     meta: {
       title: '设置管理',
-      icon: 'table'
+      icon: 'setting'
     },
     children: [
-      { menuId: 38, path: 'currency', component: _import('admin/setting/currency'), name: '币种管理', meta: { title: '币种管理', icon: 'service' }},
+      { menuId: 38, path: 'currency', component: _import('admin/setting/currency'), name: '币种管理', meta: { title: '币种管理', icon: 'currency' }},
       { menuId: 9, path: 'dict', component: _import('admin/dict/index'), name: '字典管理', meta: { title: '字典管理', icon: 'dict' }},
       { menuId: 8, path: 'log', component: _import('admin/log/index'), name: '日志管理', meta: { title: '日志管理', icon: 'log' }},
       { menuId: 6, path: 'menu', component: _import('admin/menu/index'), name: '菜单管理', meta: { title: '菜单管理', icon: 'tree' }},

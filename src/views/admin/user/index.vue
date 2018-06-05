@@ -980,8 +980,10 @@
       getPYCode(val) {
         this.form.username = this.covertPY(val)
       },
-      getCellClass({ row, column, columnIndex }) {
-        if (columnIndex === 1 && row.avator) {
+      getCellClass(col) {
+        // console.log(col)
+        if (col.columnIndex == 1) {
+          console.log('第二列')
           return 'red'
         } else {
           return ''
@@ -995,6 +997,9 @@
 .el-select,
 .el-date-editor {
   width: 100%;
+}
+.red {
+  color: red;
 }
 </style>
 
