@@ -3,7 +3,7 @@
     <h3 v-if="uploadData.productId">修改产品</h3>
     <h3 v-else>新增产品</h3>
     <el-form :model="form" :rules="rules" ref="form" label-width="100px">
-      <el-row :gutter="20">
+      <el-row :gutter="90">
           <el-col :span="11">
             <el-form-item label="产品名称" prop="productName">
               <el-input v-model="form.productName" placeholder="请输入产品名称"></el-input>
@@ -16,7 +16,7 @@
           </el-col>
         </el-row>
         
-        <el-row :gutter="20">
+        <el-row :gutter="90">
           <el-col :span="11">
             <el-form-item label="产品类型" prop="productTypeId">
               <el-select class="filter-item" v-model="form.productTypeId" placeholder="请选择">
@@ -37,7 +37,7 @@
           </el-col>
         </el-row>
         
-        <el-row :gutter="20">
+        <el-row :gutter="90">
           <el-col :span="11">
             <el-form-item label="产品LP数量" prop="productLp">
               <el-input v-model.number="form.productLp" placeholder="请输入"></el-input>
@@ -50,7 +50,7 @@
           </el-col>
         </el-row>
         
-        <el-row :gutter="20">
+        <el-row :gutter="90">
           <el-col :span="11">
             <el-form-item label="基金管理人" prop="manager">
               <el-input v-model="form.manager" placeholder="请输入"></el-input>
@@ -67,12 +67,11 @@
           </el-col>
         </el-row>
           
-        <el-row :gutter="20">
+        <el-row :gutter="90">
           <el-col :span="11">
             <el-form-item label="募集额度" prop="collectionAmount">
-              <el-input v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" style="width: 80%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
-            
           </el-col>
           <el-col :span="11">
             <el-form-item label="净值" prop="netValue">
@@ -81,24 +80,24 @@
           </el-col>
         </el-row>
         
-        <el-row :gutter="20">
+        <el-row :gutter="90">
           <el-col :span="11">
             <el-form-item label="起投金额" prop="minimalAmount">
-              <el-input v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额" style="width: 80%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="追加金额" prop="minimalAddAmount">
-              <el-input v-model.number="form.minimalAddAmount" :maxlength="10" style="width: 80%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input v-model.number="form.minimalAddAmount" :maxlength="10" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
           </el-col>
         </el-row>
           
-        <el-row :gutter="20">
+        <el-row :gutter="90">
           <el-col :span="11">
             <el-form-item label="产品期限" prop="investmentHorizon">
-              <el-input v-model.number="form.investmentHorizon" style="width: 80%; margin-right: 10px;"></el-input>
-              <el-select v-model="form.ym" style="width: 15%;">
+              <el-input v-model.number="form.investmentHorizon" style="width: 75%; margin-right: 10px;"></el-input>
+              <el-select v-model="form.ym" style="width: 20%;">
                 <el-option v-for="item in dateWay" :key="item.value" :value="item.value" :label="item.label">
                   <!-- <span style="float: left">{{ item.label }}</span> -->
                 </el-option>
@@ -115,7 +114,7 @@
           </el-col>
         </el-row>
         
-        <el-row :gutter="20">
+        <el-row :gutter="90">
           <el-col>
             <el-form-item label="收益" prop="isFloat">
               <el-radio-group v-model="form.isFloat" @change="radioChange">
@@ -130,7 +129,7 @@
           </el-col>
         </el-row>
         
-        <el-row :gutter="20">
+        <el-row :gutter="90">
           <el-col :span="22">
             <el-form-item label="收益分配方式" prop="incomeDistribution">
               <el-input
@@ -142,7 +141,7 @@
           </el-col>
         </el-row>
         
-        <el-row :gutter="20">
+        <el-row :gutter="90">
           <el-col :span="22">
             <el-form-item label="产品亮点" prop="highlight">
               <el-input
