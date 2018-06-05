@@ -70,7 +70,7 @@
       <!-- <upload-excel-component @on-selected-file='selected'></upload-excel-component> -->
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
-              highlight-current-row style="width: 100%" :cell-class-name="getCellClass">
+              highlight-current-row style="width: 100%">
 
       <el-table-column align="center" label="序号" type="index" width="50">
         <!-- <template slot-scope="scope"> -->
@@ -572,6 +572,13 @@
       ElOption,
       ElRadioGroup,
       UploadExcelComponent
+    },
+    filters: {
+      parseTime (time) {
+        if(!time) return
+        let date = new Date(time)
+        return parseTime(date)
+      }
     },
     name: 'table_user',
     directives: {

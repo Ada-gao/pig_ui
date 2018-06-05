@@ -30,7 +30,7 @@ export default {
     Bus.$on('activeIndex', defaultActive => {
       this.defaultActive = defaultActive
     })
-    console.log('this.defaultActive')
+    // console.log('this.defaultActive')
     // console.log(this.defaultActive)
     // console.log(this.$route)
     // console.log(this.$route.params)
@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     handleSelect(key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     }
   }
 }

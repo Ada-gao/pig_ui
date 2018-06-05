@@ -4,6 +4,7 @@
     <div id="drop" class="el-upload-dragger" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em @click="handleUpload">点击导入</em></div>
+      <div class="el-upload__tip" slot="tip">只能导入 Excel 文件 <a :href="downloadUrl">下载 Excel 模版</a></div>
       <!-- <el-button style="margin-left:16px;" size="mini" type="primary" @click="handleUpload">browse</el-button> -->
     </div>
     <!-- <el-upload
@@ -30,7 +31,8 @@ export default {
       excelData: {
         header: null,
         results: null
-      }
+      },
+      downloadUrl: 'http://10.9.60.142:8888/group1/M00/00/0A/Cgk8jlsV8_yAd5EUAAAssi76hjc78.xlsx'
     }
   },
   methods: {
@@ -75,11 +77,19 @@ export default {
       const reader = new FileReader()
       reader.onload = e => {
         const data = e.target.result
+        // debugger
         const fixedData = this.fixdata(data)
         const workbook = XLSX.read(btoa(fixedData), { type: 'base64' })
         const firstSheetName = workbook.SheetNames[0]
         const worksheet = workbook.Sheets[firstSheetName]
         const header = this.get_header_row(worksheet)
+        header.forEach((item, index) => {
+          if(item.indexOf('UNKNOWN') === -1) {
+            debugger
+            // header.split(index, 1)
+            console.log(index)
+          }
+        })
         const results = XLSX.utils.sheet_to_json(worksheet)
         this.generateDate({ header, results, formData })
       }
@@ -128,6 +138,8 @@ export default {
   text-align: center;
   color: #bbb;
   position: relative;
+  margin-bottom: 35px;
+  overflow: visible;
 }
 .el-upload__text {
   position: absolute;
@@ -140,5 +152,12 @@ export default {
     color: #0299CC;
     font-weight: bold;
   }
+}
+.el-upload__tip {
+  height: 20px;
+  line-height: 20px;
+   a {
+    color: #0299CC;
+   }
 }
 </style>
