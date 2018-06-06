@@ -36,12 +36,12 @@ service.interceptors.response.use(
     if (res.status === 478 || res.status === 403) {
       message(res.status + '： ' + res.data.msg, 'error')
     } else if (res.status === 400) {
-      message(res.status + '： ' + (res.data.error_description || res.data.msg), 'error')
+      message((res.data.error_description || res.data.msg), 'error')
     } else if (res.status === 202) { // 三方未绑定
       this.$router.push({ path: '/' })
     } else if (res.status === 500) { // 格式有误
-      // console.log(res)
-      message('上传格式有误，请重新上传 ', 'error')
+      console.log(res)
+      message(res.data.message + '系统异常', 'error')
     // } else if (res.status === 503) { // 服务异常
     //   message(res.status + '： ' + res.data, 'error')
     } else if (res.status === 503) { // 服务异常

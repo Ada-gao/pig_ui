@@ -52,10 +52,10 @@ export default {
     selected(data) {
       this.tableHeader = data.header
       this.tableData = data.results
-      console.log(this.tableHeader)
-      console.log(this.tableData)
+      // console.log(this.tableHeader)
+      // console.log(this.tableData)
       this.formData = data.formData
-      console.log(this.formData)
+      // console.log(this.formData)
     },
     submit() {
       let config = {

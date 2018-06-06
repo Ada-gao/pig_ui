@@ -30,10 +30,6 @@ export default {
     Bus.$on('activeIndex', defaultActive => {
       this.defaultActive = defaultActive
     })
-    // console.log('this.defaultActive')
-    // console.log(this.defaultActive)
-    // console.log(this.$route)
-    // console.log(this.$route.params)
   },
   data() {
     return {

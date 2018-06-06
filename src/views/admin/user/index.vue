@@ -176,8 +176,9 @@
       </el-tree>
     </el-dialog>
 
+    <!-- 新增 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :model="form" :rules="rules" ref="form" label-width="100px">
+      <el-form :model="form" ref="form" label-width="100px">
         
         <el-row :gutter="20">
           <el-col :span="11">
@@ -496,7 +497,7 @@
           <el-col :span="11">
             <el-form-item label="简历" prop="resumeUrl">
               <!-- <el-input v-model="form.role"></el-input> -->
-              <el-upload
+              <!-- <el-upload
                 class="upload-demo"
                 action="/zuul/admin/user/upload"
                 :on-preview="handlePreview"
@@ -510,8 +511,9 @@
                 :show-file-list="true"
                 :before-upload="beforeUpload"
                 accept=".pdf, .doc">
-                <!-- <el-button size="small" type="primary">上传简历</el-button> -->
-              </el-upload>
+                <el-button size="small" type="primary">上传简历</el-button>
+              </el-upload> -->
+              <a target="_blank" :href="form.resumeUrl" style="white-space: nowrap">{{form.resumeName}}</a>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -788,7 +790,7 @@
         this.dialogFormVisible = true
         this.PYCode = getPYData() // 获取拼音数据
       },
-      handleUpdate(row, state) { // 编辑查询
+      handleUpdate(row, state) { // 编辑查询（查看）
         getObj(row.userId)
           .then(response => {
             this.form = response.data
@@ -819,7 +821,7 @@
             } else {
               this.fileList.push(obj)
               this.fileList.length = 1
-              // console.log(this.fileList)
+              console.log(this.fileList[0])
             }
             deptRoleList(response.data.deptId)
               .then(response => {
@@ -830,7 +832,7 @@
       create(formName) {
         const set = this.$refs
         this.form.role = this.role
-        this.form.positionId = this.form.positionName
+        // this.form.positionId = this.form.positionName
         // this.form.idType = this.IDType
         // this.form.marriageStatus = this.maritalStatus
         set[formName].validate(valid => {
@@ -961,6 +963,7 @@
       },
       handleChange(val) {
         this.form.positionId = val
+        console.log(val)
       },
       covertPY(l1) { // 汉字转拼音
         let l2 = l1.length

@@ -354,7 +354,8 @@
           username: undefined,
           password: undefined,
           delFlag: undefined,
-          deptId: undefined
+          deptId: undefined,
+          ym: 1
         },
         rules: {
           productName: [

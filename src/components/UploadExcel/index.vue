@@ -83,13 +83,17 @@ export default {
         const firstSheetName = workbook.SheetNames[0]
         const worksheet = workbook.Sheets[firstSheetName]
         const header = this.get_header_row(worksheet)
-        header.forEach((item, index) => {
-          if(item.indexOf('UNKNOWN') === -1) {
-            debugger
-            // header.split(index, 1)
-            console.log(index)
-          }
-        })
+        const headerList = []
+        // header.forEach((item, index) => {
+        //   if(item.indexOf('UNKNOWN') === -1) {
+        //     // debugger
+        //     // header.split(index, 1)
+        //     // console.log(index)
+        //     // console.log(item)
+        //     headerList.push(item)
+        //     // console.log(headerList)
+        //   }
+        // })
         const results = XLSX.utils.sheet_to_json(worksheet)
         this.generateDate({ header, results, formData })
       }
