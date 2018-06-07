@@ -9,7 +9,8 @@
           :value="item.value">
         </el-option>
       </el-select>
-      <el-button class="filter-item search_btn" style="vertical-align: top;" v-waves icon="search" @click="handleFilter">搜索</el-button>
+      <el-button class="filter-item search_btn" style="vertical-align: top;" v-waves icon="search" @click="handleFilter">
+        <svg-icon icon-class="search"></svg-icon> 搜索</el-button>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">

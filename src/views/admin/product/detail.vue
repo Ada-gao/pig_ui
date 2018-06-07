@@ -58,7 +58,7 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="交易币种" prop="currencyId">
-              <el-select class="filter-item" v-model="form.currencyId" placeholder="请选择">
+              <el-select class="filter-item" v-model="form.currencyId" placeholder="请选择" @change="changeCurrency">
                 <el-option v-for="item in currencyList" :key="item.currencyId" :value="item.currencyId" :label="item.name">
                   <span style="float: left">{{ item.name }}</span>
                 </el-option>
@@ -622,10 +622,11 @@
               this.form.productStatus = this.productStatusNo
             }
             putObj(this.form).then(response => {
-              if(response.data) {
-                this.nextToUpdate = true
-                this.getList()
+              if(!response.data || response.status === 400) {
+                return
+                // this.getList()
               }
+              this.nextToUpdate = true
               this.$notify({
                 title: '成功',
                 message: '修改成功',
@@ -772,12 +773,11 @@
       },
       handleChange4(file, fileList) {
         this.fileList3 = fileList.slice(-3);
+      },
+      changeCurrency(val) {
+        this.currencyList = this.currencyList.slice(0)
       }
     }
-    // mounted() {
-    //   console.log(this.$route.params)
-    //   this.type_is_update = this.$route.params
-    // }
   }
 </script>
 

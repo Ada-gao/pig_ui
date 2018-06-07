@@ -345,28 +345,6 @@
         this.dialogFormVisible = false
         this.$refs[formName].resetFields()
       },
-      // update(formName) { // 编辑提交
-      //   const set = this.$refs
-      //   // this.form.role = this.role
-      //   set[formName].validate(valid => {
-      //     if (valid) {
-      //       this.dialogFormVisible = false
-      //       this.form.password = undefined
-      //       putObj(this.form).then(() => {
-      //         this.dialogFormVisible = false
-      //         this.getList()
-      //         this.$notify({
-      //           title: '成功',
-      //           message: '修改成功',
-      //           type: 'success',
-      //           duration: 2000
-      //         })
-      //       })
-      //     } else {
-      //       return false
-      //     }
-      //   })
-      // },
       deletes(row) {
         this.$confirm('此操作将永久删除该用户(用户名:' + row.username + '), 是否继续?', '提示', {
           confirmButtonText: '确定',

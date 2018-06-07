@@ -5,7 +5,8 @@
                 v-model="listQuery.name">
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button> -->
-      <el-button v-if="sys_user_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">新增产品类型</el-button>
+      <el-button v-if="sys_user_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">
+        <svg-icon icon-class="add"></svg-icon> 新增产品类型</el-button>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit

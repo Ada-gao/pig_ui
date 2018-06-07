@@ -7,66 +7,67 @@
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
       <el-form label-position="right" label-width="80px">
-      <el-row :gutter="20">
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索员工、手机号、工号"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.searchParams">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="职位">
-            <el-select class="filter-item" v-model="listQuery.positionId" placeholder="请选择" @focus="handlePosition()">
-              <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName">
-                <span style="float: left">{{ item.positionName }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="工作状态">
-            <el-select class="filter-item" v-model="listQuery.status" placeholder="请选择">
-              <el-option v-for="item in workStatus" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      <!-- </el-row> -->
-      <!-- <el-row :gutter="10"> -->
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="入职时间">
-            <el-date-picker
-              v-model="entryDate"
-              type="daterange"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :default-time="['00:00:00', '23:59:59']">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-        <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="角色">
-            <el-select class="filter-item" v-model="listQuery.role" placeholder="请选择">
-              <el-option v-for="item in rolesOptions" :key="item.roleId" :value="item.roleId" :label="item.roleName">
-                <span style="float: left">{{ item.roleName }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col> -->
-      </el-row>
-      <el-row style="text-align: center;">
-        <el-button class="search_btn" style="padding: 10px 30px;" @click="handleFilter">查询</el-button>
-        <el-button class="search_btn" style="padding: 10px 30px;" @click="resetFilter">重置</el-button>
-      </el-row>
+        <el-row :gutter="20">
+          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+            <el-form-item label="搜索">
+              <el-input
+                placeholder="搜索员工、手机号、工号"
+                prefix-icon="el-icon-search"
+                v-model="listQuery.searchParams">
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+            <el-form-item label="职位">
+              <el-select class="filter-item" v-model="listQuery.positionId" placeholder="请选择" @focus="handlePosition()">
+                <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName">
+                  <span style="float: left">{{ item.positionName }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+            <el-form-item label="工作状态">
+              <el-select class="filter-item" v-model="listQuery.status" placeholder="请选择">
+                <el-option v-for="item in workStatus" :key="item.value" :value="item.value" :label="item.label">
+                  <span style="float: left">{{ item.label }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        <!-- </el-row> -->
+        <!-- <el-row :gutter="10"> -->
+          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+            <el-form-item label="入职时间">
+              <el-date-picker
+                v-model="entryDate"
+                type="daterange"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :default-time="['00:00:00', '23:59:59']">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+            <el-form-item label="角色">
+              <el-select class="filter-item" v-model="listQuery.role" placeholder="请选择">
+                <el-option v-for="item in rolesOptions" :key="item.roleId" :value="item.roleId" :label="item.roleName">
+                  <span style="float: left">{{ item.roleName }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col> -->
+        </el-row>
+        <el-row style="text-align: center;">
+          <el-button class="search_btn" @click="handleFilter"><svg-icon icon-class="search"></svg-icon> 查询</el-button>
+          <el-button class="search_btn" @click="resetFilter"><svg-icon icon-class="reset"></svg-icon> 重置</el-button>
+        </el-row>
       </el-form>
     </div>
 
     <div style="text-align: right">
-      <el-button v-if="sys_user_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" icon="edit">添加</el-button>
+      <el-button v-if="sys_user_add" class="add_btn" @click="handleCreate">
+        <svg-icon icon-class="add"></svg-icon> 添加</el-button>
       <!-- <upload-excel-component @on-selected-file='selected'></upload-excel-component> -->
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit

@@ -114,8 +114,8 @@
         </el-col>
       </el-row>
       <el-row style="text-align: center;">
-        <el-button class="search_btn btn-padding" type="info" @click="handleFilter">查询</el-button>
-        <el-button class="search_btn btn-padding" type="info" @click="resetFilter">重置</el-button>
+        <el-button class="search_btn btn-padding" type="info" @click="handleFilter"><svg-icon icon-class="search"></svg-icon> 查询</el-button>
+        <el-button class="search_btn btn-padding" type="info" @click="resetFilter"><svg-icon icon-class="reset"></svg-icon> 重置</el-button>
       </el-row>
     </el-form>
   </div>

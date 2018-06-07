@@ -287,16 +287,6 @@
         entryDate: [],
         options: provinceAndCityData,
         selectedOptions: [],
-        nationalityType: [
-          {
-            value: 0,
-            label: '中国'
-          },
-          {
-            value: 1,
-            label: '其他'
-          },
-        ],
         deptName: [],
         deptId: []
       }

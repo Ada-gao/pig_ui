@@ -14,7 +14,7 @@
             <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="用户名或邮箱"/>
           </el-form-item>
           <el-form-item prop="password">
-            <span class="svg-container">
+            <span class="svg-container svg-container_login">
               <svg-icon icon-class="password"></svg-icon>
             </span>
               <el-input name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password"
@@ -27,7 +27,7 @@
           <input name="randomStr" type="hidden" v-model="loginForm.randomStr"/>
           <el-form-item>
             <el-col :span="2">
-          <span class="svg-container">
+          <span class="svg-container svg-container_login">
             <svg-icon icon-class="code"/>
           </span>
             </el-col>
@@ -54,8 +54,8 @@
           </el-form-item>
           <el-form-item>
             <el-col :span="2">
-              <span class="svg-container">
-                <svg-icon icon-class="code"/>
+              <span class="svg-container svg-container_login">
+                <svg-icon icon-class="numCode"/>
               </span>
             </el-col>
             <el-col :span="11">

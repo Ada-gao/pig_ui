@@ -9,68 +9,6 @@
       :searchRealNameStatus="false"
       >
     </search-bar-component>
-    <!-- <div class="filter-container">
-      <el-form label-position="right" label-width="80px">
-      <el-row :gutter="20">
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索客户姓名、编号"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.keyword">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索客户手机号"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.mobile">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="搜索">
-            <el-input
-              placeholder="搜索客户证件号码"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.idNo">
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="部门">
-            <el-cascader
-              style="width: 100%"
-              :options="treeDeptData"
-              :props="defaultProps"
-              :show-all-levels="false"
-              change-on-select
-              v-model="deptId"
-            ></el-cascader>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="理财师">
-            <el-input
-              placeholder="搜索理财师邮箱前缀"
-              prefix-icon="el-icon-search"
-              v-model="listQuery.email">
-            </el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row style="text-align: center;">
-        <el-button type="info" style="padding: 10px 60px;" @click="handleFilter">查询</el-button>
-        <el-button type="info" style="padding: 10px 60px" @click="resetFilter">重置</el-button>
-      </el-row>
-      </el-form>
-    </div> -->
-
-    <!-- <div style="text-align: right">
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
-    </div> -->
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 

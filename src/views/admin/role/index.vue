@@ -1,8 +1,8 @@
 <template>
   <div class="app-container calendar-list-container">
     <div style=" text-align: right;">
-      <el-button class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加
-      </el-button>
+      <el-button class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate">
+        <svg-icon icon-class="add"></svg-icon> 添加</el-button>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit

@@ -19,13 +19,14 @@
                 <el-option label="c4" value="c4"></el-option>
                 <el-option label="c5" value="c5"></el-option>
               </el-select>
+              <div class="warn_msg" v-show="selectMsg"><svg-icon icon-class="warn"></svg-icon> 风险评级为必选</div>
             </template>
           </el-table-column>
 
-          <el-table-column label="风险测评问卷（图片）">
+          <el-table-column align="center" label="风险测评问卷（图片）">
             <template slot-scope="scope">
               <div v-for="item in scope.row.urls" :data="scope.row.urls" style="display: inline-block; margin-right: 10px">
-                <img :src="item" alt="" style="width: 50px">
+                <a href="#"><img :src="item" alt="" style="width: 50px"></a>
               </div>
             </template>
           </el-table-column>
@@ -39,7 +40,7 @@
           <el-table-column label="（图片）">
             <template slot-scope="scope">
               <div v-for="item in scope.row.urls" :data="scope.row.urls" style="display: inline-block; margin-right: 10px">
-                <img :src="item" alt="" style="width: 50px">
+                <a href="#"><img :src="item" alt="" style="width: 50px"></a>
               </div>
             </template>
           </el-table-column>
@@ -101,13 +102,12 @@
                 :rows="2"
                 placeholder="请输入内容"
                 v-model="failReason">
-            </el-input>
+              </el-input>
+              <div class="warn_msg" v-show="tip"><svg-icon icon-class="warn"></svg-icon> 请输入备注</div>
             </el-form-item>
-            <span v-show="tip">请输入备注</span>
           </el-col>
         </el-row>
       </div>
-      
     </el-form>
 
     <div v-if="isView == 1" slot="footer" class="dialog-footer" style="text-align: center; margin-top: 20px">
@@ -184,7 +184,8 @@
         clientId: '',
         investorType: '',
         isView: '',
-        tip: false
+        tip: false,
+        selectMsg: false
       }
     },
     computed: {
@@ -238,9 +239,13 @@
        
       },
       submitResult(result) { // 
+        if(!this.riskLevel) {
+          this.selectMsg = true
+          return
+        }
         if(result == 3 & !this.failReason) {
           this.tip = true
-          return false
+          return
         }
         let params = {
           // failId: this.form.clientId,

@@ -1,1 +1,11 @@
-<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1528100370715" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5577" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><defs><style type="text/css"></style></defs><path d="M958.744 959H65.256c5.43-164.648 99.9-306.757 236.805-379.726A299.076 299.076 0 0 1 212 365c0-165.685 134.315-300 300-300s300 134.315 300 300a299.076 299.076 0 0 1-90.061 214.274C858.844 652.243 953.315 794.352 958.744 959zM752 365c0-132.548-107.452-240-240-240S272 232.452 272 365s107.452 240 240 240 240-107.452 240-240z m-82.542 255.384a300.157 300.157 0 0 1-314.916 0C241.3 670.886 156.782 774.182 132.269 899h759.462C867.218 774.182 782.7 670.886 669.458 620.384z" fill="#ffffff" p-id="5578"></path></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 200 200" style="enable-background:new 0 0 200 200;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#AAAAAA;}
+</style>
+<path class="st0" d="M141.9,109.7c-10.5,9.2-24.2,14.8-39.3,14.8s-28.8-5.6-39.3-14.8c-27.6,14.6-44.8,43.2-44.8,74.4h168.3
+	C186.8,152.9,169.5,124.3,141.9,109.7L141.9,109.7z M102.6,114c27.1,0,49.1-22,49.1-49.1c0,0,0,0,0,0c0-27.1-22-49.1-49.1-49.1
+	s-49.1,22-49.1,49.1C53.5,92,75.5,114,102.6,114L102.6,114z"/>
+</svg>

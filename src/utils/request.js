@@ -60,6 +60,10 @@ service.interceptors.response.use(
       message(res.data.msg, 'error')
     } else if(res.status === 504 || res.status === 404) {
       message('服务器被吃了⊙﹏⊙∥', 'error')
+      router.replace({
+        path: '/404',
+        query: {redirect: router.currentRoute.fullPath}
+      })
     }
     return Promise.reject(error)
   }
