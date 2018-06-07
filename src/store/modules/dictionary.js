@@ -16,7 +16,8 @@ const dictionary = {
     realnameStatus: [],
     clientClass: [],
     status: [],
-    clientType: []
+    clientType: [],
+    clientFrom: []
   },
 
   mutations: {
@@ -64,6 +65,9 @@ const dictionary = {
     },
     SET_CLIENT_TYPE: (state, clientType) => {
       state.clientType = clientType
+    },
+    SET_CLIENT_FROM: (state, clientFrom) => {
+      state.clientFrom = clientFrom
     }
   },
 
@@ -89,6 +93,7 @@ const dictionary = {
           let clientClassList = []
           let statusList = []
           let clientTypeList = []
+          let clientFromList = []
           
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -135,6 +140,9 @@ const dictionary = {
 
             } else if(data[i].type === 'client_type') {
               clientTypeList.push(data[i])
+              
+            } else if(data[i].type === 'client_from') {
+              clientFromList.push(data[i])
             }
           }
           commit('SET_ID_TYPE', idTypeList)
@@ -152,6 +160,7 @@ const dictionary = {
           commit('SET_CLIENT_CLASS', clientClassList)
           commit('SET_STATUS', statusList)
           commit('SET_CLIENT_TYPE', clientTypeList)
+          commit('SET_CLIENT_FROM', clientFromList)
           resolve()
         }).catch(error => {
           reject(error)

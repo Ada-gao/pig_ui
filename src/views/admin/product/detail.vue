@@ -99,7 +99,7 @@
               <el-input v-model.number="form.investmentHorizon" style="width: 75%; margin-right: 10px;"></el-input>
               <el-select v-model="form.ym" style="width: 20%;">
                 <el-option v-for="item in dateWay" :key="item.value" :value="item.value" :label="item.label">
-                  <!-- <span style="float: left">{{ item.label }}</span> -->
+                  <span style="float: left">{{ item.label }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -355,7 +355,7 @@
           password: undefined,
           delFlag: undefined,
           deptId: undefined,
-          ym: 1
+          ym: '月'
         },
         rules: {
           productName: [

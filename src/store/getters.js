@@ -26,6 +26,7 @@ const getters = {
   realnameStatus: state => state.dictionary.realnameStatus,
   clientClass: state => state.dictionary.clientClass,
   workStatus: state => state.dictionary.status,
-  clientType: state => state.dictionary.clientType
+  clientType: state => state.dictionary.clientType,
+  clientFrom: state => state.dictionary.clientFrom
 }
 export default getters

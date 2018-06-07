@@ -77,6 +77,12 @@
             <el-input v-model="form.assetAmount" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
+        <el-col :span="11">
+          <el-form-item label="客户来源" prop="clientFrom">
+            <!-- <span>{{form.clientFrom}}</span> -->
+            <el-input v-model="form.clientFrom" placeholder="" readonly></el-input>
+          </el-form-item>
+        </el-col>
       </el-row>
 
       <div style="border-bottom: 1px solid #ccc"></div>
@@ -364,7 +370,8 @@
         'certificationStatus',
         'clientType',
         'idTypeOptions',
-        'nationality'
+        'nationality',
+        'clientFrom'
       ])
     },
     created() {
@@ -390,6 +397,7 @@
           this.form.clientType = transformText(this.clientType, this.form.clientType)
           this.form.idType = transformText(this.idTypeOptions, this.form.idType)
           this.form.nationality = transformText(this.nationality, this.form.nationality)
+          this.form.clientFrom = transformText(this.clientFrom, this.form.clientFrom)
           if(this.realnameStatus) {
             getClientBankcard(id).then(response => {
               this.bankcardList = response.data || {}

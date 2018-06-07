@@ -2,6 +2,8 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '../store'
 import { getToken } from '@/utils/auth'
+import interceptorsMsg from '@/api/interceptor'
+import router from '../router'
 
 // 创建axios实例
 const service = axios.create({
@@ -32,22 +34,32 @@ service.interceptors.response.use(
   },
   error => {
     const res = error.response
-    // console.log(error)
-    if (res.status === 478 || res.status === 403) {
-      message(res.status + '： ' + res.data.msg, 'error')
-    } else if (res.status === 400) {
-      message((res.data.error_description || res.data.msg), 'error')
-    } else if (res.status === 202) { // 三方未绑定
-      this.$router.push({ path: '/' })
-    } else if (res.status === 500) { // 格式有误
-      console.log(res)
-      message(res.data.message + '系统异常', 'error')
-    // } else if (res.status === 503) { // 服务异常
-    //   message(res.status + '： ' + res.data, 'error')
-    } else if (res.status === 503) { // 服务异常
-      message(res.status + '： ' + res.data, 'error')
-    } else {
-      message(res.status + '： ' + (res.data.message || res.data.msg), 'error')
+    res.data.codeMsg = interceptorsMsg.errMessage(res.config.url, res.data.code)
+    console.log(res.data)
+
+    if(res.status === 400) {
+      if(res.data) {
+        if(res.data.codeMsg.code === '999999') {
+          return
+        } else if(res.data.codeMsg.code === '888888') {
+          return message(res.data.msg, 'error') // 后台自定义错误信息返回
+        } else {
+          message(res.data.codeMsg.errMsg, 'error')
+        }
+      }
+    } else if(res.status === 401) {
+      message('登陆时间过期，请重新登陆', 'error')
+      store.dispatch('LogOut')
+      router.replace({
+        path: '/login',
+        query: {redirect: router.currentRoute.fullPath}
+      })
+    }else if(res.status === 403) {
+      message('管理权限不足，请联系管理员')
+    } else if(res.status === 500) {
+      message(res.data.msg, 'error')
+    } else if(res.status === 504 || res.status === 404) {
+      message('服务器被吃了⊙﹏⊙∥', 'error')
     }
     return Promise.reject(error)
   }
