@@ -105,7 +105,7 @@
 
 <script>
   import searchBarComponent from '@/views/layout/components/searchBar'
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/client'
+  import { fetchList, addObj, putObj, delObj } from '@/api/client/client'
   // import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
@@ -284,19 +284,19 @@
         this.listQuery.page = val
         this.getList()
       },
-      handleCreate() {
-        this.resetTemp()
-        this.dialogStatus = 'create'
-        this.dialogFormVisible = true
-      },
+      // handleCreate() {
+      //   this.resetTemp()
+      //   this.dialogStatus = 'create'
+      //   this.dialogFormVisible = true
+      // },
       handleRouter(id) { // 查看跳转详情
-        this.$router.push({
+        this.$router.replace({
           path: '/client/readDetail/' + id + '/0'
         })
         Bus.$emit('activeIndex', '/client/potential')
       },
       handleUpdate(id) { // 编辑跳转详情
-        this.$router.push({
+        this.$router.replace({
           path: '/client/detail/' + id + '/1'
         })
         Bus.$emit('activeIndex', '/client/potential')
@@ -345,28 +345,28 @@
         this.dialogFormVisible = false
         this.$refs[formName].resetFields()
       },
-      update(formName) { // 编辑提交
-        const set = this.$refs
-        // this.form.role = this.role
-        set[formName].validate(valid => {
-          if (valid) {
-            this.dialogFormVisible = false
-            this.form.password = undefined
-            putObj(this.form).then(() => {
-              this.dialogFormVisible = false
-              this.getList()
-              this.$notify({
-                title: '成功',
-                message: '修改成功',
-                type: 'success',
-                duration: 2000
-              })
-            })
-          } else {
-            return false
-          }
-        })
-      },
+      // update(formName) { // 编辑提交
+      //   const set = this.$refs
+      //   // this.form.role = this.role
+      //   set[formName].validate(valid => {
+      //     if (valid) {
+      //       this.dialogFormVisible = false
+      //       this.form.password = undefined
+      //       putObj(this.form).then(() => {
+      //         this.dialogFormVisible = false
+      //         this.getList()
+      //         this.$notify({
+      //           title: '成功',
+      //           message: '修改成功',
+      //           type: 'success',
+      //           duration: 2000
+      //         })
+      //       })
+      //     } else {
+      //       return false
+      //     }
+      //   })
+      // },
       deletes(row) {
         this.$confirm('此操作将永久删除该用户(用户名:' + row.username + '), 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -391,14 +391,14 @@
           })
         })
       },
-      resetTemp() {
-        this.form = {
-          id: undefined,
-          username: '',
-          password: '',
-          role: undefined
-        }
-      },
+      // resetTemp() {
+      //   this.form = {
+      //     id: undefined,
+      //     username: '',
+      //     password: '',
+      //     role: undefined
+      //   }
+      // },
       serachList(data) {
         this.listQuery = data
         this.listQuery.type = 0

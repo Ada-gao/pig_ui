@@ -372,7 +372,7 @@
           this.form.nationality = transformText(this.nationality, this.form.nationality)
           if(this.realnameStatus) {
             getClientBankcard(id, '1').then(response => {
-              this.bankcardList = response.data
+              this.bankcardList = response.data || {}
             })
           }
         })

@@ -19,8 +19,8 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="性别" prop="gender">
-            <el-input v-if="isReadonly" v-model="form.gender" placeholder="" :readonly="isReadonly"></el-input>
-            <el-select v-else class="filter-item" v-model="form.gender" placeholder="请选择">
+            <!-- <el-input v-if="isReadonly" v-model="form.gender" placeholder="" :readonly="isReadonly"></el-input> -->
+            <el-select class="filter-item" v-model="form.gender" placeholder="请选择" @change="changeGender">
               <el-option v-for="item in genderType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -29,8 +29,8 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="国籍" prop="nationality">
-            <el-input v-if="isReadonly" v-model="form.nationality" placeholder="" :readonly="isReadonly"></el-input>
-            <el-select v-else class="filter-item" v-model="form.nationality" placeholder="请选择" @change="changeNation">
+            <!-- <el-input v-if="isReadonly" v-model="form.nationality" placeholder="" :readonly="isReadonly"></el-input> -->
+            <el-select class="filter-item" v-model="form.nationality" placeholder="请选择" @change="changeNation">
               <el-option v-for="item in nationality" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -39,9 +39,8 @@
         </el-col>
         <el-col :span="11" v-show="showCity">
           <el-form-item label="常住地区" prop="city">
-            <el-input v-if="isReadonly" v-model="form.city" placeholder="" :readonly="isReadonly"></el-input>
+            <!-- <el-input v-if="isReadonly" v-model="form.city" placeholder="" :readonly="isReadonly"></el-input> -->
             <el-cascader
-              v-else
               size="large"
               style="width: 100%"
               :options="options"
@@ -188,7 +187,9 @@
         showCity: false,
         city: [],
         isReadonly: false,
-        backClientClass: 0 // 0:潜客，1:客户
+        backClientClass: 0, // 0:潜客，1:客户
+        gender: '',
+        nationalityNum: ''
       }
     },
     computed: {
@@ -238,7 +239,8 @@
           // this.realnameStatus = this.form.realnameStatus == 2 ? true : false // 认证状态判断
           // this.idType = this.form.idType == 0 ? true : false // 证件类型判断
           // this.isCertificationType = this.form.certificationType == 0 ? true : false// 投资者类型判断
-
+          this.gender = this.form.gender
+          this.nationalityNum = this.form.nationality
           this.form.gender = transformText(this.genderType, this.form.gender)
           // this.form.realnameStatus = transformText(this.certificationStatus, this.form.realnameStatus)
           // this.form.certificationType = transformText(this.certificationType, this.form.certificationType)
@@ -257,20 +259,29 @@
       update(formName) {
         const set = this.$refs
         this.form.role = this.role
+        this.form.gender = this.gender
+        this.form.nationality = this.nationalityNum
 
         if(this.form.nationality == 1) {
           this.form.city = ''
         } else if(this.form.nationality == 0 & !this.city) {
           return null
         } else {
-          this.form.city = this.city[1] == '市辖区' ? this.city[0] : this.city[1]
+          if(this.city.length === 1 || this.city[1] === '市辖区') {
+            this.form.city = this.city[0]
+          } else {
+            this.form.city = this.city[1]
+          }
         }
 
         set[formName].validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
-            putObj(this.form.clientId, this.form).then(() => {
-              this.getList()
+            console.log(this.form)
+            putObj(this.form.clientId, this.form).then((response) => {
+              console.log(response)
+              if(!response || response.status !== 200) return
+              // this.getList()
               this.$notify({
                 title: '成功',
                 message: '修改成功',
@@ -290,11 +301,15 @@
       },
       changeNation(val) {
         console.log(val)
+        this.nationalityNum = val
         if(val == 0) {
           this.showCity = true
         } else {
           this.showCity = false
         }
+      },
+      changeGender(val) {
+        this.gender = val
       }
     }
   }
