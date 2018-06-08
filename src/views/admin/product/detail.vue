@@ -70,7 +70,7 @@
         <el-row :gutter="90">
           <el-col :span="11">
             <el-form-item label="募集额度" prop="collectionAmount">
-              <el-input v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -315,6 +315,8 @@
   const twoDecimals = (rule, value, callback) => {
     if (!value) {
       return null
+    } else if(!Number.isInteger(value)) {
+      callback(new Error('只能输入数字'))
     } else if (!decimals(value)) {
       callback(new Error('请输入正确的净值数字'))
     } else {
@@ -325,6 +327,8 @@
   const certNumber = (rule, value, callback) => {
     if (!value) {
       return null
+    } else if(!Number.isInteger(value)) {
+      callback(new Error('只能输入整数金额'))
     } else if (!isNumber(value)) {
       callback(new Error('请输入10位以内的数字'))
     } else {
@@ -414,7 +418,8 @@
             },
             { 
               type: 'number',
-              message: '金额必须为数字值',
+              // message: '金额必须为数字值',
+              trigger: 'change',
               validator: certNumber
             }
           ],
@@ -548,7 +553,7 @@
         })
         getObjList().then(response => { // 获取币种
           this.currencyList = response.data
-          this.form.currencyId = 2
+          this.form.currencyId = 1
         })
         if(this.uploadData.productId) {
           getObj(this.uploadData.productId)

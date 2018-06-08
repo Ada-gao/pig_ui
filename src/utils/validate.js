@@ -51,6 +51,6 @@ export function decimals(str) {
 
 /* 只能输入数字 */
 export function isNumber(str) {
-  const reg = /^[0-9]{1,10}$/
+  const reg = /^\d{1,10}$/
   return reg.test(str)
 }
