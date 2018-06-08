@@ -17,7 +17,7 @@
             <span class="svg-container svg-container_login">
               <svg-icon icon-class="password"></svg-icon>
             </span>
-              <el-input name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password"
+              <el-input name="password" :type="pwdType" v-model="loginForm.password"
                         autoComplete="on"
                       placeholder="密码"></el-input>
             <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye"/></span>
@@ -25,14 +25,15 @@
           </el-form-item>
               
           <input name="randomStr" type="hidden" v-model="loginForm.randomStr"/>
-          <el-form-item>
+          <el-form-item prop="code">
             <el-col :span="2">
-          <span class="svg-container svg-container_login">
-            <svg-icon icon-class="code"/>
-          </span>
+              <span class="svg-container svg-container_login">
+                <svg-icon icon-class="code"/>
+              </span>
             </el-col>
             <el-col :span="11">
-              <el-input name="code" type="text" v-model="loginForm.code" autoComplete="on" placeholder="验证码"/>
+              <el-input name="code" type="text" v-model="loginForm.code" @keyup.enter.native="handleLogin"
+                autoComplete="on" placeholder="验证码"/>
             </el-col>
             <el-col :span="10" align="right">
               <img :src="src" style="padding-bottom: 1px;vertical-align: -webkit-baseline-middle;" @click="refreshCode"/>
@@ -86,7 +87,7 @@
         </el-tab-pane> -->
       </el-tabs>
     </el-form>
-    <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left"
+    <!-- <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left"
              label-width="0px"
              v-show="pwdStep===2"
              class="card-box login-form">
@@ -160,7 +161,7 @@
           </el-form-item>
         </el-tab-pane>
       </el-tabs>
-    </el-form>
+    </el-form> -->
   </div>
 </template>
 
@@ -194,9 +195,9 @@
           smsCode: ''
         },
         loginRules: {
-          username: [{required: true, trigger: 'blur'}],
+          username: [{required: true, message: '请输入用户名或手机号', trigger: 'blur'}],
           password: [{required: true, trigger: 'blur', validator: validatePass}],
-          code: [{required: true, trigger: 'blur'}],
+          code: [{required: true, message: '请输入验证码', trigger: 'change, blur'}],
         },
         loading: false,
         pwdType: 'password',
@@ -217,6 +218,7 @@
       },
       handleLogin() {
         this.$refs.loginForm.validate(valid => {
+          console.log(valid)
           if (valid) {
             this.loading = true
             this.$store.dispatch('Login', this.loginForm).then(() => {
@@ -233,11 +235,19 @@
         })
       },
       handleMobileLogin() {
-        this.loading = true
+        if(!this.loginForm.mobile) {
+          this.$message.error('请输入手机号')
+          return false
+        }
+        if(!this.loginForm.smsCode) {
+          this.$message.error('请输入验证码')
+          return false
+        }
         if (!this.loginForm.smsCode || this.loginForm.smsCode.length !== 4) {
           this.$message.error('验证码不合法')
           return false
         }
+        this.loading = true
         this.$store.dispatch('MobileLogin', this.loginForm).then(() => {
           this.loading = false
           this.$router.push({path: '/'})
