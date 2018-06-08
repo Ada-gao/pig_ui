@@ -234,12 +234,12 @@
         getCertInfo(this.clientId, type).then(response => {
           this.listLoading = false
           this.certInfo = response.data
-          console.log(this.certInfo)
+          // console.log(this.certInfo)
         })
        
       },
-      submitResult(result) { // 
-        if(!this.riskLevel) {
+      submitResult(result) {
+        if(this.investorType === 0 & !this.riskLevel) {
           this.selectMsg = true
           return
         }
