@@ -101,14 +101,19 @@
     color: #fff!important;
   }
   .el-submenu>.el-submenu__title {
-    min-width: 180px!important;
+    // min-width: 180px!important;
     background-color: $menuTitle!important;
     &:hover {
       background-color: $menuHover!important;
       color: #fff;
     }
   }
-  .el-menu--collapse .el-menu .el-submenu{
-    min-width: 180px!important;
+  .el-menu--collapse {
+    .el-menu .el-submenu {
+      min-width: 180px!important;
+    }
+    .el-submenu>.el-submenu__title {
+      width: 36px!important;
+    }
   }
 }

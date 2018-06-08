@@ -1,0 +1,155 @@
+<template>
+  <div class="app-container calendar-list-container">
+    <div class="filter-container">
+      <el-select v-model="listQuery.type" filterable placeholder="请选择">
+        <el-option
+          v-for="item in dicts"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      <el-button class="filter-item search_btn" style="vertical-align: top;" v-waves icon="search" @click="handleFilter">
+        <svg-icon icon-class="search"></svg-icon> 搜索</el-button>
+    </div>
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
+              highlight-current-row style="width: 100%">
+
+      <el-table-column align="center" label="序号" width="50">
+        <template slot-scope="scope">
+          <span>{{Number(scope.row.id).toFixed()}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="appId" align="center">
+        <template slot-scope="scope">
+          <span>
+                <el-button type="success" v-if="scope.row.type == 0">{{ scope.row.type | typeFilter }}</el-button>
+                <el-button type="danger" v-if="scope.row.type ==9">{{ scope.row.type | typeFilter }}</el-button>
+          </span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="app密钥" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{ scope.row.requestUri}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="客户端">
+        <template slot-scope="scope">
+          <span>{{scope.row.remoteAddr}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="状态">
+        <template slot-scope="scope">
+          <span>{{scope.row.method}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="操作">
+        <template slot-scope="scope">
+          <a size="mini" class="danger_btn" v-if="sys_log_del"
+                     @click="handleDelete(scope.row)">删除
+          </a>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div v-show="!listLoading" class="pagination-container">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                     :current-page.sync="listQuery.page"
+                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
+                     layout="total, sizes, prev, pager, next, jumper" :total="total">
+      </el-pagination>
+    </div>
+  </div>
+</template>
+
+<script>
+  import { delObj, fetchList } from '@/api/log'
+  import { remote } from '@/api/dict'
+  import waves from '@/directive/waves/index.js' // 水波纹指令
+  import { mapGetters } from 'vuex'
+
+  export default {
+    name: 'table_log',
+    directives: {
+      waves
+    },
+    data() {
+      return {
+        list: null,
+        total: null,
+        sys_dict_add: false,
+        listLoading: true,
+        dicts:[],
+        listQuery: {
+          page: 1,
+          limit: 20,
+          type: undefined
+        },
+        tableKey: 0
+      }
+    },
+    computed: {
+      ...mapGetters([
+        'permissions'
+      ])
+    },
+    filters: {
+      typeFilter(type) {
+        const typeMap = {
+          0: '正常',
+          9: '异常'
+        }
+        return typeMap[type]
+      }
+    },
+    created() {
+      remote('log_type').then(response => {
+        this.dicts = response.data
+      })
+      console.log(this.dicts)
+      this.getList()
+      this.sys_log_del = this.permissions['sys_log_del']
+    },
+    methods: {
+      getList() {
+        this.listLoading = true
+        this.listQuery.orderByField = 'create_time'
+        this.listQuery.isAsc = false
+        fetchList(this.listQuery).then(response => {
+          this.list = response.data.records
+          this.total = response.data.total
+          this.listLoading = false
+        })
+      },
+      handleSizeChange(val) {
+        this.listQuery.limit = val
+        this.getList()
+      },
+      handleCurrentChange(val) {
+        this.listQuery.page = val
+        this.getList()
+      },
+      handleDelete(row) {
+        delObj(row.id)
+          .then(response => {
+            this.dialogFormVisible = false
+            this.getList()
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
+      },
+      handleFilter() {
+        this.listQuery.page = 1
+        this.getList()
+      }
+    }
+  }
+</script>

@@ -8,10 +8,17 @@ export default {
       },
       '/admin/user/uploadExcel': {
         1: '上传的 Excel 格式有误，请按照模板上传'
+      },
+      '/auth/oauth/token': {
+        888: '用户名或密码不存在' // 接口无返回code
       }
     }
     for(let key in urlMap) {
       url = url.indexOf(key) > -1 ? key : url
+    }
+    if(url === '/auth/oauth/token') {
+      console.log(url)
+      return { 'code': '777777', errMsg: '登录接口'}
     }
     let codeMsgMap = urlMap[url]
     if(codeMsgMap === undefined) {

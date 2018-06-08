@@ -40,12 +40,12 @@
         <el-row :gutter="90">
           <el-col :span="11">
             <el-form-item label="产品LP数量" prop="productLp">
-              <el-input v-model.number="form.productLp" placeholder="请输入"></el-input>
+              <el-input type="number" v-model.number="form.productLp" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="产品过往业绩" prop="historyPerformance">
-              <el-input v-model.number="form.historyPerformance" placeholder="请输入"></el-input>
+              <el-input type="number" v-model.number="form.historyPerformance" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -75,7 +75,7 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="净值" prop="netValue">
-              <el-input v-model.number="form.netValue" :maxlength="5" placeholder="请输入"></el-input>
+              <el-input type="number" v-model="form.netValue" :maxlength="5" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -83,12 +83,12 @@
         <el-row :gutter="90">
           <el-col :span="11">
             <el-form-item label="起投金额" prop="minimalAmount">
-              <el-input v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="追加金额" prop="minimalAddAmount">
-              <el-input v-model.number="form.minimalAddAmount" :maxlength="10" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
+              <el-input type="number" v-model.number="form.minimalAddAmount" :maxlength="10" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -96,7 +96,7 @@
         <el-row :gutter="90">
           <el-col :span="11">
             <el-form-item label="产品期限" prop="investmentHorizon">
-              <el-input v-model.number="form.investmentHorizon" style="width: 75%; margin-right: 10px;"></el-input>
+              <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;"></el-input>
               <el-select v-model="form.ym" style="width: 20%;">
                 <el-option v-for="item in dateWay" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
@@ -315,8 +315,6 @@
   const twoDecimals = (rule, value, callback) => {
     if (!value) {
       return null
-    } else if(!Number.isInteger(value)) {
-      callback(new Error('只能输入数字'))
     } else if (!decimals(value)) {
       callback(new Error('请输入正确的净值数字'))
     } else {
@@ -359,7 +357,7 @@
           password: undefined,
           delFlag: undefined,
           deptId: undefined,
-          ym: '月'
+          ym: 1
         },
         rules: {
           productName: [
@@ -417,7 +415,6 @@
               trigger: 'change'
             },
             { 
-              type: 'number',
               // message: '金额必须为数字值',
               trigger: 'change',
               validator: certNumber
@@ -430,40 +427,28 @@
               trigger: 'change'
             },
             { 
-              type: 'number',
               message: '金额必须为数字值',
+              trigger: 'change',
               validator: certNumber
             }
           ],
           minimalAddAmount: [
-            // {
-            //   required: true,
-            //   message: '请输入追加金额',
-            //   trigger: 'change',
-            //   validator: certNumber
-            // }
             {
               required: true,
               message: '请输入追加金额',
               trigger: 'change'
             },
             { 
-              type: 'number',
+              // type: 'number',
               message: '金额必须为数字值',
               validator: certNumber
-            }
-          ],
-          productCode: [
-            {
-              required: true,
-              message: '请输入产品编号',
-              trigger: 'blur'
             }
           ],
           netValue: [
             {
               // required: false,
-              message: '请输入小于100的数字',
+              max: 5,
+              message: '请输入小于100，且小数不能超过两位',
               trigger: 'change',
               validator: twoDecimals
             }

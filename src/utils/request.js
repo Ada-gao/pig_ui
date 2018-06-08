@@ -35,7 +35,7 @@ service.interceptors.response.use(
   error => {
     const res = error.response
     res.data.codeMsg = interceptorsMsg.errMessage(res.config.url, res.data.code)
-    console.log(res.data)
+    // console.log(res.data)
 
     if(res.status === 400) {
       if(res.data) {
@@ -43,6 +43,11 @@ service.interceptors.response.use(
           return
         } else if(res.data.codeMsg.code === '888888') {
           return message(res.data.msg, 'error') // 后台自定义错误信息返回
+        } else if(res.data.codeMsg.code === '777777') {
+          if(res.data.code) {
+            return message(res.data.msg, 'error')
+          }
+          return message(res.data.error_description, 'error') // 后台自定义错误信息返回
         } else {
           message(res.data.codeMsg.errMsg, 'error')
         }
