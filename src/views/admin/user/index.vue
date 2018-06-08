@@ -865,10 +865,11 @@
         set[formName].validate(valid => {
           if (valid) {
             // this.form.positionId = this.form.positionName
+            console.log(this.fileList)
             if(this.fileList.length) {
               this.form.resumeName = this.fileList[0].name
               // this.form.resumeName = this.fileList[0].response.fileName
-              this.form.resumeUrl = this.fileList[0].response.fileUrl
+              this.form.resumeUrl =  this.fileList[0].url || this.fileList[0].response.fileUrl
             } else {
               this.form.resumeName = ''
               this.form.resumeUrl =''
