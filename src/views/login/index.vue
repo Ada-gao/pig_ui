@@ -20,7 +20,10 @@
               <el-input name="password" :type="pwdType" v-model="loginForm.password"
                         autoComplete="on"
                       placeholder="密码"></el-input>
-            <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye"/></span>
+            <span class="show-pwd" @click="showPwd">
+              <svg-icon v-if="pwdType === 'password'" icon-class="eye"/>
+              <svg-icon v-else icon-class="eyeShow"/>
+            </span>
             <!-- <a class="forget-psd" @click="pwdStep=2">忘记密码</a> -->
           </el-form-item>
               
@@ -264,7 +267,7 @@
             url: '/admin/smsCode/' + this.loginForm.mobile,
             method: 'get'
           }).then(response => {
-            console.log(response)
+            // console.log(response)
             if (response.data.data) {
               this.timer()
               this.$message.success('验证码发送成功')

@@ -20,6 +20,17 @@ export function getPlannerList(query) {
 }
 
 /**
+ * 查询直属上级（不分页）
+ */
+export function getDirectSupervisorList(query) {
+  return request({
+    url: '/admin/user/list',
+    method: 'get',
+    params: query
+  })
+}
+
+/**
  * 新增用户
  */
 export function addObj(obj) {

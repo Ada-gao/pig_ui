@@ -290,13 +290,13 @@
       //   this.dialogFormVisible = true
       // },
       handleRouter(id) { // 查看跳转详情
-        this.$router.replace({
+        this.$router.push({
           path: '/client/readDetail/' + id + '/0'
         })
         Bus.$emit('activeIndex', '/client/potential')
       },
       handleUpdate(id) { // 编辑跳转详情
-        this.$router.replace({
+        this.$router.push({
           path: '/client/detail/' + id + '/1'
         })
         Bus.$emit('activeIndex', '/client/potential')

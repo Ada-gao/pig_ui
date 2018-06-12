@@ -94,7 +94,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="职位">
+      <el-table-column align="center" label="职位" class-name="toggle">
         <template slot-scope="scope">
           <span>{{scope.row.positionId}}</span>
         </template>
@@ -133,6 +133,12 @@
       <el-table-column align="center" label="工号" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.empNo}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="直属上级" show-overflow-tooltip>
+        <template slot-scope="scope">
+        <span>{{scope.row.directSupervisorName}}</span>
         </template>
       </el-table-column>
 
@@ -310,6 +316,22 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
+            <el-form-item label="直属上级" prop="directSupervisorId">
+              <el-select class="filter-item" v-model="form.directSupervisorId" placeholder="请选择" @focus="getDirectSupervisorList">
+                <el-option v-for="item in directSupervisor" :key="item.userId" :label="item.name" :value="item.userId">
+                  <span style="float: left">{{ item.name }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="状态" v-if="dialogStatus == 'update' " prop="status" >
+              <el-select class="filter-item" v-model="form.status" placeholder="请选择">
+                <el-option v-for="item in workStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
             <el-form-item label="简历" prop="resumeUrl">
               <!-- <el-input v-model="form.role"></el-input> -->
               <el-upload
@@ -328,13 +350,6 @@
                 accept=".pdf, .doc">
                 <el-button size="small" class="add_btn">上传简历</el-button>
               </el-upload>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="状态" v-if="dialogStatus == 'update' " prop="status" >
-              <el-select class="filter-item" v-model="form.status" placeholder="请选择">
-                <el-option v-for="item in workStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -381,11 +396,6 @@
           <el-col :span="11">
             <el-form-item label="入职日期" prop="date">
               <el-input v-model="form.employeeDate" placeholder="" :readonly="isReadonly"></el-input>
-              <!-- <el-date-picker
-                v-model="form.employeeDate"
-                type="date"
-                placeholder="选择日期">
-              </el-date-picker> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -394,21 +404,11 @@
           <el-col :span="11">
             <el-form-item label="性别" prop="gender">
               <el-input v-model="form.gender" placeholder="" :readonly="isReadonly"></el-input>
-              <!-- <el-select class="filter-item" v-model="form.gender" placeholder="请选择">
-                <el-option v-for="item in genderType" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select> -->
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="学历" prop="education">
               <el-input v-model="form.education" placeholder="" :readonly="isReadonly"></el-input>
-              <!-- <el-select class="filter-item" v-model="form.education" placeholder="请选择">
-                <el-option v-for="item in educationType" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -417,21 +417,11 @@
           <el-col :span="11">
             <el-form-item label="证件类型" prop="idType">
               <el-input v-model="form.idType" placeholder="" :readonly="isReadonly"></el-input>
-              <!-- <el-select class="filter-item" v-model="form.idType" placeholder="请选择">
-                <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select> -->
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="婚姻状况" prop="marriageStatus">
               <el-input v-model="form.marriageStatus" placeholder="" :readonly="isReadonly"></el-input>
-              <!-- <el-select class="filter-item" v-model="form.marriageStatus" placeholder="请选择">
-                <el-option v-for="item in marriageStatusOptions" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -452,25 +442,13 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="部门" prop="deptName">
-              <!-- deptId -->
               <el-input v-model="form.deptName" placeholder="" :readonly="isReadonly"></el-input>
-              <!-- <el-input v-model="form.deptName" placeholder="选择部门" 
-                @focus="handleDept"
-                @change="changeDept"
-                readonly></el-input> -->
               <input type="hidden" v-model="form.deptId"/>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="角色" prop="role">
-              <!-- role -->
               <el-input v-model="role" placeholder="" :readonly="isReadonly"></el-input>
-              <!-- <el-select class="filter-item" v-model="role" placeholder="请选择">
-                <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId">
-                  <span style="float: left">{{ item.roleDesc }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
-                </el-option>
-              </el-select> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -480,11 +458,6 @@
             <el-form-item label="职位" prop="positionId">
               <!-- positionId -->
               <el-input v-model="form.positionId" placeholder="" :readonly="isReadonly"></el-input>
-              <!-- <el-select class="filter-item" v-model="form.positionId" placeholder="请选择" @focus="handlePosition" @change="handleChange">
-                <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId">
-                  <span style="float: left">{{ item.positionName }}</span>
-                </el-option>
-              </el-select> -->
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -496,33 +469,18 @@
         
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="简历" prop="resumeUrl">
-              <!-- <el-input v-model="form.role"></el-input> -->
-              <!-- <el-upload
-                class="upload-demo"
-                action="/zuul/admin/user/upload"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :headers="headers"
-                multiple
-                :limit="1"
-                :on-exceed="handleExceed"
-                :on-success="handleSuccess"
-                :file-list="fileList"
-                :show-file-list="true"
-                :before-upload="beforeUpload"
-                accept=".pdf, .doc">
-                <el-button size="small" type="primary">上传简历</el-button>
-              </el-upload> -->
-              <a target="_blank" :href="form.resumeUrl" style="white-space: nowrap">{{form.resumeName}}</a>
+            <el-form-item label="直属上级" prop="directSupervisorName">
+              <el-input v-model="form.directSupervisorName" placeholder="" :readonly="isReadonly"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="状态" v-if="dialogStatus == 'update' " prop="status" >
               <el-input v-model="form.status" placeholder="" :readonly="isReadonly"></el-input>
-              <!-- <el-select class="filter-item" v-model="form.status" placeholder="请选择">
-                <el-option v-for="item in workStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-              </el-select> -->
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="简历" prop="resumeUrl">
+              <a target="_blank" :href="form.resumeUrl" style="white-space: nowrap">{{form.resumeName}}</a>
             </el-form-item>
           </el-col>
         </el-row>
@@ -542,7 +500,7 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/user'
+  import { fetchList, getObj, addObj, putObj, delObj, getDirectSupervisorList } from '@/api/user'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
@@ -700,7 +658,8 @@
         headers: {
           Authorization: 'Bearer ' + getToken()
         },
-        isReadonly: false
+        isReadonly: false,
+        directSupervisor: []
       }
     },
     computed: {
@@ -755,6 +714,16 @@
           .then(response => {
             this.rolesOptions = response.data
             this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
+          })
+      },
+      getDirectSupervisorList() { // 直属上级查询
+        // this.dialogDeptVisible = false
+        // this.form.deptId = data.id
+        // this.form.deptName = data.name
+        getDirectSupervisorList()
+          .then(response => {
+            this.directSupervisor = response.data
+            // this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
           })
       },
       handlePosition() {
@@ -812,6 +781,7 @@
               this.dialogFormView = false
               this.dialogFormVisible = true
               this.dialogStatus = 'update'
+              this.form.directSupervisorId = this.form.directSupervisorName
             }
             let obj = {
               name: this.form.resumeName,
@@ -822,7 +792,7 @@
             } else {
               this.fileList.push(obj)
               this.fileList.length = 1
-              console.log(this.fileList[0])
+              // console.log(this.fileList[0])
             }
             deptRoleList(response.data.deptId)
               .then(response => {
@@ -941,7 +911,7 @@
         // console.log(file)
       },
       handleExceed(files, fileList) {
-        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+        this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
       },
       handleSuccess(files, fileList) {
         this.fileList.push(fileList)

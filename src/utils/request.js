@@ -57,7 +57,7 @@ service.interceptors.response.use(
       store.dispatch('LogOut')
       router.replace({
         path: '/login',
-        query: {redirect: router.currentRoute.fullPath}
+        query: {redirect: router.fullPath}
       })
     }else if(res.status === 403) {
       message('管理权限不足，请联系管理员')
@@ -67,7 +67,7 @@ service.interceptors.response.use(
       message('服务器被吃了⊙﹏⊙∥', 'error')
       router.replace({
         path: '/404',
-        query: {redirect: router.currentRoute.fullPath}
+        query: {redirect: router.fullPath}
       })
     }
     return Promise.reject(error)

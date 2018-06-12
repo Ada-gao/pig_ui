@@ -148,7 +148,6 @@
         // this.listQuery.orderByField = '`user`.create_time'
         // this.listQuery.isAsc = false
         fetchProductTypeList().then(response => {
-          console.log(response)
           this.list = response.data
           // this.total = response.data.total
           this.listLoading = false

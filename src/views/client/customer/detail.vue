@@ -279,7 +279,6 @@
             this.dialogFormVisible = false
             console.log(this.form)
             putObj(this.form.clientId, this.form).then((response) => {
-              console.log(response)
               if(!response || response.status !== 200) return
               // this.getList()
               this.$notify({

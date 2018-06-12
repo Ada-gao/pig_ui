@@ -3,7 +3,8 @@
     <transition-group name="breadcrumb">
       <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path" v-if='item.meta.title'>
         <span v-if='item.redirect==="noredirect"||index==levelList.length-1' class="no-redirect">{{item.meta.title}}</span>
-        <router-link v-else :to="item.redirect||item.path">{{item.meta.title}}</router-link>  <!--可点击的面包屑-->
+        <span v-else @click="handleRouter(item)">{{item.meta.title}}</span>
+        <!-- <router-link v-else :to="item.redirect||item.path">{{item.meta.title}}</router-link>  可点击的面包屑 -->
         <!-- <span v-else :to="item.redirect||item.path">{{item.meta.title}}</span> --> <!-- 不点击的面包屑 -->
       </el-breadcrumb-item>
     </transition-group>
@@ -11,6 +12,8 @@
 </template>
 
 <script>
+  import Bus from '@/assets/js/bus'
+
   export default {
     created() {
       this.getBreadcrumb()
@@ -33,6 +36,13 @@
           matched = [{ path: '/dashboard', meta: { title: '首页' }}].concat(matched)
         }
         this.levelList = matched
+        // console.log(this.levelList)
+      },
+      handleRouter(item) {
+        let url = item.redirect
+        this.$router.push({path: url})
+        Bus.$emit('activeIndex', url)
+        // console.log(url)
       }
     }
   }

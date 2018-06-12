@@ -113,6 +113,12 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-row>
+          <el-col>
+            <div v-html="elDateHtml"></div>
+          </el-col>
+        </el-row>
         
         <el-row :gutter="90">
           <el-col>
@@ -513,7 +519,12 @@
             value: '1',
             label: '月'
           }
-        ]
+        ],
+        elDate: {
+          inputStyle: 'number',
+          model: 'product_name',
+          text: '产品名称'
+        }
       }
     },
     computed: {
@@ -528,6 +539,7 @@
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
+      
     },
     methods: {
       getList() {
@@ -540,6 +552,9 @@
           this.currencyList = response.data
           this.form.currencyId = 1
         })
+        this.elDateHtml = `<el-form-item label="${this.elDate.text}" prop="${this.elDate.model}">
+              <input type="${this.elDate.inputStyle}" v-model.number="${this.elDate.model}" :maxlength="10" style="width: 75%; margin-right: 10px;"></input>
+            </el-form-item>`
         if(this.uploadData.productId) {
           getObj(this.uploadData.productId)
           .then(response => {
