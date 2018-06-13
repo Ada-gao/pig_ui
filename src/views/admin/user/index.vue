@@ -922,7 +922,6 @@
       //   return this.$confirm(`确定移除 ${ file.name }？`)
       // },
       beforeUpload(file) {
-        console.log(file)
         const isFile = file.type === 'application/pdf'
         if (!isFile) {
           this.$message.error('只能上传pdf文档')
@@ -967,15 +966,6 @@
       },
       getPYCode(val) {
         this.form.username = this.covertPY(val)
-      },
-      getCellClass(col) {
-        // console.log(col)
-        if (col.columnIndex == 1) {
-          console.log('第二列')
-          return 'red'
-        } else {
-          return ''
-        }
       }
     }
   }
