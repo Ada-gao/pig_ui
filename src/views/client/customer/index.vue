@@ -1,6 +1,6 @@
 <template>
   <div class="app-container calendar-list-container">
-    <search-bar-component @search-list="serachList"
+    <search-bar-component @search-list="searchList"
       :searchClientClass="false"
       :searchRealNameStatus="false"
       >
@@ -415,7 +415,7 @@
       handleChange (value) {
         console.log(value)
       },
-      serachList(data) {
+      searchList(data) {
         this.listQuery = data
         this.listQuery.type = 1
         this.getList()

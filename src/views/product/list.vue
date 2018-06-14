@@ -1,7 +1,7 @@
 
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
+    <!-- <div class="filter-container">
       <el-row>
         <el-col :sm="2" :lg="2" class="query-title">产品名称</el-col>
         <el-col :sm="12" :lg="6">
@@ -10,9 +10,30 @@
             v-model="listQuery.name">
           </el-input>
         </el-col>
+        <el-col :sm="2" :lg="2"
+          class="query-title query-color"
+          style="float: right;cursor: pointer">
+          <div @click="isSpread = !isSpread">
+            收起搜索条件
+          </div>
+        </el-col>
       </el-row>
 
-      <el-row style="margin-top: 20px;">
+      <el-row style="margin-top: 20px;" v-show="isSpread">
+        <el-col :sm="2" :lg="2">
+          <el-form-item label="时间">
+              <el-date-picker
+                v-model="entryDate"
+                type="daterange"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :default-time="['00:00:00', '23:59:59']">
+              </el-date-picker>
+            </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row style="margin-top: 20px;" v-show="isSpread">
         <el-col :sm="2" :lg="2" class="query-title">产品分类</el-col>
         <el-col :sm="20">
           <el-checkbox-group v-model="listQuery.productTypeIds">
@@ -21,7 +42,7 @@
         </el-col>
       </el-row>
 
-      <el-row style="margin-top: 20px;">
+      <el-row style="margin-top: 20px;" v-show="isSpread">
         <el-col :sm="2" :lg="2" class="query-title">产品状态</el-col>
         <el-col :sm="21">
           <el-checkbox-group v-model="listQuery.productStatus">
@@ -30,23 +51,25 @@
         </el-col>
       </el-row>
 
-      <el-row style="margin-top: 20px;">
+      <el-row style="margin-top: 20px;" v-show="isSpread">
         <el-col :sm="2" :lg="2" class="query-title">收益对标基准</el-col>
         <el-col :sm="20">
           <el-checkbox-group v-model="listQuery.annualizedReturns">
             <el-checkbox-button v-for="item in productIncome" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
           </el-checkbox-group>
-          <!-- <el-checkbox-group v-model="listQuery.isFloat">
-            <el-checkbox-button :label="productIncome1.value" :key="productIncome1.value">{{productIncome1.label}}</el-checkbox-button>
-          </el-checkbox-group> -->
         </el-col>
       </el-row>
       
       <el-row style="margin-top: 20px; text-align: center;">
-        <el-button class="btn-padding search_btn" @click="handleFilter"><svg-icon icon-class="search"></svg-icon> 查询</el-button>
-        <el-button class="btn-padding search_btn" @click="resetFilter"><svg-icon icon-class="reset"></svg-icon> 重置</el-button>
+        <el-button class="btn-padding search_btn" @click="handleFilter">
+          <svg-icon icon-class="search"></svg-icon> 查询</el-button>
+        <el-button class="btn-padding search_btn" @click="resetFilter">
+          <svg-icon icon-class="reset"></svg-icon> 重置</el-button>
       </el-row>
-    </div>
+    </div> -->
+    <product-search-component
+      @search-product="searchList">
+    </product-search-component>
 
     <div style="text-align: right">
       <el-button v-if="sys_product_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" type="primary">
@@ -63,10 +86,13 @@
 
       <el-table-column align="center" label="产品名称">
         <template slot-scope="scope">
-          <span>
-            <img v-if="scope.row.avatar" class="user-avatar" style="width: 20px; height: 20px; border-radius: 50%;" :src="scope.row.avatar+'?imageView2/1/w/20/h/20'">
-            {{scope.row.productName}}
-          </span>
+          <span>{{scope.row.productName}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="产品起息日">
+        <template slot-scope="scope">
+          <span>{{scope.row.productName}}</span>
         </template>
       </el-table-column>
 
@@ -98,12 +124,6 @@
       <el-table-column align="center" label="起投金额（万）">
         <template slot-scope="scope">
           <span>{{scope.row.minimalAmount}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="收益对标基准（%）">
-        <template slot-scope="scope">
-          <span>{{scope.row.annualizedReturn}}</span>
         </template>
       </el-table-column>
 
@@ -140,6 +160,7 @@
 </template>
 
 <script>
+  import productSearchComponent from '@/views/layout/components/productSearch'
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/product/product'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
@@ -147,7 +168,6 @@
   import { fetchCurrency, getObjList } from '@/api/currency'
   import { getToken } from '@/utils/auth'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  // import { parseTime } from '@/utils'
   import { transformText } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
@@ -168,7 +188,9 @@
   export default {
     components: {
       ElOption,
-      ElRadioGroup },
+      ElRadioGroup,
+      productSearchComponent
+    },
     name: 'table_user',
     directives: {
       waves
@@ -305,10 +327,6 @@
           update: '编辑产品',
           create: '新增产品'
         },
-        // isDisabled: {
-        //   0: false,
-        //   1: true
-        // },
         tableKey: 0,
         sex: '',
         edu: '',
@@ -357,13 +375,7 @@
         },
         isDisabled: true,
         form: [],
-        fileList4: [{
-          name: 'food.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }, {
-          name: 'food2.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }]
+        isSpread: false
       }
     },
     computed: {
@@ -446,6 +458,11 @@
           isFloat: 0
         }
         this.getList()
+      },
+      searchList(data) {
+        this.listQuery = data
+        // this.listQuery.type = 1
+        this.getList()
       }
     }
   }
@@ -483,6 +500,9 @@
 }
 .btn-padding {
   @include padding;
+}
+.query-color {
+  @include mainColor;
 }
 </style>
 

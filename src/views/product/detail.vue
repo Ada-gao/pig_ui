@@ -1,7 +1,29 @@
 <template>
   <div class="app-container calendar-list-container">
-    <h3 v-if="uploadData.productId">修改产品</h3>
-    <h3 v-else>新增产品</h3>
+
+    <div v-if="uploadData.productId">
+      <el-radio-group v-model="step" style="margin-bottom: 30px;">
+        <el-radio-button label="1">产品详情</el-radio-button>
+        <el-radio-button label="2">产品操作指南</el-radio-button>
+      </el-radio-group>
+    </div>
+    <div v-else class="tabs">
+      <div class="tab-item tab-active">产品详情
+        <b class="right"><i class="right-arrow1"></i><i class="right-arrow2"></i></b>
+      </div>
+      <div class="tab-item">产品操作指南
+        <b class="right"><i class="right-arrow1"></i><i class="right-arrow2"></i></b>
+      </div>
+    </div>
+
+    <div class="pageTitle">
+      <h3 v-if="uploadData.productId">修改产品</h3>
+      <h3 v-else>新增产品</h3>
+      <el-button v-if="sys_user_add" class="add_btn">新增字段属性</el-button>
+    </div>
+    
+    <div style="border-bottom: 1px solid #ccc; margin-bottom: 20px;"></div>
+
     <el-form :model="form" :rules="rules" ref="form" label-width="100px">
       <el-row :gutter="90">
           <el-col :span="11">
@@ -114,11 +136,11 @@
           </el-col>
         </el-row>
 
-        <el-row>
+        <!-- <el-row>
           <el-col>
             <div v-html="elDateHtml"></div>
           </el-col>
-        </el-row>
+        </el-row> -->
         
         <el-row :gutter="90">
           <el-col>
@@ -524,7 +546,8 @@
           inputStyle: 'number',
           model: 'product_name',
           text: '产品名称'
-        }
+        },
+        step: '1'
       }
     },
     computed: {
@@ -552,9 +575,9 @@
           this.currencyList = response.data
           this.form.currencyId = 1
         })
-        this.elDateHtml = `<el-form-item label="${this.elDate.text}" prop="${this.elDate.model}">
-              <input type="${this.elDate.inputStyle}" v-model.number="${this.elDate.model}" :maxlength="10" style="width: 75%; margin-right: 10px;"></input>
-            </el-form-item>`
+        // this.elDateHtml = `<el-form-item label="${this.elDate.text}" prop="${this.elDate.model}">
+        //       <input type="${this.elDate.inputStyle}" v-model.number="${this.elDate.model}" :maxlength="10" style="width: 75%; margin-right: 10px;"></input>
+        //     </el-form-item>`
         if(this.uploadData.productId) {
           getObj(this.uploadData.productId)
           .then(response => {
@@ -788,6 +811,8 @@
 
 <style lang="scss" scoped>
 @import "src/styles/mixin.scss";
+@import "src/styles/variables.scss";
+
 .el-select,
 .el-date-editor {
   width: 100%;
@@ -795,6 +820,67 @@
 .upfile-group {
   .btn-padding {
     @include padding;
+  }
+}
+.tabs {
+  display: flex;
+  text-align: center;
+  // border: 1px solid #C0CCDA;
+  height: 30px;
+  line-height: 30px;
+  margin-bottom: 50px;
+  .tab-item {
+    width: 50%;
+    position: relative;
+    color: #99A9BF;
+    border-top: 1px solid #C0CCDA;
+    border-bottom: 1px solid #C0CCDA;
+    /*右箭头*/
+    .right{
+      position: absolute;
+      right: 2px;
+      top: -1px;
+    }
+    .right-arrow1,.right-arrow2{
+      width: 0;
+      height: 0;
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+      border-top: 15px transparent dashed;
+      border-right: 15px transparent dashed;
+      border-bottom: 15px transparent dashed;
+      border-left: 15px white solid;
+      overflow: hidden;
+    }
+    .right-arrow1{
+      left: 1px;/*重要*/
+      border-left: 15px #C0CCDA solid;
+    }
+    .right-arrow2{
+      border-left: 15px white solid;
+    }
+  }
+  .tab-item:first-child {
+    border-left: 1px solid #C0CCDA;
+  }
+  .tab-active {
+    color: $mainColor;
+    border-color: $mainColor;
+    border-left: 1px solid $mainColor!important;
+    .right-arrow1 {
+      // border-color: $mianColor;
+      border-left: 15px $mainColor solid;
+    }
+  }
+}
+.pageTitle {
+  position: relative;
+  .add_btn {
+    position: absolute;
+    top: -10px;
+    right: 0;
   }
 }
 </style>

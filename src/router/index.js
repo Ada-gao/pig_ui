@@ -174,6 +174,7 @@ export const asyncRouterMap = [
     },
     children: [
       { menuId: 48, path: 'productList', component: _import('product/list'), name: '产品列表', meta: { title: '产品列表', icon: 'product' }},
+      { menuId: 48, path: 'detail', component: _import('product/detail'), name: '产品新增', meta: { title: '产品新增', icon: 'product' }},
       { menuId: 49, path: 'productType', component: _import('product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'productType' }},
     ]
   },
