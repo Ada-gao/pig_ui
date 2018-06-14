@@ -414,8 +414,8 @@
         this.getList()
       },
       handleCreate() { //新增
-        this.$router.push({path: '/admin/productDetail'})
-        Bus.$emit('activeIndex', '/admin/product')
+        this.$router.push({path: '/product/productDetail'})
+        Bus.$emit('activeIndex', '/product/productList')
 
         // this.resetTemp()
         // this.dialogStatus = 'create'
@@ -423,8 +423,8 @@
         // this.nextToUpdate = false
       },
       handleUpdate(row) { // 编辑
-        this.$router.push({path: '/admin/productDetail/' + row.productId})
-        Bus.$emit('activeIndex', '/admin/product')
+        this.$router.push({path: '/product/productDetail/' + row.productId})
+        Bus.$emit('activeIndex', '/product/productList')
 
         // this.nextToUpdate = false
       

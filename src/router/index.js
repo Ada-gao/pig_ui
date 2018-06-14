@@ -75,11 +75,11 @@ export const constantRouterMap = [
   },
   {
     menuId: 3,
-    path: '/admin',
+    path: '/product',
     component: Layout,
     name: '产品管理',
     hidden: true,
-    redirect: '/admin/product',
+    redirect: '/product/productList',
     // icon: 'table',
     meta: {
       title: '产品管理',
@@ -88,14 +88,14 @@ export const constantRouterMap = [
     children: [
       { 
         path: 'productDetail/:id',
-        component: _import('admin/product/detail'),
+        component: _import('product/detail'),
         name: '产品详情页',
         meta: { title: '产品详情', icon: '', noCache: true },
         hidden: true
       },
       { 
         path: 'productDetail',
-        component: _import('admin/product/detail'),
+        component: _import('product/detail'),
         name: '产品新建页',
         meta: { title: '产品详情', icon: '', noCache: true },
         hidden: true
@@ -162,19 +162,19 @@ export const asyncRouterMap = [
   },
   {
     menuId: 3,
-    path: '/admin',
+    path: '/product',
     component: Layout,
     name: '产品管理',
     hidden: false,
-    redirect: '/admin/product',
+    redirect: '/product/productList',
     // icon: 'table',
     meta: {
       title: '产品管理',
       icon: 'product_mg'
     },
     children: [
-      { menuId: 48, path: 'product', component: _import('admin/product/list'), name: '产品管理', meta: { title: '产品管理', icon: 'product' }},
-      { menuId: 49, path: 'productType', component: _import('admin/product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'productType' }},
+      { menuId: 48, path: 'productList', component: _import('product/list'), name: '产品列表', meta: { title: '产品列表', icon: 'product' }},
+      { menuId: 49, path: 'productType', component: _import('product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'productType' }},
     ]
   },
   {

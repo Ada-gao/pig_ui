@@ -605,12 +605,12 @@
         })
       },
       createRouter() {
-        this.$router.push({path: '/admin/product'})
+        this.$router.push({path: '/product/productList'})
       },
       cancel(formName) {
         // this.dialogFormVisible = false
         // this.$refs[formName].resetFields()
-        this.$router.push({path: '/admin/product'})
+        this.$router.push({path: '/product/productList'})
       },
       update(formName) { // 修改提交
         const set = this.$refs
@@ -638,7 +638,7 @@
                 type: 'success',
                 duration: 2000
               })
-              this.$router.push({path: '/admin/product'})
+              this.$router.push({path: '/product/productList'})
 
             })
           } else {
