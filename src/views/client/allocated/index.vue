@@ -114,9 +114,6 @@
     </div> -->
     <search-bar-component @search-list="serachList"></search-bar-component>
 
-    <div style="text-align: right">
-      <!-- <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
-    </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
@@ -189,16 +186,13 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <a v-if="sys_user_upd" size="small" class="common_btn"
+          <a size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId)">查看
           </a>
           <span class="space_line"> | </span>
-          <a v-if="sys_user_upd" size="small" class="common_btn"
+          <a v-if="sys_planner_upd" size="small" class="common_btn"
                      @click="handleUpdate(scope.row.clientId)">分配
           </a>
-          <!-- <el-button v-if="sys_user_del" size="small" type="danger"
-                     @click="deletes(scope.row)">删除
-          </el-button> -->
         </template>
       </el-table-column>
 
@@ -433,9 +427,7 @@
     created() {
       // this.handlePosition()
       this.getList()
-      this.sys_user_add = this.permissions['sys_user_add']
-      this.sys_user_upd = this.permissions['sys_user_upd']
-      this.sys_user_del = this.permissions['sys_user_del']
+      this.sys_planner_upd = this.permissions['sys_planner_upd']
     },
     methods: {
       getList() {

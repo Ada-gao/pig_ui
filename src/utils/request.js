@@ -35,7 +35,7 @@ service.interceptors.response.use(
   error => {
     const res = error.response
     res.data.codeMsg = interceptorsMsg.errMessage(res.config.url, res.data.code)
-    // console.log(res.data)
+    console.log(res.data)
 
     if(res.status === 400) {
       if(res.data) {
@@ -63,7 +63,7 @@ service.interceptors.response.use(
       message('管理权限不足，请联系管理员')
     } else if(res.status === 500) {
       message(res.data.msg, 'error')
-    } else if(res.status === 504 || res.status === 404) {
+    } else if(res.status.indexOf('504') !== -1 || res.status === 404) {
       message('服务器被吃了⊙﹏⊙∥', 'error')
       router.replace({
         path: '/404',

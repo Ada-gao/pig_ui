@@ -1,4 +1,4 @@
-import { fetchList } from '@/api/dict'
+import { getList } from '@/api/dict'
 
 const dictionary = {
   state: {
@@ -17,7 +17,8 @@ const dictionary = {
     clientClass: [],
     status: [],
     clientType: [],
-    clientFrom: []
+    clientFrom: [],
+    authStatus: []
   },
 
   mutations: {
@@ -68,16 +69,19 @@ const dictionary = {
     },
     SET_CLIENT_FROM: (state, clientFrom) => {
       state.clientFrom = clientFrom
+    },
+    SET_AUTH_STATUS: (state, authStatus) => {
+      state.authStatus = authStatus
     }
   },
 
   actions: {
     // 字典接口
-    FetchList({ commit }, params) {
+    FetchList({ commit }) {
       // const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        fetchList(params).then(response => {
-          const data = response.data.records
+        getList().then(response => {
+          const data = response.data
           let idTypeList = []
           let marriageStatusList = []
           let productStatusList = []
@@ -94,6 +98,7 @@ const dictionary = {
           let statusList = []
           let clientTypeList = []
           let clientFromList = []
+          let authStatusList = []
           
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -143,6 +148,9 @@ const dictionary = {
               
             } else if(data[i].type === 'client_from') {
               clientFromList.push(data[i])
+
+            } else if(data[i].type === 'auth_status') {
+              authStatusList.push(data[i])
             }
           }
           commit('SET_ID_TYPE', idTypeList)
@@ -161,6 +169,7 @@ const dictionary = {
           commit('SET_STATUS', statusList)
           commit('SET_CLIENT_TYPE', clientTypeList)
           commit('SET_CLIENT_FROM', clientFromList)
+          commit('SET_AUTH_STATUS', authStatusList)
           resolve()
         }).catch(error => {
           reject(error)

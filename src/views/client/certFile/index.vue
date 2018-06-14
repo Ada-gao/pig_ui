@@ -36,11 +36,11 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <a v-if="sys_user_upd" size="small" class="common_btn"
+          <a size="small" class="common_btn"
                     :href="scope.row.fileUrl"><a :href="scope.row.fileUrl" target="_blank">查看</a>
           </a>
           <span class="space_line"> | </span>
-          <a v-if="sys_user_upd" size="small" class="danger_btn"
+          <a v-if="ssys_cert_material_del" size="small" class="danger_btn"
                      @click="deletes(scope.row.certFileId)">删除
           </a>
         </template>
@@ -165,9 +165,7 @@
     created() {
       // this.handlePosition()
       this.getList()
-      this.sys_user_add = this.permissions['sys_user_add']
-      this.sys_user_upd = this.permissions['sys_user_upd']
-      this.sys_user_del = this.permissions['sys_user_del']
+      this.ssys_cert_material_del = this.permissions['ssys_cert_material_del']
     },
     methods: {
       getList() {

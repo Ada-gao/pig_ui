@@ -94,9 +94,19 @@ $btn: #0299CC;
 }
 .danger_btn {
   color: $danger_btn;
+  
 }
 .danger_btn:hover {
   color: #FF8686;
+}
+.danger_btn::before {
+  width: 1px;
+  height: 14px;
+  background-color: #8F8F8F;
+  display: inline-block;
+  content: '';
+  margin: 0 5px;
+  vertical-align: text-bottom;
 }
 .space_line {
   color: #8F8F8F;

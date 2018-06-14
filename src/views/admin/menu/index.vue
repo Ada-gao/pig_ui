@@ -18,7 +18,6 @@
           :props="defaultProps"
           :filter-node-method="filterNode"
           @node-click="getNodeData"
-          default-expand-all
         >
         </el-tree>
       </el-col>

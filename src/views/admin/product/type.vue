@@ -5,7 +5,7 @@
                 v-model="listQuery.name">
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button> -->
-      <el-button v-if="sys_user_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">
+      <el-button v-if="sys_prd_type_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">
         <svg-icon icon-class="add"></svg-icon> 新增产品类型</el-button>
     </div>
 
@@ -26,10 +26,10 @@
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <a v-if="sys_user_upd" size="small" class="common_btn"
+          <a v-if="sys_prd_type_upd" size="small" class="common_btn"
                      @click="handleUpdate(scope.row)">编辑
           </a>
-          <!-- <el-button v-if="sys_user_del" size="small" type="danger"
+          <!-- <el-button v-if="sys_prd_type_del" size="small" type="danger"
                      @click="deletes(scope.row)">删除
           </el-button> -->
         </template>
@@ -138,9 +138,9 @@
     },
     created() {
       this.getList()
-      this.sys_user_add = this.permissions['sys_user_add']
-      this.sys_user_upd = this.permissions['sys_user_upd']
-      this.sys_user_del = this.permissions['sys_user_del']
+      this.sys_prd_type_add = this.permissions['sys_prd_type_add']
+      this.sys_prd_type_upd = this.permissions['sys_prd_type_upd']
+      this.sys_prd_type_del = this.permissions['sys_prd_type_del']
     },
     methods: {
       getList() {

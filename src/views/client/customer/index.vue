@@ -70,7 +70,7 @@
       <el-table-column align="center" label="投资者类型（风险级别）">
         <template slot-scope="scope">
           <span>{{scope.row.clientType}}</span>
-          <span v-show="scope.row.clientType == '专业投资者认证'">（{{scope.row.riskLevel}}）</span>
+          <span v-show="scope.row.riskLevel">（{{scope.row.riskLevel}}）</span>
         </template>
       </el-table-column>
 
@@ -101,10 +101,10 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <a v-if="sys_user_upd" size="small" class="common_btn"
+          <a size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId)">查看
           </a>
-          <span class="space_line"> | </span>
+          <span v-if="sys_user_upd" class="space_line"> | </span>
           <a v-if="sys_user_upd" size="small" class="common_btn"
                      @click="handleUpdate(scope.row.clientId)">编辑
           </a>

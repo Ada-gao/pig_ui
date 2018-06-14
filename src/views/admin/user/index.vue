@@ -144,7 +144,7 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <a v-if="sys_user_upd" size="small" class="common_btn"
+          <a size="small" class="common_btn"
                      @click="handleUpdate(scope.row, 'view')">查看
           </a>
           <span class="space_line"> | </span>

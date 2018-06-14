@@ -7,6 +7,12 @@ export function fetchList(query) {
     params: query
   })
 }
+export function getList() {
+  return request({
+    url: '/admin/dict/list',
+    method: 'get'
+  })
+}
 
 export function addObj(obj) {
   return request({

@@ -5,7 +5,7 @@
                 v-model="listQuery.name">
       </el-input>
       <el-button class="filter-item search_btn" v-waves icon="search" @click="handleFilter"><svg-icon icon-class="search"></svg-icon> 搜索</el-button>
-      <el-button v-if="sys_user_add" class="filter-item add_btn" style="margin-left: 10px; float: right" @click="handleCreate" type="primary" icon="edit">
+      <el-button v-if="sys_currency_add" class="filter-item add_btn" style="margin-left: 10px; float: right" @click="handleCreate" type="primary" icon="edit">
         <svg-icon icon-class="add"></svg-icon> 新增币种</el-button>
     </div>
 
@@ -26,10 +26,10 @@
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <a v-if="sys_user_upd" size="small" class="common_btn"
+          <a v-if="sys_currency_upd" size="small" class="common_btn"
                      @click="handleUpdate(scope.row)">编辑
           </a>
-          <a v-if="sys_user_del" size="small" class="danger_btn"
+          <a v-if="sys_currency_del" size="small" class="danger_btn"
                      @click="deletes(scope.row)">删除
           </a>
         </template>
@@ -133,9 +133,9 @@
     },
     created() {
       this.getList()
-      this.sys_user_add = this.permissions['sys_user_add']
-      this.sys_user_upd = this.permissions['sys_user_upd']
-      this.sys_user_del = this.permissions['sys_user_del']
+      this.sys_currency_add = this.permissions['sys_currency_add']
+      this.sys_currency_upd = this.permissions['sys_currency_upd']
+      this.sys_currency_del = this.permissions['sys_currency_del']
     },
     methods: {
       getList() {

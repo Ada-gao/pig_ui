@@ -1,7 +1,7 @@
 <template>
   <div class="app-container calendar-list-container">
     <div style=" text-align: right;">
-      <el-button class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate">
+      <el-button v-if="sys_role_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate">
         <svg-icon icon-class="add"></svg-icon> 添加</el-button>
     </div>
 
@@ -46,18 +46,17 @@
 
       <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
-          <a size="mini" class="common_btn"
+          <a v-if="sys_role_upd" size="mini" class="common_btn"
                      @click="handleUpdate(scope.row)">编辑
           </a>
-          <span class="space_line"> | </span>
-          <a size="mini" class="danger_btn"
+          <a v-if="sys_role_del" size="mini" class="danger_btn"
                      @click="handleDelete(scope.row)">删除
           </a>
           <span class="space_line"> | </span>
-          <span class="svg-container">
+          <span v-if="sys_role_upd" class="svg-container">
             <svg-icon icon-class="authority"/>
           </span>
-          <a size="mini" class="info_btn" plain
+          <a v-if="sys_role_upd" size="mini" class="info_btn" plain
                      @click="handlePermission(scope.row)">权限
           </a>
         </template>
@@ -138,6 +137,7 @@
   import { fetchList, getObj, addObj, putObj, delObj, permissionUpd, fetchRoleTree, fetchDeptTree } from '@/api/role'
   import { fetchTree } from '@/api/menu'
   import waves from '@/directive/waves/index.js' // 水波纹指令
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'table_role',
@@ -224,8 +224,16 @@
         tableKey: 0
       }
     },
+    computed: {
+      ...mapGetters([
+        'permissions'
+      ])
+    },
     created() {
       this.getList()
+      this.sys_role_add = this.permissions['sys_role_add']
+      this.sys_role_upd = this.permissions['sys_role_upd']
+      this.sys_role_del = this.permissions['sys_role_del']
     },
     methods: {
       getList() {

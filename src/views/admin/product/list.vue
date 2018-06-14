@@ -49,7 +49,7 @@
     </div>
 
     <div style="text-align: right">
-      <el-button v-if="sys_user_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" type="primary">
+      <el-button v-if="sys_product_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" type="primary">
         <svg-icon icon-class="add"></svg-icon> 添加</el-button>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -115,7 +115,7 @@
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <a v-if="sys_user_upd" size="small" class="common_btn"
+          <a v-if="sys_product_upd" size="small" class="common_btn"
                      @click="handleUpdate(scope.row)">编辑
           </a>
           <!-- <el-button v-if="sys_user_del" size="small" type="danger"
@@ -311,30 +311,6 @@
         // },
         tableKey: 0,
         sex: '',
-        eduOptions: [
-          {
-            label: '博士',
-            value: 1
-          }, {
-            label: '硕士',
-            value: 2
-          }, {
-            label: '本科',
-            value: 3
-          }, {
-            label: '大专',
-            value: 4
-          }, {
-            label: '高中',
-            value: 5
-          }, {
-            label: '初中',
-            value: 6
-          }, {
-            label: '小学',
-            value: 7
-          }
-        ],
         edu: '',
         currencyList: [],
         IDsType: '',
@@ -360,10 +336,6 @@
             value: 4
           }
         ],
-        // productIncome1: {
-        //     label: '浮动',
-        //     value: 1
-        // },
         input2: '',
         // nextToUpdate: false,
         fileList: [],
@@ -404,9 +376,8 @@
     created() {
       // console.log(this.productStatus)
       this.getList()
-      this.sys_user_add = this.permissions['sys_user_add']
-      this.sys_user_upd = this.permissions['sys_user_upd']
-      this.sys_user_del = this.permissions['sys_user_del']
+      this.sys_product_add = this.permissions['sys_product_add']
+      this.sys_product_upd = this.permissions['sys_product_upd']
     },
     methods: {
       getList() {

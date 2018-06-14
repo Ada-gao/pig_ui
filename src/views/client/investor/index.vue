@@ -87,16 +87,13 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <a v-if="sys_user_upd" size="small" class="common_btn"
+          <a size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId, '0')">查看
           </a>
-          <span class="space_line"> | </span>
-          <a v-if="sys_user_upd" size="small" class="common_btn"
+          <span v-if="sys_cert_comm_upd" class="space_line"> | </span>
+          <a v-if="sys_cert_comm_upd" size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId, '1')">审核
           </a>
-          <!-- <el-button v-if="sys_user_del" size="small" type="danger"
-                     @click="deletes(scope.row)">删除
-          </el-button> -->
         </template>
       </el-table-column>
 
@@ -295,9 +292,7 @@
     created() {
       // this.handlePosition()
       this.getList()
-      this.sys_user_add = this.permissions['sys_user_add']
-      this.sys_user_upd = this.permissions['sys_user_upd']
-      this.sys_user_del = this.permissions['sys_user_del']
+      this.sys_cert_comm_upd = this.permissions['sys_cert_comm_upd']
     },
     methods: {
       getList() {

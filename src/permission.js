@@ -27,12 +27,12 @@ router.beforeEach((to, from, next) => { // 开启Progress
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
             next({ ...to }) // hack方法 确保addRoutes已完成
           })
-          const params = {
-            page: 1,
-            limit: 60,
-            isAsc: false
-          }
-          store.dispatch('FetchList', params) // 获取字典信息
+          // const params = {
+          //   page: 1,
+          //   limit: 60,
+          //   isAsc: false
+          // }
+          store.dispatch('FetchList') // 获取字典信息
         }).catch((e) => {
           store.dispatch('FedLogOut').then(() => {
             Message.error('验证失败,请重新登录')

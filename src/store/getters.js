@@ -27,6 +27,7 @@ const getters = {
   clientClass: state => state.dictionary.clientClass,
   workStatus: state => state.dictionary.status,
   clientType: state => state.dictionary.clientType,
-  clientFrom: state => state.dictionary.clientFrom
+  clientFrom: state => state.dictionary.clientFrom,
+  authStatus: state => state.dictionary.authStatus
 }
 export default getters
