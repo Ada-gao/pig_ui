@@ -497,11 +497,13 @@
           <el-row>
             <el-col :span="6">
               <el-form-item prop="keyProduct" label="是否标注重点产品">
-                <el-radio v-model="checked">否</el-radio>
-                <el-radio v-model="checked">是</el-radio>
+                <el-radio-group v-model="form.keyProduct">
+                  <el-radio :label="1">否</el-radio>
+                  <el-radio :label="2">是</el-radio>
+                </el-radio-group>
               </el-form-item>
             </el-col>
-            <el-col :span="10">
+            <el-col :span="10" v-show="form.keyProduct === 2">
               <el-form-item label="重点产品时间段">
                 <el-date-picker
                   style="width: 60%"
@@ -535,7 +537,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="11">
-              <el-form-item label="业绩系数">
+              <el-form-item label="佣金系数">
                 <el-input style="width: 300px" v-model="form2.performance"></el-input>
               </el-form-item>
             </el-col>
@@ -546,7 +548,7 @@
           <h3>活动时间段</h3>
           <el-row>
             <el-col :span="10">
-              <el-form-item label="活动时间段">
+              <el-form-item label="活动时间">
                 <el-date-picker
                   style="width: 300px"
                   v-model="entryDate"
@@ -565,7 +567,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="11">
-              <el-form-item label="业绩系数">
+              <el-form-item label="佣金系数">
                 <el-input style="width: 300px" v-model="form2.performance"></el-input>
               </el-form-item>
             </el-col>

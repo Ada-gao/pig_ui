@@ -5,7 +5,7 @@
         <el-col :sm="12" :lg="8" v-if="searchName">
           <el-form-item label="产品名称">
             <el-input
-            placeholder="请输入产品名称"
+            placeholder="请输入产品名称/简称"
             v-model="listQuery.name">
           </el-input>
           </el-form-item>
