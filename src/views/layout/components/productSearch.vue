@@ -156,7 +156,12 @@ export default {
       treeDeptData: [],
       listQuery: {
         page: 1,
-        limit: 20
+        limit: 20,
+        // name: '',
+        productTypeIds: [],
+        productStatus: [],
+        annualizedReturns: [],
+        isFloat: null
       },
       defaultProps: {
         children: 'children',
@@ -194,8 +199,8 @@ export default {
         page: 1,
         limit: 20,
         name: '',
-        productTypeIds: '',
-        productStatus: ''
+        productTypeIds: [],
+        productStatus: []
       },
       this.entryDate = []
       this.handleFilter()
