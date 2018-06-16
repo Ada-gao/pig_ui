@@ -193,9 +193,10 @@ export const asyncRouterMap = [
     },
     children: [
       { menuId: 48, path: 'transc', component: _import('transcMag/transaction/index'), name: '交易列表', meta: { title: '交易列表', icon: 'product' }},
-      // { menuId: 48, path: 'detail', component: _import('product/detail'), name: '产品新增', meta: { title: '产品新增', icon: 'product' }},
-      // { menuId: 48, path: 'building', component: _import('product/buildingProduct/index'), name: '在建列表', meta: { title: '在建列表', icon: 'product' }},
-      // { menuId: 49, path: 'productType', component: _import('product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'productType' }},
+      { menuId: 48, path: 'appoint', component: _import('transcMag/appointment/index'), name: '预约列表', meta: { title: '预约列表', icon: 'product' }},
+      { menuId: 48, path: 'payment', component: _import('transcMag/payment/index'), name: '打款列表', meta: { title: '打款列表', icon: 'product' }},
+      { menuId: 49, path: 'refund', component: _import('transcMag/refund/index'), name: '退款列表', meta: { title: '退款列表', icon: 'productType' }},
+      { menuId: 49, path: 'contract', component: _import('transcMag/contract/index'), name: '合同管理', meta: { title: '合同管理', icon: 'productType' }},
     ]
   },
   {
