@@ -30,23 +30,11 @@
         <el-col :span="11">
           <el-form-item label="国籍" prop="nationality">
             <el-input v-model="form.nationality" placeholder="" readonly></el-input>
-            <!-- <el-select class="filter-item" v-model="form.nationality" placeholder="请选择">
-              <el-option v-for="item in nationality" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select> -->
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="常住地区" prop="city">
             <el-input v-model="form.city" placeholder="" readonly></el-input>
-            <!-- <el-cascader
-              size="large"
-              :options="options"
-              :props="defaultProps2"
-              v-model="form.city"
-              @change="handleChange">
-            </el-cascader> -->
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -83,31 +71,16 @@
         <el-col :span="11">
           <el-form-item label="实名认证状态" prop="username">
             <el-input v-model="clientStatus.realnameStatus" placeholder="" readonly></el-input>
-            <!-- <el-select class="filter-item" v-model="clientStatus.realnameStatus" placeholder="请选择">
-              <el-option v-for="item in certificationStatus" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select> -->
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="投资者身份" prop="clientType">
             <el-input v-model="clientStatus.clientType" placeholder="" readonly></el-input>
-            <!-- <el-select class="filter-item" v-model="clientStatus.clientType" placeholder="请选择">
-              <el-option v-for="item in clientType" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select> -->
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="证件类型" prop="idType">
             <el-input v-model="clientStatus.idType" placeholder="请输入手机号" readonly></el-input>
-            <!-- <el-select class="filter-item" v-model="clientStatus.idType" placeholder="请选择">
-              <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select> -->
           </el-form-item>
         </el-col>
         <el-col :span="11" v-if="idType">
