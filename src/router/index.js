@@ -180,6 +180,25 @@ export const asyncRouterMap = [
     ]
   },
   {
+    menuId: 3,
+    path: '/transcMag',
+    component: Layout,
+    name: '交易管理',
+    hidden: false,
+    redirect: '/transcMag/transc',
+    // icon: 'table',
+    meta: {
+      title: '产品管理',
+      icon: 'product_mg'
+    },
+    children: [
+      { menuId: 48, path: 'transc', component: _import('transcMag/transaction/index'), name: '交易列表', meta: { title: '交易列表', icon: 'product' }},
+      // { menuId: 48, path: 'detail', component: _import('product/detail'), name: '产品新增', meta: { title: '产品新增', icon: 'product' }},
+      // { menuId: 48, path: 'building', component: _import('product/buildingProduct/index'), name: '在建列表', meta: { title: '在建列表', icon: 'product' }},
+      // { menuId: 49, path: 'productType', component: _import('product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'productType' }},
+    ]
+  },
+  {
     menuId: 4,
     path: '/setting',
     component: Layout,
