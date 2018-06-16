@@ -20,6 +20,9 @@ const dictionary = {
     clientFrom: [],
     authStatus: [],
     appointmentStatus: [],
+    appointStatus: [], // 从appointmentStatus中分离数据
+    paymentStatus: [], // 从appointmentStatus中分离数据
+    contractStatus: [], // 从appointmentStatus中分离数据
     transcStatus: [],
     refundStatus: []
   },
@@ -79,6 +82,15 @@ const dictionary = {
     SET_APPOINTMENT_STATUS: (state, appointmentStatus) => {
       state.appointmentStatus = appointmentStatus
     },
+    SET_APPOINT_STATUS: (state, appointStatus) => {
+      state.appointStatus = appointStatus
+    },
+    SET_PAYMENT_STATUS: (state, paymentStatus) => {
+      state.paymentStatus = paymentStatus
+    },
+    SET_CONTRACT_STATUS: (state, contractStatus) => {
+      state.contractStatus = contractStatus
+    },
     SET_TRANSC_STATUS: (state, transcStatus) => {
       state.transcStatus = transcStatus
     },
@@ -112,6 +124,9 @@ const dictionary = {
           let clientFromList = []
           let authStatusList = []
           let appointmentStatusList = []
+          let appointList = []
+          let paymentList = []
+          let contractList = []
           let transcStatusList = []
           let refundStatusList = []
           
@@ -177,6 +192,17 @@ const dictionary = {
               refundStatusList.push(data[i])
             }
           }
+
+          appointmentStatusList.forEach(item => {
+            if(item.value.indexOf('100') !== -1) {
+              appointList.push(item)
+            } else if(item.value.indexOf('200') !== -1) {
+              paymentList.push(item)
+            } else if(item.value.indexOf('300') !== -1) {
+              contractList.push(item)
+            }
+          })
+
           commit('SET_ID_TYPE', idTypeList)
           commit('SET_MARRIAGE_STATUS', marriageStatusList)
           commit('SET_PRODUCT_STATUS', productStatusList)
@@ -195,6 +221,9 @@ const dictionary = {
           commit('SET_CLIENT_FROM', clientFromList)
           commit('SET_AUTH_STATUS', authStatusList)
           commit('SET_APPOINTMENT_STATUS', appointmentStatusList)
+          commit('SET_APPOINT_STATUS', appointList)
+          commit('SET_PAYMENT_STATUS', paymentList)
+          commit('SET_CONTRACT_STATUS', contractList)
           commit('SET_TRANSC_STATUS', transcStatusList)
           commit('SET_REFUND_STATUS', refundStatusList)
           resolve()

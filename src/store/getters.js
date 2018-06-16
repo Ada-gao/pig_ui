@@ -30,6 +30,9 @@ const getters = {
   clientFrom: state => state.dictionary.clientFrom,
   authStatus: state => state.dictionary.authStatus,
   appointmentStatus: state => state.dictionary.appointmentStatus,
+  appointStatus: state => state.dictionary.appointStatus,
+  paymentStatus: state => state.dictionary.paymentStatus,
+  contractStatus: state => state.dictionary.contractStatus,
   transcStatus: state => state.dictionary.transcStatus,
   refundStatus: state => state.dictionary.refundStatus
 }
