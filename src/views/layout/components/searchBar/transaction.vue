@@ -72,37 +72,37 @@
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchProductType & status == 10">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchAppoint & status == 10">
           <el-form-item label="预约状态">
              <el-checkbox-group v-model="listQuery.productTypeIds">
-              <el-checkbox-button v-for="item in appointList" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
+              <el-checkbox-button v-for="item in appointStatus" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchProductType & status == 20">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchPayment & status == 20">
           <el-form-item label="打款状态">
              <el-checkbox-group v-model="listQuery.productTypeIds">
-              <el-checkbox-button v-for="item in transferList" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
+              <el-checkbox-button v-for="item in paymentStatus" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchProductType & status == 30">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchContract & status == 30">
           <el-form-item label="合同状态">
              <el-checkbox-group v-model="listQuery.productTypeIds">
-              <el-checkbox-button v-for="item in contractList" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
+              <el-checkbox-button v-for="item in contractStatus" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchProductStatus">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchRefund">
           <el-form-item label="退款状态">
             <el-checkbox-group v-model="listQuery.productStatus">
             <el-checkbox-button v-for="status in refundStatus" :label="status.value" :key="status.value">{{status.label}}</el-checkbox-button>
@@ -133,6 +133,7 @@
 import { fetchDeptTree } from '@/api/role'
 import { mapGetters } from 'vuex'
   import { fetchProductTypeList } from '@/api/product/productType'
+  import Bus from '@/assets/js/bus'
 
 export default {
   props: {
@@ -151,11 +152,20 @@ export default {
     searchDept: {
       default: true
     },
-    searchProductType: {
+    searchRefund: {
       default: true
     },
-    searchProductStatus: {
+    searchAppoint: {
       default: true
+    },
+    searchPayment: {
+      default: true
+    },
+    searchContract: {
+      default: true
+    },
+    status: {
+      default: 0
     }
   },
   data() {
@@ -183,15 +193,17 @@ export default {
       isSpread: false,
       appointList: [],
       transferList: [],
-      contractList: [],
-      status: 0
+      contractList: []
     }
   },
   computed: {
     ...mapGetters([
       'transcStatus',
       'appointmentStatus',
-      'refundStatus'
+      'refundStatus',
+      'appointStatus',
+      'paymentStatus',
+      'contractStatus'
     ])
   },
   created() {
@@ -204,7 +216,7 @@ export default {
       this.listQuery.orderByField = 'create_time'
       this.listQuery.isAsc = false
 
-      this.$emit('search-transc', this.listQuery)
+      Bus.$emit('searchTransc', this.listQuery)
     },
     resetFilter() { // 重置搜索条件
       this.listQuery = {
@@ -225,16 +237,16 @@ export default {
         //   item.productTypeId = transformText(this.productTypes, item.productTypeId)
         //   item.productStatus = transformText(this.productStatus, item.productStatus)
         // })
-        this.appointmentStatus.forEach(item => {
-          // console.log(item.indexOf('100'))
-          if(item.value.indexOf('100') != -1) {
-            this.appointList.push(item)
-          } else if(item.value.indexOf('200') != -1) {
-            this.transferList.push(item)
-          } else if(item.value.indexOf('300') != -1) {
-            this.contractList.push(item)
-          }
-        })
+        // this.appointmentStatus.forEach(item => {
+        //   // console.log(item.indexOf('100'))
+        //   if(item.value.indexOf('100') != -1) {
+        //     this.appointList.push(item)
+        //   } else if(item.value.indexOf('200') != -1) {
+        //     this.transferList.push(item)
+        //   } else if(item.value.indexOf('300') != -1) {
+        //     this.contractList.push(item)
+        //   }
+        // })
       })
     },
     changeTransc(val) {
