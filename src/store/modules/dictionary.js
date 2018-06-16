@@ -18,7 +18,10 @@ const dictionary = {
     status: [],
     clientType: [],
     clientFrom: [],
-    authStatus: []
+    authStatus: [],
+    appointmentStatus: [],
+    transcStatus: [],
+    refundStatus: []
   },
 
   mutations: {
@@ -72,6 +75,15 @@ const dictionary = {
     },
     SET_AUTH_STATUS: (state, authStatus) => {
       state.authStatus = authStatus
+    },
+    SET_APPOINTMENT_STATUS: (state, appointmentStatus) => {
+      state.appointmentStatus = appointmentStatus
+    },
+    SET_TRANSC_STATUS: (state, transcStatus) => {
+      state.transcStatus = transcStatus
+    },
+    SET_REFUND_STATUS: (state, refundStatus) => {
+      state.refundStatus = refundStatus
     }
   },
 
@@ -99,6 +111,9 @@ const dictionary = {
           let clientTypeList = []
           let clientFromList = []
           let authStatusList = []
+          let appointmentStatusList = []
+          let transcStatusList = []
+          let refundStatusList = []
           
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -151,6 +166,15 @@ const dictionary = {
 
             } else if(data[i].type === 'auth_status') {
               authStatusList.push(data[i])
+
+            } else if(data[i].type === 'appointment_status') {
+              appointmentStatusList.push(data[i])
+
+            } else if(data[i].type === 'transc_status') {
+              transcStatusList.push(data[i])
+
+            } else if(data[i].type === 'refund_status') {
+              refundStatusList.push(data[i])
             }
           }
           commit('SET_ID_TYPE', idTypeList)
@@ -170,6 +194,9 @@ const dictionary = {
           commit('SET_CLIENT_TYPE', clientTypeList)
           commit('SET_CLIENT_FROM', clientFromList)
           commit('SET_AUTH_STATUS', authStatusList)
+          commit('SET_APPOINTMENT_STATUS', appointmentStatusList)
+          commit('SET_TRANSC_STATUS', transcStatusList)
+          commit('SET_REFUND_STATUS', refundStatusList)
           resolve()
         }).catch(error => {
           reject(error)

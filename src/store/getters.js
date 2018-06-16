@@ -28,6 +28,9 @@ const getters = {
   workStatus: state => state.dictionary.status,
   clientType: state => state.dictionary.clientType,
   clientFrom: state => state.dictionary.clientFrom,
-  authStatus: state => state.dictionary.authStatus
+  authStatus: state => state.dictionary.authStatus,
+  appointmentStatus: state => state.dictionary.appointmentStatus,
+  transcStatus: state => state.dictionary.transcStatus,
+  refundStatus: state => state.dictionary.refundStatus
 }
 export default getters
