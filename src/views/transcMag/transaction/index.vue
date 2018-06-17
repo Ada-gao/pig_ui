@@ -5,6 +5,7 @@
     <transc-search-component></transc-search-component>
     
     <transc-table-component
+      :orderStatus="1"
       :statusCol="true"
       :aptCol="true">
     </transc-table-component>

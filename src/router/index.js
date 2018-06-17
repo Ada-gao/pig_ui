@@ -101,6 +101,29 @@ export const constantRouterMap = [
         hidden: true
       }
     ]
+  },
+  {
+    menuId: 3,
+    path: '/transcMag',
+    component: Layout,
+    name: '交易管理',
+    hidden: false,
+    redirect: '/transcMag/transc',
+    hidden: true,
+    // icon: 'table',
+    meta: {
+      title: '交易管理',
+      icon: 'product_mg'
+    },
+    children: [
+      { 
+        path: 'transc/detail/:appointmentId/:orderStatus/:status',
+        component: _import('transcMag/transaction/detail'),
+        name: '订单详情',
+        meta: { title: '订单详情', icon: '', noCache: true },
+        hidden: true
+      }
+    ]
   }
 ]
 
@@ -188,7 +211,7 @@ export const asyncRouterMap = [
     redirect: '/transcMag/transc',
     // icon: 'table',
     meta: {
-      title: '产品管理',
+      title: '交易管理',
       icon: 'product_mg'
     },
     children: [
@@ -197,6 +220,7 @@ export const asyncRouterMap = [
       { menuId: 48, path: 'payment', component: _import('transcMag/payment/index'), name: '打款列表', meta: { title: '打款列表', icon: 'product' }},
       { menuId: 49, path: 'refund', component: _import('transcMag/refund/index'), name: '退款列表', meta: { title: '退款列表', icon: 'productType' }},
       { menuId: 49, path: 'contract', component: _import('transcMag/contract/index'), name: '合同管理', meta: { title: '合同管理', icon: 'productType' }},
+      { menuId: 49, path: 'result', component: _import('transcMag/result/index'), name: '审核原因管理', meta: { title: '审核原因管理', icon: 'productType' }},
     ]
   },
   {

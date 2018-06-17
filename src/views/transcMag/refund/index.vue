@@ -8,6 +8,8 @@
     </transc-search-component>
     
     <transc-table-component
+      :activePath="activePath"
+      :orderStatus="5"
       :paymentCol="true"
       :refundCol="true">
     </transc-table-component>
@@ -45,7 +47,8 @@
         userUpd: false,
         userDel: false,
         dialogStatus: '',
-        form: []
+        form: [],
+        activePath: this.$route.path
       }
     },
     computed: {

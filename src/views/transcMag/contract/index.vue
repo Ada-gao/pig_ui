@@ -11,6 +11,8 @@
     </transc-search-component>
     
     <transc-table-component
+      :activePath="activePath"
+      :orderStatus="4"
       :contractCol="true">
     </transc-table-component>
 
@@ -48,7 +50,8 @@
         userDel: false,
         dialogStatus: '',
         form: [],
-        status: 30
+        status: 30,
+        activePath: this.$route.path
       }
     },
     computed: {

@@ -3,23 +3,23 @@
 
     <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
       <el-tab-pane label="预约详情" name="first">
-        <el-form v-if="!nextToUpdate" :model="form" :rules="rules" ref="form" label-width="100px">
+        <el-form :model="form" ref="form" label-width="100px">
           <div style="border-bottom: 1px solid #ccc"></div>
           <h5>客户信息</h5>
           <el-row :gutter="20">
             <el-col :span="11">
               <el-form-item label="客户姓名" prop="name">
-                <el-input v-model="form.name" placeholder="" readonly></el-input>
+                <el-input v-model="form.clientName" placeholder="" readonly></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="产品名称" prop="mobile">
-                <el-input v-model="form.mobile" placeholder="" readonly></el-input>
+                <el-input v-model="form.productName" placeholder="" readonly></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="客户编号" prop="gender">
-                <el-input v-model="form.gender" placeholder="" readonly></el-input>
+                <el-input v-model="form.clietnNo" placeholder="" readonly></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="11">
@@ -32,7 +32,7 @@
                 <el-input v-model="form.userName" placeholder="" readonly></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="11">
+            <el-col :span="11" style="white-space: nowrap">
               <el-form-item label="管理资产规模" prop="assetAmount">
                 <el-input v-model="form.assetAmount" placeholder="请输入资产规模" readonly></el-input>万
               </el-form-item>
@@ -45,25 +45,74 @@
           <el-row :gutter="20">
             <el-col :span="11">
               <el-form-item label="预约编号" prop="username">
-                <el-input v-model="clientStatus.realnameStatus" placeholder="" readonly></el-input>
+                <el-input v-model="form.appointmentCode" placeholder="" readonly></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="预约状态" prop="clientType">
-                <el-input v-model="clientStatus.clientType" placeholder="" readonly></el-input>
+                <el-input v-model="form.status" placeholder="" readonly></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="预约时间" prop="idType">
-                <el-input v-model="clientStatus.idType" placeholder="请输入手机号" readonly></el-input>
+                <el-input v-model="form.appointmentDate" placeholder="请输入手机号" readonly></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="11" v-if="idType">
+            <el-col :span="11">
               <el-form-item label="预约金额" prop="idNo">
-                <el-input v-model="clientStatus.idNo" placeholder="" readonly></el-input>
+                <el-input v-model="form.appointmentAmount" placeholder="" readonly></el-input>
               </el-form-item>
             </el-col>
           </el-row>
+
+          <div class="payInfo" v-if="orderStatus != 2">
+            <div style="border-bottom: 1px solid #ccc"></div>
+            <h5>打款信息</h5>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="打款状态" prop="bankName">
+                  <el-input v-model="form.status" placeholder="" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="打款金额" prop="cardNo">
+                  <el-input v-model="form.remitAmount" placeholder="" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="打款（审核通过）时间" prop="cardNo">
+                  <el-input v-model="form.remitDate" placeholder="" readonly></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+
+          <div class="contraInfo" v-if="orderStatus == 4">
+            <div style="border-bottom: 1px solid #ccc"></div>
+            <h5>合同信息</h5>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="合同编号" prop="bankName">
+                  <el-input v-model="form.contractNo" placeholder="" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="合同状态" prop="cardNo">
+                  <el-input v-model="form.status" placeholder="" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="快递单号" prop="cardNo">
+                  <el-input v-model="form.expressNo" placeholder="" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="快递公司" prop="cardNo">
+                  <el-input v-model="form.expressCompany" placeholder="" readonly></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
 
           <div style="border-bottom: 1px solid #ccc"></div>
           
@@ -71,59 +120,170 @@
           <el-row>
             <el-col :span="11">
               <el-form-item label="银行卡名称" prop="bankName">
-                <el-input v-model="bankcardList.bankName" placeholder="" readonly></el-input>
+                <el-input v-model="form.bankName" placeholder="" readonly></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="支行名称" prop="cardNo">
-                <el-input v-model="bankcardList.cardNo" placeholder="" readonly></el-input>
+                <el-input v-model="form.banSubname" placeholder="" readonly></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="打款账号" prop="cardNo">
-                <el-input v-model="bankcardList.cardNo" placeholder="" readonly></el-input>
+                <el-input v-model="form.cardno" placeholder="" readonly></el-input>
               </el-form-item>
             </el-col>
           </el-row>
 
-          <!-- <div style="border-bottom: 1px solid #ccc"></div>
-          <el-row style="margin-top: 20px">
-            <el-col :span="22">
-              <el-form-item label="备注" prop="bankName">
-                <el-input
-                  type="textarea"
-                  :rows="2"
-                  placeholder="请输入内容"
-                  v-model="failReason">
-              </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="22">
-              <el-form-item>
-                <span v-show="tip" class="warn_tip">请输入备注</span>
-              </el-form-item>
-            </el-col>
-          </el-row> -->
-        </el-form>
+          <div class="payVoucher" v-if="orderStatus != 2">
+            <h5>打款凭证</h5>
+            <div style="border-bottom: 1px solid #ccc"></div>
+            <div class="imgs" v-for="">
+              <img src="" alt="">
+            </div>
+          </div>
 
-        <div v-if="!nextToUpdate" slot="footer" class="dialog-footer" style="text-align: center;">
-          <el-button class="search_btn" @click="submitResult('2')">通 过</el-button>
-          <el-button class="add_btn" v-if="dialogStatus=='create'" @click="submitResult('3')">不通过</el-button>
+          <div class="transFile" v-if="orderStatus != 2">
+            <h5>交易所需材料</h5>
+            <div style="border-bottom: 1px solid #ccc"></div>
+            <div class="imgs" v-for="">
+              <img src="" alt="">
+            </div>
+          </div>
+
+          <div class="transFile" v-if="orderStatus == 5">
+            <h5>退款申请书</h5>
+            <div style="border-bottom: 1px solid #ccc"></div>
+            <!-- <div class="imgs" v-for=""> -->
+              <img src="" alt="">
+            <!-- </div> -->
+          </div>
+
+        </el-form>
+        <div v-if="status == '1001'" class="dialog-footer" style="text-align: center;">
+          <el-button class="add_btn" @click="submitResult('1003')">通 过</el-button>
+          <el-button class="common_btn" @click="submitResult('1002')">不通过</el-button>
         </div>
+
+        <div v-if="status == '2001' || status == '2002' || status == '2003'" class="dialog-footer" style="text-align: center;">
+          <el-button v-show="status != '2003'" class="search_btn" @click="submitResult('2004')">通 过</el-button>
+          <el-button v-show="status != '2003'" class="add_btn" @click="submitResult('2002')">不通过</el-button>
+          <el-button class="add_btn" @click="submitResult('2003')">关闭订单</el-button>
+        </div>
+
+        <div v-if="status == '2004'" class="dialog-footer" style="text-align: center;">
+          <el-button class="search_btn" @click="submitResult('1')">需要退款</el-button>
+          <el-button class="add_btn" @click="submitResult('0')">无需退款</el-button>
+        </div>
+
+        <div v-if="status == '3002'" class="dialog-footer" style="text-align: center;">
+          <el-button class="search_btn" @click="submitResult('3004')">通 过</el-button>
+          <el-button class="add_btn" @click="submitResult('3003')">不通过</el-button>
+        </div>
+
+        <div v-if="status == '2'" class="dialog-footer" style="text-align: center;">
+          <el-button class="search_btn" @click="submitResult('4')">通 过</el-button>
+          <el-button class="add_btn" @click="submitResult('3')">不通过</el-button>
+        </div>
+
+        <el-dialog
+          title="提示"
+          :visible.sync="dialogVisible"
+          width="30%">
+          <span>确认审核通过</span>
+          <span class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="submitCheck">确 定</el-button>
+          </span>
+        </el-dialog>
+
       </el-tab-pane>
 
       <el-tab-pane label="客户交易记录" name="second">
 
+        <div class="tabs">
+          <div class="tab-title" @click="records=1">历史预约记录</div>
+          <div class="tab-title" @click="records=2">历史打款记录</div>
+          <div class="tab-title" @click="records=3">交易成功记录</div>
+          <div class="tab-item" v-show="records == 1">
+            <transc-table-component
+              :orderStatus="2"
+              :aptCol="true"
+              :aptStatusCol="true">
+            </transc-table-component>
+          </div>
+          <div class="tab-item" v-if="records == 2">
+            <transc-table-component
+              :orderStatus="3"
+              :paymentCol="true"
+              :payStatusCol="true">
+            </transc-table-component>
+          </div>
+          <div class="tab-item" v-if="records == 3">
+            <transc-table-component
+              :orderStatus="1"
+              :statusCol="true"
+              :aptCol="true">
+            </transc-table-component>
+          </div>
+        </div>
       </el-tab-pane>
       <el-tab-pane label="操作日志" name="third">
-        
+        <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
+              highlight-current-row style="width: 100%">
+
+          <el-table-column align="center" label="序号" type="index" width="50">
+            <!-- <template slot-scope="scope">
+              <span>{{scope.row.productTypeId}}</span>
+            </template> -->
+          </el-table-column>
+
+          <el-table-column align="center" label="时间" prop="name">
+            <template slot-scope="scope">
+              <span>{{scope.row.name}}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column align="center" label="操作人" prop="name">
+            <template slot-scope="scope">
+              <span>{{scope.row.name}}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column align="center" label="客户姓名" prop="name">
+            <template slot-scope="scope">
+              <span>{{scope.row.name}}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column align="center" label="产品名称" prop="name">
+            <template slot-scope="scope">
+              <span>{{scope.row.name}}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column align="center" label="结果" prop="name">
+            <template slot-scope="scope">
+              <span>{{scope.row.name}}</span>
+            </template>
+          </el-table-column>
+
+        </el-table>
+        <div v-show="!listLoading" class="pagination-container">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                        :current-page.sync="listQuery.page"
+                        :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
+                        layout="total, sizes, prev, pager, next, jumper" :total="total">
+          </el-pagination>
+        </div>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
-  import { fetchList, getObj, getClientStatus, getClientBankcard, putObj } from '@/api/client/realname'
+  import { getObj, putObj } from '@/api/transc/transc'
+  import transcTableComponent from 'components/transcTable'
   // import { getClientStatus, getClientBankcard } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
@@ -136,7 +296,8 @@
   export default {
     components: {
       ElOption,
-      ElRadioGroup },
+      transcTableComponent
+    },
     name: 'table_user',
     directives: {
       waves
@@ -150,54 +311,8 @@
           label: 'name'
         },
         listLoading: true,
-        listQuery: {
-          page: 1,
-          limit: 20
-        },
         role: undefined,
         form: {},
-        rules: {
-          username: [
-            {
-              required: false,
-              message: '请输入账户',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 20,
-              message: '长度在 3 到 20 个字符',
-              trigger: 'blur'
-            }
-          ],
-          password: [
-            {
-              required: false,
-              message: '请输入密码',
-              trigger: 'blur'
-            },
-            {
-              min: 5,
-              max: 20,
-              message: '长度在 5 到 20 个字符',
-              trigger: 'blur'
-            }
-          ],
-          deptId: [
-            {
-              required: false,
-              message: '请选择部门',
-              trigger: 'blur'
-            }
-          ],
-          role: [
-            {
-              required: false,
-              message: '请选择角色',
-              trigger: 'blur'
-            }
-          ]
-        },
         statusOptions: ['0', '1'],
         rolesOptions: [],
         nextToUpdate: false,
@@ -205,45 +320,38 @@
         userAdd: false,
         userUpd: false,
         userDel: false,
-        dialogStatus: 'create',
-        textMap: {
-          update: '编辑员工',
-          create: '新增员工'
-        },
         isDisabled: {
           0: false,
           1: true
         },
-        sex: '',
-        edu: '',
-        IDsType: '',
-        entryDate: '',
-        maritalStatus: '',
-        fileList: [],
-        fileList1: [],
-        fileList2: [],
-        fileList3: [],
-        indexList: [],
         type_is_update: '',
+        bankcardList: [],
         productStus: '',
         clientStatus: {
           riskLevel: ''
         },
-        remarkList: [],
-        plannerList: [],
-        bankcardList: [],
-        productList: [],
-        realnameStatus: '',
         idType: '',
         isClientType: '',
         failReason: '',
-        tip: false
+        tip: false,
+        activeName2: 'first',
+        tableKey: 0,
+        list: [],
+        total: null,
+        records: 1,
+        listQuery: {
+          page: 1,
+          limit: 20
+        },
+        orderStatus: 1,
+        dialogVisible: false,
+        status: ''
       }
     },
     computed: {
       ...mapGetters([
         'permissions',
-        'productStatus',
+        'appointmentStatus',
         'genderType',
         'certificationStatus',
         'clientType',
@@ -251,51 +359,42 @@
         'nationality'
       ])
     },
-    filters: {
-      statusFilter(status) {
-        const statusMap = {
-          0: '正常',
-          1: '离职',
-          9: '异常'
-        }
-        return statusMap[status]
-      }
-    },
     created() {
       this.getList()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
       this.type_is_update = this.$route.path.substr(-1)
+      this.orderStatus = this.$route.params.orderStatus
+      this.status = this.$route.params.status
+      console.log(this.status)
     },
     methods: {
       getList() {
-        let id = this.$route.params.id
-        let obj = {
-          clientId: id,
-          type: 1
-        }
-        getClientStatus(id, '1').then(response => {
-          this.clientStatus = response.data
-          this.realnameStatus = this.clientStatus.realnameStatus != 0 ? true : false // 认证状态判断
-          this.isClientType = this.clientStatus.clientType == 0 ? true : false// 投资者类型判断
-          this.idType = this.clientStatus.idType == 0 ? true : false // 证件类型判断(0: 身份证)
+        let id = this.$route.params.appointmentId
+        
+        // getClientStatus(id, '1').then(response => {
+        //   this.clientStatus = response.data
+        //   this.realnameStatus = this.clientStatus.realnameStatus != 0 ? true : false // 认证状态判断
+        //   this.isClientType = this.clientStatus.clientType == 0 ? true : false// 投资者类型判断
+        //   this.idType = this.clientStatus.idType == 0 ? true : false // 证件类型判断(0: 身份证)
 
-          this.clientStatus.realnameStatus = transformText(this.certificationStatus, this.clientStatus.realnameStatus)
-          this.clientStatus.clientType = transformText(this.clientType, this.clientStatus.clientType)
-          this.clientStatus.idType = transformText(this.idTypeOptions, this.clientStatus.idType)
-        })
+        //   this.clientStatus.realnameStatus = transformText(this.certificationStatus, this.clientStatus.realnameStatus)
+        //   this.clientStatus.clientType = transformText(this.clientType, this.clientStatus.clientType)
+        //   this.clientStatus.idType = transformText(this.idTypeOptions, this.clientStatus.idType)
+        // })
 
-        getObj(id, '1').then(response => {
+        getObj(id).then(response => {
           this.form = response.data
+          // this.status = this.form.status
 
-          this.form.gender = transformText(this.genderType, this.form.gender)
-          this.form.nationality = transformText(this.nationality, this.form.nationality)
-          if(this.realnameStatus) {
-            getClientBankcard(id, '1').then(response => {
-              this.bankcardList = response.data || {}
-            })
-          }
+          // this.form.gender = transformText(this.genderType, this.form.gender)
+          // this.form.nationality = transformText(this.nationality, this.form.nationality)
+          // if(this.realnameStatus) {
+          //   getClientBankcard(id, '1').then(response => {
+          //     this.bankcardList = response.data || {}
+          //   })
+          // }
         })
         
       },
@@ -303,17 +402,21 @@
         console.log('产品状态')
       },
       submitResult(result) { // 
-        if(result == 3 & !this.failReason) {
-          this.tip = true
-          return
-        }
-        this.tip = false
+        this.dialogVisible = true
+        // if(result == 3 & !this.failReason) {
+        //   this.tip = true
+        //   return
+        // }
+        // this.tip = false
+        this.submitCheck(result)
+      },
+      submitCheck(result) {
         let params = {
-          // failId: this.form.clientId,
-          failReason: this.failReason,
-          result: result
+          auditFailReasonId: this.failReason,
+          auditRemark: this.failReason,
+          status: result
         }
-        putObj(this.form.clientId, params).then(response => {
+        putObj(this.form.appointmentId, params).then(response => {
           console.log(response.code)
           if(response.status == 200) {
             this.$notify({
@@ -322,29 +425,10 @@
               type: 'success',
               duration: 2000
             })
+            this.dialogVisible = false
             this.$router.push({path: '/client/realname'})
           }
         })
-        // this.nextToUpdate = true
-        // const set = this.$refs
-        // this.form.role = this.role
-        // set[formName].validate(valid => {
-        //   if (valid) {
-        //     addObj(this.form)
-        //       .then(() => {
-        //         this.nextToUpdate = true
-        //         this.getList()
-        //         this.$notify({
-        //           title: '成功',
-        //           message: '创建成功',
-        //           type: 'success',
-        //           duration: 2000
-        //         })
-        //       })
-        //   } else {
-        //     return false
-        //   }
-        // })
       },
       cancel(formName) {
         this.dialogFormVisible = false
@@ -379,12 +463,19 @@
           password: '',
           role: undefined
         }
-      }
+      },
+      handleClick(tab) {
+        console.log(tab)
+      },
+      handleSizeChange(val) {
+        this.listQuery.limit = val
+        this.getList()
+      },
+      handleCurrentChange(val) {
+        this.listQuery.page = val
+        this.getList()
+      },
     }
-    // mounted() {
-    //   console.log(this.$route.params)
-    //   this.type_is_update = this.$route.params
-    // }
   }
 </script>
 
@@ -397,6 +488,13 @@
 .upfile-group {
   .btn-padding {
     @include padding;
+  }
+}
+.tab-title {
+  display: inline-block;
+  padding: 0 18px;
+  &:active {
+    color: red;
   }
 }
 </style>

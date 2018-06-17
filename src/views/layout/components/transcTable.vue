@@ -43,7 +43,7 @@
 
       <el-table-column align="center" label="打款金额" v-if="paymentCol">
         <template slot-scope="scope">
-        <span>{{scope.row.appointmentDate}}</span>
+        <span>{{scope.row.remitAmount}}</span>
         </template>
       </el-table-column>
 
@@ -67,7 +67,7 @@
       
       <el-table-column align="center" label="退款状态" v-if="refundCol">
         <template slot-scope="scope">
-          <span>{{scope.row.userDeptName}}</span>
+          <span>{{scope.row.status}}</span>
         </template>
       </el-table-column>
 
@@ -110,7 +110,7 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/transc/appoint'
+  import { fetchTranscList, fetchAppointList, fetchPayList, fetchContractList, fetchRefundList } from '@/api/transc/transc'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
@@ -156,6 +156,12 @@
       contractCol: {
         default: false
       },
+      orderStatus: {
+        default: 1
+      },
+      activePath: {
+        default: '/transcMag/transc'
+      }
     },
     data() {
       return {
@@ -172,20 +178,11 @@
           page: 1,
           limit: 20,
           // name: '',
-          productTypeIds: [],
-          productStatus: [],
+          // productTypeIds: [],
+          // productStatus: [],
           annualizedReturns: [],
           isFloat: null
         },
-        role: undefined,
-        form: {
-          name: undefined,
-          password: undefined,
-          // delFlag: undefined,
-          deptId: undefined
-        },
-        statusOptions: ['0', '1'],
-        rolesOptions: [],
         dialogFormVisible: false,
         dialogDeptVisible: false,
         userAdd: false,
@@ -193,47 +190,20 @@
         userDel: false,
         dialogStatus: '',
         tableKey: 0,
-        sex: '',
-        edu: '',
-        currencyList: [],
-        IDsType: '',
-        entryDate: '',
-        fileList: [],
         productTypes: [],
-        productTypesList: [],
-        input2: '',
-        // nextToUpdate: false,
-        fileList: [],
-        fileList1: [],
-        fileList2: [],
-        fileList3: [],
-        indexList1: [],
-        indexList2: [],
-        indexList3: [],
-        productStus: '',
-        // radio2: null,
-        profitTextarea: '',
         highlight: '',
-        uploadData: {
-          productId: ''
-        },
-        headers: {
-          Authorization: 'Bearer ' + getToken()
-        },
         isDisabled: true,
-        form: [],
         isSpread: false
       }
     },
     computed: {
       ...mapGetters([
         'permissions',
-        'productStatus',
+        // 'productStatus',
         'productRiskLevel'
       ])
     },
     created() {
-      // console.log(this.productStatus)
       this.getList()
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
@@ -241,8 +211,6 @@
     mounted() {
       Bus.$on('searchTransc', listQuery => {
         this.listQuery = listQuery
-        console.log(this.listQuery)
-        // this.getList()
       })
     },
     methods: {
@@ -250,27 +218,41 @@
         this.listLoading = true
         
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
-        fetchList(this.listQuery).then(response => {
-          console.log('loadingtofalse')
-          this.list = response.data.records
-          this.total = response.data.total
-          this.listLoading = false
-          fetchProductTypeList().then(res => { // 获取产品类型
-            this.productTypes = res.data
-            this.list.forEach(item => {
-              item.productTypeId = transformText(this.productTypes, item.productTypeId)
-              item.productStatus = transformText(this.productStatus, item.productStatus)
-            })
-          })
-        })
 
-        getObjList().then(response => {
-          this.currencyList = response.data
-        })
-      },
-      handleFilter() {
-        this.listQuery.page = 1
-        this.getList()
+        if(this.orderStatus == '1') {
+          fetchTranscList(this.listQuery).then(response => {
+            this.list = response.data.records
+            this.total = response.data.total
+            this.listLoading = false
+          })
+        } else if(this.orderStatus == '2') {
+          fetchAppointList(this.listQuery).then(response => {
+            this.list = response.data.records
+            this.total = response.data.total
+            this.listLoading = false
+          })
+
+        } else if(this.orderStatus == '3') {
+          fetchPayList(this.listQuery).then(response => {
+            this.list = response.data.records
+            this.total = response.data.total
+            this.listLoading = false
+          })
+
+        } else if(this.orderStatus == '4') {
+          fetchContractList(this.listQuery).then(response => {
+            this.list = response.data.records
+            this.total = response.data.total
+            this.listLoading = false
+          })
+
+        } else if(this.orderStatus == '5') {
+          fetchRefundList(this.listQuery).then(response => {
+            this.list = response.data.records
+            this.total = response.data.total
+            this.listLoading = false
+          })
+        }
       },
       handleSizeChange(val) {
         this.listQuery.limit = val
@@ -280,31 +262,18 @@
         this.listQuery.page = val
         this.getList()
       },
-      handleUpdate(row) { // 编辑
-        this.$router.push({path: '/product/productDetail/' + row.productId})
-        Bus.$emit('activeIndex', '/product/productList')
+      handleUpdate(row) { // 查看
+        this.$router.push({path: '/transcMag/transc/detail/' + row.appointmentId + '/' + this.orderStatus + '/' + row.status})
+        Bus.$emit('activeIndex', this.activePath)
 
-        // this.nextToUpdate = false
-      
       },
-      resetTemp() {
-        this.form = {
-          id: undefined,
-          name: '',
-          role: undefined
-        }
-      },
-      resetFilter() {
-        this.listQuery = {
-          name: '',
-          // type: [],
-          productTypeIds: [],
-          annualizedReturns: [],
-          productStatus: [],
-          isFloat: 0
-        }
-        this.getList()
-      },
+      // resetTemp() {
+      //   this.form = {
+      //     id: undefined,
+      //     name: '',
+      //     role: undefined
+      //   }
+      // },
       // searchList(data) {
       //   this.listQuery = data
       //   this.getList()

@@ -9,6 +9,8 @@
     </transc-search-component>
     
     <transc-table-component
+      :activePath="activePath"
+      :orderStatus="2"
       :aptCol="true"
       :aptStatusCol="true">
     </transc-table-component>
@@ -47,7 +49,8 @@
         userDel: false,
         dialogStatus: '',
         form: [],
-        status: 10
+        status: 10,
+        activePath: this.$route.path
       }
     },
     computed: {
