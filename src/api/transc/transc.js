@@ -65,6 +65,16 @@ export function getObj(appointmentId) {
 }
 
 /**
+ * 获取打款材料
+ */
+export function getFileObj(appointmentId) {
+  return request({
+    url: '/product/appointmentPicture/' + appointmentId,
+    method: 'get'
+  })
+}
+
+/**
  * 审核详情
  */
 export function putObj(appointmentId, obj) {

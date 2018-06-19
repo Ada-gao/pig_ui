@@ -61,31 +61,31 @@
       
       <el-table-column align="center" label="打款状态" v-if="payStatusCol">
         <template slot-scope="scope">
-          <span>{{scope.row.userDeptName}}</span>
+          <span>{{scope.row.statusText}}</span>
         </template>
       </el-table-column>
       
       <el-table-column align="center" label="退款状态" v-if="refundCol">
         <template slot-scope="scope">
-          <span>{{scope.row.status}}</span>
+          <span>{{scope.row.statusText}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" class-name="status-col" label="状态" v-if="statusCol">
         <template slot-scope="scope">
-          {{scope.row.status}}
+          {{scope.row.statusText}}
         </template>
       </el-table-column>
 
       <el-table-column align="center" class-name="status-col" label="预约状态" v-if="aptStatusCol">
         <template slot-scope="scope">
-          {{scope.row.status}}
+          {{scope.row.statusText}}
         </template>
       </el-table-column>
 
       <el-table-column align="center" class-name="status-col" label="合同状态" v-if="contractCol">
         <template slot-scope="scope">
-          {{scope.row.status}}
+          {{scope.row.statusText}}
         </template>
       </el-table-column>
 
@@ -230,7 +230,7 @@
             this.total = response.data.total
             this.listLoading = false
             this.list.forEach(item => {
-              item.status = transformText(this.appointmentStatus, item.status)
+              item.statusText = transformText(this.appointmentStatus, item.status)
             })
           })
         } else if(this.orderStatus == '2') {
@@ -239,7 +239,7 @@
             this.total = response.data.total
             this.listLoading = false
             this.list.forEach(item => {
-              item.status = transformText(this.appointmentStatus, item.status)
+              item.statusText = transformText(this.appointmentStatus, item.status)
             })
           })
 
@@ -249,7 +249,7 @@
             this.total = response.data.total
             this.listLoading = false
             this.list.forEach(item => {
-              item.status = transformText(this.appointmentStatus, item.status)
+              item.statusText = transformText(this.appointmentStatus, item.status)
             })
           })
 
@@ -259,7 +259,7 @@
             this.total = response.data.total
             this.listLoading = false
             this.list.forEach(item => {
-              item.status = transformText(this.appointmentStatus, item.status)
+              item.statusText = transformText(this.appointmentStatus, item.status)
             })
           })
 
@@ -269,7 +269,7 @@
             this.total = response.data.total
             this.listLoading = false
             this.list.forEach(item => {
-              item.status = transformText(this.appointmentStatus, item.status)
+              item.statusText = transformText(this.appointmentStatus, item.status)
             })
           })
         }

@@ -48,7 +48,7 @@
                 <el-input v-model="form.appointmentCode" placeholder="" readonly></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="11">
+            <el-col :span="11" v-if="!statusH">
               <el-form-item label="预约状态" prop="clientType">
                 <el-input v-model="form.status" placeholder="" readonly></el-input>
               </el-form-item>
@@ -79,7 +79,7 @@
                   <el-input v-model="form.remitAmount" placeholder="" readonly></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="11">
+              <el-col :span="11" v-if="form.status">
                 <el-form-item label="打款（审核通过）时间" prop="cardNo">
                   <el-input v-model="form.remitDate" placeholder="" readonly></el-input>
                 </el-form-item>
@@ -138,16 +138,16 @@
           <div class="payVoucher" v-if="orderStatus != 2 & statusH">
             <h5>打款凭证</h5>
             <div style="border-bottom: 1px solid #ccc"></div>
-            <div class="imgs" v-for="">
-              <img src="" alt="">
+            <div class="imgs" v-for="item in remitFiles">
+              <img :src="item.pictureUrl" alt="">
             </div>
           </div>
 
           <div class="transFile" v-if="orderStatus != 2 & statusH">
             <h5>交易所需材料</h5>
             <div style="border-bottom: 1px solid #ccc"></div>
-            <div class="imgs" v-for="">
-              <img src="" alt="">
+            <div class="imgs" v-for="item in dealFiles">
+              <img :src="item.pictureUrl" alt="">
             </div>
           </div>
 
@@ -165,13 +165,13 @@
           <el-button class="common_btn" @click="submitResult('1002')">不通过</el-button>
         </div>
 
-        <div v-if="(status == '2001' || status == '2002' || status == '2003') & orderStatus != 1" class="dialog-footer" style="text-align: center;">
-          <el-button v-show="status != '2003'" class="search_btn" @click="submitResult('2004')">通 过</el-button>
-          <el-button v-show="status != '2003'" class="add_btn" @click="submitResult('2002')">不通过</el-button>
+        <div v-if="(status == '2001' || status == '2002' || status == '2004') & orderStatus != 1" class="dialog-footer" style="text-align: center;">
+          <el-button v-show="status == '2001'" class="search_btn" @click="submitResult('2004')">通 过</el-button>
+          <el-button v-show="status == '2001'" class="add_btn" @click="submitResult('2002')">不通过</el-button>
           <el-button class="add_btn" @click="submitResult('2003')">关闭订单</el-button>
         </div>
 
-        <div v-if="status == '2004' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
+        <div v-if="status == '2003' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('1')">需要退款</el-button>
           <el-button class="add_btn" @click="submitResult('0')">无需退款</el-button>
         </div>
@@ -282,7 +282,7 @@
 </template>
 
 <script>
-  import { getObj, putObj } from '@/api/transc/transc'
+  import { getObj, putObj, getFileObj } from '@/api/transc/transc'
   import transcTableComponent from 'components/transcTable'
   // import { getClientStatus, getClientBankcard } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
@@ -346,7 +346,9 @@
         orderStatus: 1,
         statusH: false,
         dialogVisible: false,
-        status: ''
+        status: '',
+        dealFiles: [],
+        remitFiles: []
       }
     },
     computed: {
@@ -373,32 +375,20 @@
     methods: {
       getList() {
         let id = this.$route.params.appointmentId
-        
-        // getClientStatus(id, '1').then(response => {
-        //   this.clientStatus = response.data
-        //   this.realnameStatus = this.clientStatus.realnameStatus != 0 ? true : false // 认证状态判断
-        //   this.isClientType = this.clientStatus.clientType == 0 ? true : false// 投资者类型判断
-        //   this.idType = this.clientStatus.idType == 0 ? true : false // 证件类型判断(0: 身份证)
-
-        //   this.clientStatus.realnameStatus = transformText(this.certificationStatus, this.clientStatus.realnameStatus)
-        //   this.clientStatus.clientType = transformText(this.clientType, this.clientStatus.clientType)
-        //   this.clientStatus.idType = transformText(this.idTypeOptions, this.clientStatus.idType)
-        // })
 
         getObj(id).then(response => {
           this.form = response.data
           this.status = this.form.status
-          this.statusH = this.status.indexOf('100') != -1 ? true : false
+          console.log(this.status)
+          this.statusH = this.status.indexOf('100') == -1 ? true : false
+          console.log(this.statusH)
           this.form.status = transformText(this.appointmentStatus, this.form.status)
-          // this.status = this.form.status
-
-          // this.form.gender = transformText(this.genderType, this.form.gender)
-          // this.form.nationality = transformText(this.nationality, this.form.nationality)
-          // if(this.realnameStatus) {
-          //   getClientBankcard(id, '1').then(response => {
-          //     this.bankcardList = response.data || {}
-          //   })
-          // }
+        })
+        getFileObj(id).then(response => {
+          this.dealFiles = response.data.dealFiles
+          this.remitFiles = response.data.remitFiles
+          // console.log(this.dealFiles)
+          // console.log(this.remitFiles)
         })
         
       },
