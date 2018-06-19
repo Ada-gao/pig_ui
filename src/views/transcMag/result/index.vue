@@ -1,12 +1,22 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container" style="text-align: right">
-      <el-tabs v-model="type" type="card" @tab-click="handleClick">
+      <el-tabs v-model="type" type="card" @tab-click="handleClick" class="contract-tabs">
         <el-tab-pane label="预约不通过原因" name="0"></el-tab-pane>
         <el-tab-pane label="打款不通过原因" name="1"></el-tab-pane>
         <el-tab-pane label="合同不通过原因" name="2"></el-tab-pane>
         <el-tab-pane label="退款不通过原因" name="3"></el-tab-pane>
       </el-tabs>
+      <el-button v-if="sys_prd_type_add"
+                 class="filter-item add_btn"
+                 style="margin-left: 10px; float: right"
+                 type="primary"
+                 @click="handleCreate"
+                 icon="edit">
+        <svg-icon icon-class="add"></svg-icon>
+        新建原因
+      </el-button>
+
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -27,11 +37,11 @@
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <a v-if="sys_prd_type_upd" size="small" class="common_btn"
-                     @click="handleUpdate(scope.row)">编辑
+             @click="handleUpdate(scope.row)">编辑
           </a>
-          <el-button v-if="sys_prd_type_del" size="small" type="danger"
-                     @click="deletes(scope.row)">删除
-          </el-button>
+          <a v-if="sys_prd_type_del" size="small" class="danger_btn"
+             @click="deletes(scope.row)">删除
+          </a>
         </template>
       </el-table-column>
 
@@ -47,8 +57,8 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :model="form" :rules="rules" ref="form" label-width="100px">
-        
-        <el-form-item label="产品类型" prop="name">
+
+        <el-form-item label="不通过原因" prop="name">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
 
@@ -64,23 +74,25 @@
 </template>
 
 <script>
-  import { fetchProductTypeList, addObj, putObj, getObj } from '@/api/product/productType'
+  import {fetchProductTypeList, addObj, putObj, getObj} from '@/api/product/productType'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
-  import { mapGetters } from 'vuex'
+  import {mapGetters} from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
 
   export default {
     components: {
       ElOption,
-      ElRadioGroup },
+      ElRadioGroup
+    },
     name: 'table_user',
     directives: {
       waves
     },
     data() {
       return {
+        type: 'first',
         treeDeptData: [],
         checkedKeys: [],
         defaultProps: {
@@ -110,8 +122,8 @@
           1: true
         },
         textMap: {
-          update: '编辑产品类型',
-          create: '新增产品类型'
+          update: '编辑不通过原因',
+          create: '新增不通过原因'
         },
         tableKey: 0,
         rules: {
@@ -140,7 +152,8 @@
       this.getList()
       this.sys_prd_type_add = this.permissions['sys_prd_type_add']
       this.sys_prd_type_upd = this.permissions['sys_prd_type_upd']
-      this.sys_prd_type_del = this.permissions['sys_prd_type_del']
+      // this.sys_prd_type_del = this.permissions['sys_prd_type_del']
+      this.sys_prd_type_del = true
     },
     methods: {
       getList() {
@@ -149,7 +162,8 @@
         // this.listQuery.isAsc = false
         fetchProductTypeList().then(response => {
           this.list = response.data
-          // this.total = response.data.total
+          console.log(response.data)
+          this.total = response.data.length
           this.listLoading = false
         })
       },
@@ -238,7 +252,7 @@
         })
       },
       deletes(row) {
-        this.$confirm('此操作将永久删除该用户(用户名:' + row.name + '), 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除该原因(原因名:' + row.name + '), 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -270,3 +284,18 @@
     }
   }
 </script>
+<style rel="stylesheet/scss" lang="scss">
+  .app-container {
+    .filter-container {
+      .contract-tabs {
+        float: left;
+        .el-tabs__header {
+          .el-tabs__item.is-active {
+            background-color: #0299CC;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+</style>

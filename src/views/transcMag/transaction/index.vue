@@ -1,9 +1,70 @@
 
 <template>
   <div class="app-container calendar-list-container">
-    
+    <el-row :gutter="12" class="def-el">
+      <el-col :span=spanNum class="first-col">
+        <el-card shadow="always">
+          <div class="card-box">
+            <div class="left-box orange-box">
+              <svg-icon icon-class="user"></svg-icon>
+              <!--<span class="icon-bg"></span>-->
+              <span class="circle"></span>
+            </div>
+            <div class="right-box">
+              <div class="title">今日预约人数</div>
+              <div class="btm-box"><span>10</span>人</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span=spanNum>
+        <el-card shadow="always">
+          <div class="card-box">
+            <div class="left-box orange-box">
+              <svg-icon icon-class="money"></svg-icon>
+              <!--<span class="icon-bg"></span>-->
+              <span class="circle"></span>
+            </div>
+            <div class="right-box">
+              <div class="title">今日预约金额</div>
+              <div class="btm-box"><span>1000</span>万</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span=spanNum>
+        <el-card shadow="always">
+          <div class="card-box">
+            <div class="left-box green-box">
+              <svg-icon icon-class="customer"></svg-icon>
+              <!--<span class="icon-bg"></span>-->
+              <span class="circle"></span>
+            </div>
+            <div class="right-box green-right">
+              <div class="title">今日打款成功人数</div>
+              <div class="btm-box"><span>10</span>人</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span=spanNum>
+        <el-card shadow="always">
+          <div class="card-box">
+            <div class="left-box green-box">
+              <svg-icon icon-class="money"></svg-icon>
+              <!--<span class="icon-bg"></span>-->
+              <span class="circle"></span>
+            </div>
+            <div class="right-box green-right">
+              <div class="title">今日打款成功金额</div>
+              <div class="btm-box"><span>900</span>万</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
     <transc-search-component></transc-search-component>
-    
+
     <transc-table-component
       :orderStatus="1"
       :statusCol="true"
@@ -127,6 +188,7 @@
     },
     data() {
       return {
+        spanNum: 6,
         treeDeptData: [],
         checkedKeys: [],
         defaultProps: {
@@ -213,7 +275,7 @@
     methods: {
       // getList() {
       //   this.listLoading = true
-        
+
       //   this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
       //   fetchList(this.listQuery).then(response => {
       //     this.list = response.data.records
@@ -258,7 +320,7 @@
         Bus.$emit('activeIndex', '/product/productList')
 
         // this.nextToUpdate = false
-      
+
       }
       // resetTemp() {
       //   this.form = {
@@ -291,6 +353,89 @@
 .el-select,
 .el-date-editor {
   width: 100%;
+}
+.def-el {
+  margin-bottom: 24px;
+  .el-card__body {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    .card-box {
+      padding: 10px 0;
+      .left-box,
+      .right-box {
+        display: inline-block;
+        height: 100px;
+        vertical-align: middle;
+        position: relative;
+        .circle {
+          display: inline-block;
+          width: 70px;
+          height: 70px;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          border-radius: 100%;
+          border: 3px solid #fff;
+        }
+      }
+      .left-box {
+        width: 100px;
+        box-shadow: 0 6px 6px 2px rgba(43,125,131,0.05);
+        border-radius: 4px;
+        .svg-icon {
+          position: absolute;
+           fill: #fff;
+          width: 44px;
+          height: 44px;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 1;
+        }
+      }
+      .right-box {
+        margin-left: 3px;
+        .title {
+          font-family: PingFangSC-Medium;
+          font-size: 14px;
+          color: #475669;
+          letter-spacing: 0;
+          line-height: 20px;
+        }
+        .btm-box {
+          position: absolute;
+          bottom: 0;
+          font-family: PingFangSC-Semibold;
+          font-size: 22px;
+          color: #FDCE82;
+          letter-spacing: 0;
+          line-height: 20px;
+          span {
+            font-size: 40px;
+          }
+        }
+      }
+      .orange-box {
+        background: #FDCE82;
+        .circle {
+          background-color: #fdce82;
+        }
+      }
+      .green-box {
+        background: #30CDAA;
+        .circle {
+          background-color: #30cdaa;
+        }
+      }
+      .green-right {
+        .btm-box {
+          color: #30cdaa;
+        }
+      }
+    }
+  }
 }
 .filter-container {
   .query-title {
