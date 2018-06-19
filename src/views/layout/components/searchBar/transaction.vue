@@ -2,15 +2,15 @@
   <div class="filter-container">
     <el-form label-position="right" label-width="100px">
       <el-row :gutter="20">
-        <el-col :sm="10" :lg="8" v-if="searchName">
+        <el-col :sm="10" :lg="8">
           <el-form-item label="产品名称">
             <el-input
             placeholder="请输入产品名称/简称"
-            v-model="listQuery.name">
+            v-model="listQuery.productName">
           </el-input>
           </el-form-item>
         </el-col>
-        <el-col :sm="10" :lg="8" v-if="searchName">
+        <el-col :sm="10" :lg="8">
           <el-form-item label="客户">
             <el-input
             placeholder="请输入客户姓名"
@@ -29,29 +29,30 @@
       </el-row>
 
       <el-row :gutter="20">
-        <el-col :sm="10" :lg="8" v-if="searchName">
+        <el-col :sm="10" :lg="8">
           <el-form-item label="理财师">
             <el-input
             placeholder="请输入理财师邮箱前缀"
-            v-model="listQuery.name">
+            v-model="listQuery.email">
           </el-input>
           </el-form-item>
         </el-col>
-        <el-col :sm="10" :lg="8" v-if="searchClientName">
+        <el-col :sm="10" :lg="8" v-if="searchAppointmentCode">
           <el-form-item label="预约编号">
             <el-input
             placeholder="请输入预约编号"
-            v-model="listQuery.clientName">
+            v-model="listQuery.appointmentCode">
           </el-input>
           </el-form-item>
         </el-col>
       </el-row>
 
-      <el-row>
-        <el-col :sm="12" :lg="8" v-show="isSpread & searchDate">
+      <el-row :gutter="20">
+        <el-col :sm="10" :lg="8" v-show="isSpread & searchDate">
           <el-form-item label="日期">
               <el-date-picker
-                v-model="entryDate"
+                style="width: 100%"
+                v-model="listQuery.date"
                 type="daterange"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
@@ -64,7 +65,7 @@
       <el-row>
         <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchTranscStatus">
           <el-form-item label="订单状态">
-             <el-radio-group v-model="listQuery.transcStatus" @change="changeTransc">
+            <el-radio-group v-model="transcStep" @change="changeTransc">
               <el-radio-button v-for="item in transcStatus" :label="item.value" :key="item.value">{{item.label}}</el-radio-button>
             </el-radio-group>
           </el-form-item>
@@ -72,9 +73,9 @@
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchAppoint & status == 10">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchAppoint & (transcStep == 10 || status == 10)">
           <el-form-item label="预约状态">
-             <el-checkbox-group v-model="listQuery.productTypeIds">
+             <el-checkbox-group v-model="listQuery.status">
               <el-checkbox-button v-for="item in appointStatus" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
@@ -82,9 +83,9 @@
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchPayment & status == 20">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchPayment & (transcStep == 20 || status == 20)">
           <el-form-item label="打款状态">
-             <el-checkbox-group v-model="listQuery.productTypeIds">
+             <el-checkbox-group v-model="listQuery.status">
               <el-checkbox-button v-for="item in paymentStatus" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
@@ -92,9 +93,9 @@
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchContract & status == 30">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchContract & (transcStep == 30 || status == 30)">
           <el-form-item label="合同状态">
-             <el-checkbox-group v-model="listQuery.productTypeIds">
+             <el-checkbox-group v-model="listQuery.status">
               <el-checkbox-button v-for="item in contractStatus" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
@@ -104,20 +105,30 @@
       <el-row>
         <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchRefund">
           <el-form-item label="退款状态">
-            <el-checkbox-group v-model="listQuery.productStatus">
+            <el-checkbox-group v-model="listQuery.refundStatus">
             <el-checkbox-button v-for="status in refundStatus" :label="status.value" :key="status.value">{{status.label}}</el-checkbox-button>
           </el-checkbox-group>
           </el-form-item>
         </el-col>
       </el-row>
 
-      <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchDept">
+      <el-row :gutter="20">
+        <el-col :sm="10" :lg="8" style="white-space: nowrap" v-show="isSpread">
           <el-form-item label="所属部门">
-            <el-checkbox-group v-model="listQuery.productStatus">
-            <el-checkbox-button v-for="status in refundStatus" :label="status.value" :key="status.value">{{status.label}}</el-checkbox-button>
-          </el-checkbox-group>
+            <el-cascader
+              style="width: 100%"
+              :options="treeDeptData"
+              :props="defaultProps"
+              :show-all-levels="false"
+              change-on-select
+              v-model="deptId"
+            ></el-cascader>
           </el-form-item>
+          <!-- <el-form-item label="所属部门">
+            <el-checkbox-group v-model="listQuery.productStatus">
+              <el-checkbox-button v-for="status in refundStatus" :label="status.value" :key="status.value">{{status.label}}</el-checkbox-button>
+            </el-checkbox-group>
+          </el-form-item> -->
         </el-col>
       </el-row>
 
@@ -132,12 +143,13 @@
 <script>
 import { fetchDeptTree } from '@/api/role'
 import { mapGetters } from 'vuex'
-  import { fetchProductTypeList } from '@/api/product/productType'
-  import Bus from '@/assets/js/bus'
+import { fetchProductTypeList } from '@/api/product/productType'
+import Bus from '@/assets/js/bus'
+import { parseTime } from '@/utils'
 
 export default {
   props: {
-    searchName: {
+    searchAppointmentCode: {
       default: true
     },
     searchClientName: {
@@ -176,20 +188,21 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        transcStatus: [],
-        productTypeIds: []
+        status: [],
+        refundStatus: [],
+        date: []
       },
+      transcStep: '',
       defaultProps: {
         children: 'children',
         label: 'name',
         value: 'id'
       },
-      defaultProps2: {
-        value: 'label'
-      },
-      // city: [],
+      // defaultProps2: {
+      //   value: 'label'
+      // },
       productTypes: [],
-      entryDate: [],
+      // entryDate: [],
       isSpread: false,
       appointList: [],
       transferList: [],
@@ -207,12 +220,28 @@ export default {
     ])
   },
   created() {
+    this.handleDept()
     this.fetchList()
   },
   methods: {
     handleFilter() { // 搜索
       this.listQuery.page = 1
+      let dateRange = []
 
+      if(this.listQuery.date) {
+        this.listQuery.date.forEach(item => {
+          item = parseTime(item, '{y}-{m}-{d}')
+          dateRange.push(item)
+        })
+        this.listQuery.date = dateRange
+      }
+      if(this.deptId.length) {
+        this.listQuery.deptId = this.deptId[this.deptId.length - 1]
+      }
+      if(!this.listQuery.status.length) {
+        this.listQuery.status.push(this.transcStep)
+      }
+      
       this.listQuery.orderByField = 'create_time'
       this.listQuery.isAsc = false
 
@@ -222,37 +251,36 @@ export default {
       this.listQuery = {
         page: 1,
         limit: 20,
-        name: '',
-        productTypeIds: '',
-        productStatus: ''
+        productName: '',
+        clientName: '',
+        email: '',
+        appointmentCode: '',
+        status: [],
+        refundStatus: [],
+        deptId: '',
+        date: []
       },
-      this.entryDate = []
-      this.handleFilter()
+      // this.entryDate = []
+      this.deptId = []
+      this.transcStep = ''
+      // this.handleFilter()
+      Bus.$emit('searchTransc', this.listQuery)
     },
     fetchList() {
-
       fetchProductTypeList().then(res => { // 获取产品类型
         this.productTypes = res.data
-        // this.list.forEach(item => {
-        //   item.productTypeId = transformText(this.productTypes, item.productTypeId)
-        //   item.productStatus = transformText(this.productStatus, item.productStatus)
-        // })
-        // this.appointmentStatus.forEach(item => {
-        //   // console.log(item.indexOf('100'))
-        //   if(item.value.indexOf('100') != -1) {
-        //     this.appointList.push(item)
-        //   } else if(item.value.indexOf('200') != -1) {
-        //     this.transferList.push(item)
-        //   } else if(item.value.indexOf('300') != -1) {
-        //     this.contractList.push(item)
-        //   }
-        // })
       })
     },
     changeTransc(val) {
-      this.listQuery.productTypeIds = []
-      this.status = val
-      console.log(this.status)
+      this.listQuery.status = []
+      // this.status = val
+      console.log(val)
+    },
+    handleDept() { // 获取部门
+      fetchDeptTree()
+        .then(response => {
+          this.treeDeptData = response.data
+        })
     }
   }
 }

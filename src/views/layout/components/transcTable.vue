@@ -25,7 +25,7 @@
 
       <el-table-column align="center" label="客户姓名">
         <template slot-scope="scope">
-        <span>{{scope.row.productName}}</span>
+        <span>{{scope.row.clientName}}</span>
         </template>
       </el-table-column>
 
@@ -199,7 +199,7 @@
     computed: {
       ...mapGetters([
         'permissions',
-        // 'productStatus',
+        'appointmentStatus',
         'productRiskLevel'
       ])
     },
@@ -211,25 +211,36 @@
     mounted() {
       Bus.$on('searchTransc', listQuery => {
         this.listQuery = listQuery
+        console.log(this.listQuery)
+        console.log('this.listQuery1')
+        this.getList()
       })
     },
     methods: {
       getList() {
         this.listLoading = true
-        
+        console.log(this.listQuery)
+        console.log('this.listQuery2')
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
+        let list = null
 
         if(this.orderStatus == '1') {
           fetchTranscList(this.listQuery).then(response => {
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
+            this.list.forEach(item => {
+              item.status = transformText(this.appointmentStatus, item.status)
+            })
           })
         } else if(this.orderStatus == '2') {
           fetchAppointList(this.listQuery).then(response => {
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
+            this.list.forEach(item => {
+              item.status = transformText(this.appointmentStatus, item.status)
+            })
           })
 
         } else if(this.orderStatus == '3') {
@@ -237,6 +248,9 @@
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
+            this.list.forEach(item => {
+              item.status = transformText(this.appointmentStatus, item.status)
+            })
           })
 
         } else if(this.orderStatus == '4') {
@@ -244,6 +258,9 @@
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
+            this.list.forEach(item => {
+              item.status = transformText(this.appointmentStatus, item.status)
+            })
           })
 
         } else if(this.orderStatus == '5') {
@@ -251,8 +268,12 @@
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
+            this.list.forEach(item => {
+              item.status = transformText(this.appointmentStatus, item.status)
+            })
           })
         }
+        
       },
       handleSizeChange(val) {
         this.listQuery.limit = val

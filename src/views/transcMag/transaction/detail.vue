@@ -19,7 +19,7 @@
             </el-col>
             <el-col :span="11">
               <el-form-item label="客户编号" prop="gender">
-                <el-input v-model="form.clietnNo" placeholder="" readonly></el-input>
+                <el-input v-model="form.clientNo" placeholder="" readonly></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="11">
@@ -65,7 +65,7 @@
             </el-col>
           </el-row>
 
-          <div class="payInfo" v-if="orderStatus != 2">
+          <div class="payInfo" v-if="orderStatus != 2 & statusH">
             <div style="border-bottom: 1px solid #ccc"></div>
             <h5>打款信息</h5>
             <el-row>
@@ -125,7 +125,7 @@
             </el-col>
             <el-col :span="11">
               <el-form-item label="支行名称" prop="cardNo">
-                <el-input v-model="form.banSubname" placeholder="" readonly></el-input>
+                <el-input v-model="form.bankSubname" placeholder="" readonly></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="11">
@@ -135,7 +135,7 @@
             </el-col>
           </el-row>
 
-          <div class="payVoucher" v-if="orderStatus != 2">
+          <div class="payVoucher" v-if="orderStatus != 2 & statusH">
             <h5>打款凭证</h5>
             <div style="border-bottom: 1px solid #ccc"></div>
             <div class="imgs" v-for="">
@@ -143,7 +143,7 @@
             </div>
           </div>
 
-          <div class="transFile" v-if="orderStatus != 2">
+          <div class="transFile" v-if="orderStatus != 2 & statusH">
             <h5>交易所需材料</h5>
             <div style="border-bottom: 1px solid #ccc"></div>
             <div class="imgs" v-for="">
@@ -151,7 +151,7 @@
             </div>
           </div>
 
-          <div class="transFile" v-if="orderStatus == 5">
+          <div class="transFile" v-if="orderStatus == 5 & statusH">
             <h5>退款申请书</h5>
             <div style="border-bottom: 1px solid #ccc"></div>
             <!-- <div class="imgs" v-for=""> -->
@@ -160,28 +160,28 @@
           </div>
 
         </el-form>
-        <div v-if="status == '1001'" class="dialog-footer" style="text-align: center;">
+        <div v-if="status == '1001' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="add_btn" @click="submitResult('1003')">通 过</el-button>
           <el-button class="common_btn" @click="submitResult('1002')">不通过</el-button>
         </div>
 
-        <div v-if="status == '2001' || status == '2002' || status == '2003'" class="dialog-footer" style="text-align: center;">
+        <div v-if="(status == '2001' || status == '2002' || status == '2003') & orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button v-show="status != '2003'" class="search_btn" @click="submitResult('2004')">通 过</el-button>
           <el-button v-show="status != '2003'" class="add_btn" @click="submitResult('2002')">不通过</el-button>
           <el-button class="add_btn" @click="submitResult('2003')">关闭订单</el-button>
         </div>
 
-        <div v-if="status == '2004'" class="dialog-footer" style="text-align: center;">
+        <div v-if="status == '2004' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('1')">需要退款</el-button>
           <el-button class="add_btn" @click="submitResult('0')">无需退款</el-button>
         </div>
 
-        <div v-if="status == '3002'" class="dialog-footer" style="text-align: center;">
+        <div v-if="status == '3002' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('3004')">通 过</el-button>
           <el-button class="add_btn" @click="submitResult('3003')">不通过</el-button>
         </div>
 
-        <div v-if="status == '2'" class="dialog-footer" style="text-align: center;">
+        <div v-if="status == '2' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('4')">通 过</el-button>
           <el-button class="add_btn" @click="submitResult('3')">不通过</el-button>
         </div>
@@ -344,6 +344,7 @@
           limit: 20
         },
         orderStatus: 1,
+        statusH: false,
         dialogVisible: false,
         status: ''
       }
@@ -366,8 +367,8 @@
       this.sys_user_del = this.permissions['sys_user_del']
       this.type_is_update = this.$route.path.substr(-1)
       this.orderStatus = this.$route.params.orderStatus
-      this.status = this.$route.params.status
-      console.log(this.status)
+      // this.status = this.$route.params.status
+      // console.log(this.status)
     },
     methods: {
       getList() {
@@ -386,6 +387,9 @@
 
         getObj(id).then(response => {
           this.form = response.data
+          this.status = this.form.status
+          this.statusH = this.status.indexOf('100') != -1 ? true : false
+          this.form.status = transformText(this.appointmentStatus, this.form.status)
           // this.status = this.form.status
 
           // this.form.gender = transformText(this.genderType, this.form.gender)
