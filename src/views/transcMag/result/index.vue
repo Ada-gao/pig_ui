@@ -130,7 +130,8 @@
           name: [
             {required: true, trigger: 'blur'}
           ]
-        }
+        },
+        type: 0
       }
     },
     computed: {

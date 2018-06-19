@@ -25,7 +25,7 @@
 
       <el-table-column align="center" label="客户姓名">
         <template slot-scope="scope">
-        <span>{{scope.row.productName}}</span>
+        <span>{{scope.row.clientName}}</span>
         </template>
       </el-table-column>
 
@@ -61,31 +61,31 @@
       
       <el-table-column align="center" label="打款状态" v-if="payStatusCol">
         <template slot-scope="scope">
-          <span>{{scope.row.userDeptName}}</span>
+          <span>{{scope.row.statusText}}</span>
         </template>
       </el-table-column>
       
       <el-table-column align="center" label="退款状态" v-if="refundCol">
         <template slot-scope="scope">
-          <span>{{scope.row.status}}</span>
+          <span>{{scope.row.statusText}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" class-name="status-col" label="状态" v-if="statusCol">
         <template slot-scope="scope">
-          {{scope.row.status}}
+          {{scope.row.statusText}}
         </template>
       </el-table-column>
 
       <el-table-column align="center" class-name="status-col" label="预约状态" v-if="aptStatusCol">
         <template slot-scope="scope">
-          {{scope.row.status}}
+          {{scope.row.statusText}}
         </template>
       </el-table-column>
 
       <el-table-column align="center" class-name="status-col" label="合同状态" v-if="contractCol">
         <template slot-scope="scope">
-          {{scope.row.status}}
+          {{scope.row.statusText}}
         </template>
       </el-table-column>
 
@@ -199,7 +199,7 @@
     computed: {
       ...mapGetters([
         'permissions',
-        // 'productStatus',
+        'appointmentStatus',
         'productRiskLevel'
       ])
     },
@@ -211,25 +211,36 @@
     mounted() {
       Bus.$on('searchTransc', listQuery => {
         this.listQuery = listQuery
+        console.log(this.listQuery)
+        console.log('this.listQuery1')
+        this.getList()
       })
     },
     methods: {
       getList() {
         this.listLoading = true
-        
+        console.log(this.listQuery)
+        console.log('this.listQuery2')
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
+        let list = null
 
         if(this.orderStatus == '1') {
           fetchTranscList(this.listQuery).then(response => {
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
+            this.list.forEach(item => {
+              item.statusText = transformText(this.appointmentStatus, item.status)
+            })
           })
         } else if(this.orderStatus == '2') {
           fetchAppointList(this.listQuery).then(response => {
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
+            this.list.forEach(item => {
+              item.statusText = transformText(this.appointmentStatus, item.status)
+            })
           })
 
         } else if(this.orderStatus == '3') {
@@ -237,6 +248,9 @@
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
+            this.list.forEach(item => {
+              item.statusText = transformText(this.appointmentStatus, item.status)
+            })
           })
 
         } else if(this.orderStatus == '4') {
@@ -244,6 +258,9 @@
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
+            this.list.forEach(item => {
+              item.statusText = transformText(this.appointmentStatus, item.status)
+            })
           })
 
         } else if(this.orderStatus == '5') {
@@ -251,8 +268,12 @@
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
+            this.list.forEach(item => {
+              item.statusText = transformText(this.appointmentStatus, item.status)
+            })
           })
         }
+        
       },
       handleSizeChange(val) {
         this.listQuery.limit = val
