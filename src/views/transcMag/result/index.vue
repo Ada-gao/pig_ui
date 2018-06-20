@@ -28,9 +28,9 @@
         </template> -->
       </el-table-column>
 
-      <el-table-column align="center" label="不通过原因" prop="name">
+      <el-table-column align="center" label="不通过原因">
         <template slot-scope="scope">
-          <span>{{scope.row.name}}</span>
+          <span>{{scope.row.failAuditReason}}</span>
         </template>
       </el-table-column>
 
@@ -58,8 +58,8 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :model="form" :rules="rules" ref="form" label-width="100px">
 
-        <el-form-item label="不通过原因" prop="name">
-          <el-input v-model="form.name"></el-input>
+        <el-form-item label="不通过原因" prop="failAuditReason">
+          <el-input v-model="form.failAuditReason"></el-input>
         </el-form-item>
 
       </el-form>
@@ -74,7 +74,7 @@
 </template>
 
 <script>
-  import {fetchProductTypeList, addObj, putObj, getObj} from '@/api/product/productType'
+  import {searchAppReasons, addReason, delReason, modifyReason, getReason} from '@/api/transc/transc'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
   import {mapGetters} from 'vuex'
@@ -92,7 +92,6 @@
     },
     data() {
       return {
-        type: 'first',
         treeDeptData: [],
         checkedKeys: [],
         defaultProps: {
@@ -107,8 +106,9 @@
           limit: 20
         },
         form: {
-          name: undefined,
-          currencyId: undefined
+          failAuditReason: undefined,
+          failAuditType: undefined,
+          auditFailReasonId: undefined
         },
         statusOptions: ['0', '1'],
         dialogFormVisible: false,
@@ -127,11 +127,15 @@
         },
         tableKey: 0,
         rules: {
-          name: [
-            {required: true, trigger: 'blur'}
+          failAuditReason: [
+            {
+              required: true,
+              trigger: 'blur'
+            }
           ]
         },
-        type: 0
+        type: 0,
+        fail_audit_type: [10, 20, 30, 40]
       }
     },
     computed: {
@@ -159,29 +163,15 @@
     methods: {
       getList() {
         this.listLoading = true
-        // this.listQuery.orderByField = '`user`.create_time'
-        // this.listQuery.isAsc = false
-        fetchProductTypeList().then(response => {
-          this.list = response.data
-          console.log(response.data)
-          this.total = response.data.length
+        this.listQuery.type = this.fail_audit_type[this.type]
+        searchAppReasons(this.listQuery).then(res => {
+          this.list = res.data.records
+          this.total = res.data.total
           this.listLoading = false
         })
       },
       handleClick(tab, event) {
         this.getList()
-      },
-      // getNodeData(data) {
-      //   this.dialogDeptVisible = false
-      //   this.form.deptId = data.id
-      //   this.form.deptName = data.name
-      // },
-      handleDept() {
-        fetchDeptTree()
-          .then(response => {
-            this.treeDeptData = response.data
-            this.dialogDeptVisible = true
-          })
       },
       handleFilter() {
         this.listQuery.page = 1
@@ -201,27 +191,29 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {
-        getObj(row.productTypeId)
-          .then(response => {
-            this.form = response.data
-            this.dialogFormVisible = true
-            this.dialogStatus = 'update'
-          })
+        getReason(row.auditFailReasonId).then(res => {
+          this.form = res.data
+          this.dialogFormVisible = true
+          this.dialogStatus = 'update'
+        })
       },
       create(formName) {
         const set = this.$refs
+        this.form.failAuditType = this.fail_audit_type[this.type]
         set[formName].validate(valid => {
           if (valid) {
-            addObj(this.form)
-              .then(() => {
+            addReason(this.form)
+              .then(res => {
                 this.dialogFormVisible = false
                 this.getList()
-                this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
+                if (res.code !== 1007) {
+                  this.$notify({
+                    title: '成功',
+                    message: '创建成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                }
               })
           } else {
             return false
@@ -237,7 +229,7 @@
         set[formName].validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
-            putObj(this.form).then(() => {
+            modifyReason(this.form).then(() => {
               this.dialogFormVisible = false
               this.getList()
               this.$notify({
@@ -253,33 +245,33 @@
         })
       },
       deletes(row) {
-        this.$confirm('此操作将永久删除该原因(原因名:' + row.name + '), 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除该原因(原因名:' + row.failAuditReason + '), 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          // delObj(row.currencyId).then(() => {
-          //   this.getList()
-          //   this.$notify({
-          //     title: '成功',
-          //     message: '删除成功',
-          //     type: 'success',
-          //     duration: 2000
-          //   })
-          // }).cache(() => {
-          //   this.$notify({
-          //     title: '失败',
-          //     message: '删除失败',
-          //     type: 'error',
-          //     duration: 2000
-          //   })
-          // })
+          delReason(row.auditFailReasonId).then(() => {
+            this.getList()
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+          }).catch(() => {
+            this.$notify({
+              title: '失败',
+              message: '删除失败',
+              type: 'error',
+              duration: 2000
+            })
+          })
         })
       },
       resetTemp() {
         this.form = {
-          id: undefined,
-          name: '',
+          failAuditType: undefined,
+          failAuditReason: ''
         }
       }
     }
