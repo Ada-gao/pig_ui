@@ -75,6 +75,16 @@ export function getFileObj(appointmentId) {
 }
 
 /**
+ * 获取退款申请书
+ */
+export function getRefundFile(appointmentId) {
+  return request({
+    url: '/product/appointmentRefundPicture/' + appointmentId,
+    method: 'get'
+  })
+}
+
+/**
  * 审核详情
  */
 export function putObj(appointmentId, obj) {

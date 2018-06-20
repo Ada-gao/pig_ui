@@ -12,31 +12,31 @@
 
           <el-table-column align="center" label="时间" prop="name">
             <template slot-scope="scope">
-              <span>{{scope.row.name}}</span>
+              <span>{{scope.row.createTime | parseTime('{y}-{m}-{d}')}}</span>
             </template>
           </el-table-column>
 
           <el-table-column align="center" label="操作人" prop="name">
             <template slot-scope="scope">
-              <span>{{scope.row.name}}</span>
+              <span>{{scope.row.auditName}}</span>
             </template>
           </el-table-column>
 
           <el-table-column align="center" label="客户姓名" prop="name">
             <template slot-scope="scope">
-              <span>{{scope.row.name}}</span>
+              <span>{{scope.row.clientName}}</span>
             </template>
           </el-table-column>
 
           <el-table-column align="center" label="产品名称" prop="name">
             <template slot-scope="scope">
-              <span>{{scope.row.name}}</span>
+              <span>{{scope.row.productName}}</span>
             </template>
           </el-table-column>
 
           <el-table-column align="center" label="结果" prop="name">
             <template slot-scope="scope">
-              <span>{{scope.row.name}}</span>
+              <span>{{scope.row.status}}</span>
             </template>
           </el-table-column>
 
@@ -52,16 +52,17 @@
 </template>
 
 <script>
-  import { getObj } from '@/api/transc/transc'
+  import { fetchLog } from '@/api/transc/records'
   import transcTableComponent from 'components/transcTable'
   // import { getClientStatus, getClientBankcard } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  // import { parseTime } from '@/utils'
+  import { parseTime } from '@/utils'
   import { transformText } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
+  import Bus from '@/assets/js/bus'
 
   export default {
     components: {
@@ -79,17 +80,6 @@
         listLoading: true,
         role: undefined,
         form: {},
-        statusOptions: ['0', '1'],
-        rolesOptions: [],
-        nextToUpdate: false,
-        dialogDeptVisible: false,
-        userAdd: false,
-        userUpd: false,
-        userDel: false,
-        idType: '',
-        isClientType: '',
-        failReason: '',
-        tip: false,
         activeName2: 'first',
         tableKey: 0,
         list: [],
@@ -110,16 +100,17 @@
       ...mapGetters([
         'permissions',
         'appointmentStatus',
-        'genderType',
-        'certificationStatus',
-        'clientType',
-        'idTypeOptions',
-        'nationality',
         'expressType'
       ])
     },
+    mounted() {
+      Bus.$on('searchLog', listQuery => {
+        this.listQuery = listQuery
+        this.getList()
+      })
+    },
     created() {
-      this.getList()
+      // this.getList()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
@@ -132,24 +123,14 @@
       getList() {
         let id = this.$route.params.appointmentId
 
-        getObj(id).then(response => {
-          this.list = []
-          // this.status = this.form.status
-          // this.statusH = this.status.indexOf('100') == -1 ? true : false
-          // this.form.status = transformText(this.appointmentStatus, this.form.status)
+        fetchLog(id, this.listQuery).then(response => {
+          this.listLoading = false
+          this.total = response.data.total
+          this.list = response.data.records
+          this.list.forEach(item => {
+            item.status = transformText(this.appointmentStatus, item.status)
+          })
         })
-        // getFileObj(id).then(response => {
-        //   this.dealFiles = response.data.dealFiles
-        //   this.remitFiles = response.data.remitFiles
-        // })
-        
-      },
-      handleDept() {
-        console.log('产品状态')
-      },
-      rejectResult(sts) {
-        this.result.status = sts
-        this.dialogReject = true
       },
       handleClick(tab) {
         console.log(tab)

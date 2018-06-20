@@ -6,6 +6,9 @@ export default {
       '/client/bankcard': {
         // 702: '该用户没有填写银行卡信息'
       },
+      'product/appointmentRefundPicture/': {
+        // 没有退款申请书
+      },
       '/admin/user/uploadExcel': {
         1: '上传的 Excel 格式有误，请按照模板上传'
       },
@@ -29,7 +32,7 @@ export default {
     if(errorMsg) {
       return { 'code': code, errMsg: errorMsg }
     } else {
-      return { 'code': '999999', errMsg: '哟呵，服务器正忙，请稍后重试'}
+      return { 'code': '999999', errMsg: '哟呵，服务器正忙，请稍后重试'} //吃掉报错信息
     }
   },
   // _mergeMessage(code, systemMsg) {

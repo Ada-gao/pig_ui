@@ -67,7 +67,7 @@
       
       <el-table-column align="center" label="退款状态" v-if="refundCol">
         <template slot-scope="scope">
-          <span>{{scope.row.statusText}}</span>
+          <span>{{scope.row.refundStatusText}}</span>
         </template>
       </el-table-column>
 
@@ -114,6 +114,7 @@
 
 <script>
   import { fetchTranscList, fetchAppointList, fetchPayList, fetchContractList, fetchRefundList } from '@/api/transc/transc'
+  import { fetchRecords } from '@/api/transc/records'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
@@ -160,7 +161,13 @@
         default: false
       },
       orderStatus: {
-        default: 1
+        default: 0
+      },
+      historyStatus: {
+        default: 0
+      },
+      id: {
+        default: 0
       },
       activePath: {
         default: '/transcMag/transc'
@@ -180,9 +187,6 @@
         listQuery: {
           page: 1,
           limit: 20,
-          // name: '',
-          // productTypeIds: [],
-          // productStatus: [],
           annualizedReturns: [],
           isFloat: null
         },
@@ -203,6 +207,7 @@
       ...mapGetters([
         'permissions',
         'appointmentStatus',
+        'refundStatus',
         'productRiskLevel'
       ])
     },
@@ -214,9 +219,11 @@
     mounted() {
       Bus.$on('searchTransc', listQuery => {
         this.listQuery = listQuery
-        console.log(this.listQuery)
-        console.log('this.listQuery1')
         this.getList()
+      })
+      Bus.$on('searchRecords', listQuery => {
+        this.listQuery = listQuery
+        this.getHistory()
       })
     },
     methods: {
@@ -224,8 +231,8 @@
         this.listLoading = true
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         let list = null
-
-        if(this.orderStatus == '1') {
+        
+        if(this.orderStatus == '1') { // 交易列表
           fetchTranscList(this.listQuery).then(response => {
             this.list = response.data.records
             this.total = response.data.total
@@ -234,7 +241,7 @@
               item.statusText = transformText(this.appointmentStatus, item.status)
             })
           })
-        } else if(this.orderStatus == '2') {
+        } else if(this.orderStatus == '2') { // 预约列表
           fetchAppointList(this.listQuery).then(response => {
             this.list = response.data.records
             this.total = response.data.total
@@ -244,7 +251,7 @@
             })
           })
 
-        } else if(this.orderStatus == '3') {
+        } else if(this.orderStatus == '3') { // 打款列表
           fetchPayList(this.listQuery).then(response => {
             this.list = response.data.records
             this.total = response.data.total
@@ -254,7 +261,7 @@
             })
           })
 
-        } else if(this.orderStatus == '4') {
+        } else if(this.orderStatus == '4') { // 合同列表
           fetchContractList(this.listQuery).then(response => {
             this.list = response.data.records
             this.total = response.data.total
@@ -264,8 +271,22 @@
             })
           })
 
-        } else if(this.orderStatus == '5') {
+        } else if(this.orderStatus == '5') { // 退款列表
           fetchRefundList(this.listQuery).then(response => {
+            this.list = response.data.records
+            this.total = response.data.total
+            this.listLoading = false
+            this.list.forEach(item => {
+              item.statusText = transformText(this.appointmentStatus, item.status)
+              item.refundStatusText = transformText(this.refundStatus, item.refundStatus)
+            })
+          })
+        }
+      },
+      getHistory() {
+        // if(this.historyStatus) {
+          // console.log(this.historyStatus)
+          fetchRecords(this.listQuery).then(response => {
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
@@ -273,16 +294,17 @@
               item.statusText = transformText(this.appointmentStatus, item.status)
             })
           })
-        }
-        
+        // }
       },
       handleSizeChange(val) {
         this.listQuery.limit = val
         this.getList()
+        this.getHistory()
       },
       handleCurrentChange(val) {
         this.listQuery.page = val
         this.getList()
+        this.getHistory()
       },
       handleUpdate(row) { // 查看
         this.$router.push({path: '/transcMag/transc/detail/' + row.appointmentId + '/' + this.orderStatus + '/' + row.status})

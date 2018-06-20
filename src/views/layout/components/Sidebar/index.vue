@@ -27,9 +27,6 @@ export default {
     }
   },
   mounted() {
-      // console.log(this.$route)
-      // console.log(this.$router.options.routes)
-
     Bus.$on('activeIndex', defaultActive => {
       this.defaultActive = defaultActive
       // console.log(defaultActive)

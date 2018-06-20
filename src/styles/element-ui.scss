@@ -96,7 +96,7 @@ $hover_check: #00C1DF;
 // #app .nest-menu .el-submenu > .el-submenu__title, #app .el-submenu .el-menu-item {
 //   background-color: $hover_check !important;
 // }
-
+$btn: #0299CC;
 // 表格状态
 $normal_status: #009801;
 $unusual_status: #E3AB29;
@@ -161,5 +161,18 @@ $leave_status: #FF4C4C;
     border-radius: 5px;
     border-left: 1px solid #dcdfe6;
     margin-right: 20px;
+  }
+}
+
+.el-tabs__nav {
+  .el-tabs__item.is-active {
+    background-color: $btn;
+    color: #fff;
+    &:hover {
+      color: #fff;
+    }
+  }
+  .el-tabs__item:hover {
+    color: $hover_check;
   }
 }

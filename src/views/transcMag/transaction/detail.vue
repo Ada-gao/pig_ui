@@ -154,7 +154,7 @@
           <div class="transFile" v-if="orderStatus == 5 & statusH">
             <h5>退款申请书</h5>
             <div style="border-bottom: 1px solid #ccc"></div>
-            <div class="imgs" v-for="item in dealFiles">
+            <div class="imgs" v-for="item in refundFiles">
               <img :src="item.pictureUrl" alt="" @click="previewImg(item.pictureUrl)">
             </div>
           </div>
@@ -173,10 +173,10 @@
         <div v-if="(status == '2001' || status == '2002' || status == '2004') & orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button v-show="status == '2001'" class="search_btn" @click="submitResult('2004')">通 过</el-button>
           <el-button v-show="status == '2001'" class="add_btn" @click="rejectResult('2002')">不通过</el-button>
-          <el-button class="add_btn" @click="submitResult('2003')">关闭订单</el-button>
+          <el-button class="add_btn" @click="submitOperat('2003')">关闭订单</el-button>
         </div>
 
-        <div v-if="status == '2003' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
+        <div v-if="status == '2003' & form.refundStatus & orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('1')">需要退款</el-button>
           <el-button class="add_btn" @click="submitResult('0')">无需退款</el-button>
         </div>
@@ -186,10 +186,22 @@
           <el-button class="add_btn" @click="rejectResult('3003')">不通过</el-button>
         </div>
 
-        <div v-if="status == '2' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
+        <div v-if="form.refundStatus == '2' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('4')">通 过</el-button>
           <el-button class="add_btn" @click="rejectResult('3')">不通过</el-button>
         </div>
+
+        <el-dialog
+          title="提示"
+          :visible.sync="dialogComVisible"
+          width="30%">
+          <div style="margin-bottom: 30px;">确认执行此操作吗？</div>
+          
+          <div class="dialog-footer text-right">
+            <el-button @click="dialogComVisible = false">取 消</el-button>
+            <el-button type="primary" @click="submitCheck">确 定</el-button>
+          </div>
+        </el-dialog>
 
         <el-dialog
           title="审核通过"
@@ -264,80 +276,12 @@
 
       <el-tab-pane label="客户交易记录" name="second">
 
-        <!-- <div class="tabs">
-          <div class="tab-title" @click="records=1">历史预约记录</div>
-          <div class="tab-title" @click="records=2">历史打款记录</div>
-          <div class="tab-title" @click="records=3">交易成功记录</div>
-          <div class="tab-item" v-show="records == 1">
-            <transc-table-component
-              :orderStatus="2"
-              :aptCol="true"
-              :aptStatusCol="true">
-            </transc-table-component>
-          </div>
-          <div class="tab-item" v-if="records == 2">
-            <transc-table-component
-              :orderStatus="3"
-              :paymentCol="true"
-              :payStatusCol="true">
-            </transc-table-component>
-          </div>
-          <div class="tab-item" v-if="records == 3">
-            <transc-table-component
-              :orderStatus="1"
-              :statusCol="true"
-              :aptCol="true">
-            </transc-table-component>
-          </div>
-        </div> -->
-        <tab-transc-component></tab-transc-component>
+        <tab-transc-component
+          :clientId="clientId"></tab-transc-component>
 
       </el-tab-pane>
       <el-tab-pane label="操作日志" name="third">
-        <!-- <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
-              highlight-current-row style="width: 100%">
 
-          <el-table-column align="center" label="序号" type="index" width="50">
-          </el-table-column>
-
-          <el-table-column align="center" label="时间" prop="name">
-            <template slot-scope="scope">
-              <span>{{scope.row.name}}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column align="center" label="操作人" prop="name">
-            <template slot-scope="scope">
-              <span>{{scope.row.name}}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column align="center" label="客户姓名" prop="name">
-            <template slot-scope="scope">
-              <span>{{scope.row.name}}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column align="center" label="产品名称" prop="name">
-            <template slot-scope="scope">
-              <span>{{scope.row.name}}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column align="center" label="结果" prop="name">
-            <template slot-scope="scope">
-              <span>{{scope.row.name}}</span>
-            </template>
-          </el-table-column>
-
-        </el-table>
-        <div v-show="!listLoading" class="pagination-container">
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                        :current-page.sync="listQuery.page"
-                        :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
-                        layout="total, sizes, prev, pager, next, jumper" :total="total">
-          </el-pagination>
-        </div> -->
         <tab-log-component></tab-log-component>
       </el-tab-pane>
     </el-tabs>
@@ -345,7 +289,7 @@
 </template>
 
 <script>
-  import { getObj, putObj, getFileObj } from '@/api/transc/transc'
+  import { getObj, getFileObj, getRefundFile } from '@/api/transc/transc'
   import { putApt, putPay, putCtra, putRefund } from '@/api/transc/check'
   import transcTableComponent from 'components/transcTable'
   import tabTranscComponent from 'components/transcDetail/tabTranscTable'
@@ -356,6 +300,7 @@
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
+  import Bus from '@/assets/js/bus'
 
   export default {
     components: {
@@ -415,7 +360,9 @@
         status: '',
         dealFiles: [],
         remitFiles: [],
+        refundFiles: [],
         dialogImgVisible: false,
+        dialogComVisible: false,
         dialogImageUrl: '',
         dialogReject: false,
         options: [
@@ -434,7 +381,8 @@
           contractMail: '',
           auditRemark: '',
           status: ''
-        }
+        },
+        clientId: ''
       }
     },
     computed: {
@@ -445,14 +393,14 @@
       ])
     },
     created() {
-      this.getList()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
       this.type_is_update = this.$route.path.substr(-1)
       this.orderStatus = this.$route.params.orderStatus
+      this.getList()
       // this.status = this.$route.params.status
-      // console.log(this.status)
+      // console.log(this.$route.params)
     },
     methods: {
       getList() {
@@ -461,16 +409,22 @@
         getObj(id).then(response => {
           this.form = response.data
           this.status = this.form.status
+          this.clientId = this.form.clientId
           this.statusH = this.status.indexOf('100') == -1 ? true : false
           this.form.status = transformText(this.appointmentStatus, this.form.status)
         })
-        getFileObj(id).then(response => {
-          this.dealFiles = response.data.dealFiles
-          this.remitFiles = response.data.remitFiles
-          // console.log(this.dealFiles)
-          // console.log(this.remitFiles)
-        })
-        
+        console.log(this.orderStatus)
+        if(this.orderStatus != '2') {
+          getFileObj(id).then(response => {
+            this.dealFiles = response.data.dealFiles
+            this.remitFiles = response.data.remitFiles
+          })
+        }
+        if(this.orderStatus == '5') {
+          getRefundFile(id).then(response => {
+            this.refundFiles = response.data
+          })
+        }
       },
       handleDept() {
         console.log('产品状态')
@@ -483,6 +437,10 @@
         this.result.status = sts
         this.dialogReject = true
       },
+      submitOperat(sts) {
+        this.result.status = sts
+        this.dialogComVisible = true
+      },
       submitCheck() {
         let params = {
           // auditFailReasonId: this.failReason,
@@ -491,7 +449,7 @@
           status: this.result.status
         }
         let status = this.result.status
-        if(status == '1003') {
+        if(this.orderStatus == 2) {
           putApt(this.form.appointmentId, params).then(response => {
             console.log(response.code)
             if(response.status == 200) {
@@ -506,7 +464,7 @@
             }
           })
 
-        } else if(status == '2004') {
+        } else if(this.orderStatus == 3) {
           params.remitAmount = this.form.remitAmount
           putPay(this.form.appointmentId, params).then(response => {
             console.log(response.code)
@@ -522,7 +480,7 @@
             }
           })
           
-        } else if(status == '3004') {
+        } else if(this.orderStatus == 4) {
           putCtra(this.form.appointmentId, params).then(response => {
             console.log(response.code)
             if(response.status == 200) {
@@ -538,6 +496,7 @@
           })
           
         } else {
+          params.remitAmount = this.form.remitAmount
           putRefund(this.form.appointmentId, params).then(response => {
             console.log(response.code)
             if(response.status == 200) {
@@ -557,6 +516,13 @@
       },
       handleClick(tab) {
         console.log(tab)
+        if(tab.name == 'second') {
+          this.listQuery.clientId = this.form.clientId
+          this.listQuery.status = 10
+          Bus.$emit('searchRecords', this.listQuery)
+        } else if(tab.name == 'third') {
+          Bus.$emit('searchLog', this.listQuery)
+        }
       },
       handleSizeChange(val) {
         this.listQuery.limit = val

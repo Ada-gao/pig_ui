@@ -1,26 +1,26 @@
 <template>
 
   <div class="tabs">
-    <div class="tab-title" @click="records=1">历史预约记录</div>
-    <div class="tab-title" @click="records=2">历史打款记录</div>
-    <div class="tab-title" @click="records=3">交易成功记录</div>
-    <div class="tab-item" v-show="records == 1">
+    <div class="tab-title" :class="{ active: records == 1 }" @click="changeTab('1')">历史预约记录</div>
+    <div class="tab-title" :class="{ active: records == 2 }" @click="changeTab('2')">历史打款记录</div>
+    <div class="tab-title" :class="{ active: records == 3 }" @click="changeTab('3')">交易成功记录</div>
+    <div class="tab-item" v-if="records == 1">
       <transc-table-component
-        :orderStatus="2"
+        :id="clientId"
         :aptCol="true"
         :aptStatusCol="true">
       </transc-table-component>
     </div>
     <div class="tab-item" v-if="records == 2">
       <transc-table-component
-        :orderStatus="3"
+        :id="clientId"
         :paymentCol="true"
         :payStatusCol="true">
       </transc-table-component>
     </div>
     <div class="tab-item" v-if="records == 3">
       <transc-table-component
-        :orderStatus="1"
+        :id="clientId"
         :statusCol="true"
         :aptCol="true">
       </transc-table-component>
@@ -37,6 +37,7 @@
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
+  import Bus from '@/assets/js/bus'
 
   export default {
     components: {
@@ -46,6 +47,11 @@
     name: 'table_user',
     directives: {
       waves
+    },
+    props: {
+      clientId: {
+        default: 0
+      }
     },
     data() {
       return {
@@ -67,6 +73,11 @@
         total: null,
         records: 1,
         orderStatus: 1,
+        listQuery: {
+          page: 1,
+          limit: 20,
+          isFloat: null
+        },
       }
     },
     computed: {
@@ -74,6 +85,26 @@
         'permissions',
         'appointmentStatus'
       ])
+    },
+    created() {
+      if(this.clientId) {
+        this.changeTab()
+      }
+    },
+    methods: {
+      changeTab(Num) {
+        this.records = Num
+        this.listQuery.clientId = this.clientId
+        if(Num == 1) {
+          this.listQuery.status = 10
+        } else if(Num == 2) {
+          this.listQuery.status = 20
+        } else if(Num == 3) {
+          this.listQuery.status = 3004
+        }
+        // console.log(this.listQuery)
+        Bus.$emit('searchRecords', this.listQuery)
+      }
     }
   }
 </script>
@@ -92,9 +123,9 @@
 .tab-title {
   display: inline-block;
   padding: 0 18px;
-  &:active {
-    color: red;
-  }
+}
+.active {
+  @include mainColor;
 }
 
 </style>
