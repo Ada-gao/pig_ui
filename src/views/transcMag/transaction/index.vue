@@ -12,7 +12,7 @@
             </div>
             <div class="right-box">
               <div class="title">今日预约人数</div>
-              <div class="btm-box"><span>10</span>人</div>
+              <div class="btm-box"><span>{{statistic.appointAmounts}}</span><i>人</i></div>
             </div>
           </div>
         </el-card>
@@ -27,7 +27,7 @@
             </div>
             <div class="right-box">
               <div class="title">今日预约金额</div>
-              <div class="btm-box"><span>1000</span>万</div>
+              <div class="btm-box"><span>{{statistic.appointNum}}</span><i>万</i></div>
             </div>
           </div>
         </el-card>
@@ -42,7 +42,7 @@
             </div>
             <div class="right-box green-right">
               <div class="title">今日打款成功人数</div>
-              <div class="btm-box"><span>10</span>人</div>
+              <div class="btm-box"><span>{{statistic.remitAmounts}}</span><i>人</i></div>
             </div>
           </div>
         </el-card>
@@ -57,7 +57,7 @@
             </div>
             <div class="right-box green-right">
               <div class="title">今日打款成功金额</div>
-              <div class="btm-box"><span>900</span>万</div>
+              <div class="btm-box"><span>{{statistic.remitNum}}</span><i>万</i></div>
             </div>
           </div>
         </el-card>
@@ -153,6 +153,7 @@
   import transcTableComponent from 'components/transcTable'
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/product/product'
   import { fetchProductTypeList } from '@/api/product/productType'
+  import { statistics } from '@/api/transc/transc'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
   import { fetchCurrency, getObjList } from '@/api/currency'
@@ -256,7 +257,13 @@
         },
         isDisabled: true,
         form: [],
-        isSpread: false
+        isSpread: false,
+        statistic: {
+          appointAmounts: null,
+          appointNum: null,
+          remitAmounts: null,
+          remitNum: null
+        }
       }
     },
     computed: {
@@ -269,10 +276,19 @@
     created() {
       // console.log(this.productStatus)
       // this.getList()
+      this.getStatistic()
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
     },
     methods: {
+      getStatistic() {
+        statistics().then(res => {
+          this.statistic.appointAmounts = res.data.appointAmounts || 0
+          this.statistic.appointNum = res.data.appointNum || 0
+          this.statistic.remitAmounts = res.data.remitAmounts || 0
+          this.statistic.remitNum = res.data.remitNum || 0
+        })
+      },
       // getList() {
       //   this.listLoading = true
 
@@ -414,6 +430,10 @@
           line-height: 20px;
           span {
             font-size: 40px;
+            vertical-align: text-top;
+          }
+          i {
+            font-style: normal;
           }
         }
       }

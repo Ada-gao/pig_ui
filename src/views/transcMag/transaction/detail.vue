@@ -1,7 +1,7 @@
 <template>
   <div class="app-container calendar-list-container">
 
-    <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
+    <el-tabs v-model="activeName2" type="card" @tab-click="handleClick" class="transc">
       <el-tab-pane label="预约详情" name="first">
         <el-form :model="form" ref="form" label-width="100px">
           <div style="border-bottom: 1px solid #ccc"></div>

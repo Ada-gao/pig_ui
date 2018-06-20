@@ -164,15 +164,17 @@ $leave_status: #FF4C4C;
   }
 }
 
-.el-tabs__nav {
-  .el-tabs__item.is-active {
-    background-color: $btn;
-    color: #fff;
-    &:hover {
+.transc {
+  .el-tabs__nav {
+    .el-tabs__item.is-active {
+      background-color: $btn;
       color: #fff;
+      &:hover {
+        color: #fff;
+      }
     }
-  }
-  .el-tabs__item:hover {
-    color: $hover_check;
+    .el-tabs__item:hover {
+      color: $hover_check;
+    }
   }
 }

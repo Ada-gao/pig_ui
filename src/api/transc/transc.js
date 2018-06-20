@@ -94,3 +94,68 @@ export function putObj(appointmentId, obj) {
     data: obj
   })
 }
+
+/**
+ * 交易列表统计数据
+ */
+export function statistics() {
+  return request({
+    url: '/product/appointment/statistics',
+    method: 'get'
+  })
+}
+
+/**
+ * 获取合同交易原因
+ * @param query
+ */
+export function searchAppReasons(query) {
+  return request({
+    url: '/product/auditFailReason/',
+    method: 'get',
+    params: query
+  })
+}
+
+/**
+ * 新增合同不通过原因
+ */
+export function addReason(obj) {
+  return request({
+    url: '/product/auditFailReason/',
+    method: 'post',
+    data: obj
+  })
+}
+
+export function getReason(id) {
+  return request({
+    url: '/product/auditFailReason/' + id,
+    method: 'get'
+  })
+}
+
+/**
+ * 删除某条合同不通过原因
+ */
+export function delReason(id) {
+  return request({
+    url: '/product/auditFailReason/' + id,
+    method: 'delete'
+  })
+}
+
+/**
+ * 修改某条合同不通过原因
+ */
+export function modifyReason(obj) {
+  return request({
+    url: '/product/auditFailReason/' + obj.auditFailReasonId,
+    method: 'put',
+    data: {
+      failAuditReason: obj.failAuditReason,
+      failAuditType: obj.failAuditType,
+      auditFailReasonId: obj.auditFailReasonId
+    }
+  })
+}
