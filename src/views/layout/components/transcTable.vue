@@ -91,8 +91,11 @@
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <a v-if="sys_product_upd" size="small" class="common_btn"
-                     @click="handleUpdate(scope.row)">查看
+          <a v-if="sys_product_upd & scope.row.status != 3001" size="small" class="common_btn"
+                     @click="handleUpdate(scope.row)">查 看
+          </a>
+          <a v-if="scope.row.status == 3001" size="small" class="common_btn"
+                     @click="receiveContract(scope.row)">收到合同
           </a>
         </template>
       </el-table-column>
@@ -219,8 +222,6 @@
     methods: {
       getList() {
         this.listLoading = true
-        console.log(this.listQuery)
-        console.log('this.listQuery2')
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         let list = null
 
@@ -288,17 +289,20 @@
         Bus.$emit('activeIndex', this.activePath)
 
       },
-      // resetTemp() {
-      //   this.form = {
-      //     id: undefined,
-      //     name: '',
-      //     role: undefined
-      //   }
-      // },
-      // searchList(data) {
-      //   this.listQuery = data
-      //   this.getList()
-      // }
+      receiveContract(row) {
+        this.$confirm('确定收到此合同?', '收到合同', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.handleUpdate(row)
+        }).catch(() => {
+          // this.$message({
+          //   type: 'info',
+          //   message: '已取消删除'
+          // })
+        })
+      }
     }
   }
 </script>

@@ -34,6 +34,7 @@ const getters = {
   paymentStatus: state => state.dictionary.paymentStatus,
   contractStatus: state => state.dictionary.contractStatus,
   transcStatus: state => state.dictionary.transcStatus,
-  refundStatus: state => state.dictionary.refundStatus
+  refundStatus: state => state.dictionary.refundStatus,
+  expressType: state => state.dictionary.expressType
 }
 export default getters

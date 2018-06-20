@@ -74,9 +74,9 @@
                   <el-input v-model="form.status" placeholder="" readonly></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="11" style="white-space: nowrap">
+              <el-col :span="11">
                 <el-form-item label="打款金额" prop="cardNo">
-                  <el-input v-model="form.remitAmount" placeholder=""></el-input>万
+                  <el-input v-model="form.remitAmount" placeholder="" readonly></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="11" v-if="form.status">
@@ -197,10 +197,10 @@
           width="30%">
           <div style="margin-bottom: 30px;">确认审核通过吗？</div>
           
-          <div class="dialog-footer text-right">
+          <span class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
             <el-button type="primary" @click="submitCheck">确 定</el-button>
-          </div>
+          </span>
         </el-dialog>
 
         <el-dialog
@@ -254,17 +254,17 @@
             </el-tab-pane>
           </el-tabs>
           
-          <div class="dialog-footer text-right">
+          <span class="dialog-footer">
             <el-button @click="dialogReject = false">取 消</el-button>
             <el-button type="primary" @click="submitCheck">确 定</el-button>
-          </div>
+          </span>
         </el-dialog>
 
       </el-tab-pane>
 
       <el-tab-pane label="客户交易记录" name="second">
 
-        <!-- <div class="tabs">
+        <div class="tabs">
           <div class="tab-title" @click="records=1">历史预约记录</div>
           <div class="tab-title" @click="records=2">历史打款记录</div>
           <div class="tab-title" @click="records=3">交易成功记录</div>
@@ -289,15 +289,16 @@
               :aptCol="true">
             </transc-table-component>
           </div>
-        </div> -->
-        <tab-transc-component></tab-transc-component>
-
+        </div>
       </el-tab-pane>
       <el-tab-pane label="操作日志" name="third">
-        <!-- <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
+        <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
           <el-table-column align="center" label="序号" type="index" width="50">
+            <!-- <template slot-scope="scope">
+              <span>{{scope.row.productTypeId}}</span>
+            </template> -->
           </el-table-column>
 
           <el-table-column align="center" label="时间" prop="name">
@@ -337,8 +338,7 @@
                         :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
                         layout="total, sizes, prev, pager, next, jumper" :total="total">
           </el-pagination>
-        </div> -->
-        <tab-log-component></tab-log-component>
+        </div>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -346,12 +346,11 @@
 
 <script>
   import { getObj, putObj, getFileObj } from '@/api/transc/transc'
-  import { putApt, putPay, putCtra, putRefund } from '@/api/transc/check'
   import transcTableComponent from 'components/transcTable'
-  import tabTranscComponent from 'components/transcDetail/tabTranscTable'
-  import tabLogComponent from 'components/transcDetail/tabLog'
+  // import { getClientStatus, getClientBankcard } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
+  // import { parseTime } from '@/utils'
   import { transformText } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
@@ -360,9 +359,7 @@
   export default {
     components: {
       ElOption,
-      transcTableComponent,
-      tabTranscComponent,
-      tabLogComponent
+      transcTableComponent
     },
     name: 'table_user',
     directives: {
@@ -441,6 +438,11 @@
       ...mapGetters([
         'permissions',
         'appointmentStatus',
+        'genderType',
+        'certificationStatus',
+        'clientType',
+        'idTypeOptions',
+        'nationality',
         'expressType'
       ])
     },
@@ -483,77 +485,60 @@
         this.result.status = sts
         this.dialogReject = true
       },
-      submitCheck() {
+      submitCheck(sts) {
         let params = {
           // auditFailReasonId: this.failReason,
           auditRemark: this.result.auditRemark,
           contractMail: this.result.contractMail,
           status: this.result.status
         }
-        let status = this.result.status
-        if(status == '1003') {
-          putApt(this.form.appointmentId, params).then(response => {
-            console.log(response.code)
-            if(response.status == 200) {
+        putObj(this.form.appointmentId, params).then(response => {
+          console.log(response.code)
+          if(response.status == 200) {
+            this.$notify({
+              title: '成功',
+              message: '审核完成',
+              type: 'success',
+              duration: 2000
+            })
+            this.dialogVisible = false
+            this.$router.push({path: '/transcMag/appoint'})
+          }
+        })
+      },
+      cancel(formName) {
+        this.dialogFormVisible = false
+        this.$refs[formName].resetFields()
+      },
+      update(formName) {
+        const set = this.$refs
+        this.form.role = this.role
+        set[formName].validate(valid => {
+          if (valid) {
+            this.dialogFormVisible = false
+            this.form.password = undefined
+            putObj(this.form).then(() => {
+              this.nextToUpdate = true
+              this.getList()
               this.$notify({
                 title: '成功',
-                message: '审核完成',
+                message: '修改成功',
                 type: 'success',
                 duration: 2000
               })
-              this.dialogVisible = false
-              this.$router.push({path: '/transcMag/appoint'})
-            }
-          })
-
-        } else if(status == '2004') {
-          params.remitAmount = this.form.remitAmount
-          putPay(this.form.appointmentId, params).then(response => {
-            console.log(response.code)
-            if(response.status == 200) {
-              this.$notify({
-                title: '成功',
-                message: '审核完成',
-                type: 'success',
-                duration: 2000
-              })
-              this.dialogVisible = false
-              this.$router.push({path: '/transcMag/payment'})
-            }
-          })
-          
-        } else if(status == '3004') {
-          putCtra(this.form.appointmentId, params).then(response => {
-            console.log(response.code)
-            if(response.status == 200) {
-              this.$notify({
-                title: '成功',
-                message: '审核完成',
-                type: 'success',
-                duration: 2000
-              })
-              this.dialogVisible = false
-              this.$router.push({path: '/transcMag/contract'})
-            }
-          })
-          
-        } else {
-          putRefund(this.form.appointmentId, params).then(response => {
-            console.log(response.code)
-            if(response.status == 200) {
-              this.$notify({
-                title: '成功',
-                message: '审核完成',
-                type: 'success',
-                duration: 2000
-              })
-              this.dialogVisible = false
-              this.$router.push({path: '/transcMag/refund'})
-            }
-          })
-
+            })
+          } else {
+            return false
+          }
+        })
+      },
+      resetTemp() {
+        this.form = {
+          id: undefined,
+          username: '',
+          password: '',
+          role: undefined
         }
-        
       },
       handleClick(tab) {
         console.log(tab)

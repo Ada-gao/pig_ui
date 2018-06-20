@@ -52,13 +52,13 @@ service.interceptors.response.use(
           message(res.data.codeMsg.errMsg, 'error')
         }
       }
-    } else if(res.status === 401) {
+    } else if(res.status.indexOf('401') !== -1) {
       message('登陆时间过期，请重新登陆', 'error')
       store.dispatch('LogOut')
-      router.replace({
-        path: '/login',
-        query: {redirect: router.fullPath}
-      })
+      // router.replace({
+      //   path: '/login',
+      //   query: {redirect: router.fullPath}
+      // })
     }else if(res.status === 403) {
       message('管理权限不足，请联系管理员')
     } else if(res.status === 500) {

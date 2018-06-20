@@ -24,7 +24,8 @@ const dictionary = {
     paymentStatus: [], // 从appointmentStatus中分离数据
     contractStatus: [], // 从appointmentStatus中分离数据
     transcStatus: [],
-    refundStatus: []
+    refundStatus: [],
+    expressType: []
   },
 
   mutations: {
@@ -96,6 +97,9 @@ const dictionary = {
     },
     SET_REFUND_STATUS: (state, refundStatus) => {
       state.refundStatus = refundStatus
+    },
+    SET_EXPRESS_TYPE: (state, expressType) => {
+      state.expressType = expressType
     }
   },
 
@@ -129,6 +133,7 @@ const dictionary = {
           let contractList = []
           let transcStatusList = []
           let refundStatusList = []
+          let expressTypeList = []
           
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -190,6 +195,9 @@ const dictionary = {
 
             } else if(data[i].type === 'refund_status') {
               refundStatusList.push(data[i])
+
+            } else if(data[i].type === 'express_type') {
+              expressTypeList.push(data[i])
             }
           }
 
@@ -226,6 +234,7 @@ const dictionary = {
           commit('SET_CONTRACT_STATUS', contractList)
           commit('SET_TRANSC_STATUS', transcStatusList)
           commit('SET_REFUND_STATUS', refundStatusList)
+          commit('SET_EXPRESS_TYPE', expressTypeList)
           resolve()
         }).catch(error => {
           reject(error)
