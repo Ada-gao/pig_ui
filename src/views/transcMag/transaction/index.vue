@@ -12,7 +12,7 @@
             </div>
             <div class="right-box">
               <div class="title">今日预约人数</div>
-              <div class="btm-box"><span>{{statistic.appointAmounts}}</span><i>人</i></div>
+              <div class="btm-box"><span>{{statistic.appointNum}}</span><i>人</i></div>
             </div>
           </div>
         </el-card>
@@ -27,7 +27,7 @@
             </div>
             <div class="right-box">
               <div class="title">今日预约金额</div>
-              <div class="btm-box"><span>{{statistic.appointNum}}</span><i>万</i></div>
+              <div class="btm-box"><span>{{statistic.appointAmounts}}</span><i>万</i></div>
             </div>
           </div>
         </el-card>
@@ -42,7 +42,7 @@
             </div>
             <div class="right-box green-right">
               <div class="title">今日打款成功人数</div>
-              <div class="btm-box"><span>{{statistic.remitAmounts}}</span><i>人</i></div>
+              <div class="btm-box"><span>{{statistic.remitNum}}</span><i>人</i></div>
             </div>
           </div>
         </el-card>
@@ -57,7 +57,7 @@
             </div>
             <div class="right-box green-right">
               <div class="title">今日打款成功金额</div>
-              <div class="btm-box"><span>{{statistic.remitNum}}</span><i>万</i></div>
+              <div class="btm-box"><span>{{statistic.remitAmounts}}</span><i>万</i></div>
             </div>
           </div>
         </el-card>
