@@ -6,9 +6,9 @@
         <el-card shadow="always">
           <div class="card-box">
             <div class="left-box orange-box">
-              <svg-icon icon-class="user"></svg-icon>
+              <svg-icon icon-class="appointpeo"></svg-icon>
               <!--<span class="icon-bg"></span>-->
-              <span class="circle"></span>
+              <!--<span class="circle"></span>-->
             </div>
             <div class="right-box">
               <div class="title">今日预约人数</div>
@@ -21,9 +21,9 @@
         <el-card shadow="always">
           <div class="card-box">
             <div class="left-box orange-box">
-              <svg-icon icon-class="money"></svg-icon>
+              <svg-icon icon-class="appointmon"></svg-icon>
               <!--<span class="icon-bg"></span>-->
-              <span class="circle"></span>
+              <!--<span class="circle"></span>-->
             </div>
             <div class="right-box">
               <div class="title">今日预约金额</div>
@@ -36,9 +36,9 @@
         <el-card shadow="always">
           <div class="card-box">
             <div class="left-box green-box">
-              <svg-icon icon-class="customer"></svg-icon>
+              <svg-icon icon-class="successpeo"></svg-icon>
               <!--<span class="icon-bg"></span>-->
-              <span class="circle"></span>
+              <!--<span class="circle"></span>-->
             </div>
             <div class="right-box green-right">
               <div class="title">今日打款成功人数</div>
@@ -51,9 +51,9 @@
         <el-card shadow="always">
           <div class="card-box">
             <div class="left-box green-box">
-              <svg-icon icon-class="money"></svg-icon>
+              <svg-icon icon-class="successmon"></svg-icon>
               <!--<span class="icon-bg"></span>-->
-              <span class="circle"></span>
+              <!--<span class="circle"></span>-->
             </div>
             <div class="right-box green-right">
               <div class="title">今日打款成功金额</div>
@@ -403,8 +403,8 @@
         .svg-icon {
           position: absolute;
            fill: #fff;
-          width: 44px;
-          height: 44px;
+          width: 70px;
+          height: 70px;
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
