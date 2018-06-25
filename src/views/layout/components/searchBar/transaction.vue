@@ -240,6 +240,12 @@ export default {
       }
       if(!this.listQuery.status.length) {
         this.listQuery.status.push(this.transcStep)
+      } else if(this.listQuery.status.length > 1) {
+        this.listQuery.status.forEach((item, index) => {
+          if(item === '10' || item === '20' || item === '30') {
+            this.listQuery.status.splice(index, 1)
+          }
+        })
       }
       
       this.listQuery.orderByField = 'create_time'
