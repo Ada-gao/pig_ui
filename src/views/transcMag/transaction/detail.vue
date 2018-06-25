@@ -80,10 +80,15 @@
                 </el-form-item>
               </el-col>
               <el-col :span="11" v-if="form.status">
+                <el-form-item label="打款时间" prop="cardNo">
+                  <el-input v-model="form.remitDate" placeholder=""></el-input>
+                </el-form-item>
+              </el-col>
+              <!-- <el-col :span="11" v-if="form.status">
                 <el-form-item label="打款（审核通过）时间" prop="cardNo">
                   <el-input v-model="form.remitDate" placeholder="" readonly></el-input>
                 </el-form-item>
-              </el-col>
+              </el-col> -->
             </el-row>
           </div>
 
@@ -497,6 +502,7 @@
           
         } else {
           params.remitAmount = this.form.remitAmount
+          params.remitDate = this.form.remitDate
           putRefund(this.form.appointmentId, params).then(response => {
             console.log(response.code)
             if(response.status == 200) {
@@ -510,9 +516,7 @@
               this.$router.push({path: '/transcMag/refund'})
             }
           })
-
         }
-        
       },
       handleClick(tab) {
         console.log(tab)
