@@ -471,6 +471,7 @@
 
         } else if(this.orderStatus == 3) {
           params.remitAmount = this.form.remitAmount
+          params.remitDate = this.form.remitDate
           putPay(this.form.appointmentId, params).then(response => {
             console.log(response.code)
             if(response.status == 200) {
@@ -502,7 +503,6 @@
           
         } else {
           params.remitAmount = this.form.remitAmount
-          params.remitDate = this.form.remitDate
           putRefund(this.form.appointmentId, params).then(response => {
             console.log(response.code)
             if(response.status == 200) {
