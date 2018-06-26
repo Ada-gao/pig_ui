@@ -381,7 +381,7 @@
       .left-box,
       .right-box {
         display: inline-block;
-        height: 100px;
+        height: 80px;
         vertical-align: middle;
         position: relative;
         .circle {
@@ -397,14 +397,14 @@
         }
       }
       .left-box {
-        width: 100px;
+        width: 80px;
         box-shadow: 0 6px 6px 2px rgba(43,125,131,0.05);
         border-radius: 4px;
         .svg-icon {
           position: absolute;
            fill: #fff;
-          width: 70px;
-          height: 70px;
+          width: 50px;
+          height: 50px;
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
