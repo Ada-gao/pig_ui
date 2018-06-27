@@ -229,11 +229,16 @@ export default {
       let dateRange = []
 
       if(this.listQuery.date) {
+        console.log(this.listQuery.date)
         this.listQuery.date.forEach(item => {
-          item = parseTime(item, '{y}-{m}-{d}')
+          let str = '' + item
+          if(str.indexOf('-') === -1) {
+            item = parseTime(item, '{y}-{m}-{d}')
+          }
           dateRange.push(item)
         })
         this.listQuery.date = dateRange
+        console.log(this.listQuery.date)
       }
       if(this.deptId.length) {
         this.listQuery.deptId = this.deptId[this.deptId.length - 1]

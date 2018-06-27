@@ -56,7 +56,6 @@
             <el-col :span="11">
               <el-form-item label="预约时间" prop="idType">
                 <el-input v-model="form.appointmentDate" placeholder="请输入手机号" readonly></el-input>
-                <!-- <span>{{form.appointmentDate | parseTime('{y}-{m}-{d}')}}</span> -->
               </el-form-item>
             </el-col>
             <el-col :span="11" style="white-space: nowrap">
