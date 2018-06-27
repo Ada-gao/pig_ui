@@ -114,26 +114,28 @@
             </el-row>
           </div>
 
-          <div style="border-bottom: 1px solid #ccc"></div>
+          <div class="bankCard" v-if="orderStatus != 2 & statusH">
+            <div style="border-bottom: 1px solid #ccc"></div>
           
-          <h5>客户银行卡信息</h5>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item label="银行卡名称" prop="bankName">
-                <el-input v-model="form.bankName" placeholder="" readonly></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="支行名称" prop="cardNo">
-                <el-input v-model="form.bankSubname" placeholder="" readonly></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="打款账号" prop="cardNo">
-                <el-input v-model="form.cardno" placeholder="" readonly></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
+            <h5>客户银行卡信息</h5>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="银行卡名称" prop="bankName">
+                  <el-input v-model="form.bankName" placeholder="" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="支行名称" prop="cardNo">
+                  <el-input v-model="form.bankSubname" placeholder="" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="打款账号" prop="cardNo">
+                  <el-input v-model="form.cardno" placeholder="" readonly></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
 
           <div class="payVoucher" v-if="orderStatus != 2 & statusH">
             <h5>打款凭证</h5>

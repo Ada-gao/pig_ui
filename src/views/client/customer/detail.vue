@@ -75,7 +75,6 @@
           </el-form-item>
         </el-col>
       </el-row>
-
     </el-form>
 
     <div v-if="!isReadonly" slot="footer" class="dialog-footer" style="text-align: center">

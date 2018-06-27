@@ -123,27 +123,25 @@
       <div style="border-bottom: 1px solid #ccc"></div>
       
       <h5>客户银行卡信息</h5>
-      <el-row>
-        <el-col :span="11">
-          <el-form-item label="开户银行" prop="bankName">
-            <el-input v-model="bankcardList.bankName" placeholder="" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="银行卡号" prop="cardNo">
-            <el-input v-model="bankcardList.cardNo" placeholder="" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="22">
-          <el-form-item label="银行卡截图" prop="cardPic">
-            <el-col :span="8">
-              <el-card>
-                <img :src="bankcardList.cardFrontUrl" alt="" style="max-height: 100px;">
-              </el-card>
-            </el-col>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <el-table :data="bankcardList" element-loading-text="给我一点时间" border fit
+        highlight-current-row style="width: 100%" 
+        v-if="realnameStatus">
+        <el-table-column align="center" label="开户银行">
+          <template slot-scope="scope">
+            <span>{{scope.row.bankName}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="银行卡号">
+          <template slot-scope="scope">
+            <span>{{scope.row.cardNo}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="银行卡图片">
+          <template slot-scope="scope">
+            <img :src="scope.row.cardFrontUrl" alt="" style="width: 50px;" @click="previewImg(iscope.row.cardFrontUrl)">
+          </template>
+        </el-table-column>
+      </el-table>
 
       <div style="border-bottom: 1px solid #ccc"></div>
       <el-row style="margin-top: 20px">
@@ -170,6 +168,11 @@
       <el-button class="add_btn" v-if="dialogStatus=='create'" @click="submitResult('3')">不通过</el-button>
       <!-- <el-button v-else type="primary" @click="update('form')">修 改</el-button> -->
     </div>
+
+    <!-- 预览图片 -->
+    <el-dialog :visible.sync="dialogImgVisible">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog>
 
   </div>
 </template>
@@ -289,7 +292,9 @@
         idType: '',
         isClientType: '',
         failReason: '',
-        tip: false
+        tip: false,
+        dialogImgVisible: false,
+        dialogImageUrl: ''
       }
     },
     computed: {
@@ -345,7 +350,7 @@
           this.form.nationality = transformText(this.nationality, this.form.nationality)
           if(this.realnameStatus) {
             getClientBankcard(id, '1').then(response => {
-              this.bankcardList = response.data || {}
+              this.bankcardList = response.data || []
             })
           }
         })
@@ -431,6 +436,10 @@
           password: '',
           role: undefined
         }
+      },
+      previewImg(url) {
+        this.dialogImgVisible = true
+        this.dialogImageUrl = url
       }
     }
     // mounted() {

@@ -56,11 +56,12 @@
             <el-col :span="11">
               <el-form-item label="预约时间" prop="idType">
                 <el-input v-model="form.appointmentDate" placeholder="请输入手机号" readonly></el-input>
+                <!-- <span>{{form.appointmentDate | parseTime('{y}-{m}-{d}')}}</span> -->
               </el-form-item>
             </el-col>
-            <el-col :span="11">
+            <el-col :span="11" style="white-space: nowrap">
               <el-form-item label="预约金额" prop="idNo">
-                <el-input v-model="form.appointmentAmount" placeholder="" readonly></el-input>
+                <el-input v-model="form.appointmentAmount" placeholder="" readonly></el-input>万
               </el-form-item>
             </el-col>
           </el-row>
@@ -76,19 +77,21 @@
               </el-col>
               <el-col :span="11" style="white-space: nowrap">
                 <el-form-item label="打款金额" prop="cardNo">
-                  <el-input v-model="form.remitAmount" placeholder=""></el-input>万
+                  <el-input v-model="form.remitAmount" placeholder="" :readonly="status!=2001"></el-input>万
                 </el-form-item>
               </el-col>
               <el-col :span="11" v-if="form.status">
-                <el-form-item label="打款时间" prop="cardNo">
-                  <el-input v-model="form.remitDate" placeholder=""></el-input>
+                <el-form-item label="打款时间" prop="cardNo" v-if="status!=2001">
+                  <el-input v-model="form.remitDate" placeholder="" :readonly="status!=2001"></el-input>
+                </el-form-item>
+                <el-form-item label="打款时间" prop="remitDate" v-if="status==2001">
+                  <el-date-picker
+                    v-model="form.remitDate"
+                    type="date"
+                    placeholder="选择日期">
+                  </el-date-picker>
                 </el-form-item>
               </el-col>
-              <!-- <el-col :span="11" v-if="form.status">
-                <el-form-item label="打款（审核通过）时间" prop="cardNo">
-                  <el-input v-model="form.remitDate" placeholder="" readonly></el-input>
-                </el-form-item>
-              </el-col> -->
             </el-row>
           </div>
 
@@ -119,40 +122,42 @@
             </el-row>
           </div>
 
-          <div style="border-bottom: 1px solid #ccc"></div>
+          <div class="bankCard" v-if="orderStatus != 2 & statusH">
+            <div style="border-bottom: 1px solid #ccc"></div>
           
-          <h5>客户银行卡信息</h5>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item label="银行卡名称" prop="bankName">
-                <el-input v-model="form.bankName" placeholder="" readonly></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="支行名称" prop="cardNo">
-                <el-input v-model="form.bankSubname" placeholder="" readonly></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="打款账号" prop="cardNo">
-                <el-input v-model="form.cardno" placeholder="" readonly></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
+            <h5>客户银行卡信息</h5>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="银行卡名称" prop="bankName">
+                  <el-input v-model="form.bankName" placeholder="" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="支行名称" prop="cardNo">
+                  <el-input v-model="form.bankSubname" placeholder="" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="打款账号" prop="cardNo">
+                  <el-input v-model="form.cardno" placeholder="" readonly></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
 
           <div class="payVoucher" v-if="orderStatus != 2 & statusH">
             <h5>打款凭证</h5>
             <div style="border-bottom: 1px solid #ccc"></div>
-            <div class="imgs" v-for="item in remitFiles">
-              <img :src="item.pictureUrl" alt="" @click="previewImg(item.pictureUrl)">
+            <div class="imgs">
+              <img :src="item.pictureUrl" alt="" @click="previewImg(item.pictureUrl)" v-for="item in remitFiles">
             </div>
           </div>
 
           <div class="transFile" v-if="orderStatus != 2 & statusH">
             <h5>交易所需材料</h5>
             <div style="border-bottom: 1px solid #ccc"></div>
-            <div class="imgs" v-for="item in dealFiles">
-              <img :src="item.pictureUrl" alt="" @click="previewImg(item.pictureUrl)">
+            <div class="imgs">
+              <img :src="item.pictureUrl" alt="" @click="previewImg(item.pictureUrl)" v-for="item in dealFiles">
             </div>
           </div>
 
@@ -301,7 +306,7 @@
   import tabLogComponent from 'components/transcDetail/tabLog'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { transformText } from '@/utils'
+  import { transformText, parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -317,6 +322,13 @@
     name: 'table_user',
     directives: {
       waves
+    },
+    filters: {
+      parseTime (time) {
+        if(!time) return
+        let date = new Date(time)
+        return parseTime(date)
+      }
     },
     data() {
       return {
@@ -417,6 +429,8 @@
           this.clientId = this.form.clientId
           this.statusH = this.status.indexOf('100') == -1 ? true : false
           this.form.status = transformText(this.appointmentStatus, this.form.status)
+          this.form.appointmentDate = parseTime(this.form.appointmentDate, '{y}-{m}-{d}')
+          this.form.remitDate = parseTime(this.form.remitDate, '{y}-{m}-{d}')
         })
         console.log(this.orderStatus)
         if(this.orderStatus != '2') {
