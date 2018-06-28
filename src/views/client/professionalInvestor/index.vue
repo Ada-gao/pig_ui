@@ -94,8 +94,8 @@
           <a size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId, '0')">查看
           </a>
-          <span v-if="sys_cert_comm_upd" class="space_line"> | </span>
-          <a v-if="sys_cert_comm_upd" size="small" class="common_btn"
+          <span v-if="sys_cert_prof_upd" class="space_line"> | </span>
+          <a v-if="sys_cert_prof_upd" size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId, '1')">审核
           </a>
         </template>
