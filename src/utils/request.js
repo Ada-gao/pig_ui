@@ -53,8 +53,9 @@ service.interceptors.response.use(
           message(res.data.codeMsg.errMsg, 'error')
         }
       }
-    } else if(res.status.indexOf('401') !== -1) {
+    } else if(res.status.toString().indexOf('401') !== -1) {
       message('登陆时间过期，请重新登陆', 'error')
+      console.log(router.fullPath)
       // store.dispatch('LogOut')
       router.replace({
         path: '/login',
@@ -64,7 +65,7 @@ service.interceptors.response.use(
       message('管理权限不足，请联系管理员')
     } else if(res.status === 500) {
       message(res.data.msg, 'error')
-    } else if(res.status.indexOf('504') !== -1 || res.status === 404) {
+    } else if(res.status.toString().indexOf('504') !== -1 || res.status === 404) {
       message('服务器被吃了⊙﹏⊙∥', 'error')
       router.replace({
         path: '/404',

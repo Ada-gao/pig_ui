@@ -8,10 +8,10 @@
       </el-radio-group>
     </div>
     <div v-else class="tabs">
-      <div class="tab-item tab-active">产品详情
+      <div class="tab-item tab-active" @click="step=1">产品详情
         <b class="right"><i class="right-arrow1"></i><i class="right-arrow2"></i></b>
       </div>
-      <div class="tab-item">产品操作指南
+      <div class="tab-item" @click="step=2">产品操作指南
         <b class="right"><i class="right-arrow1"></i><i class="right-arrow2"></i></b>
       </div>
     </div>
@@ -85,8 +85,8 @@
 
         <el-row :gutter="90">
           <el-col :span="11">
-            <el-form-item label="募集额度" prop="collectionAmount">
-              <el-input type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
+            <el-form-item label="募集额度" prop="collectionAmount" style="white-space: nowrap">
+              <el-input type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入"></el-input><span>万</span>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -98,13 +98,13 @@
         
         <el-row :gutter="90">
           <el-col :span="11">
-            <el-form-item label="起投金额" prop="minimalAmount">
-              <el-input type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
+            <el-form-item label="起投金额" prop="minimalAmount" style="white-space: nowrap">
+              <el-input type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额"></el-input><span>万</span>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="追加金额" prop="minimalAddAmount">
-              <el-input type="number" v-model.number="form.minimalAddAmount" :maxlength="10" style="width: 75%; margin-right: 10px;"></el-input><span>万</span>
+            <el-form-item label="追加金额" prop="minimalAddAmount" style="white-space: nowrap">
+              <el-input type="number" v-model.number="form.minimalAddAmount" :maxlength="10"></el-input><span>万</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -115,7 +115,7 @@
               <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;"></el-input>
               <el-select v-model="form.ym" style="width: 20%;">
                 <el-option v-for="item in dateWay" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
+                  <!-- <span style="float: left">{{ item.label }}</span> -->
                 </el-option>
               </el-select>
             </el-form-item>
@@ -518,7 +518,7 @@
           </el-row>
         </div>
 
-        <div class="group-item">
+        <!-- <div class="group-item">
           <h3>产品可见人群</h3>
           <el-col>
             <el-form-item label="产品可见人群" prop="visiblePeople">
@@ -526,7 +526,7 @@
               <el-checkbox v-model="checked2">vip客户理财师</el-checkbox>
             </el-form-item>
           </el-col>
-        </div>
+        </div> -->
 
         <div class="group-item">
           <h3>非活动时间段</h3>
@@ -536,9 +536,17 @@
                 <el-input style="width: 300px" v-model="form2.performance"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="11">
-              <el-form-item label="佣金系数">
+            <el-col :span="11" style="white-space: nowrap">
+              <el-form-item :label="`佣金系数（第${form2.cmsIndex}年）`">
                 <el-input style="width: 300px" v-model="form2.performance"></el-input>
+                <i class="el-icon-plus" @click="addCommission"></i>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row v-for="item in form2.cmsList" :key="item.idx" v-if="form2.cmsList">
+            <el-col :span="11" :offset="11">
+              <el-form-item :label="`佣金系数（第${item.idx}年）`">
+                <el-input style="width: 300px" v-model="item.cms"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -803,10 +811,10 @@
         productStatusNo: '',
         dateWay: [
           {
-            value: '0',
+            value: 0,
             label: '年'
           },{
-            value: '1',
+            value: 1,
             label: '月'
           }
         ],
@@ -815,12 +823,16 @@
           model: 'product_name',
           text: '产品名称'
         },
-        step: 2,
+        step: 1,
         checked: 0,
         entryDate: '',
         checked1: 0,
         checked2: 0,
-        form2: {}
+        form2: {
+          cmsList: [],
+          cmsIndex: 1
+        },
+        cmsIndex: 0
       }
     },
     computed: {
@@ -835,7 +847,7 @@
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
-      
+      this.cmsIndex = this.form2.cmsIndex
     },
     methods: {
       getList() {
@@ -900,6 +912,13 @@
         //     return false
         //   }
         // })
+      },
+      addCommission() {
+        ++ this.cmsIndex
+        this.form2.cmsList.push({
+          cms: '',
+          idx: this.cmsIndex
+        })
       },
       createRouter() {
         this.$router.push({path: '/product/productList'})

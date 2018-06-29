@@ -113,27 +113,25 @@
       <div style="border-bottom: 1px solid #ccc"></div>
       
       <h5 v-if="realnameStatus">客户银行卡信息</h5>
-      <el-row v-if="realnameStatus">
-        <el-col :span="11">
-          <el-form-item label="开户银行" prop="bankName">
-            <el-input v-model="bankcardList.bankName" placeholder="" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="银行卡号" prop="cardNo">
-            <el-input v-model="bankcardList.cardNo" placeholder="" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="22">
-          <el-form-item label="银行卡截图" prop="cardPic">
-            <el-col :span="5">
-              <el-card>
-                <img style="width: 100%" :src="bankcardList.cardFrontUrl" alt="">
-              </el-card>
-            </el-col>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <el-table :data="bankcardList" element-loading-text="给我一点时间" border fit
+        highlight-current-row style="width: 100%" 
+        v-if="realnameStatus">
+        <el-table-column align="center" label="开户银行">
+          <template slot-scope="scope">
+            <span>{{scope.row.bankName}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="银行卡号">
+          <template slot-scope="scope">
+            <span>{{scope.row.cardNo}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="银行卡图片">
+          <template slot-scope="scope">
+            <img :src="scope.row.cardFrontUrl" alt="" style="width: 50px;">
+          </template>
+        </el-table-column>
+      </el-table>
 
       <div style="border-bottom: 1px solid #ccc"></div>
       
@@ -183,7 +181,6 @@
           </template>
         </el-table-column>
       </el-table>
-      
 
       <div style="border-bottom: 1px solid #ccc"></div>
       
@@ -332,7 +329,7 @@
           this.form.clientFrom = transformText(this.clientFrom, this.form.clientFrom)
           if(this.realnameStatus) {
             getClientBankcard(id).then(response => {
-              this.bankcardList = response.data || {}
+              this.bankcardList = response.data || []
             })
           }
           if(this.realnameStatus == 2) {

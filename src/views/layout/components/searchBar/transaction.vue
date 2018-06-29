@@ -2,7 +2,7 @@
   <div class="filter-container">
     <el-form label-position="right" label-width="100px">
       <el-row :gutter="20">
-        <el-col :sm="10" :lg="8">
+        <el-col :sm="10" :lg="7">
           <el-form-item label="产品名称">
             <el-input
             placeholder="请输入产品名称/简称"
@@ -10,13 +10,25 @@
           </el-input>
           </el-form-item>
         </el-col>
-        <el-col :sm="10" :lg="8">
+        <el-col :sm="10" :lg="7">
           <el-form-item label="客户">
             <el-input
             placeholder="请输入客户姓名"
             v-model="listQuery.clientName">
           </el-input>
           </el-form-item>
+        </el-col>
+        <el-col :sm="10" :lg="7" v-show="searchDate">
+          <el-form-item label="日期">
+              <el-date-picker
+                style="width: 100%"
+                v-model="listQuery.date"
+                type="daterange"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :default-time="['00:00:00', '23:59:59']">
+              </el-date-picker>
+            </el-form-item>
         </el-col>
         <el-col :sm="3" :lg="3"
           class="query-color"
@@ -29,7 +41,7 @@
       </el-row>
 
       <el-row :gutter="20">
-        <el-col :sm="10" :lg="8">
+        <el-col :sm="10" :lg="7" v-show="isSpread">
           <el-form-item label="理财师">
             <el-input
             placeholder="请输入理财师邮箱前缀"
@@ -37,7 +49,7 @@
           </el-input>
           </el-form-item>
         </el-col>
-        <el-col :sm="10" :lg="8" v-if="searchAppointmentCode">
+        <el-col :sm="10" :lg="7" v-show="isSpread & searchAppointmentCode">
           <el-form-item label="预约编号">
             <el-input
             placeholder="请输入预约编号"
@@ -45,20 +57,17 @@
           </el-input>
           </el-form-item>
         </el-col>
-      </el-row>
-
-      <el-row :gutter="20">
-        <el-col :sm="10" :lg="8" v-show="isSpread & searchDate">
-          <el-form-item label="日期">
-              <el-date-picker
-                style="width: 100%"
-                v-model="listQuery.date"
-                type="daterange"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :default-time="['00:00:00', '23:59:59']">
-              </el-date-picker>
-            </el-form-item>
+        <el-col :sm="10" :lg="7" style="white-space: nowrap" v-show="isSpread">
+          <el-form-item label="所属部门">
+            <el-cascader
+              style="width: 100%"
+              :options="treeDeptData"
+              :props="defaultProps"
+              :show-all-levels="false"
+              change-on-select
+              v-model="deptId"
+            ></el-cascader>
+          </el-form-item>
         </el-col>
       </el-row>
 
@@ -109,26 +118,6 @@
             <el-checkbox-button v-for="status in refundStatus" :label="status.value" :key="status.value">{{status.label}}</el-checkbox-button>
           </el-checkbox-group>
           </el-form-item>
-        </el-col>
-      </el-row>
-
-      <el-row :gutter="20">
-        <el-col :sm="10" :lg="8" style="white-space: nowrap" v-show="isSpread">
-          <el-form-item label="所属部门">
-            <el-cascader
-              style="width: 100%"
-              :options="treeDeptData"
-              :props="defaultProps"
-              :show-all-levels="false"
-              change-on-select
-              v-model="deptId"
-            ></el-cascader>
-          </el-form-item>
-          <!-- <el-form-item label="所属部门">
-            <el-checkbox-group v-model="listQuery.productStatus">
-              <el-checkbox-button v-for="status in refundStatus" :label="status.value" :key="status.value">{{status.label}}</el-checkbox-button>
-            </el-checkbox-group>
-          </el-form-item> -->
         </el-col>
       </el-row>
 
@@ -229,11 +218,16 @@ export default {
       let dateRange = []
 
       if(this.listQuery.date) {
+        console.log(this.listQuery.date)
         this.listQuery.date.forEach(item => {
-          item = parseTime(item, '{y}-{m}-{d}')
+          let str = '' + item
+          if(str.indexOf('-') === -1) {
+            item = parseTime(item, '{y}-{m}-{d}')
+          }
           dateRange.push(item)
         })
         this.listQuery.date = dateRange
+        console.log(this.listQuery.date)
       }
       if(this.deptId.length) {
         this.listQuery.deptId = this.deptId[this.deptId.length - 1]
