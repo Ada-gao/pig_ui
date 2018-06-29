@@ -130,7 +130,8 @@
           failAuditReason: [
             {
               required: true,
-              trigger: 'blur'
+              trigger: 'blur',
+              message: '请输入不通过原因'
             }
           ]
         },
@@ -215,6 +216,7 @@
                   })
                 }
               })
+
           } else {
             return false
           }
