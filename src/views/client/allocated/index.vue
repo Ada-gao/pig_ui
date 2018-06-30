@@ -248,7 +248,7 @@
 </template>
 
 <script>
-  import searchBarComponent from '@/views/layout/components/searchBar'
+  import searchBarComponent from 'components/searchBar'
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/client'
   import { putPlanner } from '@/api/client/planner'
   import { deptRoleList, fetchDeptTree } from '@/api/role'

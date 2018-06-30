@@ -32,8 +32,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="产品简称" prop="productName">
-              <el-input v-model="form.productName" placeholder="请输入产品名称"></el-input>
+            <el-form-item label="产品简称" prop="productShortName">
+              <el-input v-model="form.productShortName" placeholder="请输入产品名称"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -158,49 +158,47 @@
           
         <el-row :gutter="90">
           <el-col :span="11">
-            <el-form-item label="开户银行" prop="investmentHorizon">
-              <el-input type="number" v-model.number="form.investmentHorizon"></el-input>
+            <el-form-item label="开户银行" prop="bankName">
+              <el-input v-model="form.bankName" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="关账日期" prop="historyPerformance">
-              <el-input type="number" v-model.number="form.historyPerformance" placeholder="请输入"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="支行">
-              <el-select class="filter-item" v-model="form.productStatus" placeholder="请选择">
-                <el-option v-for="item in productStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="资产团队">
-              <el-select class="filter-item" v-model="form.productStatus" placeholder="请选择">
-                <el-option v-for="item in productStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="打款账号">
-              <el-select class="filter-item" v-model="form.productStatus" placeholder="请选择">
-                <el-option v-for="item in productStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="起息日" prop="employeeDate">
+            <el-form-item label="关账日期" prop="closeDate">
               <el-date-picker
-                v-model="form.employeeDate"
+                v-model="form.closeDate"
                 type="date"
                 placeholder="选择日期">
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="成立日" prop="employeeDate">
+            <el-form-item label="支行">
+              <el-input v-model="form.subBranchName" placeholder="请输入"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="资产团队">
+              <el-input v-model="form.assetTeam" placeholder="请输入"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="打款账号">
+              <el-input v-model.number="form.cardNo" placeholder="请输入"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="起息日" prop="valueDate">
               <el-date-picker
-                v-model="form.employeeDate"
+                v-model="form.valueDate"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="成立日" prop="establishmentDate">
+              <el-date-picker
+                v-model="form.establishmentDate"
                 type="date"
                 placeholder="选择日期">
               </el-date-picker>
@@ -893,25 +891,25 @@
           this.isDisabled = true
         }
         this.step = 2
-        // set[formName].validate(valid => {
-        //   if (valid) {
-        //     addObj(this.form)
-        //       .then(response => {
-        //         this.nextToUpdate = true
-        //         this.getList()
-        //         this.$notify({
-        //           title: '成功',
-        //           message: '创建成功',
-        //           type: 'success',
-        //           duration: 2000
-        //         })
-        //         this.uploadData.productId = response.data.productId
-        //         this.step = 2
-        //       })
-        //   } else {
-        //     return false
-        //   }
-        // })
+        set[formName].validate(valid => {
+          if (valid) {
+            addObj(this.form)
+              .then(response => {
+                this.nextToUpdate = true
+                this.getList()
+                this.$notify({
+                  title: '成功',
+                  message: '创建成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.uploadData.productId = response.data.productId
+                this.step = 2
+              })
+          } else {
+            return false
+          }
+        })
       },
       addCommission() {
         ++ this.cmsIndex

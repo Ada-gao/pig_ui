@@ -78,7 +78,7 @@
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <a v-if="sys_product_upd" size="small" class="common_btn"
-                     @click="handleUpdate(scope.row)">编辑
+                     @click="handleUpdate(scope.row)">查看
           </a>
           <!-- <el-button v-if="sys_user_del" size="small" type="danger"
                      @click="deletes(scope.row)">删除
@@ -102,7 +102,7 @@
 </template>
 
 <script>
-  import productSearchComponent from '@/views/layout/components/productSearch'
+  import productSearchComponent from 'components/searchBar/product'
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/product/product'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { deptRoleList, fetchDeptTree } from '@/api/role'

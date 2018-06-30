@@ -104,7 +104,7 @@
 </template>
 
 <script>
-  import searchBarComponent from '@/views/layout/components/searchBar'
+  import searchBarComponent from 'components/searchBar'
   import { fetchList, addObj, putObj, delObj } from '@/api/client/client'
   // import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getPositionName } from '@/api/posi'

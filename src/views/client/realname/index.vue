@@ -71,7 +71,7 @@
 </template>
 
 <script>
-  import searchBarComponent from '@/views/layout/components/searchBar'
+  import searchBarComponent from 'components/searchBar'
   import { fetchList, getObj } from '@/api/client/realname'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getAllPositon } from '@/api/queryConditions'

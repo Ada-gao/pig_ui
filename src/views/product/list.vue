@@ -1,72 +1,6 @@
 
 <template>
   <div class="app-container calendar-list-container">
-    <!-- <div class="filter-container">
-      <el-row>
-        <el-col :sm="2" :lg="2" class="query-title">产品名称</el-col>
-        <el-col :sm="12" :lg="6">
-          <el-input
-            placeholder="请输入产品名称"
-            v-model="listQuery.name">
-          </el-input>
-        </el-col>
-        <el-col :sm="2" :lg="2"
-          class="query-title query-color"
-          style="float: right;cursor: pointer">
-          <div @click="isSpread = !isSpread">
-            收起搜索条件
-          </div>
-        </el-col>
-      </el-row>
-
-      <el-row style="margin-top: 20px;" v-show="isSpread">
-        <el-col :sm="2" :lg="2">
-          <el-form-item label="时间">
-              <el-date-picker
-                v-model="entryDate"
-                type="daterange"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :default-time="['00:00:00', '23:59:59']">
-              </el-date-picker>
-            </el-form-item>
-        </el-col>
-      </el-row>
-
-      <el-row style="margin-top: 20px;" v-show="isSpread">
-        <el-col :sm="2" :lg="2" class="query-title">产品分类</el-col>
-        <el-col :sm="20">
-          <el-checkbox-group v-model="listQuery.productTypeIds">
-            <el-checkbox-button v-for="item in productTypes" :label="item.productTypeId" :key="item.productTypeId">{{item.name}}</el-checkbox-button>
-          </el-checkbox-group>
-        </el-col>
-      </el-row>
-
-      <el-row style="margin-top: 20px;" v-show="isSpread">
-        <el-col :sm="2" :lg="2" class="query-title">产品状态</el-col>
-        <el-col :sm="21">
-          <el-checkbox-group v-model="listQuery.productStatus">
-            <el-checkbox-button v-for="status in productStatus" :label="status.value" :key="status.value">{{status.label}}</el-checkbox-button>
-          </el-checkbox-group>
-        </el-col>
-      </el-row>
-
-      <el-row style="margin-top: 20px;" v-show="isSpread">
-        <el-col :sm="2" :lg="2" class="query-title">收益对标基准</el-col>
-        <el-col :sm="20">
-          <el-checkbox-group v-model="listQuery.annualizedReturns">
-            <el-checkbox-button v-for="item in productIncome" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
-          </el-checkbox-group>
-        </el-col>
-      </el-row>
-      
-      <el-row style="margin-top: 20px; text-align: center;">
-        <el-button class="btn-padding search_btn" @click="handleFilter">
-          <svg-icon icon-class="search"></svg-icon> 查询</el-button>
-        <el-button class="btn-padding search_btn" @click="resetFilter">
-          <svg-icon icon-class="reset"></svg-icon> 重置</el-button>
-      </el-row>
-    </div> -->
     <product-search-component
       @search-product="searchList">
     </product-search-component>
@@ -98,12 +32,11 @@
 
       <el-table-column align="center" label="产品分类" show-overflow-tooltip>
         <template slot-scope="scope">
-        <!-- <span>{{scope.row.productTypeName}}</span> -->
         <span>{{scope.row.productTypeId}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="产品期限（月）" show-overflow-tooltip>
+      <el-table-column align="center" label="产品期限（年）" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.investmentHorizon}}</span>
         </template>
@@ -127,23 +60,23 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" class-name="status-col" label="产品状态">
+      <el-table-column align="center" label="产品状态">
         <template slot-scope="scope">
           {{scope.row.productStatus}}
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作">
+      <el-table-column align="center" label="操作" class-name="operate-col">
         <template slot-scope="scope">
           <a v-if="sys_product_upd" size="small" class="common_btn"
-                     @click="handleUpdate(scope.row)">编辑
+                     @click="handleUpdate(scope.row)">查看
           </a>
-          <!-- <el-button v-if="sys_user_del" size="small" type="danger"
+          <a v-if="sys_product_del&scope.row.productStatus==='在建'" size="small" type="danger_btn"
                      @click="deletes(scope.row)">删除
-          </el-button> -->
-          <!-- <el-button v-if="sys_user_del" size="small" type=""
+          </a>
+          <!-- <a v-if="sys_user_del" size="small" type=""
                      @click="upper(scope.row)">产品上架
-          </el-button> -->
+          </a> -->
         </template>
       </el-table-column>
 
@@ -160,7 +93,7 @@
 </template>
 
 <script>
-  import productSearchComponent from '@/views/layout/components/productSearch'
+  import productSearchComponent from 'components/searchBar/product'
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/product/product'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
@@ -390,6 +323,7 @@
       this.getList()
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
+      this.sys_product_del = this.permissions['sys_product_del']
     },
     methods: {
       getList() {
@@ -503,6 +437,9 @@
 }
 .query-color {
   @include mainColor;
+}
+.operate-col {
+  text-align: left;
 }
 </style>
 
