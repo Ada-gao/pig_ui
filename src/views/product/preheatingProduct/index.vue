@@ -11,98 +11,16 @@
       <el-button v-if="sys_product_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" type="primary">
         <svg-icon icon-class="add"></svg-icon> 添加</el-button>
     </div>
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
-              highlight-current-row style="width: 100%;">
-
-      <el-table-column align="center" label="产品编号">
-        <template slot-scope="scope">
-          <span>{{scope.row.productCode}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="产品名称">
-        <template slot-scope="scope">
-          <span>{{scope.row.productName}}</span>
-        </template>
-      </el-table-column>
-
-      <!-- <el-table-column align="center" label="产品起息日">
-        <template slot-scope="scope">
-          <span>{{scope.row.productName}}</span>
-        </template>
-      </el-table-column> -->
-
-      <el-table-column align="center" label="产品分类" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <!-- <span>{{scope.row.productTypeName}}</span> -->
-        <span>{{scope.row.productTypeId}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="产品期限（月）" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <span>{{scope.row.investmentHorizon}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="风险等级" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <span>{{scope.row.productRiskLevel}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="募集规模（万）" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <span>{{scope.row.collectionAmount}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="起投金额（万）">
-        <template slot-scope="scope">
-          <span>{{scope.row.minimalAmount}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="收益对标基准（%）">
-        <template slot-scope="scope">
-          <span>{{scope.row.minimalAmount}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" class-name="status-col" label="产品状态">
-        <template slot-scope="scope">
-          {{scope.row.productStatus}}
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="操作">
-        <template slot-scope="scope">
-          <a v-if="sys_product_upd" size="small" class="common_btn"
-                     @click="handleUpdate(scope.row)">查看
-          </a>
-          <!-- <el-button v-if="sys_user_del" size="small" type="danger"
-                     @click="deletes(scope.row)">删除
-          </el-button> -->
-          <!-- <el-button v-if="sys_user_del" size="small" type=""
-                     @click="upper(scope.row)">产品上架
-          </el-button> -->
-        </template>
-      </el-table-column>
-
-    </el-table>
-
-    <div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                     :current-page.sync="listQuery.page"
-                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
-                     layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
-    </div>
+    
+    <product-table-component>
+    </product-table-component>
+    
   </div>
 </template>
 
 <script>
   import productSearchComponent from 'components/searchBar/product'
+  import productTableComponent from 'components/table/product'
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/product/product'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
@@ -117,21 +35,12 @@
   import { decimals } from '@/utils/validate'
   import Bus from '@/assets/js/bus'
 
-  const twoDecimals = (rule, value, callback) => {
-    if (!value) {
-      return null
-    } else if (!decimals(value)) {
-      callback(new Error('请输入正确的净值数字'))
-    } else {
-      callback()
-    }
-  }
-
   export default {
     components: {
       ElOption,
       ElRadioGroup,
-      productSearchComponent
+      productSearchComponent,
+      productTableComponent
     },
     name: 'table_user',
     directives: {
@@ -163,99 +72,6 @@
           password: undefined,
           // delFlag: undefined,
           deptId: undefined
-        },
-        rules: {
-          productName: [
-            {
-              required: true,
-              message: '请输入产品名称',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 20,
-              message: '长度在 3 到 20 个字符',
-              trigger: 'blur'
-            }
-          ],
-          productId: [
-            {
-              required: true,
-              message: '请输入产品编号',
-              trigger: 'blur'
-            }
-          ],
-          productTypeId: [
-            {
-              required: true,
-              message: '请选择产品类型',
-              trigger: 'blur'
-            }
-          ],
-          productRiskLevel: [
-            {
-              required: true,
-              message: '请选择产品风险级别',
-              trigger: 'blur'
-            }
-          ],
-          manager: [
-            {
-              required: true,
-              message: '请输入基金管理人',
-              trigger: 'blur'
-            }
-          ],
-          currencyId: [
-            {
-              required: true,
-              message: '请选择交易币种',
-              trigger: 'blur'
-            }
-          ],
-          collectionAmount: [
-            {
-              required: true,
-              message: '请输入募集额度',
-              trigger: 'blur'
-            }
-          ],
-          minimalAmount: [
-            {
-              required: true,
-              message: '请输入起投金额',
-              trigger: 'blur'
-            }
-          ],
-          minimalAddAmount: [
-            {
-              required: true,
-              message: '请输入追加金额',
-              trigger: 'blur'
-            }
-          ],
-          netValue: [
-            {
-              // required: false,
-              message: '请输入小于100的数字',
-              trigger: 'change',
-              validator: twoDecimals
-            }
-          ],
-          investmentHorizon: [
-            {
-              required: true,
-              message: '请输入产品期限',
-              trigger: 'blur'
-            }
-          ]
-          // isFloat: [
-          //   {
-          //     required: true,
-          //     message: '请选择收益',
-          //     trigger: 'blur'
-          //   }
-          // ],
         },
         statusOptions: ['0', '1'],
         rolesOptions: [],
