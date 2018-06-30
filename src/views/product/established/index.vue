@@ -4,15 +4,11 @@
     
     <product-search-component
       :searchProductStatus="false"
-      @search-product="searchList">
+      @searchProduct="searchList">
     </product-search-component>
 
-    <div style="text-align: right">
-      <el-button v-if="sys_product_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" type="primary">
-        <svg-icon icon-class="add"></svg-icon> 添加</el-button>
-    </div>
-    
-    <product-table-component>
+    <product-table-component
+      :productStatusNo="productStatusId">
     </product-table-component>
 
   </div>
@@ -133,7 +129,8 @@
         },
         isDisabled: true,
         form: [],
-        isSpread: false
+        isSpread: false,
+        productStatusId: '4'
       }
     },
     computed: {

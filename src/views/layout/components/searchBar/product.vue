@@ -65,7 +65,8 @@
 <script>
 import { fetchDeptTree } from '@/api/role'
 import { mapGetters } from 'vuex'
-  import { fetchProductTypeList } from '@/api/product/productType'
+import { fetchProductTypeList } from '@/api/product/productType'
+import Bus from '@/assets/js/bus'
 
 export default {
   props: {
@@ -124,8 +125,7 @@ export default {
 
       this.listQuery.orderByField = 'create_time'
       this.listQuery.isAsc = false
-
-      this.$emit('search-product', this.listQuery)
+      Bus.$emit('searchProduct', this.listQuery)
     },
     resetFilter() { // 重置搜索条件
       this.listQuery = {
@@ -136,7 +136,8 @@ export default {
         productStatus: []
       },
       this.entryDate = []
-      this.handleFilter()
+      // this.handleFilter()
+      Bus.$emit('searchProduct', this.listQuery)
     },
     fetchList() {
       fetchProductTypeList().then(res => { // 获取产品类型

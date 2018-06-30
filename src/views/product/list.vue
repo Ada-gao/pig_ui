@@ -2,7 +2,7 @@
 <template>
   <div class="app-container calendar-list-container">
     <product-search-component
-      @search-product="searchList">
+      @searchProduct="searchList">
     </product-search-component>
 
     <div style="text-align: right">

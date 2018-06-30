@@ -3,16 +3,11 @@
   <div class="app-container calendar-list-container">
     
     <product-search-component
-      :searchProductStatus="false"
-      @search-product="searchList">
+      :searchProductStatus="false">
     </product-search-component>
 
-    <div style="text-align: right">
-      <el-button v-if="sys_product_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" type="primary">
-        <svg-icon icon-class="add"></svg-icon> 添加</el-button>
-    </div>
-
-    <product-table-component>
+    <product-table-component
+      :productStatusNo="productStatusId">
     </product-table-component>
     
   </div>
@@ -94,24 +89,6 @@
         fileList: [],
         productTypes: [],
         productTypesList: [],
-        productIncome: [
-          {
-            label: '10%以下',
-            value: 1
-          },
-          {
-            label: '10-15%',
-            value: 3
-          },
-          {
-            label: '15%以上',
-            value: 2
-          },
-          {
-            label: '浮动',
-            value: 4
-          }
-        ],
         input2: '',
         // nextToUpdate: false,
         fileList: [],
@@ -133,7 +110,8 @@
         },
         isDisabled: true,
         form: [],
-        isSpread: false
+        isSpread: false,
+        productStatusId: '0'
       }
     },
     computed: {
@@ -145,84 +123,84 @@
     },
     created() {
       // console.log(this.productStatus)
-      this.getList()
+      // this.getList()
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
-    },
-    methods: {
-      getList() {
-        this.listLoading = true
-        
-        this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.records
-          this.total = response.data.total
-          this.listLoading = false
-          fetchProductTypeList().then(res => { // 获取产品类型
-            this.productTypes = res.data
-            this.list.forEach(item => {
-              item.productTypeId = transformText(this.productTypes, item.productTypeId)
-              item.productStatus = transformText(this.productStatus, item.productStatus)
-            })
-          })
-        })
-
-        getObjList().then(response => {
-          this.currencyList = response.data
-        })
-      },
-      handleFilter() {
-        this.listQuery.page = 1
-        this.getList()
-      },
-      handleSizeChange(val) {
-        this.listQuery.limit = val
-        this.getList()
-      },
-      handleCurrentChange(val) {
-        this.listQuery.page = val
-        this.getList()
-      },
-      handleCreate() { //新增
-        this.$router.push({path: '/product/productDetail'})
-        Bus.$emit('activeIndex', '/product/productList')
-
-        // this.resetTemp()
-        // this.dialogStatus = 'create'
-        // this.dialogFormVisible = true
-        // this.nextToUpdate = false
-      },
-      handleUpdate(row) { // 编辑
-        this.$router.push({path: '/product/productDetail/' + row.productId})
-        Bus.$emit('activeIndex', '/product/productList')
-
-        // this.nextToUpdate = false
-      
-      },
-      resetTemp() {
-        this.form = {
-          id: undefined,
-          name: '',
-          role: undefined
-        }
-      },
-      resetFilter() {
-        this.listQuery = {
-          name: '',
-          // type: [],
-          productTypeIds: [],
-          annualizedReturns: [],
-          productStatus: [],
-          isFloat: 0
-        }
-        this.getList()
-      },
-      searchList(data) {
-        this.listQuery = data
-        // this.listQuery.type = 1
-        this.getList()
-      }
     }
+    // methods: {
+    //   getList() {
+    //     this.listLoading = true
+        
+    //     this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
+    //     fetchList(this.listQuery).then(response => {
+    //       this.list = response.data.records
+    //       this.total = response.data.total
+    //       this.listLoading = false
+    //       fetchProductTypeList().then(res => { // 获取产品类型
+    //         this.productTypes = res.data
+    //         this.list.forEach(item => {
+    //           item.productTypeId = transformText(this.productTypes, item.productTypeId)
+    //           item.productStatus = transformText(this.productStatus, item.productStatus)
+    //         })
+    //       })
+    //     })
+
+    //     getObjList().then(response => {
+    //       this.currencyList = response.data
+    //     })
+    //   },
+    //   handleFilter() {
+    //     this.listQuery.page = 1
+    //     this.getList()
+    //   },
+    //   handleSizeChange(val) {
+    //     this.listQuery.limit = val
+    //     this.getList()
+    //   },
+    //   handleCurrentChange(val) {
+    //     this.listQuery.page = val
+    //     this.getList()
+    //   },
+    //   handleCreate() { //新增
+    //     this.$router.push({path: '/product/productDetail'})
+    //     Bus.$emit('activeIndex', '/product/productList')
+
+    //     // this.resetTemp()
+    //     // this.dialogStatus = 'create'
+    //     // this.dialogFormVisible = true
+    //     // this.nextToUpdate = false
+    //   },
+    //   handleUpdate(row) { // 编辑
+    //     this.$router.push({path: '/product/productDetail/' + row.productId})
+    //     Bus.$emit('activeIndex', '/product/productList')
+
+    //     // this.nextToUpdate = false
+      
+    //   },
+    //   resetTemp() {
+    //     this.form = {
+    //       id: undefined,
+    //       name: '',
+    //       role: undefined
+    //     }
+    //   },
+    //   resetFilter() {
+    //     this.listQuery = {
+    //       name: '',
+    //       // type: [],
+    //       productTypeIds: [],
+    //       annualizedReturns: [],
+    //       productStatus: [],
+    //       isFloat: 0
+    //     }
+    //     this.getList()
+    //   }
+    //   // searchList(data) {
+    //   //   this.listQuery = data
+    //   //   // this.listQuery.type = 1
+    //   //   this.getList()
+    //   // }
+    // }
   }
 </script>
 

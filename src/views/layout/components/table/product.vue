@@ -119,6 +119,11 @@
     directives: {
       waves
     },
+    props: {
+      productStatusNo: {
+        default: '0'
+      }
+    },
     data() {
       return {
         treeDeptData: [],
@@ -181,14 +186,16 @@
       ])
     },
     created() {
-      // console.log(this.productStatus)
+      console.log('jinlail')
       this.getList()
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
       this.sys_product_del = this.permissions['sys_product_del']
     },
     mounted() {
-      Bus.$on('search-product', listQuery => {
+      console.log('mounted')
+      Bus.$on('searchProduct', listQuery => {
+        console.log('listQuery')
         this.listQuery = listQuery
         this.getList()
       })
@@ -196,7 +203,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        
+        this.listQuery.productStatus.push(this.productStatusNo)
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records

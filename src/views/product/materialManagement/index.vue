@@ -4,14 +4,9 @@
     
     <product-search-component
       :searchProductStatus="false"
-      @search-product="searchList">
+      @searchProduct="searchList">
     </product-search-component>
 
-    <div style="text-align: right">
-      <el-button v-if="sys_product_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" type="primary">
-        <svg-icon icon-class="add"></svg-icon> 添加</el-button>
-    </div>
-    
     <product-table-component>
     </product-table-component>
     
@@ -94,24 +89,6 @@
         fileList: [],
         productTypes: [],
         productTypesList: [],
-        productIncome: [
-          {
-            label: '10%以下',
-            value: 1
-          },
-          {
-            label: '10-15%',
-            value: 3
-          },
-          {
-            label: '15%以上',
-            value: 2
-          },
-          {
-            label: '浮动',
-            value: 4
-          }
-        ],
         input2: '',
         // nextToUpdate: false,
         fileList: [],
