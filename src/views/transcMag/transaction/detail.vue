@@ -232,15 +232,16 @@
           <el-tabs v-model="activeName1" type="card">
             <el-tab-pane label="不通过原因" name="first">
               <span>原因</span>
-              <el-select v-model="result.auditRemark"
+              <el-select v-model="result.reasonId"
                 clearable
                 placeholder="请选择"
+                @change="changeReason"
                 style="margin-bottom: 30px;">
                 <el-option
                   v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                  :key="item.auditFailReasonId"
+                  :label="item.failAuditReason"
+                  :value="item.auditFailReasonId">
                 </el-option>
               </el-select>
               <span v-show="form.status == 3003">寄出方式</span>
@@ -278,7 +279,7 @@
           
           <div class="dialog-footer text-right">
             <el-button @click="dialogReject = false">取 消</el-button>
-            <el-button type="primary" @click="submitCheck">确 定</el-button>
+            <el-button type="primary" @click="submitRejectCheck">确 定</el-button>
           </div>
         </el-dialog>
 
@@ -299,7 +300,7 @@
 </template>
 
 <script>
-  import { getObj, getFileObj, getRefundFile } from '@/api/transc/transc'
+  import { getObj, getFileObj, getRefundFile, getReject } from '@/api/transc/transc'
   import { putApt, putPay, putCtra, putRefund } from '@/api/transc/check'
   import transcTableComponent from 'components/transcTable'
   import tabTranscComponent from 'components/transcDetail/tabTranscTable'
@@ -383,14 +384,14 @@
         dialogImageUrl: '',
         dialogReject: false,
         options: [
-          {
-            label: '不通过1',
-            value: '1'
-          },
-          {
-            label: '不通过2',
-            value: '2'
-          }
+          // {
+          //   label: '不通过1',
+          //   value: '1'
+          // },
+          // {
+          //   label: '不通过2',
+          //   value: '2'
+          // }
         ],
         rejectReason: '',
         activeName1: 'first',
@@ -432,7 +433,7 @@
           this.form.appointmentDate = parseTime(this.form.appointmentDate, '{y}-{m}-{d}')
           this.form.remitDate = parseTime(this.form.remitDate, '{y}-{m}-{d}')
         })
-        console.log(this.orderStatus)
+        // console.log(this.orderStatus)
         if(this.orderStatus != '2') {
           getFileObj(id).then(response => {
             this.dealFiles = response.data.dealFiles
@@ -455,14 +456,30 @@
       rejectResult(sts) {
         this.result.status = sts
         this.dialogReject = true
+        let type = 10
+        if(this.orderStatus == 2) {
+          type = 10
+        } else if(this.orderStatus == 3) {
+          type = 20
+        } else {
+          type = 30
+        }
+        this.getRejectReason(type)
       },
       submitOperat(sts) {
         this.result.status = sts
         this.dialogComVisible = true
       },
+      submitRejectCheck() {
+        if(this.orderStatus == '4') {
+          if (!this.result.contractMail) return false
+        }
+        if (!this.result.auditRemark) return false
+        this.submitCheck()
+      },
       submitCheck() {
         let params = {
-          // auditFailReasonId: this.failReason,
+          auditFailReasonId: this.result.auditFailReasonId,
           auditRemark: this.result.auditRemark,
           contractMail: this.result.contractMail,
           status: this.result.status
@@ -470,7 +487,6 @@
         let status = this.result.status
         if(this.orderStatus == 2) { // 预约
           putApt(this.form.appointmentId, params).then(response => {
-            console.log(response.code)
             if(response.status == 200) {
               this.$notify({
                 title: '成功',
@@ -548,6 +564,12 @@
           })
         }
       },
+      getRejectReason(type) {
+        console.log(type)
+        getReject({type: type}).then(res => {
+          this.options = res.data
+        })
+      },
       handleClick(tab) {
         console.log(tab)
         if(tab.name == 'second') {
@@ -569,6 +591,11 @@
       previewImg(url) {
         this.dialogImgVisible = true
         this.dialogImageUrl = url
+      },
+      changeReason(val) {
+        this.result.auditRemark = transformText(this.options, val)
+        this.result.auditFailReasonId = val
+        console.log(this.result)
       }
     }
   }

@@ -118,6 +118,18 @@ export function searchAppReasons(query) {
 }
 
 /**
+ * 获取合同交易原因(不分页)
+ * @param query
+ */
+export function getReject(query) {
+  return request({
+    url: '/product/auditFailReason/list',
+    method: 'get',
+    params: query
+  })
+}
+
+/**
  * 新增合同不通过原因
  */
 export function addReason(obj) {
