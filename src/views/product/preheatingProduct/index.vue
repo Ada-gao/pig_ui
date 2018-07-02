@@ -8,7 +8,8 @@
     </product-search-component>
 
     <product-table-component
-      :productStatusNo="productStatusId">
+      :productStatusNo="productStatusId"
+      :activeUrl="url">
     </product-table-component>
     
   </div>
@@ -130,7 +131,8 @@
         isDisabled: true,
         form: [],
         isSpread: false,
-        productStatusId: '1'
+        productStatusId: '1',
+        url: '/product/preheating'
       }
     },
     computed: {

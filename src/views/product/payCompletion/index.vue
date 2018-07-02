@@ -8,7 +8,8 @@
     </product-search-component>
 
     <product-table-component
-      :productStatusNo="productStatusId">
+      :productStatusNo="productStatusId"
+      :activeUrl="url">
     </product-table-component>
     
   </div>
@@ -112,7 +113,8 @@
         isDisabled: true,
         form: [],
         isSpread: false,
-        productStatusId: '6'
+        productStatusId: '6',
+        url: '/product/payCompletion'
       }
     },
     computed: {

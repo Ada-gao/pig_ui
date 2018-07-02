@@ -161,8 +161,9 @@
        * [param] field
        */
       cropUploadSuccess(jsonData, field) {
+        console.log(jsonData)
         console.log('-------- upload success --------')
-        this.$store.commit('SET_AVATAR', jsonData.filename)
+        this.$store.commit('SET_AVATAR', jsonData.fileUrl)
       }
     }
   }

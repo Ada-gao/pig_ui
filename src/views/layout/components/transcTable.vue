@@ -11,6 +11,18 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" label="快递单号" v-if="contractCol">
+        <template slot-scope="scope">
+          <span>{{scope.row.expressNo}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="合同编号" v-if="contractCol">
+        <template slot-scope="scope">
+          <span>{{scope.row.contractNo}}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" label="产品名称" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{scope.row.productName}}</span>
@@ -114,6 +126,7 @@
 
 <script>
   import { fetchTranscList, fetchAppointList, fetchPayList, fetchContractList, fetchRefundList } from '@/api/transc/transc'
+  import { putCtra } from '@/api/transc/check'
   import { fetchRecords } from '@/api/transc/records'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
@@ -208,7 +221,8 @@
         'permissions',
         'appointmentStatus',
         'refundStatus',
-        'productRiskLevel'
+        'productRiskLevel',
+        'clientClass'
       ])
     },
     created() {
@@ -239,6 +253,7 @@
             this.listLoading = false
             this.list.forEach(item => {
               item.statusText = transformText(this.appointmentStatus, item.status)
+              item.clientClass = transformText(this.clientClass, item.clientClass)
             })
           })
         } else if(this.orderStatus == '2') { // 预约列表
@@ -248,6 +263,7 @@
             this.listLoading = false
             this.list.forEach(item => {
               item.statusText = transformText(this.appointmentStatus, item.status)
+              item.clientClass = transformText(this.clientClass, item.clientClass)
             })
           })
 
@@ -258,6 +274,7 @@
             this.listLoading = false
             this.list.forEach(item => {
               item.statusText = transformText(this.appointmentStatus, item.status)
+              item.clientClass = transformText(this.clientClass, item.clientClass)
             })
           })
 
@@ -268,6 +285,7 @@
             this.listLoading = false
             this.list.forEach(item => {
               item.statusText = transformText(this.appointmentStatus, item.status)
+              item.clientClass = transformText(this.clientClass, item.clientClass)
             })
           })
 
@@ -279,6 +297,7 @@
             this.list.forEach(item => {
               item.statusText = transformText(this.appointmentStatus, item.status)
               item.refundStatusText = transformText(this.refundStatus, item.refundStatus)
+              item.clientClass = transformText(this.clientClass, item.clientClass)
             })
           })
         }
@@ -317,7 +336,11 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.handleUpdate(row)
+          let status = '3002'
+          putCtra(row.appointmentId, {status: status}).then(res => {
+            console.log(res)
+            this.handleUpdate(row)
+          })
         }).catch(() => {
           // this.$message({
           //   type: 'info',

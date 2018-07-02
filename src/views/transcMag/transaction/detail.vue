@@ -174,27 +174,28 @@
           </el-dialog>
 
         </el-form>
+        <!-- 预约审核 -->
         <div v-if="status == '1001' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="add_btn" @click="submitResult('1003')">通 过</el-button>
           <el-button class="common_btn" @click="rejectResult('1002')">不通过</el-button>
         </div>
-
+        <!-- 打款审核 -->
         <div v-if="(status == '2001' || status == '2002' || status == '2004') & orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button v-show="status == '2001'" class="search_btn" @click="submitResult('2004')">通 过</el-button>
           <el-button v-show="status == '2001'" class="add_btn" @click="rejectResult('2002')">不通过</el-button>
           <el-button class="add_btn" @click="submitOperat('2003')">关闭订单</el-button>
         </div>
-
-        <div v-if="status == '2003' & form.refundStatus & orderStatus != 1" class="dialog-footer" style="text-align: center;">
+        <!-- 打款-订单关闭 -->
+        <div v-if="status == '2003' & form.refundStatus === null & orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('1')">需要退款</el-button>
           <el-button class="add_btn" @click="submitResult('0')">无需退款</el-button>
         </div>
-
+        <!-- 合同审核 -->
         <div v-if="status == '3002' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('3004')">通 过</el-button>
           <el-button class="add_btn" @click="rejectResult('3003')">不通过</el-button>
         </div>
-
+        <!-- 退款审核 -->
         <div v-if="form.refundStatus == '2' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('4')">通 过</el-button>
           <el-button class="add_btn" @click="rejectResult('3')">不通过</el-button>
@@ -467,7 +468,7 @@
           status: this.result.status
         }
         let status = this.result.status
-        if(this.orderStatus == 2) {
+        if(this.orderStatus == 2) { // 预约
           putApt(this.form.appointmentId, params).then(response => {
             console.log(response.code)
             if(response.status == 200) {
@@ -482,24 +483,40 @@
             }
           })
 
-        } else if(this.orderStatus == 3) {
+        } else if(this.orderStatus == 3) { // 打款
           params.remitAmount = this.form.remitAmount
           params.remitDate = this.form.remitDate
-          putPay(this.form.appointmentId, params).then(response => {
-            console.log(response.code)
-            if(response.status == 200) {
-              this.$notify({
-                title: '成功',
-                message: '审核完成',
-                type: 'success',
-                duration: 2000
-              })
-              this.dialogVisible = false
-              this.$router.push({path: '/transcMag/payment'})
-            }
-          })
+          if(this.status === '2003') {
+            putRefund(this.form.appointmentId, params).then(response => {
+              console.log(response.code)
+              if(response.status == 200) {
+                this.$notify({
+                  title: '成功',
+                  message: '审核完成',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.dialogVisible = false
+                // this.$router.push({path: '/transcMag/payment'})
+              }
+            })
+          } else {
+            putPay(this.form.appointmentId, params).then(response => {
+              console.log(response.code)
+              if(response.status == 200) {
+                this.$notify({
+                  title: '成功',
+                  message: '审核完成',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.dialogVisible = false
+              }
+            })
+          }
+          this.$router.push({path: '/transcMag/payment'})
           
-        } else if(this.orderStatus == 4) {
+        } else if(this.orderStatus == 4) { // 合同
           putCtra(this.form.appointmentId, params).then(response => {
             console.log(response.code)
             if(response.status == 200) {
@@ -514,7 +531,7 @@
             }
           })
           
-        } else {
+        } else { // 退款
           params.remitAmount = this.form.remitAmount
           putRefund(this.form.appointmentId, params).then(response => {
             console.log(response.code)

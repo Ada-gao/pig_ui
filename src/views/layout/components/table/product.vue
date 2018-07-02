@@ -122,6 +122,9 @@
     props: {
       productStatusNo: {
         default: '0'
+      },
+      activeUrl: {
+        default: '/product/productList'
       }
     },
     data() {
@@ -186,24 +189,25 @@
       ])
     },
     created() {
-      console.log('jinlail')
       this.getList()
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
       this.sys_product_del = this.permissions['sys_product_del']
     },
     mounted() {
-      console.log('mounted')
       Bus.$on('searchProduct', listQuery => {
-        console.log('listQuery')
+        // console.log(listQuery)
         this.listQuery = listQuery
+        this.listQuery.productStatus = []
         this.getList()
       })
     },
     methods: {
       getList() {
+        // console.log(this.productStatusNo)
         this.listLoading = true
         this.listQuery.productStatus.push(this.productStatusNo)
+        // console.log(this.listQuery.productStatus)
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
@@ -217,7 +221,6 @@
             })
           })
         })
-
         getObjList().then(response => {
           this.currencyList = response.data
         })
@@ -240,10 +243,7 @@
       // },
       handleUpdate(row) { // 编辑
         this.$router.push({path: '/product/productDetail/' + row.productId})
-        Bus.$emit('activeIndex', '/product/productList')
-
-        // this.nextToUpdate = false
-      
+        Bus.$emit('activeIndex', this.activeUrl)
       },
       resetTemp() {
         this.form = {

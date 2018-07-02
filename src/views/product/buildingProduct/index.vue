@@ -7,7 +7,8 @@
     </product-search-component>
 
     <product-table-component
-      :productStatusNo="productStatusId">
+      :productStatusNo="productStatusId"
+      :activeUrl="url">
     </product-table-component>
     
   </div>
@@ -111,7 +112,8 @@
         isDisabled: true,
         form: [],
         isSpread: false,
-        productStatusId: '0'
+        productStatusId: '0',
+        url: '/product/building'
       }
     },
     computed: {

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container calendar-list-container">
 
-    <div v-if="uploadData.productId">
+    <div v-if="uploadData.productId" class="pro-detail-radio">
       <el-radio-group v-model="step" @change="changeStep" style="margin-bottom: 30px;">
         <el-radio-button label="1">产品详情</el-radio-button>
         <el-radio-button label="2">产品操作指南</el-radio-button>
@@ -19,7 +19,7 @@
     <div class="pageTitle">
       <h3 v-if="uploadData.productId">修改产品</h3>
       <h3 v-else>新增产品</h3>
-      <el-button v-if="sys_user_add & step === 1" class="add_btn">新增字段属性</el-button>
+      <!-- <el-button v-if="sys_user_add & step === 1" class="add_btn">新增字段属性</el-button> -->
     </div>
     
     <div style="border-bottom: 1px solid #ccc; margin-bottom: 20px;"></div>
@@ -54,8 +54,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="募集人数" prop="productCode">
-              <el-input v-model="form.productCode" placeholder="请输入"></el-input>
+            <el-form-item label="募集人数" prop="productLp">
+              <el-input v-model="form.productLp" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11" style="white-space: nowrap">
@@ -122,7 +122,7 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="产品过往业绩" prop="historyPerformance">
-              <el-input type="number" v-model.number="form.historyPerformance" placeholder="请输入"></el-input>
+              <el-input v-model="form.historyPerformance" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
