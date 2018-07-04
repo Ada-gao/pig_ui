@@ -23,6 +23,17 @@ export function addObj(obj) {
 }
 
 /**
+ * 新增产品操作指南
+ */
+export function addOperationObj(obj) {
+  return request({
+    url: '/product/products/' + obj.productId + '/operation',
+    method: 'post',
+    data: obj
+  })
+}
+
+/**
  * 精确查询
  */
 export function getObj(id) {
@@ -48,6 +59,59 @@ export function delObj(id) {
 export function putObj(obj) {
   return request({
     url: '/product/products/' + obj.productId,
+    method: 'put',
+    data: obj
+  })
+}
+
+/**
+ * 修改材料
+ */
+export function putFileObj(obj) {
+  return request({
+    url: '/product/products/' + obj.productId + '/' + obj.fileType,
+    method: 'put',
+    data: obj
+  })
+}
+
+/**
+ * 删除上传客户材料
+ */
+export function delCustFile(productClientFileId) {
+  return request({
+    url: '/product/products/clientFile/' + productClientFileId ,
+    method: 'delete'
+  })
+}
+
+/**
+ * 查找上传客户材料
+ */
+export function getCustFile(productId) {
+  return request({
+    url: '/product/products/' + productId + '/clientFile',
+    method: 'get'
+  })
+}
+
+/**
+ * 新增上传客户材料
+ */
+export function addCustFile(obj) {
+  return request({
+    url: '/product/products/clientFile',
+    method: 'post',
+    data: obj
+  })
+}
+
+/**
+ * 修改上传客户材料
+ */
+export function updCustFile(productClientFileId, obj) {
+  return request({
+    url: '/product/products/clientFile/' + productClientFileId,
     method: 'put',
     data: obj
   })
