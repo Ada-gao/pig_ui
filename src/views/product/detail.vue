@@ -116,14 +116,6 @@
             <el-input v-model="form.historyPerformance" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <!-- <el-form-item label="状态" v-if="dialogStatus == 'update' && sys_user_del " prop="delFlag" > -->
-          <el-form-item label="产品状态" v-if="dialogStatus == 'update' " prop="productStatus" >
-            <el-select class="filter-item" v-model="form.productStatus" placeholder="请选择">
-              <el-option v-for="item in productStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
       </el-row>
       <el-row :gutter="90">
         <el-col>
@@ -216,93 +208,76 @@
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="产品全称" prop="productName">
-            <el-input v-model="form.productName" placeholder="请输入产品名称" readonly></el-input>
+            <el-input v-model="form.productName" placeholder="请输入产品名称" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品简称" prop="productShortName">
-            <el-input v-model="form.productShortName" placeholder="请输入产品名称" readonly=""></el-input>
+            <el-input v-model="form.productShortName" placeholder="请输入产品名称" :disabled="shortNameDisabled"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品编号" prop="productCode">
-            <el-input v-model="form.productCode" placeholder="请输入产品编号" readonly></el-input>
+            <el-input v-model="form.productCode" placeholder="请输入产品编号" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品类型" prop="productTypeId">
-            <el-input v-model="form.productTypeId" placeholder="" readonly></el-input>
+            <el-input v-model="form.productTypeId" placeholder="" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="募集人数" prop="productLp">
-            <el-input v-model.number="form.productLp" placeholder="请输入" readonly=""></el-input>
+            <el-input v-model.number="form.productLp" placeholder="请输入" :disabled="collectDisabled"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11" style="white-space: nowrap">
           <el-form-item label="产品风险级别" prop="productRiskLevel">
-            <el-input v-model="form.productRiskLevel" placeholder="" readonly></el-input>
+            <el-input v-model="form.productRiskLevel" placeholder="" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="基金管理人" prop="manager">
-            <el-input v-model="form.manager" placeholder="请输入" readonly></el-input>
+            <el-input v-model="form.manager" placeholder="请输入" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="交易币种" prop="currencyId">
-            <el-input v-model="form.currencyId" placeholder="" readonly></el-input>
-            <!-- <el-select class="filter-item" v-model="form.currencyId" placeholder="请选择" @change="changeCurrency">
-              <el-option v-for="item in currencyList" :key="item.currencyId" :value="item.currencyId" :label="item.name">
-                <span style="float: left">{{ item.name }}</span>
-              </el-option>
-            </el-select> -->
+            <el-input v-model="form.currencyId" placeholder="" disabled></el-input>
           </el-form-item>
         </el-col>
       
         <el-col :span="11">
           <el-form-item label="募集额度" prop="collectionAmount" style="white-space: nowrap">
-            <el-input type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" readonly=""></el-input><span>万</span>
+            <el-input type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" :disabled="collectDisabled"></el-input><span>万</span>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="净值" prop="netValue">
-            <el-input type="number" v-model="form.netValue" :maxlength="5" placeholder="请输入" readonly></el-input>
+            <el-input type="number" v-model="form.netValue" :maxlength="5" placeholder="请输入" disabled></el-input>
           </el-form-item>
         </el-col>
       
         <el-col :span="11">
           <el-form-item label="起投金额" prop="minimalAmount" style="white-space: nowrap">
-            <el-input type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额" readonly></el-input><span>万</span>
+            <el-input type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额" disabled></el-input><span>万</span>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="追加金额" prop="minimalAddAmount" style="white-space: nowrap">
-            <el-input type="number" v-model.number="form.minimalAddAmount" :maxlength="10" readonly></el-input><span>万</span>
+            <el-input type="number" v-model.number="form.minimalAddAmount" :maxlength="10" disabled></el-input><span>万</span>
           </el-form-item>
         </el-col>
       
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
-            <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" readonly></el-input>
-            <el-select v-model="form.ym" style="width: 20%;">
-              <el-option v-for="item in dateWay" :key="item.value" :value="item.value" :label="item.label">
-                <!-- <span style="float: left">{{ item.label }}</span> -->
-              </el-option>
-            </el-select>
+            <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" disabled></el-input>
+            <el-input v-model="form.ym" style="width: 22%;" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品过往业绩" prop="historyPerformance">
-            <el-input v-model="form.historyPerformance" placeholder="请输入" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <!-- <el-form-item label="状态" v-if="dialogStatus == 'update' && sys_user_del " prop="delFlag" > -->
-          <el-form-item label="产品状态" v-if="dialogStatus == 'update' " prop="productStatus" >
-            <el-select class="filter-item" v-model="form.productStatus" placeholder="请选择">
-              <el-option v-for="item in productStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-            </el-select>
+            <el-input v-model="form.historyPerformance" placeholder="请输入" disabled></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -312,7 +287,7 @@
             <el-radio-group v-model="form.isFloat" @change="radioChange">
               <el-radio :label="0" style="display: inline-block">浮动收益率</el-radio>
               <el-radio :label="1" style="display: inline-block">收益对标基准</el-radio>
-              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn" readonly></el-input>
+              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn" disabled></el-input>
               <span style="display: inline-block" v-show="!isDisabled">%月</span>
             </el-radio-group>
           </el-form-item>
@@ -323,7 +298,7 @@
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="开户银行" prop="bankName">
-            <el-input v-model="form.bankName" placeholder="请输入" readonly></el-input>
+            <el-input v-model="form.bankName" placeholder="请输入" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -331,23 +306,24 @@
             <el-date-picker
               v-model="form.closeDate"
               type="date"
+              :disabled="closeDateDisabled"
               placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="支行">
-            <el-input v-model="form.subBranchName" placeholder="请输入" readonly></el-input>
+            <el-input v-model="form.subBranchName" placeholder="请输入" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="资产团队">
-            <el-input v-model="form.assetTeam" placeholder="请输入" readonly></el-input>
+            <el-input v-model="form.assetTeam" placeholder="请输入" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="打款账号">
-            <el-input v-model.number="form.cardNo" placeholder="请输入" readonly></el-input>
+            <el-input v-model.number="form.cardNo" placeholder="请输入" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -355,6 +331,7 @@
             <el-date-picker
               v-model="form.valueDate"
               type="date"
+              :disabled="valueDateDisabled"
               placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
@@ -364,6 +341,7 @@
             <el-date-picker
               v-model="form.establishmentDate"
               type="date"
+              :disabled="establishedDisabled"
               placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
@@ -375,7 +353,7 @@
             <el-input
               type="textarea"
               :row="2"
-              v-model="form.incomeDistribution">
+              v-model="form.incomeDistribution" disabled>
             </el-input>
           </el-form-item>
         </el-col>
@@ -386,7 +364,7 @@
             <el-input
               type="textarea"
               :row="2"
-              v-model="form.highlight">
+              v-model="form.highlight" disabled>
             </el-input>
           </el-form-item>
         </el-col>
@@ -434,16 +412,10 @@
           </el-table-column>
         </el-table>
         <el-row style="text-align: right;">
-          <el-upload
-            class="upload-demo"
-            style="display: inline-block;"
-            :headers="headers"
-            :action="importFile('transaction')"
-            :on-change="handleChange1"
-            :show-file-list="false"
-            accept=".pdf, .doc">
-            <el-button size="small" class="btn-padding add_btn">追加材料</el-button>
-          </el-upload>
+          <el-button size="small"
+            class="btn-padding add_btn"
+            v-if="!operationDisabled"
+            @click="addClientFile('transc')">追加材料</el-button>
         </el-row>
       </div>
 
@@ -489,7 +461,8 @@
         <el-row style="text-align: right;">
           <el-button size="small"
             class="btn-padding add_btn"
-            @click="addClientFile">追加材料</el-button>
+            v-if="!operationDisabled"
+            @click="addClientFile('client')">追加材料</el-button>
         </el-row>
       </div>
 
@@ -542,7 +515,9 @@
             :on-change="handleChange2"
             :show-file-list="false"
             accept=".pdf, .doc">
-            <el-button size="small" class="btn-padding add_btn">追加材料</el-button>
+            <el-button size="small"
+              v-if="!operationDisabled"
+              class="btn-padding add_btn">追加材料</el-button>
           </el-upload>
         </el-row>
       </div>
@@ -599,7 +574,9 @@
             :on-change="handleChange3"
             :show-file-list="false"
             accept=".pdf, .doc">
-            <el-button size="small" class="btn-padding add_btn">追加材料</el-button>
+            <el-button size="small"
+              v-if="!operationDisabled"
+              class="btn-padding add_btn">追加材料</el-button>
           </el-upload>
         </el-row>
       </div>
@@ -611,39 +588,41 @@
           <h3>产品预约审核条件（不选择，代表不需要审核，可多选）</h3>
           <el-row>
             <el-col :md="12" :lg="8" style="margin-bottom: 10px">
-              <el-checkbox v-model="checked1">
+              <el-checkbox v-model="checked1" :disabled="operationDisabled">
                 <span style="width: 120px; display: inline-block">预约总额度</span>
-                <el-input v-model="form2.appointAmountPercent" :disabled="checked1===0" style="width: 100px;"></el-input> %，进入人工审核
+                <el-input v-model="form2.appointAmountPercent" :disabled="!checked1" style="width: 100px;"></el-input> %，进入人工审核
               </el-checkbox>
             </el-col>
             <el-col :md="12" :lg="8" style="margin-bottom: 10px">
-              <el-checkbox v-model="checked2">
+              <el-checkbox v-model="checked2" :disabled="operationDisabled">
                 <span style="width: 120px; display: inline-block">预约人数满</span>
-                <el-input v-model="form2.appointNums" :disabled="checked2===0" style="width: 100px;"></el-input> 人，进入人工审核
+                <el-input v-model="form2.appointNums" :disabled="!checked2" style="width: 100px;"></el-input> 人，进入人工审核
               </el-checkbox>
             </el-col>
             <el-col :md="12" :lg="8" style="margin-bottom: 10px">
-              <el-checkbox v-model="checked3">
+              <el-checkbox v-model="checked3" :disabled="operationDisabled">
                 <span style="width: 120px; display: inline-block">单笔打款金额大于</span>
-                <el-input v-model="form2.onceAppointGt" :disabled="checked3===0" style="width: 100px;"></el-input> 万，进入人工审核
+                <el-input v-model="form2.onceAppointGt" :disabled="!checked3" style="width: 100px;"></el-input> 万，进入人工审核
               </el-checkbox>
             </el-col>
             <el-col :md="12" :lg="8" style="margin-bottom: 10px">
-              <el-checkbox v-model="checked4">
+              <el-checkbox v-model="checked4" :disabled="operationDisabled">
                 <span style="width: 120px; display: inline-block">单笔打款金额小于</span>
-                <el-input v-model="form2.onceAppointLt" :disabled="checked4===0" style="width: 100px;"></el-input> 万，进入人工审核
+                <el-input v-model="form2.onceAppointLt" :disabled="!checked4" style="width: 100px;"></el-input> 万，进入人工审核
               </el-checkbox>
             </el-col>
             <el-col :md="12" :lg="8" style="margin-bottom: 10px">
-              <el-checkbox v-model="checked5">
+              <el-checkbox v-model="checked5" :disabled="operationDisabled">
                 <span style="width: 120px; display: inline-block">打款金额满</span>
-                <el-input v-model="form2.remitAmountsPercent" :disabled="checked5===0" style="width: 100px;"></el-input> %，进入人工审核
+                <el-input v-model="form2.remitAmountsPercent" :disabled="!checked5" style="width: 100px;"></el-input> %，进入人工审核
               </el-checkbox>
             </el-col>
             <el-col :md="12" :lg="8" style="margin-bottom: 10px">
               <!-- <el-form-item label="预约时效" prop="timeliness" style="padding-left: 71px"> -->
                 <span style="width: 145px; display: inline-block; text-align: right">预约时效</span>
-                <el-input style="width: 100px;" v-model="form2.timeliness"></el-input> 小时
+                <el-input style="width: 100px;"
+                   :disabled="operationDisabled"
+                    v-model="form2.timeliness"></el-input> 小时
               <!-- </el-form-item> -->
             </el-col>
           </el-row>
@@ -654,7 +633,7 @@
           <el-row>
             <el-col :span="6">
               <el-form-item prop="keyProduct" label="是否标注重点产品" style="white-space: nowrap;">
-                <el-radio-group v-model="form.keyProduct">
+                <el-radio-group v-model="form2.keyProduct" :disabled="operationDisabled">
                   <el-radio :label="1">否</el-radio>
                   <el-radio :label="2">是</el-radio>
                 </el-radio-group>
@@ -665,6 +644,7 @@
                 <el-date-picker
                   style="width: 80%"
                   v-model="importantDate"
+                  :disabled="operationDisabled"
                   type="daterange"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
@@ -680,20 +660,27 @@
           <el-row>
             <el-col :span="11">
               <el-form-item label="业绩系数" prop="performance">
-                <el-input style="width: 300px" v-model="normalData.performanceCoefficient"></el-input>
+                <el-input style="width: 300px"
+                   :disabled="operationDisabled"
+                  v-model="normalData.performanceCoefficient"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="11" style="white-space: nowrap">
-              <el-form-item :label="`佣金系数（第${normalList[0].age}年）`">
-                <el-input style="width: 300px" v-model="normalList[0].brokerageCoefficient"></el-input>
-                <i class="el-icon-plus" @click="addCommission"></i>
+            <el-col :span="11" style="white-space: nowrap"
+              v-for="item in normalList" :key="item.age">
+              <el-form-item :label="`佣金系数（第${item.age}年）`">
+                <el-input style="width: 300px"
+                  :disabled="operationDisabled"
+                  v-model="item.brokerageCoefficient"></el-input>
+                <i class="el-icon-plus" v-if="!operationDisabled" @click="addCommission"></i>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row v-for="item in addNormList" :key="item.idx" v-if="addNormList">
             <el-col :span="11" :offset="11" style="white-space: nowrap">
               <el-form-item :label="`佣金系数（第${cmsIndex}年）`">
-                <el-input style="width: 300px" v-model="item.brokerageCoefficient"></el-input>
+                <el-input style="width: 300px"
+                  :disabled="operationDisabled"
+                  v-model="item.brokerageCoefficient"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -701,12 +688,13 @@
 
         <div class="group-item">
           <h3>活动时间段</h3>
-          <el-row>
+          <el-row v-for="item in activityData" :key="item.idx">
             <el-col :span="11">
               <el-form-item label="活动时间">
                 <el-date-picker
                   style="width: 300px"
-                  v-model="activityData.activeDate"
+                  v-model="item.activeDate"
+                  :disabled="operationDisabled"
                   type="daterange"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
@@ -716,13 +704,17 @@
             </el-col>
             <el-col :span="11">
               <el-form-item label="业绩系数">
-                <el-input style="width: 300px" v-model="activityData.performanceCoefficient"></el-input>
-                <i class="el-icon-plus" @click="addActivity"></i>
+                <el-input style="width: 300px"
+                  :disabled="operationDisabled"
+                  v-model="item.performanceCoefficient"></el-input>
+                <i class="el-icon-plus" v-if="!operationDisabled" @click="addActivity"></i>
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="佣金系数">
-                <el-input style="width: 300px" v-model="activityData.brokerageCoefficient"></el-input>
+                <el-input style="width: 300px"
+                  :disabled="operationDisabled"
+                  v-model="item.brokerageCoefficient"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -732,6 +724,7 @@
                 <el-date-picker
                   style="width: 300px"
                   v-model="item.activeDate"
+                  :disabled="operationDisabled"
                   type="daterange"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
@@ -741,12 +734,16 @@
             </el-col>
             <el-col :span="11">
               <el-form-item label="业绩系数">
-                <el-input style="width: 300px" v-model="item.performanceCoefficient"></el-input>
+                <el-input style="width: 300px"
+                :disabled="operationDisabled"
+                v-model="item.performanceCoefficient"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="佣金系数">
-                <el-input style="width: 300px" v-model="item.brokerageCoefficient"></el-input>
+                <el-input style="width: 300px"
+                :disabled="operationDisabled"
+                v-model="item.brokerageCoefficient"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -755,11 +752,31 @@
     </div>
 
     <div slot="footer" class="dialog-footer" style="text-align: center;">
-      <el-button class="search_btn" @click="cancel()">取 消</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='create'&step===1" type="primary" @click="create('form')">保 存</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='create'&step===2" type="primary" @click="createRouter">保 存</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===1" type="primary" @click="update('form')">保 存</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2" type="primary" @click="updateRouter('form')">保 存</el-button>
+      <!-- 创建 -->
+      <el-button class="search_btn" v-if="dialogStatus=='create'&allDisabled" @click="cancel()">取 消</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='create'&step===1" type="primary" @click="create('form')">保 存create1</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='create'&step===2" type="primary" @click="createRouter">保 存create2</el-button>
+      <!-- 编辑 -->
+      <el-button class="search_btn" v-if="dialogStatus=='update'&step===1&allDisabled" @click="cancel()">取 消</el-button>
+      <el-button class="search_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" @click="cancel()">取 消</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===1&allDisabled" type="primary" @click="update('form')">保 存upd1</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" type="primary" @click="updateRouter('form')">保 存upd2</el-button>
+      <!-- 在建 -->
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===0" type="primary" @click="updateProductType()">进入产品预热</el-button>
+      <!-- 预热 -->
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType()">进入产品募集</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType()">返回在建</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType()">设为显示</el-button>
+      <!-- 募集中 -->
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType()">进入已关账</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType()">暂停预约</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType()">设为隐藏</el-button>
+      <!-- 已关账 -->
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType()">进入已成立</el-button>
+      <!-- 已成立 -->
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===4" type="primary" @click="updateProductType()">进入兑付中</el-button>
+      <!-- 兑付中 -->
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===5" type="primary" @click="updateProductType()">进入兑付完成</el-button>
     </div>
 
     <el-dialog
@@ -789,8 +806,9 @@
 
 <script>
   import { fetchList, getObj, addObj, putObj, delObj, 
-    addOperationObj, putFileObj, delCustFile, getCustFile, addCustFile, updCustFile } from '@/api/product/product'
-  import { getClientFile } from '@/api/product/fileManage'
+    addOperationObj, putFileObj, delCustFile, getCustFile,
+    addCustFile, updCustFile, fetchOperation, updProductType } from '@/api/product/product'
+  import { getClientFile, getTranscFile } from '@/api/product/fileManage'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { fetchCurrency, getObjList } from '@/api/currency'
   import { getToken } from '@/utils/auth'
@@ -1023,11 +1041,11 @@
         // checked: 0,
         importantDate: [],
         activeDate: [],
-        checked1: 0,
-        checked2: 0,
-        checked3: 0,
-        checked4: 0,
-        checked5: 0,
+        checked1: false,
+        checked2: false,
+        checked3: false,
+        checked4: false,
+        checked5: false,
         form2: {
           activityDTO: [],
           normalDTO: {
@@ -1041,14 +1059,26 @@
         addNormList: [],
         cmsIndex: 1,
         normalData: {},
-        activityData: {},
+        activityData: [
+          {
+            activeDate: ['2018-01-01', '2018-08-08']
+          }
+        ],
         addActivityList: [],
         activityList: [],
         brokerageCoefficient: '',
         productFileId: 0,
         clientFileList: [],
         dialogComVisible: false,
-        clientFile: ''
+        clientFile: '',
+        collectDisabled: false,
+        shortNameDisabled: false,
+        closeDateDisabled: true, // 关账日
+        establishedDisabled: true, // 成立日
+        valueDateDisabled: false, // 起息日
+        operationDisabled: false,
+        allDisabled: true,
+        someDisabled: true
       }
     },
     computed: {
@@ -1092,7 +1122,28 @@
               this.isDisabled = false
             }
             this.productStatusNo = this.form.productStatus
+            console.log(this.productStatusNo)
             this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
+            if(this.productStatusNo === 6) {
+              this.shortNameDisabled = true
+            }
+            if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
+              this.collectDisabled = true
+            }
+            if(this.productStatusNo === 4) {
+              this.closeDateDisabled = false
+              this.someDisabled = false
+            }
+            if(this.productStatusNo === 5) {
+              this.establishedDisabled = false
+              this.someDisabled = false
+            }
+            if(this.productStatusNo === 5||this.productStatusNo === 6) {
+              this.valueDateDisabled = true
+            }
+            if(this.productStatusNo === 6) {
+              this.allDisabled = false
+            }
           })
           this.getAllFiles(this.uploadData.productId)
         }
@@ -1135,10 +1186,7 @@
           age: this.cmsIndex,
           brokerageCoefficient: ''
         })
-        console.log(this.addNormList)
-        console.log(this.normalList)
         this.normalList = this.normalList.concat(this.addNormList)
-        console.log(this.normalList)
       },
       addActivity() {
         // this.cmsIndex++
@@ -1190,8 +1238,8 @@
         //   }
         // })
       },
-      updateRouter(formName) {
-        this.activityList.push(this.activityData)
+      updateRouter(formName) { // 操作指南新建或编辑
+        this.activityList = this.activityList.concat(this.activityData)
         this.activityList.forEach(item => {
           item.activityEnd = item.activeDate[1]
           item.activityStart = item.activeDate[0]
@@ -1201,7 +1249,28 @@
         this.form2.normalDTO.performanceCoefficient = this.normalData.performanceCoefficient
         this.form2.productId = this.form.productId
         addOperationObj(this.form2).then(res => {
-          console.log(res)
+          this.$notify({
+            title: '成功',
+            message: '产品指南保存成功',
+            type: 'success',
+            duration: 2000
+          })
+        })
+      },
+      updateProductType() {
+        // 进入预热
+        let params = {
+          status: 1
+        }
+        updProductType(this.uploadData.productId, params).then(res => {
+          console.log(res.data)
+          this.$notify({
+            title: '成功',
+            message: '产品进入预热成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.$route.push({path: '/product/building'})
         })
       },
       resetTemp() {
@@ -1353,18 +1422,78 @@
       importFile(fileType) {
         return uploadFiles(this.uploadData.productId, fileType)
       },
-      addClientFile() {
-        getClientFile().then(res => {
-          this.clientFileList = res.data.records
-          this.dialogComVisible = true
-        })
+      addClientFile(type) { // 上传客户材料
+        let params = {
+          limit: 100,
+          page: 1
+        }
+        if (type === 'client') {
+          getClientFile(params).then(res => {
+            this.clientFileList = res.data.records
+            this.dialogComVisible = true
+          })
+        } else {
+          getTranscFile(params).then(res => {
+            this.clientFileList = res.data.records
+            this.dialogComVisible = true
+          })
+        }
       },
       changeCurrency(val) {
         this.currencyList = this.currencyList.slice(0)
       },
-      changeStep(val) {
+      changeStep(val) { // 切换tab(获取操作指南数据)
         this.step = val - 0
-        // console.log(this.step)
+        if(this.step === 2) {
+          fetchOperation(this.uploadData.productId).then(res => {
+            this.form2 = res.data
+            this.form2.normalDTO = res.data.normalDTO || {}
+            this.activityData = res.data.activityDTO || []
+            
+            this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
+            if(!this.normalList) {
+              this.normalList = [{
+                age: ''
+              }]
+            }
+            if(!this.activityData.length) {
+              this.activityData = [{
+                activeDate: [],
+                performanceCoefficient: ''
+              }]
+            } else {
+              this.activityData.forEach(item => {
+                item.activeDate = []
+                item.activeDate[0] = item.activityStart
+                item.activeDate[1] = item.activityEnd
+              })
+            }
+            // console.log(res)
+            // 判断产品预约审核条件是否禁用
+            if(!this.form2.importantEnd) {
+              this.form2.keyProduct = 1
+            }
+            if(this.form2.appointAmountPercent) {
+              this.checked1 = true
+            }
+            if(this.form2.appointNums) {
+              this.checked2 = true
+            }
+            if(this.form2.onceAppointGt) {
+              this.checked3 = true
+            }
+            if(this.form2.onceAppointLt) {
+              this.checked4 = true
+            }
+            if(this.form2.remitAmountsPercent) {
+              this.checked5 = true
+            }
+            // 不同产品状态可编辑项
+            if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
+              this.operationDisabled = true
+            }
+          })
+        }
       },
       test(val) {
         console.log(val)

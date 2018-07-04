@@ -12,6 +12,16 @@ export function fetchList(query) {
 }
 
 /**
+ * 查询产品操作指南
+ */
+export function fetchOperation(productId) {
+  return request({
+    url: '/product/products/' + productId + '/operation',
+    method: 'get'
+  })
+}
+
+/**
  * 新增产品
  */
 export function addObj(obj) {
@@ -112,6 +122,17 @@ export function addCustFile(obj) {
 export function updCustFile(productClientFileId, obj) {
   return request({
     url: '/product/products/clientFile/' + productClientFileId,
+    method: 'put',
+    data: obj
+  })
+}
+
+/**
+ * 修改产品状态
+ */
+export function updProductType(productId, obj) {
+  return request({
+    url: '/product/products/' + productId + '/status',
     method: 'put',
     data: obj
   })
