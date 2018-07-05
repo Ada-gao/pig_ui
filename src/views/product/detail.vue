@@ -752,6 +752,8 @@
     </div>
 
     <div slot="footer" class="dialog-footer" style="text-align: center;">
+      <span v-if="dialogStatus=='update'&step===2&productStatusNo===2">产品分期</span>
+      <span v-if="dialogStatus=='update'&step===2&productStatusNo===2">募集分期</span>
       <!-- 创建 -->
       <el-button class="search_btn" v-if="dialogStatus=='create'&allDisabled" @click="cancel()">取 消</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='create'&step===1" type="primary" @click="create('form')">保 存create1</el-button>
