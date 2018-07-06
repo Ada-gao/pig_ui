@@ -830,7 +830,8 @@
       <transc-table-component
         :productCollect="true"
         :statusCol="true"
-        :aptCol="true">
+        :aptCol="true"
+        :transcStatus="true">
       </transc-table-component>
     </div>
 
@@ -1591,9 +1592,9 @@
           getBriefReport(this.uploadData.productId).then(res => {
             this.statistic = res.data
           })
-          Bus.$emit('queryAppoints', this.listQuery)
+          this.handleAppoint(0)
+          // Bus.$emit('queryAppoints', this.listQuery)
         }
-        this.handleAppoint()
       },
       chooseClientFile() {
         this.dialogComVisible = false
@@ -1618,10 +1619,8 @@
           // this.form.productCode = this.form.productCode + '-01'
         })
       },
-      handleAppoint(type='0') {
-        console.log(type)
+      handleAppoint(type) {
         this.listQuery.type = type
-        console.log(this.listQuery)
         Bus.$emit('queryAppoints', this.listQuery)
       },
       getOperations() { // 获取操作指南信息

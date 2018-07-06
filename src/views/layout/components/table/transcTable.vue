@@ -187,6 +187,9 @@
       },
       productCollect: {
         default: false
+      },
+      transcStatus: {
+        default: false
       }
     },
     data() {
@@ -231,29 +234,27 @@
     },
     created() {
       this.getList()
+      this.getAppointList()
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
     },
     mounted() {
       Bus.$on('searchTransc', listQuery => {
-        this.queryId = 1
         this.listQuery = listQuery
         this.getList()
       })
       Bus.$on('searchRecords', listQuery => {
-        this.queryId = 2
         this.listQuery = listQuery
         this.getHistory()
       })
       Bus.$on('queryAppoints', listQuery => {
-        this.queryId = 3
-        console.log(listQuery)
         this.listQuery = listQuery
         this.getAppointList()
       })
     },
     methods: {
       getList() {
+        this.queryId = 1
         this.listLoading = true
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         let list = null
@@ -315,6 +316,7 @@
         }
       },
       getHistory() {
+        this.queryId = 2
         // if(this.historyStatus) {
           // console.log(this.historyStatus)
           fetchRecords(this.listQuery).then(response => {
@@ -328,25 +330,30 @@
         // }
       },
       getAppointList() {
-        console.log('查询table')
+        this.queryId = 3
         let params = {
           page: this.listQuery.page,
           limit: this.listQuery.limit
         }
         let id = this.listQuery.productId
-        let type = this.listQuery.type
-        getAppointList(id, type, params).then(response => {
-          this.list = response.data.records
-          this.total = response.data.total
-          this.listLoading = false
-          // console.log(response)
-        })
+        let type = this.listQuery.type || 0
+        if(this.transcStatus) {
+          getAppointList(id, type, params).then(response => {
+            this.list = response.data.records
+            this.total = response.data.total
+            this.listLoading = false
+            // console.log(response)
+          })
+        }
       },
       handleSizeChange(val) {
         this.listQuery.limit = val
-        if(this.queryId === 1) {
+        console.log(this.queryId)
+        if(this.queryId == 1) {
+          console.log('111')
           this.getList()
         } else if(this.queryId === 2) {
+          console.log('222')
           this.getHistory()
         } else {
           this.getAppointList()
