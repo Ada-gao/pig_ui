@@ -25,7 +25,7 @@
     
     <div style="border-bottom: 1px solid #ccc; margin-bottom: 20px;"></div>
 
-    <el-form :model="form" :rules="rules" ref="form" label-width="100px" v-if="step===1&(productStatusNo===0||stageType=='0')">
+    <el-form :model="form" :rules="rules" ref="form" label-width="100px" v-if="step===1&(productStatusNo===0||stageType=='0')||!uploadData.productId">
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="产品全称" prop="productName">
