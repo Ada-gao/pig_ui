@@ -30,7 +30,7 @@
 
 <script>
   import { getObj, putObj, getFileObj } from '@/api/transc/transc'
-  import transcTableComponent from 'components/transcTable'
+  import transcTableComponent from 'components/table/transcTable'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { transformText } from '@/utils'

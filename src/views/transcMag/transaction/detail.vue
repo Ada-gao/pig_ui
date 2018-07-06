@@ -302,7 +302,7 @@
 <script>
   import { getObj, getFileObj, getRefundFile, getReject } from '@/api/transc/transc'
   import { putApt, putPay, putCtra, putRefund } from '@/api/transc/check'
-  import transcTableComponent from 'components/transcTable'
+  import transcTableComponent from 'components/table/transcTable'
   import tabTranscComponent from 'components/transcDetail/tabTranscTable'
   import tabLogComponent from 'components/transcDetail/tabLog'
   import { deptRoleList, fetchDeptTree } from '@/api/role'

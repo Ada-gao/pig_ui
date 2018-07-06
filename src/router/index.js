@@ -175,12 +175,6 @@ export const asyncRouterMap = [
       { menuId: 23, path: 'allocated', component: _import('client/allocated/index'), name: '待分配客户', meta: { title: '待分配客户', icon: 'allocated' }},
       { menuId: 24, path: 'certFile', component: _import('client/certFile/index'), name: '认证资料管理', meta: { title: '认证资料管理', icon: 'certFile' }},
       // { menuId: 22, path: 'detail/:id', component: _import('client/customer/detail'), name: '客户详情', meta: { title: '客户详情', icon: 'user' }},
-      // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '实名认证审核', meta: { title: '实名认证审核', icon: 'user' }},
-      // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '普通投资者审核', meta: { title: '普通投资者审核', icon: 'user' }},
-      // { menuId: 20, path: 'potential', component: _import('client/potential/index'), name: '专业投资者审核', meta: { title: '专业投资者审核', icon: 'user' }},
-      // { menuId: 18, path: 'potential', component: _import('client/potential/index'), name: '待分配顾问', meta: { title: '待分配顾问', icon: 'user' }},
-      // { menuId: 18, path: 'potential', component: _import('client/potential/index'), name: '客户异动分配', meta: { title: '客户异动分配', icon: 'user' }},
-      // { menuId: 18, path: 'potential', component: _import('client/potential/index'), name: '认证资料管理', meta: { title: '认证资料管理', icon: 'user' }}
     ]
   },
   {

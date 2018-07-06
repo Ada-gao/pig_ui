@@ -4,7 +4,8 @@
     <div v-if="uploadData.productId">
       <el-radio-group v-model="step" @change="changeStep" style="margin-bottom: 30px;">
         <el-radio-button label="1">产品详情</el-radio-button>
-        <el-radio-button label="2">产品操作指南</el-radio-button>
+        <el-radio-button style="border-radius: 0" label="2">产品操作指南</el-radio-button>
+        <el-radio-button v-if="productStatusNo!==0&productStatusNo!==1&stageType!='0'" label="3">交易信息</el-radio-button>
       </el-radio-group>
     </div>
     <div v-else class="tabs">
@@ -16,15 +17,15 @@
       </div>
     </div>
 
-    <div class="pageTitle">
-      <h3 v-if="uploadData.productId">修改产品</h3>
-      <h3 v-else>新增产品</h3>
+    <div class="pageTitle" style="text-align: right" v-if="stage">
       <!-- <el-button v-if="sys_user_add & step === 1" class="add_btn">新增字段属性</el-button> -->
+      关联产品
+      <el-input v-model="form.productName" style="width: 180px" placeholder="请输入"></el-input>
     </div>
     
     <div style="border-bottom: 1px solid #ccc; margin-bottom: 20px;"></div>
 
-    <el-form :model="form" :rules="rules" ref="form" label-width="100px" v-if="step===1&productStatusNo===0">
+    <el-form :model="form" :rules="rules" ref="form" label-width="100px" v-if="step===1&(productStatusNo===0||stageType=='0')">
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="产品全称" prop="productName">
@@ -43,7 +44,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品类型" prop="productTypeId">
-            <el-select class="filter-item" v-model="form.productTypeId" placeholder="请选择">
+            <el-select class="filter-item" v-model="form.productTypeId" placeholder="请选择" :disabled="stageType=='0'">
               <el-option v-for="item in productTypes" :key="item.productTypeId" :value="item.productTypeId" :label="item.name">
                 <span style="float: left">{{ item.name }}</span>
               </el-option>
@@ -57,7 +58,7 @@
         </el-col>
         <el-col :span="11" style="white-space: nowrap">
           <el-form-item label="产品风险级别" prop="productRiskLevel">
-            <el-select class="filter-item" v-model="form.productRiskLevel" placeholder="请选择">
+            <el-select class="filter-item" v-model="form.productRiskLevel" placeholder="请选择" :disabled="stageType=='0'">
               <el-option v-for="item in productRiskLevel" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -71,7 +72,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="交易币种" prop="currencyId">
-            <el-select class="filter-item" v-model="form.currencyId" placeholder="请选择" @change="changeCurrency">
+            <el-select class="filter-item" v-model="form.currencyId" placeholder="请选择" @change="changeCurrency" :disabled="stageType=='0'">
               <el-option v-for="item in currencyList" :key="item.currencyId" :value="item.currencyId" :label="item.name">
                 <span style="float: left">{{ item.name }}</span>
               </el-option>
@@ -103,8 +104,8 @@
       
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
-            <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;"></el-input>
-            <el-select v-model="form.ym" style="width: 20%;">
+            <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" :disabled="stageType=='0'"></el-input>
+            <el-select v-model="form.ym" style="width: 20%;" :disabled="stageType=='0'">
               <el-option v-for="item in dateWay" :key="item.value" :value="item.value" :label="item.label">
                 <!-- <span style="float: left">{{ item.label }}</span> -->
               </el-option>
@@ -120,7 +121,7 @@
       <el-row :gutter="90">
         <el-col>
           <el-form-item label="收益" prop="isFloat">
-            <el-radio-group v-model="form.isFloat" @change="radioChange">
+            <el-radio-group v-model="form.isFloat" @change="radioChange" :disabled="stageType=='0'">
               <el-radio :label="0" style="display: inline-block">浮动收益率</el-radio>
               <el-radio :label="1" style="display: inline-block">收益对标基准</el-radio>
               <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn"></el-input>
@@ -186,7 +187,8 @@
             <el-input
               type="textarea"
               :row="2"
-              v-model="form.incomeDistribution">
+              v-model="form.incomeDistribution"
+              :disabled="stageType=='0'">
             </el-input>
           </el-form-item>
         </el-col>
@@ -204,7 +206,7 @@
       </el-row>
     </el-form>
 
-    <el-form :model="form" label-width="100px" v-if="step===1&productStatusNo!==0">
+    <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&(productStatusNo!==0||stageType!='0')">
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="产品全称" prop="productName">
@@ -284,7 +286,7 @@
       <el-row :gutter="90">
         <el-col>
           <el-form-item label="收益" prop="isFloat">
-            <el-radio-group v-model="form.isFloat" @change="radioChange">
+            <el-radio-group v-model="form.isFloat" @change="radioChange" disabled>
               <el-radio :label="0" style="display: inline-block">浮动收益率</el-radio>
               <el-radio :label="1" style="display: inline-block">收益对标基准</el-radio>
               <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn" disabled></el-input>
@@ -331,7 +333,7 @@
             <el-date-picker
               v-model="form.valueDate"
               type="date"
-              :disabled="valueDateDisabled"
+              :disabled="valueDateDisabled||stage"
               placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
@@ -371,7 +373,7 @@
       </el-row>
     </el-form>
 
-    <div class="upfile-group" v-if="step === 2">
+    <div class="upfile-group" v-if="step===2">
       <div class="trade-item">
         <h3>交易所需材料</h3>
         <el-table
@@ -583,7 +585,7 @@
   
       <div style="border-bottom: 1px solid #ccc; margin: 20px 0;"></div>
 
-      <el-form :rules="rules2" label-width="120px">
+      <el-form :rules="rules2" ref="form2" label-width="120px">
         <div class="group-item">
           <h3>产品预约审核条件（不选择，代表不需要审核，可多选）</h3>
           <el-row>
@@ -639,7 +641,7 @@
                 </el-radio-group>
               </el-form-item>
             </el-col>
-            <el-col :span="10" v-show="form.keyProduct === 2">
+            <el-col :span="10" v-show="form.keyProduct===2">
               <el-form-item label="重点产品时间段">
                 <el-date-picker
                   style="width: 80%"
@@ -751,9 +753,90 @@
       </el-form>
     </div>
 
+    <div v-if="step===3">
+      <div class="bref">
+        <el-row :gutter="12" class="def-el">
+          <el-col :md="8" :lg="4" class="first-col">
+            <el-card shadow="always">
+              <div class="card-box">
+                <div class="left-box orange-box">
+                  <svg-icon icon-class="appointpeo"></svg-icon>
+                </div>
+                <div class="right-box">
+                  <div class="title">预约成功人数</div>
+                  <div class="btm-box"><span>{{statistic.appointNums||0}}</span><i>人</i></div>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col :md="8" :lg="5">
+            <el-card shadow="always">
+              <div class="card-box">
+                <div class="left-box orange-box">
+                  <svg-icon icon-class="appointmon"></svg-icon>
+                </div>
+                <div class="right-box">
+                  <div class="title">预约金额</div>
+                  <div class="btm-box"><span>{{statistic.appointAmounts||0}}</span><i>万</i></div>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col :md="8" :lg="5">
+            <el-card shadow="always">
+              <div class="card-box">
+                <div class="left-box green-box">
+                  <svg-icon icon-class="successpeo"></svg-icon>
+                </div>
+                <div class="right-box green-right">
+                  <div class="title">打款成功人数</div>
+                  <div class="btm-box"><span>{{statistic.remitNums||0}}</span><i>人</i></div>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col :md="8" :lg="5">
+            <el-card shadow="always">
+              <div class="card-box">
+                <div class="left-box green-box">
+                  <svg-icon icon-class="successmon"></svg-icon>
+                </div>
+                <div class="right-box green-right">
+                  <div class="title">打款成功金额</div>
+                  <div class="btm-box"><span>{{statistic.remitAmounts||0}}</span><i>万</i></div>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col :md="8" :lg="5">
+            <el-card shadow="always">
+              <div class="card-box">
+                <div class="left-box green-box">
+                  <svg-icon icon-class="successmon"></svg-icon>
+                </div>
+                <div class="right-box green-right">
+                  <div class="title">剩余额度</div>
+                  <div class="btm-box"><span>{{statistic.surplusAmounts||0}}</span><i>万</i></div>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
+      <div class="transc-tab">
+        <el-button @click="handleAppoint('0')" class="search_btn first_btn" label="1">预约成功人数</el-button>
+        <el-button @click="handleAppoint('1')" class="search_btn sec_btn" label="2">打款成功人数</el-button>
+      </div>
+      <transc-table-component
+        :productCollect="true"
+        :statusCol="true"
+        :aptCol="true">
+      </transc-table-component>
+    </div>
+
     <div slot="footer" class="dialog-footer" style="text-align: center;">
-      <span v-if="dialogStatus=='update'&step===2&productStatusNo===2">产品分期</span>
-      <span v-if="dialogStatus=='update'&step===2&productStatusNo===2">募集分期</span>
+      <span class="stage_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('0')">产品分期</span>
+      <span class="stage_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('1')">募集分期</span>
       <!-- 创建 -->
       <el-button class="search_btn" v-if="dialogStatus=='create'&allDisabled" @click="cancel()">取 消</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='create'&step===1" type="primary" @click="create('form')">保 存create1</el-button>
@@ -761,24 +844,24 @@
       <!-- 编辑 -->
       <el-button class="search_btn" v-if="dialogStatus=='update'&step===1&allDisabled" @click="cancel()">取 消</el-button>
       <el-button class="search_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" @click="cancel()">取 消</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===1&allDisabled" type="primary" @click="update('form')">保 存upd1</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===1&allDisabled" type="primary" @click="update('form1')">保 存upd1</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" type="primary" @click="updateRouter('form')">保 存upd2</el-button>
       <!-- 在建 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===0" type="primary" @click="updateProductType()">进入产品预热</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===0" type="primary" @click="updateProductType(1)">进入产品预热</el-button>
       <!-- 预热 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType()">进入产品募集</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType()">返回在建</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(2)">进入产品募集</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(0)">返回在建</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType()">设为显示</el-button>
       <!-- 募集中 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType()">进入已关账</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType(3)">进入已关账</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType()">暂停预约</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType()">设为隐藏</el-button>
       <!-- 已关账 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType()">进入已成立</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(4)">进入已成立</el-button>
       <!-- 已成立 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===4" type="primary" @click="updateProductType()">进入兑付中</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===4" type="primary" @click="updateProductType(5)">进入兑付中</el-button>
       <!-- 兑付中 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===5" type="primary" @click="updateProductType()">进入兑付完成</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===5" type="primary" @click="updateProductType(6)">进入兑付完成</el-button>
     </div>
 
     <el-dialog
@@ -788,7 +871,6 @@
       <div style="margin-bottom: 30px;">确认执行此操作吗？</div>
       <el-select v-model="clientFile"
         clearable
-        @change="test"
         placeholder="请选择"
         style="margin-bottom: 30px;">
         <el-option
@@ -807,9 +889,11 @@
 </template>
 
 <script>
+  import transcTableComponent from 'components/table/transcTable'
   import { fetchList, getObj, addObj, putObj, delObj, 
     addOperationObj, putFileObj, delCustFile, getCustFile,
-    addCustFile, updCustFile, fetchOperation, updProductType } from '@/api/product/product'
+    addCustFile, updCustFile, fetchOperation, updProductType,
+    getProductStage, updProductStage, getBriefReport } from '@/api/product/product'
   import { getClientFile, getTranscFile } from '@/api/product/fileManage'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { fetchCurrency, getObjList } from '@/api/currency'
@@ -822,6 +906,7 @@
   import ElOption from "element-ui/packages/select/src/option"
   import { decimals, isNumber } from '@/utils/validate'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
+  import Bus from '@/assets/js/bus'
 
   const twoDecimals = (rule, value, callback) => {
     if (!value) {
@@ -848,7 +933,9 @@
   export default {
     components: {
       ElOption,
-      ElRadioGroup },
+      ElRadioGroup,
+      transcTableComponent
+    },
     name: 'table_user',
     directives: {
       waves
@@ -1080,7 +1167,17 @@
         valueDateDisabled: false, // 起息日
         operationDisabled: false,
         allDisabled: true,
-        someDisabled: true
+        someDisabled: true,
+        stage: false,
+        spanNum: 5,
+        statistic: {},
+        listQuery: {
+          page: 1,
+          limit: 20,
+          productId: '',
+          type: '0'
+        },
+        stageType: ''
       }
     },
     computed: {
@@ -1102,6 +1199,7 @@
     methods: {
       getList() {
         this.uploadData.productId = this.$route.params.id
+        this.listQuery.productId = this.$route.params.id
         // if(!this.uploadData.productId) this.nextToUpdate = false
         fetchProductTypeList().then(res => { // 获取产品类型
           this.productTypes = res.data
@@ -1110,7 +1208,7 @@
           this.currencyList = response.data
           this.form.currencyId = 1
         })
-        if(this.uploadData.productId) {
+        if(this.uploadData.productId) { // 查询产品详情
           getObj(this.uploadData.productId)
           .then(response => {
             this.form = response.data
@@ -1207,38 +1305,45 @@
         // this.$refs[formName].resetFields()
         this.$router.push({path: '/product/productList'})
       },
-      update(formName) { // 修改提交
+      update(formName) { // 产品详情修改提交（第一步）
         const set = this.$refs
-        this.step = 2
-        // set[formName].validate(valid => {
-        //   if (valid) {
-        //     let productId = this.form.productId
-        //     if(!this.form.isFloat) {
-        //       this.form.annualizedReturn = null
-        //       this.isDisabled = true
-        //     }
-        //     if(this.form.productStatus.length > 1) {
-        //       this.form.productStatus = this.productStatusNo
-        //     }
-        //     putObj(this.form).then(response => {
-        //       if(!response.data || response.status === 400) {
-        //         return
-        //         // this.getList()
-        //       }
-        //       // this.nextToUpdate = true
-        //       this.$notify({
-        //         title: '成功',
-        //         message: '修改成功',
-        //         type: 'success',
-        //         duration: 2000
-        //       })
-        //       this.$router.push({path: '/product/productList'})
-
-        //     })
-        //   } else {
-        //     return false
-        //   }
-        // })
+        set[formName].validate(valid => {
+          if (valid) {
+            if (this.stage) {
+              this.form.productStatus = this.productStatusNo
+              updProductStage(this.form).then(response => {
+                if(!response.data || response.status !== 200) {
+                  return
+                  // this.getList()
+                }
+                this.step = 2
+                this.changeStep(this.step)
+                this.$notify({
+                  title: '成功',
+                  message: '保存成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                // this.$router.push({path: '/product/productList'})
+              })
+            } else {
+              this.form.productStatus = this.productStatusNo
+              putObj(this.uploadData.productId, this.form).then(res => {
+                this.$notify({
+                  title: '成功',
+                  message: '保存成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.step = 2
+                console.log(res)
+              })
+            }
+            
+          } else {
+            return false
+          }
+        })
       },
       updateRouter(formName) { // 操作指南新建或编辑
         this.activityList = this.activityList.concat(this.activityData)
@@ -1259,10 +1364,9 @@
           })
         })
       },
-      updateProductType() {
-        // 进入预热
+      updateProductType(status) {
         let params = {
-          status: 1
+          status: status
         }
         updProductType(this.uploadData.productId, params).then(res => {
           console.log(res.data)
@@ -1495,11 +1599,13 @@
               this.operationDisabled = true
             }
           })
+        } else if (this.step === 3) {
+          getBriefReport(this.uploadData.productId).then(res => {
+            this.statistic = res.data
+          })
+          // Bus.$emit('queryAppoints', this.listQuery)
         }
-      },
-      test(val) {
-        console.log(val)
-        console.log(this.clientFile)
+        this.handleAppoint()
       },
       chooseClientFile() {
         this.dialogComVisible = false
@@ -1512,6 +1618,23 @@
           this.clientFile = res.data
           this.clientFiles.push(this.clientFile)
         })
+      },
+      handleCollect(type) {
+        this.stageType = type // 0 产品分期； 1 募集分期
+        getProductStage(this.uploadData.productId, type).then(res => {
+          console.log(res)
+          this.step = 1
+          this.stage = true
+          this.form = res.data
+          console.log(this.stage)
+          // this.form.productCode = this.form.productCode + '-01'
+        })
+      },
+      handleAppoint(type='0') {
+        console.log(type)
+        this.listQuery.type = type
+        console.log(this.listQuery)
+        Bus.$emit('queryAppoints', this.listQuery)
       }
     }
   }
@@ -1596,5 +1719,109 @@
 //     padding-left: 71px!important;
 //   }
 // }
+.stage_btn {
+  float: left;
+  color: $mainColor;
+  line-height: 40px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.def-el {
+  margin-bottom: 24px;
+  .el-card__body {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    .card-box {
+      padding: 10px 0;
+      .left-box,
+      .right-box {
+        display: inline-block;
+        height: 50px;
+        vertical-align: middle;
+        position: relative;
+        .circle {
+          display: inline-block;
+          width: 42px;
+          height: 42px;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          border-radius: 100%;
+          border: 3px solid #fff;
+        }
+      }
+      .left-box {
+        width: 50px;
+        box-shadow: 0 6px 6px 2px rgba(43,125,131,0.05);
+        border-radius: 4px;
+        .svg-icon {
+          position: absolute;
+           fill: #fff;
+          width: 32px;
+          height: 32px;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 1;
+        }
+      }
+      .right-box {
+        margin-left: 3px;
+        .title {
+          font-family: PingFangSC-Medium;
+          font-size: 14px;
+          color: #475669;
+          letter-spacing: 0;
+          line-height: 20px;
+        }
+        .btm-box {
+          position: absolute;
+          bottom: 0;
+          font-family: PingFangSC-Semibold;
+          font-size: 22px;
+          color: #FDCE82;
+          letter-spacing: 0;
+          line-height: 20px;
+          span {
+            font-size: 30px;
+            vertical-align: text-top;
+          }
+          i {
+            font-style: normal;
+          }
+        }
+      }
+      .orange-box {
+        background: #FDCE82;
+        .circle {
+          background-color: #fdce82;
+        }
+      }
+      .green-box {
+        background: #30CDAA;
+        .circle {
+          background-color: #30cdaa;
+        }
+      }
+      .green-right {
+        .btm-box {
+          color: #30cdaa;
+        }
+      }
+    }
+  }
+}
+.transc-tab {
+  .first_btn {
+    border-radius: 5px 0 0 5px;
+    margin-right: -5px;
+  }
+  .sec_btn {
+    border-radius: 0 5px 5px 0;
+    margin-left: 0;
+  }
+}
 </style>
 

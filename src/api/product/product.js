@@ -66,9 +66,9 @@ export function delObj(id) {
 /**
  * 修改产品
  */
-export function putObj(obj) {
+export function putObj(id, obj) {
   return request({
-    url: '/product/products/' + obj.productId,
+    url: '/product/products/' + id,
     method: 'put',
     data: obj
   })
@@ -135,5 +135,47 @@ export function updProductType(productId, obj) {
     url: '/product/products/' + productId + '/status',
     method: 'put',
     data: obj
+  })
+}
+
+/**
+ * 募集/产品分期查询
+ */
+export function getProductStage(productId, type) {
+  return request({
+    url: '/product/products/' + productId + '/stage/' + type,
+    method: 'get'
+  })
+}
+
+/**
+ * 募集/产品分期-产品信息编辑
+ */
+export function updProductStage(obj) {
+  return request({
+    url: '/product/products/stage',
+    method: 'post',
+    data: obj
+  })
+}
+
+/**
+ * 产品交易简报
+ */
+export function getBriefReport(id) {
+  return request({
+    url: '/product/products/' + id + '/transactionStatistic',
+    method: 'get'
+  })
+}
+
+/**
+ * 打款交易信息查询
+ */
+export function getAppointList(productId, type, query) {
+  return request({
+    url: '/product/products/' + productId + '/appointTransaction/' + type,
+    method: 'get',
+    params: query
   })
 }

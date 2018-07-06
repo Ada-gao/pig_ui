@@ -1,4 +1,3 @@
-
 <template>
   <div class="table">
 
@@ -126,6 +125,7 @@
 
 <script>
   import { fetchTranscList, fetchAppointList, fetchPayList, fetchContractList, fetchRefundList } from '@/api/transc/transc'
+  import { getAppointList } from '@/api/product/product'
   import { putCtra } from '@/api/transc/check'
   import { fetchRecords } from '@/api/transc/records'
   import { fetchProductTypeList } from '@/api/product/productType'
@@ -184,6 +184,9 @@
       },
       activePath: {
         default: '/transcMag/transc'
+      },
+      productCollect: {
+        default: false
       }
     },
     data() {
@@ -213,7 +216,8 @@
         productTypes: [],
         highlight: '',
         isDisabled: true,
-        isSpread: false
+        isSpread: false,
+        queryId: 0
       }
     },
     computed: {
@@ -232,12 +236,20 @@
     },
     mounted() {
       Bus.$on('searchTransc', listQuery => {
+        this.queryId = 1
         this.listQuery = listQuery
         this.getList()
       })
       Bus.$on('searchRecords', listQuery => {
+        this.queryId = 2
         this.listQuery = listQuery
         this.getHistory()
+      })
+      Bus.$on('queryAppoints', listQuery => {
+        this.queryId = 3
+        console.log(listQuery)
+        this.listQuery = listQuery
+        this.getAppointList()
       })
     },
     methods: {
@@ -315,15 +327,40 @@
           })
         // }
       },
+      getAppointList() {
+        console.log('查询table')
+        let params = {
+          page: this.listQuery.page,
+          limit: this.listQuery.limit
+        }
+        let id = this.listQuery.productId
+        let type = this.listQuery.type
+        getAppointList(id, type, params).then(response => {
+          this.list = response.data.records
+          this.total = response.data.total
+          this.listLoading = false
+          // console.log(response)
+        })
+      },
       handleSizeChange(val) {
         this.listQuery.limit = val
-        this.getList()
-        this.getHistory()
+        if(this.queryId === 1) {
+          this.getList()
+        } else if(this.queryId === 2) {
+          this.getHistory()
+        } else {
+          this.getAppointList()
+        }
       },
       handleCurrentChange(val) {
         this.listQuery.page = val
-        this.getList()
-        this.getHistory()
+        if(this.queryId === 1) {
+          this.getList()
+        } else if(this.queryId === 2) {
+          this.getHistory()
+        } else {
+          this.getAppointList()
+        }
       },
       handleUpdate(row) { // 查看
         this.$router.push({path: '/transcMag/transc/detail/' + row.appointmentId + '/' + this.orderStatus + '/' + row.status})

@@ -1,4 +1,3 @@
-
 <template>
   <div class="product-table">
 

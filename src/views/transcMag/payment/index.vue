@@ -20,7 +20,7 @@
 
 <script>
   import transcSearchComponent from 'components/searchBar/transaction'
-  import transcTableComponent from 'components/transcTable'
+  import transcTableComponent from 'components/table/transcTable'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { mapGetters } from 'vuex'

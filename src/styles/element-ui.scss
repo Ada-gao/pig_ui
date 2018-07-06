@@ -80,6 +80,13 @@ $hover_check: #00C1DF;
     background: $hover_check;
   }
 }
+.transc-tab {
+  .el-radio-button__inner:active {
+    background-color: #fff !important;
+    color: #606266;
+  }
+}
+
 
 //暂时性解决diolag 问题 https://github.com/ElemeFE/element/issues/2461
 .el-dialog {
@@ -198,5 +205,12 @@ $leave_status: #FF4C4C;
     .el-tabs__item:hover {
       color: $hover_check;
     }
+  }
+}
+
+// card
+.bref {
+  .el-card__body {
+    padding: 10px;
   }
 }

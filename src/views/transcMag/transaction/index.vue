@@ -7,8 +7,6 @@
           <div class="card-box">
             <div class="left-box orange-box">
               <svg-icon icon-class="appointpeo"></svg-icon>
-              <!--<span class="icon-bg"></span>-->
-              <!--<span class="circle"></span>-->
             </div>
             <div class="right-box">
               <div class="title">今日预约人数</div>
@@ -22,8 +20,6 @@
           <div class="card-box">
             <div class="left-box orange-box">
               <svg-icon icon-class="appointmon"></svg-icon>
-              <!--<span class="icon-bg"></span>-->
-              <!--<span class="circle"></span>-->
             </div>
             <div class="right-box">
               <div class="title">今日预约金额</div>
@@ -37,8 +33,6 @@
           <div class="card-box">
             <div class="left-box green-box">
               <svg-icon icon-class="successpeo"></svg-icon>
-              <!--<span class="icon-bg"></span>-->
-              <!--<span class="circle"></span>-->
             </div>
             <div class="right-box green-right">
               <div class="title">今日打款成功人数</div>
@@ -52,8 +46,6 @@
           <div class="card-box">
             <div class="left-box green-box">
               <svg-icon icon-class="successmon"></svg-icon>
-              <!--<span class="icon-bg"></span>-->
-              <!--<span class="circle"></span>-->
             </div>
             <div class="right-box green-right">
               <div class="title">今日打款成功金额</div>
@@ -150,7 +142,7 @@
 
 <script>
   import transcSearchComponent from 'components/searchBar/transaction'
-  import transcTableComponent from 'components/transcTable'
+  import transcTableComponent from 'components/table/transcTable'
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/product/product'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { statistics } from '@/api/transc/transc'
