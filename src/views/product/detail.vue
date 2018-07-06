@@ -839,13 +839,13 @@
       <span class="stage_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('1')">募集分期</span>
       <!-- 创建 -->
       <el-button class="search_btn" v-if="dialogStatus=='create'&allDisabled" @click="cancel()">取 消</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='create'&step===1" type="primary" @click="create('form')">保 存create1</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='create'&step===2" type="primary" @click="createRouter">保 存create2</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='create'&step===1" type="primary" @click="create('form')">保 存</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='create'&step===2" type="primary" @click="createRouter">保 存</el-button>
       <!-- 编辑 -->
       <el-button class="search_btn" v-if="dialogStatus=='update'&step===1&allDisabled" @click="cancel()">取 消</el-button>
       <el-button class="search_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" @click="cancel()">取 消</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===1&allDisabled" type="primary" @click="update('form1')">保 存upd1</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" type="primary" @click="updateRouter('form')">保 存upd2</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===1&allDisabled" type="primary" @click="update('form1')">保 存</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" type="primary" @click="updateRouter('form')">保 存</el-button>
       <!-- 在建 -->
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===0" type="primary" @click="updateProductType(1)">进入产品预热</el-button>
       <!-- 预热 -->
@@ -1230,7 +1230,7 @@
               this.isDisabled = false
             }
             this.productStatusNo = this.form.productStatus
-            console.log(this.productStatusNo)
+            // console.log(this.productStatusNo)
             this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
             if(this.productStatusNo === 6) {
               this.shortNameDisabled = true
@@ -1399,6 +1399,8 @@
         }
         updProductPause(this.uploadData.productId, params).then(res => {
           console.log(res)
+          this.form.isPause = pause
+          // this.getOperations()
         })
       },
       updateProductDisplay() {
@@ -1408,6 +1410,8 @@
         }
         updProductDisplay(this.uploadData.productId, params).then(res => {
           console.log(res)
+          this.form.isDisplay = display
+          // this.getOperations()
         })
       },
       resetTemp() {
@@ -1579,62 +1583,15 @@
       changeCurrency(val) {
         this.currencyList = this.currencyList.slice(0)
       },
-      changeStep(val) { // 切换tab(获取操作指南数据)
+      changeStep(val) { // 切换tab
         this.step = val - 0
         if(this.step === 2) {
-          fetchOperation(this.uploadData.productId).then(res => {
-            this.form2 = res.data
-            this.form2.normalDTO = res.data.normalDTO || {}
-            this.activityData = res.data.activityDTO || []
-            
-            this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
-            if(!this.normalList) {
-              this.normalList = [{
-                age: ''
-              }]
-            }
-            if(!this.activityData.length) {
-              this.activityData = [{
-                activeDate: [],
-                performanceCoefficient: ''
-              }]
-            } else {
-              this.activityData.forEach(item => {
-                item.activeDate = []
-                item.activeDate[0] = item.activityStart
-                item.activeDate[1] = item.activityEnd
-              })
-            }
-            // console.log(res)
-            // 判断产品预约审核条件是否禁用
-            if(!this.form2.importantEnd) {
-              this.form2.keyProduct = 1
-            }
-            if(this.form2.appointAmountPercent) {
-              this.checked1 = true
-            }
-            if(this.form2.appointNums) {
-              this.checked2 = true
-            }
-            if(this.form2.onceAppointGt) {
-              this.checked3 = true
-            }
-            if(this.form2.onceAppointLt) {
-              this.checked4 = true
-            }
-            if(this.form2.remitAmountsPercent) {
-              this.checked5 = true
-            }
-            // 不同产品状态可编辑项
-            if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
-              this.operationDisabled = true
-            }
-          })
+          this.getOperations()
         } else if (this.step === 3) {
           getBriefReport(this.uploadData.productId).then(res => {
             this.statistic = res.data
           })
-          // Bus.$emit('queryAppoints', this.listQuery)
+          Bus.$emit('queryAppoints', this.listQuery)
         }
         this.handleAppoint()
       },
@@ -1666,6 +1623,56 @@
         this.listQuery.type = type
         console.log(this.listQuery)
         Bus.$emit('queryAppoints', this.listQuery)
+      },
+      getOperations() { // 获取操作指南信息
+        fetchOperation(this.uploadData.productId).then(res => {
+          this.form2 = res.data
+          this.form2.normalDTO = res.data.normalDTO || {}
+          this.activityData = res.data.activityDTO || []
+          
+          this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
+          if(!this.normalList) {
+            this.normalList = [{
+              age: ''
+            }]
+          }
+          if(!this.activityData.length) {
+            this.activityData = [{
+              activeDate: [],
+              performanceCoefficient: ''
+            }]
+          } else {
+            this.activityData.forEach(item => {
+              item.activeDate = []
+              item.activeDate[0] = item.activityStart
+              item.activeDate[1] = item.activityEnd
+            })
+          }
+          // console.log(res)
+          // 判断产品预约审核条件是否禁用
+          if(!this.form2.importantEnd) {
+            this.form2.keyProduct = 1
+          }
+          if(this.form2.appointAmountPercent) {
+            this.checked1 = true
+          }
+          if(this.form2.appointNums) {
+            this.checked2 = true
+          }
+          if(this.form2.onceAppointGt) {
+            this.checked3 = true
+          }
+          if(this.form2.onceAppointLt) {
+            this.checked4 = true
+          }
+          if(this.form2.remitAmountsPercent) {
+            this.checked5 = true
+          }
+          // 不同产品状态可编辑项
+          if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
+            this.operationDisabled = true
+          }
+        })
       }
     }
   }
