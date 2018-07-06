@@ -206,7 +206,7 @@
       </el-row>
     </el-form>
 
-    <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&(productStatusNo!==0||stageType!='0')">
+    <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&(productStatusNo!==0&stageType!='0')">
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="产品全称" prop="productName">
@@ -851,11 +851,16 @@
       <!-- 预热 -->
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(2)">进入产品募集</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(0)">返回在建</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType()">设为显示</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductDisplay">
+        {{form.isDisplay==='1'?'设为隐藏':'设为显示'}}</el-button>
       <!-- 募集中 -->
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType(3)">进入已关账</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType()">暂停预约</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType()">设为隐藏</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductPause">
+        {{form.isPause==='1'?'暂停预约':'开始预约'}}
+      </el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductDisplay">
+        {{form.isDisplay==='1'?'设为隐藏':'设为显示'}}
+      </el-button>
       <!-- 已关账 -->
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(4)">进入已成立</el-button>
       <!-- 已成立 -->
@@ -893,7 +898,8 @@
   import { fetchList, getObj, addObj, putObj, delObj, 
     addOperationObj, putFileObj, delCustFile, getCustFile,
     addCustFile, updCustFile, fetchOperation, updProductType,
-    getProductStage, updProductStage, getBriefReport } from '@/api/product/product'
+    getProductStage, updProductStage, getBriefReport, updProductPause,
+    updProductDisplay } from '@/api/product/product'
   import { getClientFile, getTranscFile } from '@/api/product/fileManage'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { fetchCurrency, getObjList } from '@/api/currency'
@@ -1178,6 +1184,8 @@
           type: '0'
         },
         stageType: ''
+        // pause: '1',
+        // display: '1'
       }
     },
     computed: {
@@ -1307,15 +1315,20 @@
       },
       update(formName) { // 产品详情修改提交（第一步）
         const set = this.$refs
+        if(this.stageType==='0' || this.productStatusNo == '0') formName = 'form'
+        console.log(formName)
         set[formName].validate(valid => {
           if (valid) {
-            if (this.stage) {
+            if (this.stage) { //分期
               this.form.productStatus = this.productStatusNo
               updProductStage(this.form).then(response => {
                 if(!response.data || response.status !== 200) {
                   return
                   // this.getList()
                 }
+                console.log(response)
+                this.form = response.data
+                this.uploadData.productId = this.form.productId
                 this.step = 2
                 this.changeStep(this.step)
                 this.$notify({
@@ -1345,7 +1358,7 @@
           }
         })
       },
-      updateRouter(formName) { // 操作指南新建或编辑
+      updateRouter(formName) { // 操作指南新建或编辑提交
         this.activityList = this.activityList.concat(this.activityData)
         this.activityList.forEach(item => {
           item.activityEnd = item.activeDate[1]
@@ -1377,6 +1390,24 @@
             duration: 2000
           })
           this.$route.push({path: '/product/building'})
+        })
+      },
+      updateProductPause() {
+        let pause = this.form.isPause === '0' ? '1' : '0'
+        let params = {
+          pause: pause
+        }
+        updProductPause(this.uploadData.productId, params).then(res => {
+          console.log(res)
+        })
+      },
+      updateProductDisplay() {
+        let display = this.form.isDisplay === '0' ? '1' : '0'
+        let params = {
+          display: display
+        }
+        updProductDisplay(this.uploadData.productId, params).then(res => {
+          console.log(res)
         })
       },
       resetTemp() {

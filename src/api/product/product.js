@@ -179,3 +179,25 @@ export function getAppointList(productId, type, query) {
     params: query
   })
 }
+
+/**
+ * 修改预约暂停状态
+ */
+export function updProductPause(productId, obj) {
+  return request({
+    url: '/product/products/' + productId + '/pause',
+    method: 'put',
+    data: obj
+  })
+}
+
+/**
+ * 修改显示状态
+ */
+export function updProductDisplay(productId, obj) {
+  return request({
+    url: '/product/products/' + productId + '/display',
+    method: 'put',
+    data: obj
+  })
+}
