@@ -399,7 +399,7 @@
             align="center">
           </el-table-column>
           <el-table-column
-            prop="uid"
+            prop="filePath"
             label="附件"
             align="center">
           </el-table-column>
@@ -446,7 +446,7 @@
             align="center">
           </el-table-column>
           <el-table-column
-            prop="uid"
+            prop="filePath"
             label="附件"
             align="center">
           </el-table-column>
@@ -635,13 +635,13 @@
           <el-row>
             <el-col :span="6">
               <el-form-item prop="keyProduct" label="是否标注重点产品" style="white-space: nowrap;">
-                <el-radio-group v-model="form2.keyProduct" :disabled="operationDisabled">
+                <el-radio-group v-model="form2.keyProduct" :disabled="operationDisabled" @change="test">
                   <el-radio :label="1">否</el-radio>
                   <el-radio :label="2">是</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
-            <el-col :span="10" v-show="form.keyProduct===2">
+            <el-col :span="10" v-show="form2.keyProduct===2">
               <el-form-item label="重点产品时间段">
                 <el-date-picker
                   style="width: 80%"
@@ -891,8 +891,8 @@
         style="margin-bottom: 30px;">
         <el-option
           v-for="item in clientFileList"
-          :key="item.productClientFileManageId"
-          :label="item.fileName"
+          :key="item.productClientFileManageId||item.transactionFileManageId"
+          :label="item.fileName||item.name"
           :value="item">
         </el-option>
       </el-select>
@@ -910,7 +910,7 @@
     addOperationObj, putFileObj, delCustFile, getCustFile,
     addCustFile, updCustFile, fetchOperation, updProductType,
     getProductStage, updProductStage, getBriefReport, updProductPause,
-    updProductDisplay, batchExportProduct } from '@/api/product/product'
+    updProductDisplay, batchExportProduct, postTranscFile } from '@/api/product/product'
   import { getClientFile, getTranscFile } from '@/api/product/fileManage'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { fetchCurrency, getObjList } from '@/api/currency'
@@ -1211,7 +1211,8 @@
         stageType: '',
         // pause: '1',
         // display: '1',
-        url: ''
+        url: '',
+        fileType: ''
       }
     },
     computed: {
@@ -1279,7 +1280,6 @@
               this.allDisabled = false
             }
           })
-          this.getAllFiles(this.uploadData.productId)
         }
       },
       handleDept() {
@@ -1455,7 +1455,7 @@
         this.getFiles4(productId)
       },
       getFiles1(productId) {
-        let uploadData = {
+        let uploadData = { // 交易所需材料
           productId: productId,
           fileType: 'transaction'
         }
@@ -1469,7 +1469,7 @@
           fileType: 'product'
         }
         getFiles(uploadData).then(response => {
-          this.fileList1 = response.data || []
+          this.fileList2 = response.data || []
         })
       },
       getFiles3(productId) {
@@ -1478,10 +1478,10 @@
           fileType: 'announcement'
         }
         getFiles(uploadData).then(response => {
-          this.fileList1 = response.data || []
+          this.fileList3 = response.data || []
         })
       },
-      getFiles4(productId) {
+      getFiles4(productId) { // 客户所需材料
         getCustFile(productId).then(response => {
           this.clientFiles = response.data || []
         })
@@ -1593,6 +1593,8 @@
           limit: 100,
           page: 1
         }
+        this.fileType = type
+        console.log(type)
         if (type === 'client') {
           getClientFile(params).then(res => {
             this.clientFileList = res.data.records
@@ -1631,15 +1633,30 @@
       },
       chooseClientFile() {
         this.dialogComVisible = false
-        let params = {
-          fileName: this.clientFile.fileName,
-          productClientFileManageId: this.clientFile.productClientFileManageId,
-          productId: this.uploadData.productId
+        if (this.fileType === 'client') {
+          console.log('client吗')
+          let params = {
+            fileName: this.clientFile.fileName,
+            productClientFileManageId: this.clientFile.productClientFileManageId,
+            productId: this.uploadData.productId
+          }
+          addCustFile(params).then(res => {
+            this.clientFile = res.data
+            this.clientFiles.push(this.clientFile)
+          })
+        } else {
+          let params = {
+            name: this.clientFile.name,
+            filePath: this.clientFile.filePath,
+            fileSize: this.clientFile.fileSize,
+            transactionFileManageId: this.clientFile.transactionFileManageId,
+            productId: this.uploadData.productId - 0
+          }
+          console.log('transaction吗')
+          postTranscFile(params).then(res => {
+            console.log(res)
+          })
         }
-        addCustFile(params).then(res => {
-          this.clientFile = res.data
-          this.clientFiles.push(this.clientFile)
-        })
       },
       handleCollect(type) {
         this.stageType = type // 0 产品分期； 1 募集分期
@@ -1657,6 +1674,7 @@
         Bus.$emit('queryAppoints', this.listQuery)
       },
       getOperations() { // 获取操作指南信息
+        this.getAllFiles(this.uploadData.productId)
         fetchOperation(this.uploadData.productId).then(res => {
           this.form2 = res.data
           this.form2.normalDTO = res.data.normalDTO || {}
@@ -1682,9 +1700,9 @@
           }
           // console.log(res)
           // 判断产品预约审核条件是否禁用
-          if(!this.form2.importantEnd) {
-            this.form2.keyProduct = 1
-          }
+          // if(!this.form2.importantEnd) {
+          //   this.form2.keyProduct = 1
+          // }
           if(this.form2.appointAmountPercent) {
             this.checked1 = true
           }
@@ -1720,6 +1738,10 @@
           // fileDownload(res.data, 'test.xls')
           // console.log(fileDownload(res.data,'fileName'))
         // })
+      },
+      test(val) {
+        console.log(val)
+        this.form2.keyProduct = val
       }
     }
   }

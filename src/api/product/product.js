@@ -79,7 +79,7 @@ export function putObj(id, obj) {
  */
 export function putFileObj(obj) {
   return request({
-    url: '/product/products/' + obj.productId + '/' + obj.fileType,
+    url: '/product/products/' + obj.id + '/' + obj.fileType,
     method: 'put',
     data: obj
   })
@@ -102,6 +102,17 @@ export function getCustFile(productId) {
   return request({
     url: '/product/products/' + productId + '/clientFile',
     method: 'get'
+  })
+}
+
+/**
+ * 新增交易所需材料
+ */
+export function postTranscFile(obj) {
+  return request({
+    url: '/product/products/transaction',
+    method: 'post',
+    data: obj
   })
 }
 
