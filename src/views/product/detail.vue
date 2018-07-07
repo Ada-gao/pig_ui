@@ -829,8 +829,12 @@
       </div>
       <transc-table-component
         :productCollect="true"
-        :statusCol="true"
-        :aptCol="true"
+        :productNameCol="false"
+        :clientNoCol="true"
+        :clientGenderCol="true"
+        :paymentCol="true"
+        :clientMobileCol="true"
+        :cityCol="true"
         :transcStatus="true">
       </transc-table-component>
     </div>
@@ -896,7 +900,7 @@
 
 <script>
   import transcTableComponent from 'components/table/transcTable'
-  import { fetchList, getObj, addObj, putObj, delObj, 
+  import { fetchList, getObj, addObj, putObj, delObj, getAppointList,
     addOperationObj, putFileObj, delCustFile, getCustFile,
     addCustFile, updCustFile, fetchOperation, updProductType,
     getProductStage, updProductStage, getBriefReport, updProductPause,
@@ -1592,8 +1596,17 @@
           getBriefReport(this.uploadData.productId).then(res => {
             this.statistic = res.data
           })
-          this.handleAppoint(0)
-          // Bus.$emit('queryAppoints', this.listQuery)
+          let params = {
+            page: this.listQuery.page,
+            limit: this.listQuery.limit
+          }
+          let id = this.listQuery.productId
+          getAppointList(id, '0', params).then(response => {
+            this.list = response.data.records
+            this.total = response.data.total
+            this.listLoading = false
+            Bus.$emit('appointsList', response.data)
+          })
         }
       },
       chooseClientFile() {

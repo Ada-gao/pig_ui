@@ -22,7 +22,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="产品名称" show-overflow-tooltip>
+      <el-table-column align="center" label="产品名称" show-overflow-tooltip v-if="productNameCol">
         <template slot-scope="scope">
           <span>{{scope.row.productName}}</span>
         </template>
@@ -34,9 +34,29 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" label="客户编号" v-if="clientNoCol">
+        <template slot-scope="scope">
+        <span>{{scope.row.clientNo}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="客户姓名">
         <template slot-scope="scope">
         <span>{{scope.row.clientName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="客户性别" v-if="clientGenderCol">
+        <template slot-scope="scope">
+        <span>{{scope.row.clientGender}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="国籍（常住地区）" v-if="cityCol">
+        <template slot-scope="scope">
+        <span>{{scope.row.city}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="手机号" v-if="clientMobileCol">
+        <template slot-scope="scope">
+        <span>{{scope.row.clientMobile}}</span>
         </template>
       </el-table-column>
 
@@ -173,6 +193,21 @@
       contractCol: {
         default: false
       },
+      productNameCol: { // 产品模块
+        default: true
+      },
+      clientNoCol: {
+        default: false
+      },
+      clientGenderCol: {
+        default: false
+      },
+      cityCol: {
+        default: false
+      },
+      clientMobileCol: {
+        default: false
+      },
       orderStatus: {
         default: 0
       },
@@ -234,7 +269,7 @@
     },
     created() {
       this.getList()
-      this.getAppointList()
+      // this.getAppointList()
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
     },
@@ -248,8 +283,16 @@
         this.getHistory()
       })
       Bus.$on('queryAppoints', listQuery => {
+        // console.log('数据发送过来了')
         this.listQuery = listQuery
         this.getAppointList()
+      })
+      Bus.$on('appointsList', data => {
+        // console.log('表格数据发送过来了')
+        this.list = data.records
+        this.total = data.total
+        this.listLoading = false
+        // this.getAppointList()
       })
     },
     methods: {
@@ -258,7 +301,7 @@
         this.listLoading = true
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         let list = null
-        
+        console.log(this.listQuery)
         if(this.orderStatus == '1') { // 交易列表
           fetchTranscList(this.listQuery).then(response => {
             this.list = response.data.records
@@ -329,7 +372,7 @@
           })
         // }
       },
-      getAppointList() {
+      getAppointList() { // 产品模块交易人数表
         this.queryId = 3
         let params = {
           page: this.listQuery.page,
@@ -337,7 +380,9 @@
         }
         let id = this.listQuery.productId
         let type = this.listQuery.type || 0
+        console.log(params)
         if(this.transcStatus) {
+          console.log('执行请求了')
           getAppointList(id, type, params).then(response => {
             this.list = response.data.records
             this.total = response.data.total
@@ -356,6 +401,7 @@
           console.log('222')
           this.getHistory()
         } else {
+          console.log('333')
           this.getAppointList()
         }
       },
