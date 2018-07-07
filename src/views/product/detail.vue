@@ -37,7 +37,7 @@
             <el-input v-model="form.productShortName" placeholder="请输入产品名称"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="!uploadData.productId">
+        <el-col :span="11" v-if="uploadData.productId">
           <el-form-item label="产品编号" prop="productCode">
             <el-input v-model="form.productCode" placeholder="请输入产品编号" ></el-input>
           </el-form-item>
