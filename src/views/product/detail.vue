@@ -37,9 +37,9 @@
             <el-input v-model="form.productShortName" placeholder="请输入产品名称"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
+        <el-col :span="11" v-if="!uploadData.productId">
           <el-form-item label="产品编号" prop="productCode">
-            <el-input v-model="form.productCode" placeholder="请输入产品编号"></el-input>
+            <el-input v-model="form.productCode" placeholder="请输入产品编号" ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -206,7 +206,7 @@
       </el-row>
     </el-form>
 
-    <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&(productStatusNo!==0&stageType!='0')">
+    <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&(productStatusNo!==0&stageType!='0')&uploadData.productId">
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="产品全称" prop="productName">
@@ -827,6 +827,12 @@
         <el-button @click="handleAppoint('0')" class="search_btn first_btn" label="1">预约成功人数</el-button>
         <el-button @click="handleAppoint('1')" class="search_btn sec_btn" label="2">打款成功人数</el-button>
       </div>
+      <div style="text-align: right">
+        <!-- <el-button class="filter-item add_btn" style="margin-left: 10px;" @click="batchExport" type="primary">
+          <svg-icon icon-class="add"></svg-icon> 批量导出</el-button> -->
+        <a class="filter-item add_btn" style="margin-left: 10px;" :href="batchExport()" type="primary">
+          <svg-icon icon-class="add"></svg-icon> 批量导出</a>
+      </div>
       <transc-table-component
         :productCollect="true"
         :productNameCol="false"
@@ -904,7 +910,7 @@
     addOperationObj, putFileObj, delCustFile, getCustFile,
     addCustFile, updCustFile, fetchOperation, updProductType,
     getProductStage, updProductStage, getBriefReport, updProductPause,
-    updProductDisplay } from '@/api/product/product'
+    updProductDisplay, batchExportProduct } from '@/api/product/product'
   import { getClientFile, getTranscFile } from '@/api/product/fileManage'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { fetchCurrency, getObjList } from '@/api/currency'
@@ -918,6 +924,7 @@
   import { decimals, isNumber } from '@/utils/validate'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
   import Bus from '@/assets/js/bus'
+  const fileDownload = require('js-file-download')
 
   const twoDecimals = (rule, value, callback) => {
     if (!value) {
@@ -973,13 +980,26 @@
             {
               required: true,
               message: '请输入产品名称',
-              trigger: 'blur'
+              trigger: 'blur, change'
             },
             {
               min: 3,
               max: 20,
               message: '长度在 3 到 20 个字符',
-              trigger: 'blur'
+              trigger: 'blur,change'
+            }
+          ],
+          productCode: [
+            {
+              required: true,
+              message: '请输入产品名称',
+              trigger: 'blur, change'
+            },
+            {
+              min: 3,
+              max: 20,
+              message: '长度在 3 到 20 个字符',
+              trigger: 'blur,change'
             }
           ],
           productCode: [
@@ -1188,9 +1208,10 @@
           productId: '',
           type: '0'
         },
-        stageType: ''
+        stageType: '',
         // pause: '1',
-        // display: '1'
+        // display: '1',
+        url: ''
       }
     },
     computed: {
@@ -1271,7 +1292,6 @@
           this.form.annualizedReturn = null
           this.isDisabled = true
         }
-        this.step = 2
         set[formName].validate(valid => {
           if (valid) {
             addObj(this.form)
@@ -1685,6 +1705,21 @@
             this.operationDisabled = true
           }
         })
+      },
+      batchExport() {
+        let type = this.listQuery.type
+        let id = this.uploadData.productId
+        return 'http://10.9.70.62:9999/product/products/' + id + '/export/' + type
+        // batchExportProduct(id, type, {responseType: 'arraybuffer'}).then(res => {
+          // this.url = 
+          // console.log(res)
+          // let blob = new Blob([res.data], {type: "application/vnd.ms-excel;charset=utf-8"})
+          // let objectUrl = URL.createObjectURL(blob)
+          // window.location.href = objectUrl
+          // let fileName = res.headers['content-disposition'].match(/fushun(\S*)xls/)[0]
+          // fileDownload(res.data, 'test.xls')
+          // console.log(fileDownload(res.data,'fileName'))
+        // })
       }
     }
   }

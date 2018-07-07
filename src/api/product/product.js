@@ -181,6 +181,16 @@ export function getAppointList(productId, type, query) {
 }
 
 /**
+ * 打款交易信息导出
+ */
+export function batchExportProduct(productId, type) {
+  return request({
+    url: '/product/products/' + productId + '/export/' + type,
+    method: 'get'
+  })
+}
+
+/**
  * 修改预约暂停状态
  */
 export function updProductPause(productId, obj) {
@@ -199,5 +209,15 @@ export function updProductDisplay(productId, obj) {
     url: '/product/products/' + productId + '/display',
     method: 'put',
     data: obj
+  })
+}
+
+/**
+ * 产品统计
+ */
+export function getProudctStatistics() {
+  return request({
+    url: '/product/products/statistics',
+    method: 'get'
   })
 }

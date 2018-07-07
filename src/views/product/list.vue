@@ -1,14 +1,67 @@
 
 <template>
   <div class="app-container calendar-list-container">
+    
+    <div class="bref">
+      <el-row :gutter="12" class="def-el">
+        <el-col :md="10" :lg="6" class="first-col">
+          <el-card shadow="always">
+            <div class="card-box">
+              <div class="left-box orange-box">
+                <svg-icon icon-class="appointpeo"></svg-icon>
+              </div>
+              <div class="right-box">
+                <div class="title">在建产品（个）</div>
+                <div class="btm-box"><span>{{statistic.building||0}}</span></div>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :md="10" :lg="6">
+          <el-card shadow="always">
+            <div class="card-box">
+              <div class="left-box orange-box">
+                <svg-icon icon-class="appointmon"></svg-icon>
+              </div>
+              <div class="right-box">
+                <div class="title">预热产品（个）</div>
+                <div class="btm-box"><span>{{statistic.preheating||0}}</span></div>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :md="10" :lg="6">
+          <el-card shadow="always">
+            <div class="card-box">
+              <div class="left-box green-box">
+                <svg-icon icon-class="successpeo"></svg-icon>
+              </div>
+              <div class="right-box green-right">
+                <div class="title">产品募集中（个）</div>
+                <div class="btm-box"><span>{{statistic.collecting||0}}</span></div>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :md="10" :lg="6">
+          <el-card shadow="always">
+            <div class="card-box">
+              <div class="left-box green-box">
+                <svg-icon icon-class="successmon"></svg-icon>
+              </div>
+              <div class="right-box green-right">
+                <div class="title">已成立产品（个）</div>
+                <div class="btm-box"><span>{{statistic.established||0}}</span></div>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
     <product-search-component
       @searchProduct="searchList">
     </product-search-component>
 
-    <div style="text-align: right">
-      <el-button v-if="sys_product_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" type="primary">
-        <svg-icon icon-class="add"></svg-icon> 添加</el-button>
-    </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%;">
 
@@ -94,7 +147,7 @@
 
 <script>
   import productSearchComponent from 'components/searchBar/product'
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/product/product'
+  import { fetchList, getObj, addObj, putObj, delObj, getProudctStatistics } from '@/api/product/product'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
@@ -308,7 +361,8 @@
         },
         isDisabled: true,
         form: [],
-        isSpread: false
+        isSpread: false,
+        statistic: {}
       }
     },
     computed: {
@@ -321,6 +375,7 @@
     created() {
       // console.log(this.productStatus)
       this.getList()
+      this.getStatisc()
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
       this.sys_product_del = this.permissions['sys_product_del']
@@ -345,6 +400,11 @@
 
         getObjList().then(response => {
           this.currencyList = response.data
+        })
+      },
+      getStatisc() {
+        getProudctStatistics().then(res => {
+          this.statistic = res.data
         })
       },
       handleFilter() {
@@ -440,6 +500,93 @@
 }
 .operate-col {
   text-align: left;
+}
+.def-el {
+  margin-bottom: 24px;
+  .el-card__body {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    .card-box {
+      padding: 10px 0;
+      .left-box,
+      .right-box {
+        display: inline-block;
+        height: 80px;
+        vertical-align: middle;
+        position: relative;
+        .circle {
+          display: inline-block;
+          width: 70px;
+          height: 70px;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          border-radius: 100%;
+          border: 3px solid #fff;
+        }
+      }
+      .left-box {
+        width: 80px;
+        box-shadow: 0 6px 6px 2px rgba(43,125,131,0.05);
+        border-radius: 4px;
+        .svg-icon {
+          position: absolute;
+           fill: #fff;
+          width: 50px;
+          height: 50px;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 1;
+        }
+      }
+      .right-box {
+        margin-left: 3px;
+        .title {
+          font-family: PingFangSC-Medium;
+          font-size: 14px;
+          color: #475669;
+          letter-spacing: 0;
+          line-height: 20px;
+        }
+        .btm-box {
+          position: absolute;
+          bottom: 0;
+          font-family: PingFangSC-Semibold;
+          font-size: 22px;
+          color: #FDCE82;
+          letter-spacing: 0;
+          line-height: 20px;
+          span {
+            font-size: 40px;
+            vertical-align: text-top;
+          }
+          i {
+            font-style: normal;
+          }
+        }
+      }
+      .orange-box {
+        background: #FDCE82;
+        .circle {
+          background-color: #fdce82;
+        }
+      }
+      .green-box {
+        background: #30CDAA;
+        .circle {
+          background-color: #30cdaa;
+        }
+      }
+      .green-right {
+        .btm-box {
+          color: #30cdaa;
+        }
+      }
+    }
+  }
 }
 </style>
 
