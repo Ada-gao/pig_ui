@@ -194,9 +194,9 @@
       this.sys_product_del = this.permissions['sys_product_del']
     },
     mounted() {
-      console.log('mounted事件')
+      // console.log('mounted事件')
       Bus.$on('searchProduct', listQuery => {
-        console.log(listQuery)
+        // console.log(listQuery)
         this.listQuery = listQuery
         // this.listQuery.productStatus = []
         this.getList()
@@ -204,12 +204,12 @@
     },
     methods: {
       getList() {
-        console.log(this.productStatusNo)
-        // if(this.productStatusNo === 'all') {
-        //   this.listQuery.productStatus = []
-        // } else {
-          this.listQuery.productStatus.push(this.productStatusNo)
-        // }
+        this.listQuery.productStatus.push(this.productStatusNo)
+        let list = this.listQuery.productStatus
+        if(!list[0]&list.length > 1) {
+          // console.log(this.listQuery.productStatus)
+          this.listQuery.productStatus = []
+        }
         this.listLoading = true
         // console.log(this.listQuery.productStatus)
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
