@@ -924,7 +924,7 @@
   import { decimals, isNumber } from '@/utils/validate'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
   import Bus from '@/assets/js/bus'
-  const fileDownload = require('js-file-download')
+  // const fileDownload = require('js-file-download')
 
   const twoDecimals = (rule, value, callback) => {
     if (!value) {
