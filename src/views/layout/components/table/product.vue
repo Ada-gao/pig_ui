@@ -206,15 +206,11 @@
       getList() {
         this.listQuery.productStatus.push(this.productStatusNo)
         let list = this.listQuery.productStatus
-        // if(!list[0]&list.length > 1) {
-        //   this.listQuery.productStatus = []
-        // }
         list.forEach((item, index) => {
           if(item === '') {
             list.splice(index, 1)
           }
         })
-        console.log(list)
         this.listLoading = true
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         fetchList(this.listQuery).then(response => {

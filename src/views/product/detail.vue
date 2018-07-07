@@ -205,8 +205,7 @@
         </el-col>
       </el-row>
     </el-form>
-
-    <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&(productStatusNo!==0&stageType!='0')&uploadData.productId">
+    <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&productStatusNo!==0&stageType!='0'&uploadData.productId!=''">
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="产品全称" prop="productName">
