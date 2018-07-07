@@ -62,7 +62,12 @@
       @searchProduct="searchList">
     </product-search-component>
 
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
+    <product-table-component
+      :productStatusNo="productStatusId"
+      :activeUrl="url">
+    </product-table-component>
+
+    <!-- <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%;">
 
       <el-table-column align="center" label="产品编号">
@@ -127,9 +132,6 @@
           <a v-if="sys_product_del&scope.row.productStatus==='在建'" size="small" type="danger_btn"
                      @click="deletes(scope.row)">删除
           </a>
-          <!-- <a v-if="sys_user_del" size="small" type=""
-                     @click="upper(scope.row)">产品上架
-          </a> -->
         </template>
       </el-table-column>
 
@@ -141,12 +143,13 @@
                      :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
                      layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
   import productSearchComponent from 'components/searchBar/product'
+  import productTableComponent from 'components/table/product'
   import { fetchList, getObj, addObj, putObj, delObj, getProudctStatistics } from '@/api/product/product'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
@@ -175,7 +178,8 @@
     components: {
       ElOption,
       ElRadioGroup,
-      productSearchComponent
+      productSearchComponent,
+      productTableComponent
     },
     name: 'table_user',
     directives: {
@@ -362,7 +366,9 @@
         isDisabled: true,
         form: [],
         isSpread: false,
-        statistic: {}
+        statistic: {},
+        productStatusId: '',
+        url: '/product/productList'
       }
     },
     computed: {

@@ -884,7 +884,7 @@
       title="提示"
       :visible.sync="dialogComVisible"
       width="30%">
-      <div style="margin-bottom: 30px;">确认执行此操作吗？</div>
+      <div style="margin-bottom: 30px;">请选择新增材料</div>
       <el-select v-model="clientFile"
         clearable
         placeholder="请选择"

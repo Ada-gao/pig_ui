@@ -18,7 +18,7 @@
 
       <el-table-column align="center" label="产品起息日">
         <template slot-scope="scope">
-          <span>{{scope.row.productName}}</span>
+          <span>{{scope.row.valueDate}}</span>
         </template>
       </el-table-column>
 
@@ -120,7 +120,7 @@
     },
     props: {
       productStatusNo: {
-        default: '0'
+        default: ''
       },
       activeUrl: {
         default: '/product/productList'
@@ -194,16 +194,17 @@
       this.sys_product_del = this.permissions['sys_product_del']
     },
     mounted() {
+      console.log('mounted事件')
       Bus.$on('searchProduct', listQuery => {
-        // console.log(listQuery)
+        console.log(listQuery)
         this.listQuery = listQuery
-        this.listQuery.productStatus = []
+        // this.listQuery.productStatus = []
         this.getList()
       })
     },
     methods: {
       getList() {
-        // console.log(this.productStatusNo)
+        console.log('afa dfasdf')
         this.listLoading = true
         this.listQuery.productStatus.push(this.productStatusNo)
         // console.log(this.listQuery.productStatus)
