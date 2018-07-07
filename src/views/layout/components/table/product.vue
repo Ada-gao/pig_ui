@@ -207,11 +207,9 @@
         this.listQuery.productStatus.push(this.productStatusNo)
         let list = this.listQuery.productStatus
         if(!list[0]&list.length > 1) {
-          // console.log(this.listQuery.productStatus)
           this.listQuery.productStatus = []
         }
         this.listLoading = true
-        // console.log(this.listQuery.productStatus)
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
