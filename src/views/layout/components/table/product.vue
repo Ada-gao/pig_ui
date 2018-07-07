@@ -120,7 +120,7 @@
     },
     props: {
       productStatusNo: {
-        default: ''
+        default: '0'
       },
       activeUrl: {
         default: '/product/productList'
@@ -204,9 +204,13 @@
     },
     methods: {
       getList() {
-        console.log('afa dfasdf')
+        console.log(this.productStatusNo)
+        // if(this.productStatusNo === 'all') {
+        //   this.listQuery.productStatus = []
+        // } else {
+          this.listQuery.productStatus.push(this.productStatusNo)
+        // }
         this.listLoading = true
-        this.listQuery.productStatus.push(this.productStatusNo)
         // console.log(this.listQuery.productStatus)
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         fetchList(this.listQuery).then(response => {
