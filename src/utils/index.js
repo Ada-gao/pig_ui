@@ -1,6 +1,6 @@
 export function parseTime(time, cFormat) {
   if (arguments.length === 0 || !time) {
-    return null
+    return 'null'
   }
   const format = cFormat || '{y}-{m}-{d}'
   let date
@@ -271,7 +271,7 @@ export function transformText(source, k) {
   }
   let obj = {}
   source.forEach((val, idx) => {
-    let key = val.value || val.positionId || val.productTypeId || val.auditFailReasonId
+    let key = val.value || val.positionId || val.productTypeId || val.auditFailReasonId || val.currencyId
     obj[key] = val.label || val.positionName || val.name || val.failAuditReason
   })
   k = obj[k]
