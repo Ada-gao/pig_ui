@@ -855,7 +855,7 @@
       <el-button class="search_btn" v-if="dialogStatus=='update'&step===1&allDisabled" @click="cancel()">取 消</el-button>
       <el-button class="search_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" @click="cancel()">取 消</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===1&allDisabled" type="primary" @click="update('form1')">保 存</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" type="primary" @click="updateRouter('form')">保 存</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" type="primary" @click="updateRouter('form2')">保 存</el-button>
       <!-- 在建 -->
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===0" type="primary" @click="updateProductType(1)">进入产品预热</el-button>
       <!-- 预热 -->
@@ -1413,6 +1413,10 @@
           item.activityEnd = item.activeDate[1]
           item.activityStart = item.activeDate[0]
         })
+        if(this.form2.keyProduct == 2) {
+          this.form2.importantEnd = this.importantDate[1]
+          this.form2.importantStart = this.importantDate[0]
+        }
         this.form2.activityDTO = this.activityList
         this.form2.normalDTO.normalBrokerageCoefficients = this.normalList
         this.form2.normalDTO.performanceCoefficient = this.normalData.performanceCoefficient
