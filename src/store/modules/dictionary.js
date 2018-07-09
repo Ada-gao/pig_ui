@@ -25,7 +25,8 @@ const dictionary = {
     contractStatus: [], // 从appointmentStatus中分离数据
     transcStatus: [],
     refundStatus: [],
-    expressType: []
+    expressType: [],
+    investHorizonUnit: []
   },
 
   mutations: {
@@ -100,6 +101,9 @@ const dictionary = {
     },
     SET_EXPRESS_TYPE: (state, expressType) => {
       state.expressType = expressType
+    },
+    SET_INVESTMENT_HORIZON_UNIT: (state, investHorizonUnit) => {
+      state.investHorizonUnit = investHorizonUnit
     }
   },
 
@@ -134,6 +138,7 @@ const dictionary = {
           let transcStatusList = []
           let refundStatusList = []
           let expressTypeList = []
+          let investHorizonUnitList = []
           
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -198,6 +203,9 @@ const dictionary = {
 
             } else if(data[i].type === 'express_type') {
               expressTypeList.push(data[i])
+
+            } else if(data[i].type === 'investment_horizon_unit') {
+              investHorizonUnitList.push(data[i])
             }
           }
 
@@ -235,6 +243,7 @@ const dictionary = {
           commit('SET_TRANSC_STATUS', transcStatusList)
           commit('SET_REFUND_STATUS', refundStatusList)
           commit('SET_EXPRESS_TYPE', expressTypeList)
+          commit('SET_INVESTMENT_HORIZON_UNIT', investHorizonUnitList)
           resolve()
         }).catch(error => {
           reject(error)

@@ -105,7 +105,7 @@
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
             <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" :disabled="stageType=='0'"></el-input>
-            <el-select v-model="form.ym" style="width: 20%;" :disabled="stageType=='0'">
+            <el-select v-model="form.investmentHorizonUnit" style="width: 20%;" :disabled="stageType=='0'">
               <el-option v-for="item in dateWay" :key="item.value" :value="item.value" :label="item.label">
                 <!-- <span style="float: left">{{ item.label }}</span> -->
               </el-option>
@@ -205,7 +205,8 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&productStatusNo!==0&stageType!='0'&uploadData.productId!=''">
+    <el-form :model="form" ref="form1" label-width="100px" v-else>
+    <!-- <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&productStatusNo!==0&stageType!='0'&uploadData.productId!=''"> -->
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="产品全称" prop="productName">
@@ -273,7 +274,7 @@
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
             <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" disabled></el-input>
-            <el-input v-model="form.ym" style="width: 22%;" disabled></el-input>
+            <el-input v-model="form.investmentHorizonUnit" style="width: 22%;" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -1218,7 +1219,8 @@
       ...mapGetters([
         'permissions',
         'productStatus',
-        'productRiskLevel'
+        'productRiskLevel',
+        'investHorizonUnit'
       ])
     },
     created() {
@@ -1235,13 +1237,7 @@
         this.uploadData.productId = this.$route.params.id
         this.listQuery.productId = this.$route.params.id
         // if(!this.uploadData.productId) this.nextToUpdate = false
-        fetchProductTypeList().then(res => { // 获取产品类型
-          this.productTypes = res.data
-        })
-        getObjList().then(response => { // 获取币种
-          this.currencyList = response.data
-          this.form.currencyId = 1
-        })
+        
         if(this.uploadData.productId) { // 查询产品详情
           getObj(this.uploadData.productId)
           .then(response => {
@@ -1256,8 +1252,22 @@
               this.isDisabled = false
             }
             this.productStatusNo = this.form.productStatus
-            // console.log(this.productStatusNo)
+            console.log(this.form.currencyId)
+            fetchProductTypeList().then(res => { // 获取产品类型
+              this.productTypes = res.data
+              this.form.productTypeIdNo = this.form.productTypeId
+              this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
+            })
+            getObjList().then(response => { // 获取币种
+              this.currencyList = response.data
+              this.form.currencyIdNo = this.form.currencyId
+              this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
+              // this.form.currencyId = 1
+            })
             this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
+            this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
+            this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
+            
             if(this.productStatusNo === 6) {
               this.shortNameDisabled = true
             }
@@ -1343,6 +1353,9 @@
         console.log(formName)
         set[formName].validate(valid => {
           if (valid) {
+            this.form.productTypeId = this.form.productTypeIdNo
+            this.form.currencyId = this.form.currencyIdNo
+            this.form.investmentHorizonUnit = this.form.investmentHorizonUnitNo
             if (this.stage) { //分期
               this.form.productStatus = this.productStatusNo
               updProductStage(this.form).then(response => {
