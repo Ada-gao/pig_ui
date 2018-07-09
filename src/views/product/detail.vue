@@ -446,7 +446,6 @@
           <el-table-column
             prop="fileName"
             label="材料名称"
-            width="180"
             align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.fileName"
@@ -454,17 +453,6 @@
                         @blur="updateClientFileName(scope.row)"></el-input>
               <span v-else>{{scope.row.fileName}}</span>
             </template>
-          </el-table-column>
-          <el-table-column
-            prop="fileSize"
-            label="大小/k"
-            width="180"
-            align="center">
-          </el-table-column>
-          <el-table-column
-            prop="filePath"
-            label="附件"
-            align="center">
           </el-table-column>
           <el-table-column
             prop=""
@@ -517,7 +505,7 @@
             align="center">
           </el-table-column>
           <el-table-column
-            prop="uid"
+            prop="filePath"
             label="附件"
             align="center">
           </el-table-column>
@@ -553,10 +541,6 @@
           :data="fileList3"
           border
           style="width: 100%">
-          <!-- <el-table-column
-            type="selection"
-            width="180">
-          </el-table-column> -->
           <el-table-column
             prop="name"
             label="材料名称"
@@ -576,7 +560,7 @@
             align="center">
           </el-table-column>
           <el-table-column
-            prop="uid"
+            prop="filePath"
             label="附件"
             align="center">
           </el-table-column>
@@ -682,7 +666,7 @@
 
         <div class="group-item">
           <h3>非活动时间段</h3>
-          <el-row>
+          <el-row style="position: relative">
             <el-col :span="11">
               <el-form-item label="业绩系数" prop="performance">
                 <el-input style="width: 300px"
@@ -694,12 +678,30 @@
                     v-for="item in normalList" :key="item.age">
               <el-form-item :label="`佣金系数（第${item.age}年）`">
                 <el-input style="width: 300px"
+<<<<<<< Updated upstream
                           :disabled="operationDisabled"
                           v-model="item.brokerageCoefficient"></el-input>
                 <i class="el-icon-plus"
                    v-if="!operationDisabled"
                    style="cursor:pointer;"
                    @click="addCommission"></i>
+=======
+                  :disabled="operationDisabled"
+                  v-model="item.brokerageCoefficient"></el-input>
+              </el-form-item>
+            </el-col>
+            <i class="el-icon-plus"
+              v-if="!operationDisabled"
+              @click="addCommission"
+              style="position: absolute; right: 180px; top: 10px;"></i>
+          </el-row>
+          <el-row v-for="item in addNormList" :key="item.idx" v-if="addNormList">
+            <el-col :span="11" :offset="11" style="white-space: nowrap">
+              <el-form-item :label="`佣金系数（第${item.age}年）`">
+                <el-input style="width: 300px"
+                  :disabled="operationDisabled"
+                  v-model="item.brokerageCoefficient"></el-input>
+>>>>>>> Stashed changes
               </el-form-item>
             </el-col>
           </el-row>
@@ -714,7 +716,7 @@
           <!--</el-row>-->
         </div>
 
-        <div class="group-item">
+        <div class="group-item" style="position: relative">
           <h3>活动时间段</h3>
           <el-row v-for="item in activityData" :key="item.idx">
             <el-col :span="11">
@@ -733,9 +735,14 @@
             <el-col :span="11">
               <el-form-item label="业绩系数">
                 <el-input style="width: 300px"
+<<<<<<< Updated upstream
                           :disabled="operationDisabled"
                           v-model="item.performanceCoefficient"></el-input>
                 <i class="el-icon-plus" v-if="!operationDisabled" @click="addActivity"></i>
+=======
+                  :disabled="operationDisabled"
+                  v-model="item.performanceCoefficient"></el-input>
+>>>>>>> Stashed changes
               </el-form-item>
             </el-col>
             <el-col :span="11">
@@ -746,6 +753,10 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <i class="el-icon-plus"
+            v-if="!operationDisabled"
+            @click="addActivity"
+            style="position: absolute; top: 50px; right: 180px"></i>
           <el-row v-for="item in addActivityList" :key="item.idx" v-if="addActivityList">
             <el-col :span="11">
               <el-form-item label="活动时间">
@@ -914,9 +925,16 @@
       width="30%">
       <div style="margin-bottom: 30px;">请选择新增材料</div>
       <el-select v-model="clientFile"
+<<<<<<< Updated upstream
                  clearable
                  placeholder="请选择"
                  style="margin-bottom: 30px;">
+=======
+        clearable
+        placeholder="请选择"
+        style="margin-bottom: 30px;"
+        @change="changeFileList">
+>>>>>>> Stashed changes
         <el-option
           v-for="item in clientFileList"
           :key="item.productClientFileManageId||item.transactionFileManageId"
@@ -1242,6 +1260,7 @@
           age: 1,
           brokerageCoefficient: ''
         }],
+        normalList1: [],
         addNormList: [],
         cmsIndex: 1,
         normalData: {},
@@ -1312,43 +1331,58 @@
         })
         if(this.uploadData.productId) { // 查询产品详情
           getObj(this.uploadData.productId)
-            .then(response => {
-              this.form = response.data
-              console.log('form')
-              console.log(this.form)
-              this.nextToUpdate = true
-              // this.dialogFormVisible = true
-              this.dialogStatus = 'update'
-              if(this.form.isFloat === 0) {
-                this.form.annualizedReturn = null
-                this.isDisabled = true
-              } else {
-                this.isDisabled = false
-              }
-              this.productStatusNo = this.form.productStatus
-              // console.log(this.productStatusNo)
-              this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
-              if(this.productStatusNo === 6) {
-                this.shortNameDisabled = true
-              }
-              if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
-                this.collectDisabled = true
-              }
-              if(this.productStatusNo === 4) {
-                this.closeDateDisabled = false
-                this.someDisabled = false
-              }
-              if(this.productStatusNo === 5) {
-                this.establishedDisabled = false
-                this.someDisabled = false
-              }
-              if(this.productStatusNo === 5||this.productStatusNo === 6) {
-                this.valueDateDisabled = true
-              }
-              if(this.productStatusNo === 6) {
-                this.allDisabled = false
-              }
-            })
+          .then(response => {
+            this.stepStatus = 'update'
+            this.form = response.data
+            this.nextToUpdate = true
+            // this.dialogFormVisible = true
+            this.dialogStatus = 'update'
+            if(this.form.isFloat === 0) {
+              this.form.annualizedReturn = null
+              this.isDisabled = true
+            } else {
+              this.isDisabled = false
+            }
+            this.productStatusNo = this.form.productStatus
+            // fetchProductTypeList().then(res => { // 获取产品类型
+            //   this.productTypes = res.data
+            // })
+            // getObjList().then(response => { // 获取币种
+            //   this.currencyList = response.data
+            //   // this.form.currencyId = 1
+            // })
+            this.form.currencyIdNo = this.form.currencyId
+            this.form.productTypeIdNo = this.form.productTypeId
+            this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
+            this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
+            this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
+            this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
+            this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
+            
+            if(this.productStatusNo === 6) {
+              this.shortNameDisabled = true
+            }
+            if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
+              this.collectDisabled = true
+            }
+            if(this.productStatusNo === 4) {
+              // this.closeDateDisabled = false
+              this.someDisabled = false
+            }
+            if(this.productStatusNo === 2) {
+              this.closeDateDisabled = false
+            }
+            if(this.productStatusNo === 5) {
+              this.establishedDisabled = false
+              this.someDisabled = false
+            }
+            if(this.productStatusNo === 5||this.productStatusNo === 6) {
+              this.valueDateDisabled = true
+            }
+            if(this.productStatusNo === 6) {
+              this.allDisabled = false
+            }
+          })
         }
       },
       handleDept() {
@@ -1383,20 +1417,12 @@
       },
       addCommission() {
         // if(this.addNormList.length & !this.addNormList[this.addNormList.length - 1].brokerageCoefficient) return ''
-        // this.cmsIndex++
-        // this.addNormList.push({
-        //   age: this.cmsIndex,
-        //   brokerageCoefficient: ''
-        // })
-        // this.normalList = this.normalList.concat(this.addNormList)
-        if (this.normalList.length < 5) {
-          this.normalList.push({
-            age: ++this.cmsIndex,
-            brokerageCoefficient: ''
-          })
-        } else {
-          this.dialogVis = true
-        }
+        if(this.cmsIndex > 4) return
+        this.cmsIndex++
+        this.addNormList.push({
+          age: this.cmsIndex,
+          brokerageCoefficient: ''
+        })
       },
       addActivity() {
         // this.cmsIndex++
@@ -1467,8 +1493,8 @@
           item.activityStart = item.activeDate[0]
         })
         this.form2.activityDTO = this.activityList
-        this.form2.normalDTO.normalBrokerageCoefficients = this.normalList
-        this.form2.normalDTO.performanceCoefficient = this.normalData.performanceCoefficient
+        this.normalList1 = this.normalList.concat(this.addNormList)
+        this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
         this.form2.productId = this.form.productId
         addOperationObj(this.form2).then(res => {
           this.$notify({
@@ -1677,7 +1703,6 @@
           page: 1
         }
         this.fileType = type
-        console.log(type)
         if (type === 'client') {
           getClientFile(params).then(res => {
             this.clientFileList = res.data.records
@@ -1717,7 +1742,8 @@
       chooseClientFile() {
         this.dialogComVisible = false
         if (this.fileType === 'client') {
-          console.log('client吗')
+          // console.log(this.clientFile)
+          // console.log('client吗')
           let params = {
             fileName: this.clientFile.fileName,
             productClientFileManageId: this.clientFile.productClientFileManageId,
@@ -1748,7 +1774,13 @@
           this.step = 1
           this.stage = true
           this.form = res.data
-          console.log(this.stage)
+          // console.log(this.stage)
+          this.form.currencyIdNo = this.form.currencyId
+          this.form.productTypeIdNo = this.form.productTypeId
+          this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
+          this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
+          this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
+          this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
           // this.form.productCode = this.form.productCode + '-01'
         })
       },
@@ -1762,11 +1794,16 @@
           this.form2 = res.data
           this.form2.normalDTO = res.data.normalDTO || {}
           this.activityData = res.data.activityDTO || []
-          // this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
-          this.normalList = this.form2.normalDTO.normalBrokerageCoefficients ? this.form2.normalDTO.normalBrokerageCoefficients : this.normalList
+          if(this.form2.importantStart || this.form2.importantEnd) {
+            console.log('keyProduct: ' + this.form2.keyProduct)
+            this.form2.keyProduct = 2
+          }
+          this.importantDate = [this.form2.importantStart, this.form2.importantEnd]
+          this.normalData = this.form2.normalDTO
+          this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
           if(!this.normalList) {
             this.normalList = [{
-              age: ''
+              age: '1'
             }]
           }
           if(!this.activityData.length) {
@@ -1825,6 +1862,10 @@
       test(val) {
         console.log(val)
         this.form2.keyProduct = val
+      },
+      changeFileList(val) {
+        console.log(val)
+        this.clientFileList = this.clientFileList.slice(0)
       }
     }
   }
