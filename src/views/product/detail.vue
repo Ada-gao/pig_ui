@@ -39,7 +39,7 @@
         </el-col>
         <el-col :span="11" v-if="uploadData.productId">
           <el-form-item label="产品编号" prop="productCode">
-            <el-input v-model="form.productCode" placeholder="请输入产品编号" ></el-input>
+            <el-input v-model="form.productCode" placeholder="请输入产品编号" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -1001,13 +1001,6 @@
               trigger: 'blur,change'
             }
           ],
-          productCode: [
-            {
-              required: true,
-              message: '请输入产品编号',
-              trigger: 'blur'
-            }
-          ],
           productTypeId: [
             {
               required: true,
@@ -1291,8 +1284,11 @@
               this.collectDisabled = true
             }
             if(this.productStatusNo === 4) {
-              this.closeDateDisabled = false
+              // this.closeDateDisabled = false
               this.someDisabled = false
+            }
+            if(this.productStatusNo === 2) {
+              this.closeDateDisabled = false
             }
             if(this.productStatusNo === 5) {
               this.establishedDisabled = false
