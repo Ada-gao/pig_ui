@@ -125,8 +125,6 @@ export default {
 
       this.listQuery.orderByField = 'create_time'
       this.listQuery.isAsc = false
-      console.log('发送查询条件')
-      // console.log(this.listQuery)
       Bus.$emit('searchProduct', this.listQuery)
     },
     resetFilter() { // 重置搜索条件

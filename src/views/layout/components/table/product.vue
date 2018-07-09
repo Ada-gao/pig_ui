@@ -18,7 +18,7 @@
 
       <el-table-column align="center" label="产品起息日">
         <template slot-scope="scope">
-          <span>{{scope.row.valueDate}}</span>
+          <span>{{scope.row.valueDate | parseTime('{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
 
@@ -28,7 +28,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="产品期限（年）" show-overflow-tooltip>
+      <el-table-column align="center" label="产品期限" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.investmentHorizon}}</span>
         </template>
@@ -92,7 +92,7 @@
   import { fetchCurrency, getObjList } from '@/api/currency'
   import { getToken } from '@/utils/auth'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { transformText } from '@/utils'
+  import { transformText, parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -124,6 +124,13 @@
       },
       activeUrl: {
         default: '/product/productList'
+      }
+    },
+    filters: {
+      parseTime (time) {
+        if(!time) return
+        let date = new Date(time)
+        return parseTime(date)
       }
     },
     data() {
@@ -198,19 +205,19 @@
       Bus.$on('searchProduct', listQuery => {
         // console.log(listQuery)
         this.listQuery = listQuery
-        // this.listQuery.productStatus = []
         this.getList()
       })
     },
     methods: {
       getList() {
         this.listQuery.productStatus.push(this.productStatusNo)
-        let list = this.listQuery.productStatus
-        list.forEach((item, index) => {
-          if(item === '') {
-            list.splice(index, 1)
-          }
-        })
+        
+          let list = this.listQuery.productStatus
+          list.forEach((item, index) => {
+            if(item === '') {
+              list.splice(index, 1)
+            }
+          })
         this.listLoading = true
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         fetchList(this.listQuery).then(response => {

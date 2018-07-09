@@ -205,8 +205,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-form :model="form" ref="form1" label-width="100px" v-else>
-    <!-- <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&productStatusNo!==0&stageType!='0'&uploadData.productId!=''"> -->
+    <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&productStatusNo!==0&stageType!='0'&stepStatus==='update'">
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="产品全称" prop="productName">
@@ -1212,7 +1211,8 @@
         // pause: '1',
         // display: '1',
         url: '',
-        fileType: ''
+        fileType: '',
+        stepStatus: 'create'
       }
     },
     computed: {
@@ -1224,23 +1224,39 @@
       ])
     },
     created() {
-      this.getList()
+      this.uploadData.productId = this.$route.params.id
+      this.listQuery.productId = this.$route.params.id
+
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
       // this.cmsIndex = this.form2.cmsIndex
       let list = this.normalList
       this.cmsIndex = list[list.length - 1].age
+      fetchProductTypeList().then(res => { // 获取产品类型
+        this.productTypes = res.data
+        // this.form.productTypeIdNo = this.form.productTypeId
+        // this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
+        getObjList().then(response => { // 获取币种
+          this.currencyList = response.data
+          // this.form.currencyIdNo = this.form.currencyId
+          // this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
+          // this.form.currencyId = 1
+          if(this.uploadData.productId) {
+            this.getList()
+          }
+        })
+      })
     },
     methods: {
       getList() {
-        this.uploadData.productId = this.$route.params.id
-        this.listQuery.productId = this.$route.params.id
+        
         // if(!this.uploadData.productId) this.nextToUpdate = false
         
         if(this.uploadData.productId) { // 查询产品详情
           getObj(this.uploadData.productId)
           .then(response => {
+            this.stepStatus = 'update'
             this.form = response.data
             this.nextToUpdate = true
             // this.dialogFormVisible = true
@@ -1253,19 +1269,19 @@
             }
             this.productStatusNo = this.form.productStatus
             console.log(this.form.currencyId)
-            fetchProductTypeList().then(res => { // 获取产品类型
-              this.productTypes = res.data
-              this.form.productTypeIdNo = this.form.productTypeId
-              this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
-            })
-            getObjList().then(response => { // 获取币种
-              this.currencyList = response.data
-              this.form.currencyIdNo = this.form.currencyId
-              this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
-              // this.form.currencyId = 1
-            })
-            this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
+            // fetchProductTypeList().then(res => { // 获取产品类型
+            //   this.productTypes = res.data
+            // })
+            // getObjList().then(response => { // 获取币种
+            //   this.currencyList = response.data
+            //   // this.form.currencyId = 1
+            // })
+            this.form.currencyIdNo = this.form.currencyId
+            this.form.productTypeIdNo = this.form.productTypeId
             this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
+            this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
+            this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
+            this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
             this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
             
             if(this.productStatusNo === 6) {

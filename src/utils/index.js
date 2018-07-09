@@ -1,6 +1,6 @@
 export function parseTime(time, cFormat) {
   if (arguments.length === 0 || !time) {
-    return null
+    return 'null'
   }
   const format = cFormat || '{y}-{m}-{d}'
   let date
