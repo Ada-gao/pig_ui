@@ -1,6 +1,11 @@
 <template>
   <div class="app-container calendar-list-container pro-detail-radio">
-
+    <el-dialog title="提示" :visible.sync="dialogVis" width="30%">
+      <span>佣金系数最多增加到第五年</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogVis = false">确 定</el-button>
+      </span>
+    </el-dialog>
     <div v-if="uploadData.productId">
       <el-radio-group v-model="step" @change="changeStep" style="margin-bottom: 30px;">
         <el-radio-button label="1">产品详情</el-radio-button>
@@ -22,7 +27,7 @@
       关联产品
       <el-input v-model="form.productName" style="width: 180px" placeholder="请输入"></el-input>
     </div>
-    
+
     <div style="border-bottom: 1px solid #ccc; margin-bottom: 20px;"></div>
 
     <el-form :model="form" :rules="rules" ref="form" label-width="100px" v-if="step===1&(productStatusNo===0||stageType=='0')||!uploadData.productId">
@@ -79,7 +84,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-      
+
         <el-col :span="11">
           <el-form-item label="募集额度" prop="collectionAmount" style="white-space: nowrap">
             <el-input type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入"></el-input><span>万</span>
@@ -90,7 +95,7 @@
             <el-input type="number" v-model="form.netValue" :maxlength="5" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
-      
+
         <el-col :span="11">
           <el-form-item label="起投金额" prop="minimalAmount" style="white-space: nowrap">
             <el-input type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额"></el-input><span>万</span>
@@ -101,7 +106,7 @@
             <el-input type="number" v-model.number="form.minimalAddAmount" :maxlength="10"></el-input><span>万</span>
           </el-form-item>
         </el-col>
-      
+
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
             <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" :disabled="stageType=='0'"></el-input>
@@ -148,7 +153,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="支行">
+          <el-form-item label="支行" prop="subBranchName">
             <el-input v-model="form.subBranchName" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
@@ -158,7 +163,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="打款账号">
+          <el-form-item label="打款账号" prop="cardNo">
             <el-input v-model.number="form.cardNo" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
@@ -247,7 +252,7 @@
             <el-input v-model="form.currencyId" placeholder="" disabled></el-input>
           </el-form-item>
         </el-col>
-      
+
         <el-col :span="11">
           <el-form-item label="募集额度" prop="collectionAmount" style="white-space: nowrap">
             <el-input type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" :disabled="collectDisabled"></el-input><span>万</span>
@@ -258,7 +263,7 @@
             <el-input type="number" v-model="form.netValue" :maxlength="5" placeholder="请输入" disabled></el-input>
           </el-form-item>
         </el-col>
-      
+
         <el-col :span="11">
           <el-form-item label="起投金额" prop="minimalAmount" style="white-space: nowrap">
             <el-input type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额" disabled></el-input><span>万</span>
@@ -269,7 +274,7 @@
             <el-input type="number" v-model.number="form.minimalAddAmount" :maxlength="10" disabled></el-input><span>万</span>
           </el-form-item>
         </el-col>
-      
+
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
             <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" disabled></el-input>
@@ -386,8 +391,8 @@
             align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.name"
-                v-if="productFileId===scope.row.productFileId"
-                @blur="updateFileName(scope.row, 'transaction')"></el-input>
+                        v-if="productFileId===scope.row.productFileId"
+                        @blur="updateFileName(scope.row, 'transaction')"></el-input>
               <span v-else>{{scope.row.name}}</span>
             </template>
           </el-table-column>
@@ -413,10 +418,22 @@
           </el-table-column>
         </el-table>
         <el-row style="text-align: right;">
-          <el-button size="small"
-            class="btn-padding add_btn"
-            v-if="!operationDisabled"
-            @click="addClientFile('transc')">追加材料</el-button>
+          <!--<el-button size="small"-->
+                     <!--class="btn-padding add_btn"-->
+                     <!--v-if="!operationDisabled"-->
+                     <!--@click="addClientFile('transc')">追加材料</el-button>-->
+          <el-upload
+            class="upload-demo"
+            style="display: inline-block;"
+            :headers="headers"
+            :action="importFile('transc')"
+            :on-change="handleChange"
+            :show-file-list="false"
+            accept=".pdf, .doc">
+            <el-button size="small"
+                       v-if="!operationDisabled"
+                       class="btn-padding add_btn">追加材料</el-button>
+          </el-upload>
         </el-row>
       </div>
 
@@ -433,8 +450,8 @@
             align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.fileName"
-                v-if="productFileId===scope.row.productClientFileManageId"
-                @blur="updateClientFileName(scope.row)"></el-input>
+                        v-if="productFileId===scope.row.productClientFileManageId"
+                        @blur="updateClientFileName(scope.row)"></el-input>
               <span v-else>{{scope.row.fileName}}</span>
             </template>
           </el-table-column>
@@ -460,10 +477,18 @@
           </el-table-column>
         </el-table>
         <el-row style="text-align: right;">
-          <el-button size="small"
-            class="btn-padding add_btn"
-            v-if="!operationDisabled"
-            @click="addClientFile('client')">追加材料</el-button>
+          <el-upload
+            class="upload-demo"
+            style="display: inline-block;"
+            :headers="headers"
+            :action="importFile('client')"
+            :on-change="handleChange1"
+            :show-file-list="false"
+            accept=".pdf, .doc">
+            <el-button size="small"
+                       v-if="!operationDisabled"
+                       class="btn-padding add_btn">追加材料</el-button>
+          </el-upload>
         </el-row>
       </div>
 
@@ -480,8 +505,8 @@
             align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.name"
-                v-if="productFileId===scope.row.productFileId"
-                @blur="updateFileName(scope.row, 'product')"></el-input>
+                        v-if="productFileId===scope.row.productFileId"
+                        @blur="updateFileName(scope.row, 'product')"></el-input>
               <span v-else>{{scope.row.name}}</span>
             </template>
           </el-table-column>
@@ -512,13 +537,12 @@
             style="display: inline-block;"
             :headers="headers"
             :action="importFile('product')"
-            :on-error="uploadError2"
             :on-change="handleChange2"
             :show-file-list="false"
             accept=".pdf, .doc">
             <el-button size="small"
-              v-if="!operationDisabled"
-              class="btn-padding add_btn">追加材料</el-button>
+                       v-if="!operationDisabled"
+                       class="btn-padding add_btn">追加材料</el-button>
           </el-upload>
         </el-row>
       </div>
@@ -540,8 +564,8 @@
             align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.name"
-                v-if="productFileId===scope.row.productFileId"
-                @blur="updateFileName(scope.row, 'announcement')"></el-input>
+                        v-if="productFileId===scope.row.productFileId"
+                        @blur="updateFileName(scope.row, 'announcement')"></el-input>
               <span v-else>{{scope.row.name}}</span>
             </template>
           </el-table-column>
@@ -576,12 +600,12 @@
             :show-file-list="false"
             accept=".pdf, .doc">
             <el-button size="small"
-              v-if="!operationDisabled"
-              class="btn-padding add_btn">追加材料</el-button>
+                       v-if="!operationDisabled"
+                       class="btn-padding add_btn">追加材料</el-button>
           </el-upload>
         </el-row>
       </div>
-  
+
       <div style="border-bottom: 1px solid #ccc; margin: 20px 0;"></div>
 
       <el-form :rules="rules2" ref="form2" label-width="120px">
@@ -590,7 +614,7 @@
           <el-row>
             <el-col :md="12" :lg="8" style="margin-bottom: 10px">
               <el-checkbox v-model="checked1" :disabled="operationDisabled">
-                <span style="width: 120px; display: inline-block">预约总额度</span>
+                <span style="width: 120px; display: inline-block">预约总额度满</span>
                 <el-input v-model="form2.appointAmountPercent" :disabled="!checked1" style="width: 100px;"></el-input> %，进入人工审核
               </el-checkbox>
             </el-col>
@@ -620,10 +644,10 @@
             </el-col>
             <el-col :md="12" :lg="8" style="margin-bottom: 10px">
               <!-- <el-form-item label="预约时效" prop="timeliness" style="padding-left: 71px"> -->
-                <span style="width: 145px; display: inline-block; text-align: right">预约时效</span>
-                <el-input style="width: 100px;"
-                   :disabled="operationDisabled"
-                    v-model="form2.timeliness"></el-input> 小时
+              <span style="width: 145px; display: inline-block; text-align: right">预约时效</span>
+              <el-input style="width: 100px;"
+                        :disabled="operationDisabled"
+                        v-model="form2.timeliness"></el-input> 小时
               <!-- </el-form-item> -->
             </el-col>
           </el-row>
@@ -633,7 +657,7 @@
           <h3>是否标注重点产品</h3>
           <el-row>
             <el-col :span="6">
-              <el-form-item prop="keyProduct" label="是否标注重点产品" style="white-space: nowrap;">
+              <el-form-item prop="keyProduct" label="是否标注重点产品" style="white-space: nowrap;" :rules="keyProRules">
                 <el-radio-group v-model="form2.keyProduct" :disabled="operationDisabled" @change="test">
                   <el-radio :label="1">否</el-radio>
                   <el-radio :label="2">是</el-radio>
@@ -662,29 +686,32 @@
             <el-col :span="11">
               <el-form-item label="业绩系数" prop="performance">
                 <el-input style="width: 300px"
-                   :disabled="operationDisabled"
-                  v-model="normalData.performanceCoefficient"></el-input>
+                          :disabled="operationDisabled"
+                          v-model="normalData.performanceCoefficient"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="11" style="white-space: nowrap"
-              v-for="item in normalList" :key="item.age">
+                    v-for="item in normalList" :key="item.age">
               <el-form-item :label="`佣金系数（第${item.age}年）`">
                 <el-input style="width: 300px"
-                  :disabled="operationDisabled"
-                  v-model="item.brokerageCoefficient"></el-input>
-                <i class="el-icon-plus" v-if="!operationDisabled" @click="addCommission"></i>
+                          :disabled="operationDisabled"
+                          v-model="item.brokerageCoefficient"></el-input>
+                <i class="el-icon-plus"
+                   v-if="!operationDisabled"
+                   style="cursor:pointer;"
+                   @click="addCommission"></i>
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row v-for="item in addNormList" :key="item.idx" v-if="addNormList">
-            <el-col :span="11" :offset="11" style="white-space: nowrap">
-              <el-form-item :label="`佣金系数（第${cmsIndex}年）`">
-                <el-input style="width: 300px"
-                  :disabled="operationDisabled"
-                  v-model="item.brokerageCoefficient"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
+          <!--<el-row v-for="item in addNormList" :key="item.idx" v-if="addNormList">-->
+          <!--<el-col :span="11" :offset="11" style="white-space: nowrap">-->
+          <!--<el-form-item :label="`佣金系数（第${cmsIndex}年）`">-->
+          <!--<el-input style="width: 300px"-->
+          <!--:disabled="operationDisabled"-->
+          <!--v-model="item.brokerageCoefficient"></el-input>-->
+          <!--</el-form-item>-->
+          <!--</el-col>-->
+          <!--</el-row>-->
         </div>
 
         <div class="group-item">
@@ -706,16 +733,16 @@
             <el-col :span="11">
               <el-form-item label="业绩系数">
                 <el-input style="width: 300px"
-                  :disabled="operationDisabled"
-                  v-model="item.performanceCoefficient"></el-input>
+                          :disabled="operationDisabled"
+                          v-model="item.performanceCoefficient"></el-input>
                 <i class="el-icon-plus" v-if="!operationDisabled" @click="addActivity"></i>
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="佣金系数">
                 <el-input style="width: 300px"
-                  :disabled="operationDisabled"
-                  v-model="item.brokerageCoefficient"></el-input>
+                          :disabled="operationDisabled"
+                          v-model="item.brokerageCoefficient"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -736,15 +763,15 @@
             <el-col :span="11">
               <el-form-item label="业绩系数">
                 <el-input style="width: 300px"
-                :disabled="operationDisabled"
-                v-model="item.performanceCoefficient"></el-input>
+                          :disabled="operationDisabled"
+                          v-model="item.performanceCoefficient"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="佣金系数">
                 <el-input style="width: 300px"
-                :disabled="operationDisabled"
-                v-model="item.brokerageCoefficient"></el-input>
+                          :disabled="operationDisabled"
+                          v-model="item.brokerageCoefficient"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -863,6 +890,7 @@
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(0)">返回在建</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductDisplay">
         {{form.isDisplay==='1'?'设为隐藏':'设为显示'}}</el-button>
+      <!--{{form.isDisplay==='1'?'设为显示':'设为隐藏'}}</el-button>-->
       <!-- 募集中 -->
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType(3)">进入已关账</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductPause">
@@ -870,6 +898,7 @@
       </el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductDisplay">
         {{form.isDisplay==='1'?'设为隐藏':'设为显示'}}
+        <!--{{form.isDisplay==='1'?'设为显示':'设为隐藏'}}-->
       </el-button>
       <!-- 已关账 -->
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(4)">进入已成立</el-button>
@@ -885,9 +914,9 @@
       width="30%">
       <div style="margin-bottom: 30px;">请选择新增材料</div>
       <el-select v-model="clientFile"
-        clearable
-        placeholder="请选择"
-        style="margin-bottom: 30px;">
+                 clearable
+                 placeholder="请选择"
+                 style="margin-bottom: 30px;">
         <el-option
           v-for="item in clientFileList"
           :key="item.productClientFileManageId||item.transactionFileManageId"
@@ -959,6 +988,7 @@
     },
     data() {
       return {
+        dialogVis: false,
         treeDeptData: [],
         checkedKeys: [],
         defaultProps: {
@@ -974,6 +1004,15 @@
           deptId: undefined,
           ym: 1
         },
+        keyProRules: {
+          keyProduct: [
+            {
+              required: true,
+              trigger: 'blur, change',
+              message: '请标注产品'
+            }
+          ]
+        },
         rules: {
           productName: [
             {
@@ -988,6 +1027,34 @@
               trigger: 'blur,change'
             }
           ],
+          isFloat: [
+            {
+              required: true,
+              message: '请选择收益',
+              trigger: 'blue, change'
+            }
+          ],
+          bankName: [
+            {
+              required: true,
+              message: '请输入开户银行名称',
+              trigger: 'blur, change'
+            }
+          ],
+          subBranchName: [
+            {
+              required: true,
+              message: '请输入支行名称',
+              trigger: 'blur, change'
+            }
+          ],
+          cardNo: [
+            {
+              required: true,
+              message: '请输入打款帐号',
+              trigger: 'blur, change'
+            }
+          ],
           productCode: [
             {
               required: true,
@@ -1001,13 +1068,13 @@
               trigger: 'blur,change'
             }
           ],
-          productCode: [
-            {
-              required: true,
-              message: '请输入产品编号',
-              trigger: 'blur'
-            }
-          ],
+          // productCode: [
+          //   {
+          //     required: true,
+          //     message: '请输入产品编号',
+          //     trigger: 'blur'
+          //   }
+          // ],
           productTypeId: [
             {
               required: true,
@@ -1042,7 +1109,7 @@
               message: '请输入募集额度',
               trigger: 'change'
             },
-            { 
+            {
               // message: '金额必须为数字值',
               trigger: 'change',
               validator: certNumber
@@ -1054,7 +1121,7 @@
               message: '请输入起投金额',
               trigger: 'change'
             },
-            { 
+            {
               message: '金额必须为数字值',
               trigger: 'change',
               validator: certNumber
@@ -1066,7 +1133,7 @@
               message: '请输入追加金额',
               trigger: 'change'
             },
-            { 
+            {
               // type: 'number',
               message: '金额必须为数字值',
               validator: certNumber
@@ -1222,6 +1289,7 @@
       ])
     },
     created() {
+      console.log(this.normalList)
       this.getList()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
@@ -1244,41 +1312,43 @@
         })
         if(this.uploadData.productId) { // 查询产品详情
           getObj(this.uploadData.productId)
-          .then(response => {
-            this.form = response.data
-            this.nextToUpdate = true
-            // this.dialogFormVisible = true
-            this.dialogStatus = 'update'
-            if(this.form.isFloat === 0) {
-              this.form.annualizedReturn = null
-              this.isDisabled = true
-            } else {
-              this.isDisabled = false
-            }
-            this.productStatusNo = this.form.productStatus
-            // console.log(this.productStatusNo)
-            this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
-            if(this.productStatusNo === 6) {
-              this.shortNameDisabled = true
-            }
-            if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
-              this.collectDisabled = true
-            }
-            if(this.productStatusNo === 4) {
-              this.closeDateDisabled = false
-              this.someDisabled = false
-            }
-            if(this.productStatusNo === 5) {
-              this.establishedDisabled = false
-              this.someDisabled = false
-            }
-            if(this.productStatusNo === 5||this.productStatusNo === 6) {
-              this.valueDateDisabled = true
-            }
-            if(this.productStatusNo === 6) {
-              this.allDisabled = false
-            }
-          })
+            .then(response => {
+              this.form = response.data
+              console.log('form')
+              console.log(this.form)
+              this.nextToUpdate = true
+              // this.dialogFormVisible = true
+              this.dialogStatus = 'update'
+              if(this.form.isFloat === 0) {
+                this.form.annualizedReturn = null
+                this.isDisabled = true
+              } else {
+                this.isDisabled = false
+              }
+              this.productStatusNo = this.form.productStatus
+              // console.log(this.productStatusNo)
+              this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
+              if(this.productStatusNo === 6) {
+                this.shortNameDisabled = true
+              }
+              if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
+                this.collectDisabled = true
+              }
+              if(this.productStatusNo === 4) {
+                this.closeDateDisabled = false
+                this.someDisabled = false
+              }
+              if(this.productStatusNo === 5) {
+                this.establishedDisabled = false
+                this.someDisabled = false
+              }
+              if(this.productStatusNo === 5||this.productStatusNo === 6) {
+                this.valueDateDisabled = true
+              }
+              if(this.productStatusNo === 6) {
+                this.allDisabled = false
+              }
+            })
         }
       },
       handleDept() {
@@ -1313,12 +1383,20 @@
       },
       addCommission() {
         // if(this.addNormList.length & !this.addNormList[this.addNormList.length - 1].brokerageCoefficient) return ''
-        this.cmsIndex++
-        this.addNormList.push({
-          age: this.cmsIndex,
-          brokerageCoefficient: ''
-        })
-        this.normalList = this.normalList.concat(this.addNormList)
+        // this.cmsIndex++
+        // this.addNormList.push({
+        //   age: this.cmsIndex,
+        //   brokerageCoefficient: ''
+        // })
+        // this.normalList = this.normalList.concat(this.addNormList)
+        if (this.normalList.length < 5) {
+          this.normalList.push({
+            age: ++this.cmsIndex,
+            brokerageCoefficient: ''
+          })
+        } else {
+          this.dialogVis = true
+        }
       },
       addActivity() {
         // this.cmsIndex++
@@ -1376,7 +1454,7 @@
                 console.log(res)
               })
             }
-            
+
           } else {
             return false
           }
@@ -1493,14 +1571,20 @@
         }
         return isFile
       },
+      handleChange(file, fileList) {
+        this.uploadData.fileType = 'transc'
+        getFiles(this.uploadData).then(response => {
+          this.fileList1 = response.data
+        })
+      },
       handleChange1(file, fileList) { // 上传材料，列表展示
         // this.fileList1 = fileList.slice(-3)
-        this.uploadData.fileType = 'transaction'
+        this.uploadData.fileType = 'client'
         // debugger
         getFiles(this.uploadData).then(response => {
           // console.log('上传1')
           // console.log(response.data)
-          this.fileList1 = response.data
+          this.clientFiles = response.data
         })
       },
       delfiles(item, type) { // 删除材料
@@ -1678,8 +1762,8 @@
           this.form2 = res.data
           this.form2.normalDTO = res.data.normalDTO || {}
           this.activityData = res.data.activityDTO || []
-          
-          this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
+          // this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
+          this.normalList = this.form2.normalDTO.normalBrokerageCoefficients ? this.form2.normalDTO.normalBrokerageCoefficients : this.normalList
           if(!this.normalList) {
             this.normalList = [{
               age: ''
@@ -1728,14 +1812,14 @@
         let id = this.uploadData.productId
         return 'http://10.9.70.62:9999/product/products/' + id + '/export/' + type
         // batchExportProduct(id, type, {responseType: 'arraybuffer'}).then(res => {
-          // this.url = 
-          // console.log(res)
-          // let blob = new Blob([res.data], {type: "application/vnd.ms-excel;charset=utf-8"})
-          // let objectUrl = URL.createObjectURL(blob)
-          // window.location.href = objectUrl
-          // let fileName = res.headers['content-disposition'].match(/fushun(\S*)xls/)[0]
-          // fileDownload(res.data, 'test.xls')
-          // console.log(fileDownload(res.data,'fileName'))
+        // this.url =
+        // console.log(res)
+        // let blob = new Blob([res.data], {type: "application/vnd.ms-excel;charset=utf-8"})
+        // let objectUrl = URL.createObjectURL(blob)
+        // window.location.href = objectUrl
+        // let fileName = res.headers['content-disposition'].match(/fushun(\S*)xls/)[0]
+        // fileDownload(res.data, 'test.xls')
+        // console.log(fileDownload(res.data,'fileName'))
         // })
       },
       test(val) {
@@ -1747,187 +1831,187 @@
 </script>
 
 <style lang="scss" scoped>
-@import "src/styles/mixin.scss";
-@import "src/styles/variables.scss";
+  @import "src/styles/mixin.scss";
+  @import "src/styles/variables.scss";
 
-.el-select,
-.el-date-editor {
-  width: 100%;
-}
-.upfile-group {
-  .btn-padding {
-    @include padding;
+  .el-select,
+  .el-date-editor {
+    width: 100%;
   }
-}
-.tabs {
-  display: flex;
-  text-align: center;
-  // border: 1px solid #C0CCDA;
-  height: 30px;
-  line-height: 30px;
-  margin-bottom: 50px;
-  .tab-item {
-    width: 50%;
+  .upfile-group {
+    .btn-padding {
+      @include padding;
+    }
+  }
+  .tabs {
+    display: flex;
+    text-align: center;
+    // border: 1px solid #C0CCDA;
+    height: 30px;
+    line-height: 30px;
+    margin-bottom: 50px;
+    .tab-item {
+      width: 50%;
+      position: relative;
+      color: #99A9BF;
+      border-top: 1px solid #C0CCDA;
+      border-bottom: 1px solid #C0CCDA;
+      /*右箭头*/
+      .right{
+        position: absolute;
+        right: 2px;
+        top: -1px;
+      }
+      .right-arrow1,.right-arrow2{
+        width: 0;
+        height: 0;
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        border-top: 15px transparent dashed;
+        border-right: 15px transparent dashed;
+        border-bottom: 15px transparent dashed;
+        border-left: 15px white solid;
+        overflow: hidden;
+      }
+      .right-arrow1{
+        left: 1px;/*重要*/
+        border-left: 15px #C0CCDA solid;
+      }
+      .right-arrow2{
+        border-left: 15px white solid;
+      }
+    }
+    .tab-item:first-child {
+      border-left: 1px solid #C0CCDA;
+    }
+    .tab-active {
+      color: $mainColor;
+      border-color: $mainColor;
+      border-left: 1px solid $mainColor!important;
+      .right-arrow1 {
+        // border-color: $mianColor;
+        border-left: 15px $mainColor solid;
+      }
+    }
+  }
+  .pageTitle {
     position: relative;
-    color: #99A9BF;
-    border-top: 1px solid #C0CCDA;
-    border-bottom: 1px solid #C0CCDA;
-    /*右箭头*/
-    .right{
+    .add_btn {
       position: absolute;
-      right: 2px;
-      top: -1px;
-    }
-    .right-arrow1,.right-arrow2{
-      width: 0;
-      height: 0;
-      display: block;
-      position: absolute;
-      left: 0;
-      top: 0;
-      border-top: 15px transparent dashed;
-      border-right: 15px transparent dashed;
-      border-bottom: 15px transparent dashed;
-      border-left: 15px white solid;
-      overflow: hidden;
-    }
-    .right-arrow1{
-      left: 1px;/*重要*/
-      border-left: 15px #C0CCDA solid;
-    }
-    .right-arrow2{
-      border-left: 15px white solid;
+      top: -10px;
+      right: 0;
     }
   }
-  .tab-item:first-child {
-    border-left: 1px solid #C0CCDA;
-  }
-  .tab-active {
+  // .group-item {
+  //   .el-form-item__label {
+  //     padding-left: 71px!important;
+  //   }
+  // }
+  .stage_btn {
+    float: left;
     color: $mainColor;
-    border-color: $mainColor;
-    border-left: 1px solid $mainColor!important;
-    .right-arrow1 {
-      // border-color: $mianColor;
-      border-left: 15px $mainColor solid;
-    }
+    line-height: 40px;
+    margin-right: 10px;
+    cursor: pointer;
   }
-}
-.pageTitle {
-  position: relative;
-  .add_btn {
-    position: absolute;
-    top: -10px;
-    right: 0;
-  }
-}
-// .group-item {
-//   .el-form-item__label {
-//     padding-left: 71px!important;
-//   }
-// }
-.stage_btn {
-  float: left;
-  color: $mainColor;
-  line-height: 40px;
-  margin-right: 10px;
-  cursor: pointer;
-}
-.def-el {
-  margin-bottom: 24px;
-  .el-card__body {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    .card-box {
-      padding: 10px 0;
-      .left-box,
-      .right-box {
-        display: inline-block;
-        height: 50px;
-        vertical-align: middle;
-        position: relative;
-        .circle {
+  .def-el {
+    margin-bottom: 24px;
+    .el-card__body {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      .card-box {
+        padding: 10px 0;
+        .left-box,
+        .right-box {
           display: inline-block;
-          width: 42px;
-          height: 42px;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          border-radius: 100%;
-          border: 3px solid #fff;
-        }
-      }
-      .left-box {
-        width: 50px;
-        box-shadow: 0 6px 6px 2px rgba(43,125,131,0.05);
-        border-radius: 4px;
-        .svg-icon {
-          position: absolute;
-           fill: #fff;
-          width: 32px;
-          height: 32px;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          z-index: 1;
-        }
-      }
-      .right-box {
-        margin-left: 3px;
-        .title {
-          font-family: PingFangSC-Medium;
-          font-size: 14px;
-          color: #475669;
-          letter-spacing: 0;
-          line-height: 20px;
-        }
-        .btm-box {
-          position: absolute;
-          bottom: 0;
-          font-family: PingFangSC-Semibold;
-          font-size: 22px;
-          color: #FDCE82;
-          letter-spacing: 0;
-          line-height: 20px;
-          span {
-            font-size: 30px;
-            vertical-align: text-top;
-          }
-          i {
-            font-style: normal;
+          height: 50px;
+          vertical-align: middle;
+          position: relative;
+          .circle {
+            display: inline-block;
+            width: 42px;
+            height: 42px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 100%;
+            border: 3px solid #fff;
           }
         }
-      }
-      .orange-box {
-        background: #FDCE82;
-        .circle {
-          background-color: #fdce82;
+        .left-box {
+          width: 50px;
+          box-shadow: 0 6px 6px 2px rgba(43,125,131,0.05);
+          border-radius: 4px;
+          .svg-icon {
+            position: absolute;
+            fill: #fff;
+            width: 32px;
+            height: 32px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+          }
         }
-      }
-      .green-box {
-        background: #30CDAA;
-        .circle {
-          background-color: #30cdaa;
+        .right-box {
+          margin-left: 3px;
+          .title {
+            font-family: PingFangSC-Medium;
+            font-size: 14px;
+            color: #475669;
+            letter-spacing: 0;
+            line-height: 20px;
+          }
+          .btm-box {
+            position: absolute;
+            bottom: 0;
+            font-family: PingFangSC-Semibold;
+            font-size: 22px;
+            color: #FDCE82;
+            letter-spacing: 0;
+            line-height: 20px;
+            span {
+              font-size: 30px;
+              vertical-align: text-top;
+            }
+            i {
+              font-style: normal;
+            }
+          }
         }
-      }
-      .green-right {
-        .btm-box {
-          color: #30cdaa;
+        .orange-box {
+          background: #FDCE82;
+          .circle {
+            background-color: #fdce82;
+          }
+        }
+        .green-box {
+          background: #30CDAA;
+          .circle {
+            background-color: #30cdaa;
+          }
+        }
+        .green-right {
+          .btm-box {
+            color: #30cdaa;
+          }
         }
       }
     }
   }
-}
-.transc-tab {
-  .first_btn {
-    border-radius: 5px 0 0 5px;
-    margin-right: -5px;
+  .transc-tab {
+    .first_btn {
+      border-radius: 5px 0 0 5px;
+      margin-right: -5px;
+    }
+    .sec_btn {
+      border-radius: 0 5px 5px 0;
+      margin-left: 0;
+    }
   }
-  .sec_btn {
-    border-radius: 0 5px 5px 0;
-    margin-left: 0;
-  }
-}
 </style>
 

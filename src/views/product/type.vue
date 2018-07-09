@@ -47,7 +47,7 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :model="form" :rules="rules" ref="form" label-width="100px">
-        
+
         <el-form-item label="产品类型" prop="name">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
@@ -116,7 +116,7 @@
         tableKey: 0,
         rules: {
           name: [
-            {required: true, trigger: 'blur'}
+            {required: true, trigger: 'blur, change', message: '请输入产品类型'}
           ]
         }
       }

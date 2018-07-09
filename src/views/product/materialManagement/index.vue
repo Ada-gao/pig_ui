@@ -100,7 +100,7 @@
         </el-pagination>
       </div>
     </div>
-    
+
 
   </div>
 </template>
@@ -202,6 +202,7 @@
       ])
     },
     created() {
+      console.log(this.step)
       this.getTranscList()
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']

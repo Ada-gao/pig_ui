@@ -40,7 +40,7 @@
           </el-row>
 
           <div style="border-bottom: 1px solid #ccc"></div>
-          
+
           <h5>预约信息</h5>
           <el-row :gutter="20">
             <el-col :span="11">
@@ -123,7 +123,7 @@
 
           <div class="bankCard" v-if="orderStatus != 2 & statusH">
             <div style="border-bottom: 1px solid #ccc"></div>
-          
+
             <h5>客户银行卡信息</h5>
             <el-row>
               <el-col :span="11">
@@ -139,6 +139,11 @@
               <el-col :span="11">
                 <el-form-item label="打款账号" prop="cardNo">
                   <el-input v-model="form.cardno" placeholder="" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="14">
+                <el-form-item label="银行卡照片" prop="cardNo" class="imgs">
+                  <img :src="bankCardUrl" alt="" @click="previewImg(bankCardUrl)">
                 </el-form-item>
               </el-col>
             </el-row>
@@ -206,7 +211,7 @@
           :visible.sync="dialogComVisible"
           width="30%">
           <div style="margin-bottom: 30px;">确认执行此操作吗？</div>
-          
+
           <div class="dialog-footer text-right">
             <el-button @click="dialogComVisible = false">取 消</el-button>
             <el-button type="primary" @click="submitCheck">确 定</el-button>
@@ -218,7 +223,7 @@
           :visible.sync="dialogVisible"
           width="30%">
           <div style="margin-bottom: 30px;">确认审核通过吗？</div>
-          
+
           <div class="dialog-footer text-right">
             <el-button @click="dialogVisible = false">取 消</el-button>
             <el-button type="primary" @click="submitCheck">确 定</el-button>
@@ -276,7 +281,7 @@
               </el-select>
             </el-tab-pane>
           </el-tabs>
-          
+
           <div class="dialog-footer text-right">
             <el-button @click="dialogReject = false">取 消</el-button>
             <el-button type="primary" @click="submitRejectCheck">确 定</el-button>
@@ -378,6 +383,7 @@
         status: '',
         dealFiles: [],
         remitFiles: [],
+        bankCardUrl: '',
         refundFiles: [],
         dialogImgVisible: false,
         dialogComVisible: false,
@@ -416,6 +422,7 @@
       this.sys_user_del = this.permissions['sys_user_del']
       this.type_is_update = this.$route.path.substr(-1)
       this.orderStatus = this.$route.params.orderStatus
+      console.log(this.orderStatus)
       this.getList()
       // this.status = this.$route.params.status
       // console.log(this.$route.params)
@@ -426,16 +433,18 @@
 
         getObj(id).then(response => {
           this.form = response.data
+          console.log(this.form)
           this.status = this.form.status
           this.clientId = this.form.clientId
           this.statusH = this.status.indexOf('100') == -1 ? true : false
           this.form.status = transformText(this.appointmentStatus, this.form.status)
           this.form.appointmentDate = parseTime(this.form.appointmentDate, '{y}-{m}-{d}')
-          this.form.remitDate = parseTime(this.form.remitDate, '{y}-{m}-{d}')
+          // this.form.remitDate = parseTime(this.form.remitDate, '{y}-{m}-{d}')
         })
         // console.log(this.orderStatus)
         if(this.orderStatus != '2') {
           getFileObj(id).then(response => {
+            this.bankCardUrl = response.data.cardUrl
             this.dealFiles = response.data.dealFiles
             this.remitFiles = response.data.remitFiles
           })
@@ -484,6 +493,7 @@
           contractMail: this.result.contractMail,
           status: this.result.status
         }
+        console.log(params)
         let status = this.result.status
         if(this.orderStatus == 2) { // 预约
           putApt(this.form.appointmentId, params).then(response => {
@@ -500,8 +510,9 @@
           })
 
         } else if(this.orderStatus == 3) { // 打款
-          params.remitAmount = this.form.remitAmount
-          params.remitDate = this.form.remitDate
+          params.remitAmount = this.form.remitAmount - 0
+          // params.remitDate = this.form.remitDate
+          params.remitDate = parseTime(this.form.remitDate, '{y}-{m}-{d}')
           if(this.status === '2003') {
             putRefund(this.form.appointmentId, params).then(response => {
               console.log(response.code)
@@ -517,6 +528,7 @@
               }
             })
           } else {
+            params.auditRemark = params.contractMail = null
             putPay(this.form.appointmentId, params).then(response => {
               console.log(response.code)
               if(response.status == 200) {
@@ -531,7 +543,7 @@
             })
           }
           this.$router.push({path: '/transcMag/payment'})
-          
+
         } else if(this.orderStatus == 4) { // 合同
           putCtra(this.form.appointmentId, params).then(response => {
             console.log(response.code)
@@ -546,7 +558,7 @@
               this.$router.push({path: '/transcMag/contract'})
             }
           })
-          
+
         } else { // 退款
           params.remitAmount = this.form.remitAmount
           putRefund(this.form.appointmentId, params).then(response => {
@@ -595,7 +607,7 @@
       changeReason(val) {
         this.result.auditRemark = transformText(this.options, val)
         this.result.auditFailReasonId = val
-        console.log(this.result)
+        // console.log(this.result)
       }
     }
   }

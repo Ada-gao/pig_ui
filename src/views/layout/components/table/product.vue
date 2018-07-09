@@ -64,7 +64,7 @@
                      @click="handleUpdate(scope.row)">查看
           </a>
           <a v-if="sys_product_del&scope.row.productStatus==='在建'" size="small" type="danger_btn"
-                     @click="deletes(scope.row)">删除
+                     @click="deletes(scope.row.productId)">删除
           </a>
           <!-- <a v-if="sys_user_del" size="small" type=""
                      @click="upper(scope.row)">产品上架
@@ -271,6 +271,16 @@
         this.listQuery = data
         // this.listQuery.type = 1
         this.getList()
+      },
+      deletes(id) {
+        delObj(id).then(res => {
+          if(res.data.code === 0) {
+            const idx = this.list.findIndex((item, index) => {
+              return item.productId === id
+            })
+            this.list.splice(idx, 1)
+          }
+        })
       }
     }
   }
