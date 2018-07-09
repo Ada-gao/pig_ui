@@ -9,9 +9,8 @@
       </el-radio-group>
     </div>
     <div style="text-align: right">
-      <!-- <el-button class="add_btn" @click="handleCreate">
-        <svg-icon icon-class="add"></svg-icon> 新增资料</el-button> -->
       <el-upload
+        v-if="step==1"
         class="upload-demo"
         style="display: inline-block;"
         :headers="headers"
@@ -22,6 +21,8 @@
         <el-button size="small"
           class="btn-padding add_btn">新增材料</el-button>
       </el-upload>
+      <el-button v-else class="add_btn" @click="openCreate">
+        <svg-icon icon-class="add"></svg-icon> 新增资料</el-button>
     </div>
 
     <div class="table-item" v-if="step==1">
@@ -30,7 +31,12 @@
 
         <el-table-column align="center" label="材料名称">
           <template slot-scope="scope">
-            <span>{{scope.row.name}}</span>
+            <el-input
+              v-if="transcId===scope.row.transactionFileManageId"
+              v-model="scope.row.name"
+              @keyup.enter.native="updateTranscFile(scope.row)"
+              @blur="updateTranscFile(scope.row)"></el-input>
+            <span v-else>{{scope.row.name}}</span>
           </template>
         </el-table-column>
 
@@ -49,11 +55,12 @@
         <el-table-column align="center" label="操作" fixed="right" width="150">
           <template slot-scope="scope">
             <a size="small" class="common_btn"
-                      @click="handleRouter(scope.row.clientId)">编辑
+                      @click="transcId=scope.row.transactionFileManageId">编辑
+                      <!-- @click="handleRouter(scope.row.clientId)">编辑 -->
             </a>
             <span class="space_line"> | </span>
             <a size="small" class="common_btn"
-                      @click="handleUpdate(scope.row.clientId)">删除
+                      @click="deleteTransc(scope.row.transactionFileManageId)">删除
             </a>
           </template>
         </el-table-column>
@@ -74,18 +81,24 @@
 
         <el-table-column align="center" label="材料名称">
           <template slot-scope="scope">
-            <span>{{scope.row.fileName}}</span>
+            <el-input
+              v-if="transcId===scope.row.productClientFileManageId"
+              v-model="scope.row.fileName"
+              @keyup.enter.native="updateClientFile(scope.row)"
+              @blur="updateClientFile(scope.row)"></el-input>
+            <span v-else>{{scope.row.fileName}}</span>
           </template>
         </el-table-column>
 
         <el-table-column align="center" label="操作" fixed="right">
           <template slot-scope="scope">
             <a size="small" class="common_btn"
-                      @click="handleRouter(scope.row.clientId)">编辑
+                      @click="transcId=scope.row.productClientFileManageId">编辑
+                      <!-- @click="handleRouter(scope.row.clientId)">编辑 -->
             </a>
             <span class="space_line"> | </span>
             <a size="small" class="common_btn"
-                      @click="handleUpdate(scope.row.clientId)">删除
+                      @click="deleteClient(scope.row.productClientFileManageId)">删除
             </a>
           </template>
         </el-table-column>
@@ -191,7 +204,8 @@
         form: [],
         isSpread: false,
         step: 1,
-        importUrl: 'zuul/product/productTransactionFileManage/'
+        importUrl: 'zuul/product/productTransactionFileManage/',
+        transcId: ''
       }
     },
     computed: {
@@ -209,6 +223,7 @@
     methods: {
       changeStep(val) {
         this.step = val
+        console.log(this.step)
         this.importUrl = 'zuul/product/productClientFileManage/'
         // Bus.$emit('step', this.step)
         if(this.step === 1) {
@@ -218,7 +233,33 @@
         }
       },
       handleCreate() { //新增
+        this.getTranscList()
         // Bus.$emit('step', this.step)
+      },
+      openCreate() {
+        this.$prompt('请输入材料名称', '新增材料', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+          // inputErrorMessage: '邮箱格式不正确'
+        }).then(({ value }) => {
+          let params = {
+            fileName: value
+          }
+          addClientFile(params).then(res => {
+            console.log(res)
+            this.getClientList()
+          })
+          // this.$message({
+          //   type: 'success',
+          //   message: '你的邮箱是: ' + value
+          // });
+        }).catch(() => {
+          // this.$message({
+          //   type: 'info',
+          //   message: '取消输入'
+          // });       
+        });
       },
       getTranscList() {
         this.listLoading = true
@@ -237,6 +278,34 @@
           this.total1 = response.data.total
           this.listLoading = false
           // this.client = true
+        })
+      },
+      updateTranscFile(item) {
+        let params = {
+          name: item.name
+        }
+        updTranscFile(item.transactionFileManageId, params).then(res => {
+          this.transcId = ''
+          this.getTranscList()
+        })
+      },
+      updateClientFile(item) {
+        let params = {
+          name: item.fileName
+        }
+        updClientFile(item.productClientFileManageId, params).then(res => {
+          this.transcId = ''
+          this.getClientList()
+        })
+      },
+      deleteTransc(id) {
+        delTranscFile(id).then(res => {
+          this.getTranscList()
+        })
+      },
+      deleteClient(id) {
+        delClientFile(id).then(res => {
+          this.getClientList()
         })
       },
       handleSizeChange(val) {

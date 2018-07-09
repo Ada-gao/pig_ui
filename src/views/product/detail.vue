@@ -217,7 +217,7 @@
             <el-input v-model="form.productShortName" placeholder="请输入产品名称" :disabled="shortNameDisabled"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
+        <el-col :span="11" v-if="!stageType">
           <el-form-item label="产品编号" prop="productCode">
             <el-input v-model="form.productCode" placeholder="请输入产品编号" disabled></el-input>
           </el-form-item>
@@ -1629,6 +1629,7 @@
             this.dialogComVisible = true
           })
         } else {
+          
           getTranscFile(params).then(res => {
             this.clientFileList = res.data.records
             this.dialogComVisible = true
@@ -1683,6 +1684,7 @@
           console.log('transaction吗')
           postTranscFile(params).then(res => {
             console.log(res)
+            this.getFiles1(this.uploadData.productId)
           })
         }
       },
