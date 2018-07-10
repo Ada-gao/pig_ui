@@ -2,13 +2,24 @@
   <div class="filter-container">
     <el-form label-position="right" label-width="100px">
       <el-row :gutter="20">
-        <el-col :sm="12" :lg="8" v-if="searchName">
+        <el-col :sm="10" :lg="8" v-if="searchName">
           <el-form-item label="产品名称">
             <el-input
             placeholder="请输入产品名称/简称"
             v-model="listQuery.name">
           </el-input>
           </el-form-item>
+        </el-col>
+        <el-col :sm="10" :lg="8" v-show="searchDate">
+          <el-form-item label="日期">
+              <el-date-picker
+                v-model="entryDate"
+                type="daterange"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :default-time="['00:00:00', '23:59:59']">
+              </el-date-picker>
+            </el-form-item>
         </el-col>
         <el-col :sm="3" :lg="3"
           class="query-color"
@@ -20,7 +31,7 @@
         </el-col>
       </el-row>
 
-      <el-row>
+      <!-- <el-row>
         <el-col :sm="12" :lg="8" v-show="isSpread & searchDate">
           <el-form-item label="日期">
               <el-date-picker
@@ -32,7 +43,7 @@
               </el-date-picker>
             </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> -->
 
       <el-row>
         <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="isSpread & searchProductType">

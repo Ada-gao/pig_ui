@@ -331,7 +331,7 @@
     },
     filters: {
       parseTime (time) {
-        if(!time) return
+        if(!time) return null
         let date = new Date(time)
         return parseTime(date)
       }
@@ -433,7 +433,7 @@
 
         getObj(id).then(response => {
           this.form = response.data
-          console.log(this.form)
+          // console.log(this.form)
           this.status = this.form.status
           this.clientId = this.form.clientId
           this.statusH = this.status.indexOf('100') == -1 ? true : false
@@ -461,6 +461,23 @@
       submitResult(sts) {
         this.result.status = sts
         this.dialogVisible = true
+        if(sts === '2004') {
+          let statusText = ''
+          if(!this.form.remitAmount) {
+            statusText = '打款金额不能为空'
+          }
+          if(!this.form.remitDate) {
+            statusText = '打款时间不能为空'
+          }
+          this.$notify({
+            title: '信息填写有误',
+            message: statusText,
+            type: 'error',
+            duration: 2000
+          })
+          this.dialogVisible = false
+          return 
+        }
       },
       rejectResult(sts) {
         this.result.status = sts
@@ -493,7 +510,7 @@
           contractMail: this.result.contractMail,
           status: this.result.status
         }
-        console.log(params)
+        console.log('params:' + params)
         let status = this.result.status
         if(this.orderStatus == 2) { // 预约
           putApt(this.form.appointmentId, params).then(response => {
@@ -512,8 +529,9 @@
         } else if(this.orderStatus == 3) { // 打款
           params.remitAmount = this.form.remitAmount - 0
           params.remitDate = this.form.remitDate
-          // params.remitDate = parseTime(this.form.remitDate, '{y}-{m}-{d}')
-          if(this.status === '2003') {
+          
+          if(status === '2004') {
+            
             putRefund(this.form.appointmentId, params).then(response => {
               console.log(response.code)
               if(response.status == 200) {
@@ -635,6 +653,7 @@
   img {
     width: 250px;
     height: 150px;
+    margin-right: 20px;
   }
 }
 </style>

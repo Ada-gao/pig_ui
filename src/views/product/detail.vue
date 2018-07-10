@@ -14,10 +14,10 @@
       </el-radio-group>
     </div>
     <div v-else class="tabs">
-      <div class="tab-item" :class="{'tab-active':step===1,'tab-done':step===2}" @click="step=1">产品详情
+      <div class="tab-item" :class="{'tab-active':step===1,'tab-done':step===2}">产品详情
         <b class="right"><i class="right-arrow1"></i><i class="right-arrow2"></i></b>
       </div>
-      <div class="tab-item" :class="{'tab-active':step===2}" @click="step=2">产品操作指南
+      <div class="tab-item" :class="{'tab-active':step===2}">产品操作指南
         <b class="right"><i class="right-arrow1"></i><i class="right-arrow2"></i></b>
       </div>
     </div>
@@ -863,8 +863,10 @@
     </div>
 
     <div slot="footer" class="dialog-footer" style="text-align: center;">
-      <span class="stage_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('0')">产品分期</span>
-      <span class="stage_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('1')">募集分期</span>
+      <span class="stage_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('0')">
+        <svg-icon icon-class="stage"></svg-icon> 产品分期</span>
+      <span class="stage_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('1')">
+        <svg-icon icon-class="stage"></svg-icon> 募集分期</span>
       <!-- 创建 -->
       <el-button class="search_btn" v-if="dialogStatus=='create'&allDisabled" @click="cancel()">取 消</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='create'&step===1" type="primary" @click="create('form')">保 存</el-button>
@@ -875,28 +877,43 @@
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===1&allDisabled" type="primary" @click="update('form1')">保 存</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" type="primary" @click="updateRouter">保 存</el-button>
       <!-- 在建 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===0" type="primary" @click="updateProductType(1)">进入产品预热</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===0" type="primary" @click="updateProductType(1)">
+        <svg-icon icon-class="preheating"></svg-icon> 进入产品预热</el-button>
       <!-- 预热 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(2)">进入产品募集</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(0)">返回在建</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(2)">
+        <svg-icon icon-class="collecting"></svg-icon> 进入产品募集</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(0)">
+        <svg-icon icon-class="return"></svg-icon> 返回在建</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductDisplay">
+        <svg-icon v-if="form.isDisplay==='1'" icon-class="eye"></svg-icon> 
+        <svg-icon v-else icon-class="product_eye"></svg-icon> 
         {{form.isDisplay==='1'?'设为隐藏':'设为显示'}}</el-button>
       <!--{{form.isDisplay==='1'?'设为显示':'设为隐藏'}}</el-button>-->
       <!-- 募集中 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType(3)">进入已关账</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType(3)">
+        <svg-icon icon-class="close"></svg-icon> 进入已关账</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductPause">
+        <svg-icon v-if="form.isPause==='1'" icon-class="play"></svg-icon> 
+        <svg-icon v-else icon-class="pause"></svg-icon> 
         {{form.isPause==='1'?'开始预约':'暂停预约'}}
       </el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductDisplay">
+        <svg-icon v-if="form.isDisplay==='1'" icon-class="eye"></svg-icon> 
+        <svg-icon v-else icon-class="eyeShow"></svg-icon> 
         {{form.isDisplay==='1'?'设为隐藏':'设为显示'}}
         <!--{{form.isDisplay==='1'?'设为显示':'设为隐藏'}}-->
       </el-button>
       <!-- 已关账 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(4)">进入已成立</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(4)">
+        <svg-icon icon-class="establish"></svg-icon> 进入已成立</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(2)">
+        <svg-icon icon-class="return"></svg-icon> 返回募集中</el-button>
       <!-- 已成立 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===4" type="primary" @click="updateProductType(5)">进入兑付中</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===4" type="primary" @click="updateProductType(5)">
+        <svg-icon icon-class="shutDown"></svg-icon> 进入兑付中</el-button>
       <!-- 兑付中 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===5" type="primary" @click="updateProductType(6)">进入兑付完成</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===5" type="primary" @click="updateProductType(6)">
+        <svg-icon icon-class="shutDown"></svg-icon> 进入兑付完成</el-button>
     </div>
 
     <el-dialog
