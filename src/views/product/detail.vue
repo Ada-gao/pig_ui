@@ -6,7 +6,7 @@
         <el-button type="primary" @click="dialogVis = false">确 定</el-button>
       </span>
     </el-dialog>
-    <div v-if="uploadData.productId">
+    <div v-if="createStatus==='update'">
       <el-radio-group v-model="step" @change="changeStep" style="margin-bottom: 30px;">
         <el-radio-button label="1">产品详情</el-radio-button>
         <el-radio-button style="border-radius: 0" label="2">产品操作指南</el-radio-button>
@@ -14,14 +14,13 @@
       </el-radio-group>
     </div>
     <div v-else class="tabs">
-      <div class="tab-item tab-active" @click="step=1">产品详情
+      <div class="tab-item" :class="{'tab-active':step===1,'tab-done':step===2}" @click="step=1">产品详情
         <b class="right"><i class="right-arrow1"></i><i class="right-arrow2"></i></b>
       </div>
-      <div class="tab-item" @click="step=2">产品操作指南
+      <div class="tab-item" :class="{'tab-active':step===2}" @click="step=2">产品操作指南
         <b class="right"><i class="right-arrow1"></i><i class="right-arrow2"></i></b>
       </div>
     </div>
-
     <div class="pageTitle" style="text-align: right" v-if="stage&step===1">
       <!-- <el-button v-if="sys_user_add & step === 1" class="add_btn">新增字段属性</el-button> -->
       关联产品
@@ -210,7 +209,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&productStatusNo!==0&stageType!='0'&uploadData.productId!=''">
+    <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&productStatusNo!==0&stageType!='0'&createStatus==='update'">
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="产品全称" prop="productName">
@@ -880,7 +879,7 @@
       <span class="stage_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('1')">募集分期</span>
       <!-- 创建 -->
       <el-button class="search_btn" v-if="dialogStatus=='create'&allDisabled" @click="cancel()">取 消</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='create'&step===1" type="primary" @click="create('form')">保 存</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='create'&step===1" type="primary" @click="create('form')">保 存create</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='create'&step===2" type="primary" @click="createRouter">保 存</el-button>
       <!-- 编辑 -->
       <el-button class="search_btn" v-if="dialogStatus=='update'&step===1&allDisabled" @click="cancel()">取 消</el-button>
@@ -926,7 +925,7 @@
           v-for="item in clientFileList"
           :key="item.productClientFileManageId||item.transactionFileManageId"
           :label="item.fileName||item.name"
-          :value="item">
+          :value="item.productClientFileManageId||item.transactionFileManageId">
         </el-option>
       </el-select>
       <div class="dialog-footer text-right">
@@ -1023,54 +1022,54 @@
             {
               required: true,
               message: '请输入产品名称',
-              trigger: 'blur, change'
+              trigger: 'blur'
             },
             {
               min: 3,
               max: 20,
               message: '长度在 3 到 20 个字符',
-              trigger: 'blur,change'
+              trigger: 'blur'
             }
           ],
           isFloat: [
             {
               required: true,
               message: '请选择收益',
-              trigger: 'blue, change'
+              trigger: 'blue'
             }
           ],
           bankName: [
             {
               required: true,
               message: '请输入开户银行名称',
-              trigger: 'blur, change'
+              trigger: 'blur'
             }
           ],
           subBranchName: [
             {
               required: true,
               message: '请输入支行名称',
-              trigger: 'blur, change'
+              trigger: 'blur'
             }
           ],
           cardNo: [
             {
               required: true,
               message: '请输入打款帐号',
-              trigger: 'blur, change'
+              trigger: 'blur'
             }
           ],
           productCode: [
             {
               required: true,
               message: '请输入产品名称',
-              trigger: 'blur, change'
+              trigger: 'blur'
             },
             {
               min: 3,
               max: 20,
               message: '长度在 3 到 20 个字符',
-              trigger: 'blur,change'
+              trigger: 'blur'
             }
           ],
           // productCode: [
@@ -1214,15 +1213,6 @@
         indexList2: [],
         indexList3: [],
         productStatusNo: '',
-        dateWay: [
-          {
-            value: 0,
-            label: '年'
-          },{
-            value: 1,
-            label: '月'
-          }
-        ],
         elDate: {
           inputStyle: 'number',
           model: 'product_name',
@@ -1253,7 +1243,7 @@
         normalData: {},
         activityData: [
           {
-            activeDate: ['2018-01-01', '2018-08-08']
+            activeDate: ['', '']
           }
         ],
         addActivityList: [],
@@ -1285,7 +1275,7 @@
         // display: '1',
         url: '',
         fileType: '',
-
+        createStatus: 'create'
       }
     },
     computed: {
@@ -1297,6 +1287,11 @@
       ])
     },
     created() {
+      this.uploadData.productId = this.$route.params.id
+      if(this.uploadData.productId) {
+        console.log('this.createStatus')
+        this.createStatus = 'update'
+      }
       this.getList()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
@@ -1307,7 +1302,6 @@
     },
     methods: {
       getList() {
-        this.uploadData.productId = this.$route.params.id
         this.listQuery.productId = this.$route.params.id
         // if(!this.uploadData.productId) this.nextToUpdate = false
         fetchProductTypeList().then(res => { // 获取产品类型
@@ -1343,6 +1337,7 @@
             this.form.productTypeIdNo = this.form.productTypeId
             this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
             this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
+            console.log(this.form.productTypeId)
             this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
             this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
             this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
@@ -1927,6 +1922,14 @@
         // border-color: $mianColor;
         border-left: 15px $mainColor solid;
       }
+    }
+    .tab-done {
+      background-color: $mainColor;
+      color: #fff;
+      // border-left: 1px solid $mainColor!important;
+      // .right-arrow1 {
+        // border-left: 15px $mainColor solid;
+      // }
     }
   }
   .pageTitle {
