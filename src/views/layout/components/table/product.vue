@@ -124,6 +124,9 @@
       },
       activeUrl: {
         default: '/product/productList'
+      },
+      productQuery: {
+        default: false
       }
     },
     filters: {
@@ -151,7 +154,9 @@
           productTypeIds: [],
           productStatus: [],
           annualizedReturns: [],
-          isFloat: null
+          isFloat: null,
+          orderByField: 'create_time',
+          isAsc: false
         },
         role: undefined,
         form: {
@@ -204,14 +209,15 @@
     mounted() {
       // console.log('mounted事件')
       Bus.$on('searchProduct', listQuery => {
-        console.log(listQuery)
+        // console.log(listQuery)
         this.listQuery = listQuery
         this.getList()
       })
     },
     methods: {
       getList() {
-        this.listQuery.productStatus.push(this.productStatusNo)
+        if(this.productQuery) {
+          this.listQuery.productStatus.push(this.productStatusNo)
         
           let list = this.listQuery.productStatus
           list.forEach((item, index) => {
@@ -219,6 +225,12 @@
               list.splice(index, 1)
             }
           })
+        } else {
+          // this.listQuery.productStatus.push(this.productStatusNo)
+          this.listQuery.productStatus[0] = this.productStatusNo
+          this.listQuery.productStatus.length = 1
+        }
+        
         this.listLoading = true
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         fetchList(this.listQuery).then(response => {

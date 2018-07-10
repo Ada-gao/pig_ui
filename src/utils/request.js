@@ -55,7 +55,7 @@ service.interceptors.response.use(
       }
     } else if(res.status.toString().indexOf('401') !== -1) {
       message('登陆时间过期，请重新登陆', 'error')
-      console.log(router.fullPath)
+      // console.log(router.fullPath)
       store.dispatch('LogOut')
       router.replace({
         path: '/login',

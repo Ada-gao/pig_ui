@@ -64,6 +64,7 @@
 
     <product-table-component
       :productStatusNo="productStatusId"
+      :productQuery="true"
       :activeUrl="url">
     </product-table-component>
 
