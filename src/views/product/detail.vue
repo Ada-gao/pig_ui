@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div class="pageTitle" style="text-align: right" v-if="stage">
+    <div class="pageTitle" style="text-align: right" v-if="stage&step===1">
       <!-- <el-button v-if="sys_user_add & step === 1" class="add_btn">新增字段属性</el-button> -->
       关联产品
       <el-input v-model="form.productName" style="width: 180px" placeholder="请输入"></el-input>
@@ -42,7 +42,7 @@
             <el-input v-model="form.productShortName" placeholder="请输入产品名称"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="uploadData.productId">
+        <el-col :span="11" v-if="uploadData.productId&!stage">
           <el-form-item label="产品编号" prop="productCode">
             <el-input v-model="form.productCode" placeholder="请输入产品编号" ></el-input>
           </el-form-item>
@@ -110,8 +110,8 @@
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
             <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" :disabled="stageType=='0'"></el-input>
-            <el-select v-model="form.ym" style="width: 20%;" :disabled="stageType=='0'">
-              <el-option v-for="item in dateWay" :key="item.value" :value="item.value" :label="item.label">
+            <el-select v-model="form.investmentHorizonUnit" style="width: 20%;" :disabled="stageType=='0'">
+              <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
                 <!-- <span style="float: left">{{ item.label }}</span> -->
               </el-option>
             </el-select>
@@ -222,7 +222,7 @@
             <el-input v-model="form.productShortName" placeholder="请输入产品名称" :disabled="shortNameDisabled"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
+        <el-col :span="11" v-if="!stage">
           <el-form-item label="产品编号" prop="productCode">
             <el-input v-model="form.productCode" placeholder="请输入产品编号" disabled></el-input>
           </el-form-item>
@@ -278,7 +278,7 @@
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
             <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" disabled></el-input>
-            <el-input v-model="form.ym" style="width: 22%;" disabled></el-input>
+            <el-input v-model="form.investmentHorizonUnit" style="width: 22%;" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -392,7 +392,8 @@
             <template slot-scope="scope">
               <el-input v-model="scope.row.name"
                         v-if="productFileId===scope.row.productFileId"
-                        @blur="updateFileName(scope.row, 'transaction')"></el-input>
+                        @keyup.enter.native="updateFileName(scope.row, 'transaction')"></el-input>
+                        <!-- @blur="updateFileName(scope.row, 'transaction')" -->
               <span v-else>{{scope.row.name}}</span>
             </template>
           </el-table-column>
@@ -418,11 +419,11 @@
           </el-table-column>
         </el-table>
         <el-row style="text-align: right;">
-          <!--<el-button size="small"-->
-                     <!--class="btn-padding add_btn"-->
-                     <!--v-if="!operationDisabled"-->
-                     <!--@click="addClientFile('transc')">追加材料</el-button>-->
-          <el-upload
+          <el-button size="small"
+                     class="btn-padding add_btn"
+                     v-if="!operationDisabled"
+                     @click="addClientFile('transc')">追加材料</el-button>
+          <!-- <el-upload
             class="upload-demo"
             style="display: inline-block;"
             :headers="headers"
@@ -433,7 +434,7 @@
             <el-button size="small"
                        v-if="!operationDisabled"
                        class="btn-padding add_btn">追加材料</el-button>
-          </el-upload>
+          </el-upload> -->
         </el-row>
       </div>
 
@@ -449,8 +450,9 @@
             align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.fileName"
-                        v-if="productFileId===scope.row.productClientFileManageId"
-                        @blur="updateClientFileName(scope.row)"></el-input>
+                        v-if="productFileId===scope.row.productClientFileId"
+                        @keyup.enter.native="updateClientFileName(scope.row)"></el-input>
+                        <!-- @blur="updateClientFileName(scope.row)" -->
               <span v-else>{{scope.row.fileName}}</span>
             </template>
           </el-table-column>
@@ -459,13 +461,13 @@
             label="操作"
             align="center">
             <template slot-scope="scope">
-              <a class="common_btn" size="small" @click="productFileId=scope.row.productClientFileManageId">编辑</a>
+              <a class="common_btn" size="small" @click="productFileId=scope.row.productClientFileId">编辑</a>
               <a class="danger_btn" size="small" @click="delCustFile(scope.row)">删除</a>
             </template>
           </el-table-column>
         </el-table>
         <el-row style="text-align: right;">
-          <el-upload
+          <!-- <el-upload
             class="upload-demo"
             style="display: inline-block;"
             :headers="headers"
@@ -476,7 +478,11 @@
             <el-button size="small"
                        v-if="!operationDisabled"
                        class="btn-padding add_btn">追加材料</el-button>
-          </el-upload>
+          </el-upload> -->
+          <el-button size="small"
+            class="btn-padding add_btn"
+            v-if="!operationDisabled"
+            @click="addClientFile('client')">追加材料</el-button>
         </el-row>
       </div>
 
@@ -494,7 +500,8 @@
             <template slot-scope="scope">
               <el-input v-model="scope.row.name"
                         v-if="productFileId===scope.row.productFileId"
-                        @blur="updateFileName(scope.row, 'product')"></el-input>
+                        @keyup.enter.native="updateFileName(scope.row, 'product')"></el-input>
+                        <!-- @blur="updateFileName(scope.row, 'product')" -->
               <span v-else>{{scope.row.name}}</span>
             </template>
           </el-table-column>
@@ -549,7 +556,8 @@
             <template slot-scope="scope">
               <el-input v-model="scope.row.name"
                         v-if="productFileId===scope.row.productFileId"
-                        @blur="updateFileName(scope.row, 'announcement')"></el-input>
+                        @keyup.enter.native="updateFileName(scope.row, 'announcement')"></el-input>
+                        <!-- @blur="updateFileName(scope.row, 'announcement')" -->
               <span v-else>{{scope.row.name}}</span>
             </template>
           </el-table-column>
@@ -678,14 +686,6 @@
                     v-for="item in normalList" :key="item.age">
               <el-form-item :label="`佣金系数（第${item.age}年）`">
                 <el-input style="width: 300px"
-<<<<<<< Updated upstream
-                          :disabled="operationDisabled"
-                          v-model="item.brokerageCoefficient"></el-input>
-                <i class="el-icon-plus"
-                   v-if="!operationDisabled"
-                   style="cursor:pointer;"
-                   @click="addCommission"></i>
-=======
                   :disabled="operationDisabled"
                   v-model="item.brokerageCoefficient"></el-input>
               </el-form-item>
@@ -701,7 +701,6 @@
                 <el-input style="width: 300px"
                   :disabled="operationDisabled"
                   v-model="item.brokerageCoefficient"></el-input>
->>>>>>> Stashed changes
               </el-form-item>
             </el-col>
           </el-row>
@@ -735,14 +734,8 @@
             <el-col :span="11">
               <el-form-item label="业绩系数">
                 <el-input style="width: 300px"
-<<<<<<< Updated upstream
-                          :disabled="operationDisabled"
-                          v-model="item.performanceCoefficient"></el-input>
-                <i class="el-icon-plus" v-if="!operationDisabled" @click="addActivity"></i>
-=======
                   :disabled="operationDisabled"
                   v-model="item.performanceCoefficient"></el-input>
->>>>>>> Stashed changes
               </el-form-item>
             </el-col>
             <el-col :span="11">
@@ -925,16 +918,10 @@
       width="30%">
       <div style="margin-bottom: 30px;">请选择新增材料</div>
       <el-select v-model="clientFile"
-<<<<<<< Updated upstream
-                 clearable
-                 placeholder="请选择"
-                 style="margin-bottom: 30px;">
-=======
         clearable
         placeholder="请选择"
         style="margin-bottom: 30px;"
         @change="changeFileList">
->>>>>>> Stashed changes
         <el-option
           v-for="item in clientFileList"
           :key="item.productClientFileManageId||item.transactionFileManageId"
@@ -1297,18 +1284,19 @@
         // pause: '1',
         // display: '1',
         url: '',
-        fileType: ''
+        fileType: '',
+
       }
     },
     computed: {
       ...mapGetters([
         'permissions',
         'productStatus',
-        'productRiskLevel'
+        'productRiskLevel',
+        'investHorizonUnit'
       ])
     },
     created() {
-      console.log(this.normalList)
       this.getList()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
@@ -1668,6 +1656,7 @@
             type: 'success',
             duration: 2000
           })
+          this.productFileId = ''
         })
       },
       handleChange2(file, fileList) { // 上传材料，列表展示
@@ -1749,9 +1738,11 @@
             productClientFileManageId: this.clientFile.productClientFileManageId,
             productId: this.uploadData.productId
           }
+          console.log('kehu')
           addCustFile(params).then(res => {
-            this.clientFile = res.data
-            this.clientFiles.push(this.clientFile)
+            // this.clientFile = res.data
+            // this.clientFiles.push(this.clientFile)
+            this.getFiles4(params.productId)
           })
         } else {
           let params = {
@@ -1764,6 +1755,7 @@
           console.log('transaction吗')
           postTranscFile(params).then(res => {
             console.log(res)
+            this.getFiles1(params.productId)
           })
         }
       },
