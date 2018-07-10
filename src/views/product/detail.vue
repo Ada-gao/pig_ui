@@ -127,7 +127,7 @@
           <el-form-item label="收益" prop="isFloat">
             <el-radio-group v-model="form.isFloat" @change="radioChange" :disabled="stageType=='0'">
               <el-radio :label="0" style="display: inline-block">浮动收益率</el-radio>
-              <el-radio :label="1" style="display: inline-block">收益对标基准</el-radio>
+              <el-radio :label="1" style="display: inline-block">收益对标基准（%）</el-radio>
               <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn"></el-input>
               <span style="display: inline-block" v-show="!isDisabled">%月</span>
             </el-radio-group>
@@ -885,7 +885,7 @@
       <!-- 募集中 -->
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType(3)">进入已关账</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductPause">
-        {{form.isPause==='1'?'暂停预约':'开始预约'}}
+        {{form.isPause==='1'?'开始预约':'暂停预约'}}
       </el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductDisplay">
         {{form.isDisplay==='1'?'设为隐藏':'设为显示'}}
