@@ -439,7 +439,7 @@
           this.statusH = this.status.indexOf('100') == -1 ? true : false
           this.form.status = transformText(this.appointmentStatus, this.form.status)
           this.form.appointmentDate = parseTime(this.form.appointmentDate, '{y}-{m}-{d}')
-          // this.form.remitDate = parseTime(this.form.remitDate, '{y}-{m}-{d}')
+          this.form.remitDate = parseTime(this.form.remitDate, '{y}-{m}-{d}')
         })
         // console.log(this.orderStatus)
         if(this.orderStatus != '2') {
@@ -511,8 +511,8 @@
 
         } else if(this.orderStatus == 3) { // 打款
           params.remitAmount = this.form.remitAmount - 0
-          // params.remitDate = this.form.remitDate
-          params.remitDate = parseTime(this.form.remitDate, '{y}-{m}-{d}')
+          params.remitDate = this.form.remitDate
+          // params.remitDate = parseTime(this.form.remitDate, '{y}-{m}-{d}')
           if(this.status === '2003') {
             putRefund(this.form.appointmentId, params).then(response => {
               console.log(response.code)
