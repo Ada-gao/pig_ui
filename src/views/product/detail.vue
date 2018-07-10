@@ -868,12 +868,12 @@
       <!-- 创建 -->
       <el-button class="search_btn" v-if="dialogStatus=='create'&allDisabled" @click="cancel()">取 消</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='create'&step===1" type="primary" @click="create('form')">保 存</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='create'&step===2" type="primary" @click="createRouter">保 存</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='create'&step===2" type="primary" @click="updateRouter">保 存</el-button>
       <!-- 编辑 -->
       <el-button class="search_btn" v-if="dialogStatus=='update'&step===1&allDisabled" @click="cancel()">取 消</el-button>
       <el-button class="search_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" @click="cancel()">取 消</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===1&allDisabled" type="primary" @click="update('form1')">保 存</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" type="primary" @click="updateRouter('form')">保 存</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" type="primary" @click="updateRouter">保 存</el-button>
       <!-- 在建 -->
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===0" type="primary" @click="updateProductType(1)">进入产品预热</el-button>
       <!-- 预热 -->
@@ -993,8 +993,7 @@
           username: undefined,
           password: undefined,
           delFlag: undefined,
-          deptId: undefined,
-          ym: 1
+          deptId: undefined
         },
         keyProRules: {
           keyProduct: [
@@ -1467,7 +1466,7 @@
           }
         })
       },
-      updateRouter(formName) { // 操作指南新建或编辑提交
+      updateRouter() { // 操作指南新建或编辑提交
         this.activityList = this.activityList.concat(this.activityData)
         this.activityList.forEach(item => {
           item.activityEnd = item.activeDate[1]
@@ -1476,7 +1475,7 @@
         this.form2.activityDTO = this.activityList
         this.normalList1 = this.normalList.concat(this.addNormList)
         this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
-        this.form2.productId = this.form.productId
+        this.form2.productId = this.uploadData.productId
         addOperationObj(this.form2).then(res => {
           this.$notify({
             title: '成功',
