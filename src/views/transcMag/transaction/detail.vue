@@ -186,9 +186,9 @@
         </div>
         <!-- 打款审核 -->
         <div v-if="(status == '2001' || status == '2002' || status == '2004') & orderStatus != 1" class="dialog-footer" style="text-align: center;">
-          <el-button v-show="status == '2001'" class="search_btn" @click="submitResult('2004')">通 过</el-button>
-          <el-button v-show="status == '2001'" class="add_btn" @click="rejectResult('2002')">不通过</el-button>
-          <el-button class="add_btn" @click="submitOperat('2003')">关闭订单</el-button>
+          <el-button v-show="status == '2001'&!form.refundStatus" class="search_btn" @click="submitResult('2004')">通 过</el-button>
+          <el-button v-show="status == '2001'&!form.refundStatus" class="add_btn" @click="rejectResult('2002')">不通过</el-button>
+          <el-button v-show="!form.refundStatus" class="add_btn" @click="submitOperat('2003')">关闭订单</el-button>
         </div>
         <!-- 打款-订单关闭 -->
         <div v-if="status == '2003' & form.refundStatus === null & orderStatus != 1" class="dialog-footer" style="text-align: center;">
@@ -202,7 +202,7 @@
         </div>
         <!-- 退款审核 -->
         <div v-if="form.refundStatus == '2' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
-          <el-button class="search_btn" @click="submitResult('4')">通 过（退款）</el-button>
+          <el-button class="search_btn" @click="submitResult('4')">通 过</el-button>
           <el-button class="add_btn" @click="rejectResult('3')">不通过</el-button>
         </div>
 
@@ -249,9 +249,9 @@
                   :value="item.auditFailReasonId">
                 </el-option>
               </el-select>
-              <span v-show="form.status == 3003">寄出方式</span>
+              <span v-show="result.status == 3003">寄出方式</span>
               <el-select v-model="result.contractMail"
-                v-show="form.status == 3003"
+                v-show="result.status == 3003"
                 clearable
                 placeholder="请选择"
                 style="margin-bottom: 30px;">
@@ -565,6 +565,7 @@
           this.$router.push({path: '/transcMag/payment'})
 
         } else if(this.orderStatus == 4) { // 合同
+          console.log('合同')
           putCtra(this.form.appointmentId, params).then(response => {
             console.log(response.code)
             if(response.status == 200) {
