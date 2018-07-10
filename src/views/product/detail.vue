@@ -466,18 +466,6 @@
           </el-table-column>
         </el-table>
         <el-row style="text-align: right;">
-          <!-- <el-upload
-            class="upload-demo"
-            style="display: inline-block;"
-            :headers="headers"
-            :action="importFile('client')"
-            :on-change="handleChange1"
-            :show-file-list="false"
-            accept=".pdf, .doc">
-            <el-button size="small"
-                       v-if="!operationDisabled"
-                       class="btn-padding add_btn">追加材料</el-button>
-          </el-upload> -->
           <el-button size="small"
             class="btn-padding add_btn"
             v-if="!operationDisabled"
@@ -1492,11 +1480,25 @@
         let params = {
           status: status
         }
+        let msgText = ''
+        if(status == 1) {
+          msgText = '预热'
+        } else if(status == 2) {
+          msgText = '募集中'
+        } else if(status == 3) {
+          msgText = '已关账'
+        } else if(status == 4) {
+          msgText = '已成立'
+        } else if(status == 5) {
+          msgText = '兑付中'
+        } else if(status == 6) {
+          msgText = '兑付完成'
+        }
         updProductType(this.uploadData.productId, params).then(res => {
           console.log(res.data)
           this.$notify({
             title: '成功',
-            message: '产品进入预热成功',
+            message: '产品进入' + msgText + '成功',
             type: 'success',
             duration: 2000
           })
