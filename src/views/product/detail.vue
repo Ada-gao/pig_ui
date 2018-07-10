@@ -1416,11 +1416,20 @@
       update(formName) { // 产品详情修改提交（第一步）
         const set = this.$refs
         if(this.stageType==='0' || this.productStatusNo == '0') formName = 'form'
-        console.log(formName)
+        if(!this.form.isFloat) {
+          // this.radio2 === 3 ? 0 : 1
+          this.form.annualizedReturn = null
+          this.isDisabled = true
+        }
+        this.form.productStatus = this.productStatusNo
+        this.form.currencyId = this.form.currencyIdNo
+        this.form.productTypeId = this.form.productTypeIdNo
+        this.form.investmentHorizonUnit = this.form.investmentHorizonUnitNo
+        // console.log(formName)
         set[formName].validate(valid => {
           if (valid) {
             if (this.stage) { //分期
-              this.form.productStatus = this.productStatusNo
+              
               updProductStage(this.form).then(response => {
                 if(!response.data || response.status !== 200) {
                   return
@@ -1440,7 +1449,7 @@
                 // this.$router.push({path: '/product/productList'})
               })
             } else {
-              this.form.productStatus = this.productStatusNo
+              // this.form.productStatus = this.productStatusNo
               putObj(this.uploadData.productId, this.form).then(res => {
                 this.$notify({
                   title: '成功',
