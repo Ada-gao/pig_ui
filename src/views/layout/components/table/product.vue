@@ -30,7 +30,7 @@
 
       <el-table-column align="center" label="产品期限" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.investmentHorizon}}</span>
+        <span>{{scope.row.investmentHorizon}}{{scope.row.investmentHorizonUnit}}</span>
         </template>
       </el-table-column>
 

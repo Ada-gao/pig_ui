@@ -913,7 +913,7 @@
           v-for="item in clientFileList"
           :key="item.productClientFileManageId||item.transactionFileManageId"
           :label="item.fileName||item.name"
-          :value="item">
+          :value="item.productClientFileManageId||item.transactionFileManageId">
         </el-option>
       </el-select>
       <div class="dialog-footer text-right">
@@ -1263,7 +1263,8 @@
         // display: '1',
         url: '',
         fileType: '',
-        createStatus: 'create'
+        createStatus: 'create',
+        selectFile: null
       }
     },
     computed: {
@@ -1689,6 +1690,7 @@
           page: 1
         }
         this.fileType = type
+        this.clientFile = ''
         if (type === 'client') {
           getClientFile(params).then(res => {
             this.clientFileList = res.data.records
@@ -1728,11 +1730,9 @@
       chooseClientFile() {
         this.dialogComVisible = false
         if (this.fileType === 'client') {
-          // console.log(this.clientFile)
-          // console.log('client吗')
           let params = {
-            fileName: this.clientFile.fileName,
-            productClientFileManageId: this.clientFile.productClientFileManageId,
+            fileName: this.selectFile.fileName,
+            productClientFileManageId: this.selectFile.productClientFileManageId,
             productId: this.uploadData.productId
           }
           console.log('kehu')
@@ -1743,10 +1743,10 @@
           })
         } else {
           let params = {
-            name: this.clientFile.name,
-            filePath: this.clientFile.filePath,
-            fileSize: this.clientFile.fileSize,
-            transactionFileManageId: this.clientFile.transactionFileManageId,
+            name: this.selectFile.name,
+            filePath: this.selectFile.filePath,
+            fileSize: this.selectFile.fileSize,
+            transactionFileManageId: this.selectFile.transactionFileManageId,
             productId: this.uploadData.productId - 0
           }
           console.log('transaction吗')
@@ -1853,8 +1853,15 @@
         this.form2.keyProduct = val
       },
       changeFileList(val) {
-        console.log(val)
-        this.clientFileList = this.clientFileList.slice(0)
+        // console.log(val)
+        // this.clientFileList = this.clientFileList.slice(0)
+        let obj = {}
+        obj = this.clientFileList.find(item => {
+          let id = item.productClientFileManageId || item.transactionFileManageId
+          return id === val
+        })
+        this.selectFile = obj
+        console.log(this.clientFile)
       }
     }
   }
