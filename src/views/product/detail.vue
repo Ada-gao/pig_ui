@@ -847,7 +847,9 @@
       <div style="text-align: right">
         <!-- <el-button class="filter-item add_btn" style="margin-left: 10px;" @click="batchExport" type="primary">
           <svg-icon icon-class="add"></svg-icon> 批量导出</el-button> -->
-        <a class="filter-item add_btn" style="margin-left: 10px;" :href="batchExport()" type="primary">
+        <a class="filter-item add_btn"
+          style="margin-left: 10px; padding: 10px; border-radius: 5px;"
+          :href="batchExport()" type="primary">
           <svg-icon icon-class="add"></svg-icon> 批量导出</a>
       </div>
       <transc-table-component
@@ -1294,9 +1296,16 @@
     created() {
       this.uploadData.productId = this.$route.params.id
       if(this.uploadData.productId) {
-        console.log('this.createStatus')
+        // console.log('this.createStatus')
         this.createStatus = 'update'
       }
+      // fetchProductTypeList().then(res => { // 获取产品类型
+      //   this.productTypes = res.data
+      // })
+      // getObjList().then(response => { // 获取币种
+      //   this.currencyList = response.data
+      //   this.form.currencyId = 1
+      // })
       this.getList()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
@@ -1304,6 +1313,12 @@
       // this.cmsIndex = this.form2.cmsIndex
       let list = this.normalList
       this.cmsIndex = list[list.length - 1].age
+    },
+    mounted() {
+      let _this = this
+      Bus.$on('activeIndex', url => {
+        _this.url = url
+      })
     },
     methods: {
       getList() {
@@ -1342,11 +1357,10 @@
             this.form.productTypeIdNo = this.form.productTypeId
             this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
             this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
-            console.log(this.form.productTypeId)
             this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
             this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
             this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
-            
+            console.log('this.form.productTypeId:' + this.form.productTypeId)
             if(this.productStatusNo === 6) {
               this.shortNameDisabled = true
             }
@@ -1489,6 +1503,12 @@
           item.activityEnd = item.activeDate[1]
           item.activityStart = item.activeDate[0]
         })
+        if(this.importantDate) {
+          this.form2.importantStart = this.importantDate[0]
+          this.form2.importantEnd = this.importantDate[1]
+        }
+        this.form2.normalDTO = this.normalData
+        // this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
         this.form2.activityDTO = this.activityList
         this.normalList1 = this.normalList.concat(this.addNormList)
         this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
@@ -1520,15 +1540,17 @@
         } else if(status == 6) {
           msgText = '兑付完成'
         }
+        // let _this = this
+        console.log('跳转地址： ' + this.url)
         updProductType(this.uploadData.productId, params).then(res => {
-          console.log(res.data)
+          // console.log('跳转地址1： ' + _this.url)
           this.$notify({
             title: '成功',
             message: '产品进入' + msgText + '成功',
             type: 'success',
             duration: 2000
           })
-          this.$route.push({path: '/product/building'})
+          // this.$router.push({path: '_this.url'})
         })
       },
       updateProductPause() {
@@ -1536,6 +1558,7 @@
         let params = {
           pause: pause
         }
+        // console.log('跳转地址： ' + this.url)
         updProductPause(this.uploadData.productId, params).then(res => {
           console.log(res)
           this.form.isPause = pause

@@ -120,7 +120,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作">
+      <el-table-column align="center" label="操作" v-if="!transcStatus">
         <template slot-scope="scope">
           <a v-if="sys_product_upd & scope.row.status != 3001" size="small" class="common_btn"
                      @click="handleUpdate(scope.row)">查 看
@@ -380,9 +380,9 @@
         }
         let id = this.listQuery.productId
         let type = this.listQuery.type || 0
-        console.log(params)
+        // console.log(params)
         if(this.transcStatus) {
-          console.log('执行请求了')
+          // console.log('执行请求了')
           getAppointList(id, type, params).then(response => {
             this.list = response.data.records
             this.total = response.data.total

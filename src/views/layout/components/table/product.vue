@@ -191,7 +191,8 @@
       ...mapGetters([
         'permissions',
         'productStatus',
-        'productRiskLevel'
+        'productRiskLevel',
+        'investHorizonUnit'
       ])
     },
     created() {
@@ -224,6 +225,9 @@
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
+          this.list.forEach(item => {
+            item.investmentHorizonUnit = transformText(this.investHorizonUnit, item.investmentHorizonUnit)
+          })
           fetchProductTypeList().then(res => { // 获取产品类型
             this.productTypes = res.data
             this.list.forEach(item => {
@@ -252,7 +256,7 @@
       //   this.$router.push({path: '/product/productDetail'})
       //   Bus.$emit('activeIndex', '/product/productList')
       // },
-      handleUpdate(row) { // 编辑
+      handleUpdate(row) { // 查看
         this.$router.push({path: '/product/productDetail/' + row.productId})
         Bus.$emit('activeIndex', this.activeUrl)
       },
