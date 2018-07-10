@@ -925,7 +925,7 @@
           v-for="item in clientFileList"
           :key="item.productClientFileManageId||item.transactionFileManageId"
           :label="item.fileName||item.name"
-          :value="item.productClientFileManageId||item.transactionFileManageId">
+          :value="item">
         </el-option>
       </el-select>
       <div class="dialog-footer text-right">
