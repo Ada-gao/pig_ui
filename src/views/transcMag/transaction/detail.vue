@@ -168,8 +168,8 @@
           <div class="transFile" v-if="orderStatus == 5 & statusH">
             <h5>退款申请书</h5>
             <div style="border-bottom: 1px solid #ccc"></div>
-            <div class="imgs" v-for="item in refundFiles">
-              <img :src="item.pictureUrl" alt="" @click="previewImg(item.pictureUrl)">
+            <div class="imgs">
+              <img :src="item.pictureUrl" alt="" @click="previewImg(item.pictureUrl)" v-for="item in refundFiles">
             </div>
           </div>
 
