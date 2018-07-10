@@ -879,7 +879,7 @@
       <span class="stage_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('1')">募集分期</span>
       <!-- 创建 -->
       <el-button class="search_btn" v-if="dialogStatus=='create'&allDisabled" @click="cancel()">取 消</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='create'&step===1" type="primary" @click="create('form')">保 存create</el-button>
+      <el-button class="add_btn" v-if="dialogStatus=='create'&step===1" type="primary" @click="create('form')">保 存</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='create'&step===2" type="primary" @click="createRouter">保 存</el-button>
       <!-- 编辑 -->
       <el-button class="search_btn" v-if="dialogStatus=='update'&step===1&allDisabled" @click="cancel()">取 消</el-button>
