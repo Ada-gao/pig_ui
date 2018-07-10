@@ -202,7 +202,7 @@
         </div>
         <!-- 退款审核 -->
         <div v-if="form.refundStatus == '2' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
-          <el-button class="search_btn" @click="submitResult('4')">通 过</el-button>
+          <el-button class="search_btn" @click="submitResult('4')">通 过（退款）</el-button>
           <el-button class="add_btn" @click="rejectResult('3')">不通过</el-button>
         </div>
 
@@ -440,6 +440,7 @@
           this.form.status = transformText(this.appointmentStatus, this.form.status)
           this.form.appointmentDate = parseTime(this.form.appointmentDate, '{y}-{m}-{d}')
           this.form.remitDate = parseTime(this.form.remitDate, '{y}-{m}-{d}')
+          this.form.remitAmount = this.form.appointmentAmount
         })
         // console.log(this.orderStatus)
         if(this.orderStatus != '2') {
@@ -462,21 +463,23 @@
         this.result.status = sts
         this.dialogVisible = true
         if(sts === '2004') {
-          let statusText = ''
-          if(!this.form.remitAmount) {
-            statusText = '打款金额不能为空'
+          if(!this.form.remitAmount||!this.form.remitDate) {
+            let statusText = ''
+            if(!this.form.remitAmount) {
+              statusText = '打款金额不能为空'
+            }
+            if(!this.form.remitDate) {
+              statusText = '打款时间不能为空'
+            }
+            this.$notify({
+              title: '信息填写有误',
+              message: statusText,
+              type: 'error',
+              duration: 2000
+            })
+            this.dialogVisible = false
+            return 
           }
-          if(!this.form.remitDate) {
-            statusText = '打款时间不能为空'
-          }
-          this.$notify({
-            title: '信息填写有误',
-            message: statusText,
-            type: 'error',
-            duration: 2000
-          })
-          this.dialogVisible = false
-          return 
         }
       },
       rejectResult(sts) {
@@ -530,8 +533,7 @@
           params.remitAmount = this.form.remitAmount - 0
           params.remitDate = this.form.remitDate
           
-          if(status === '2004') {
-            
+          if(this.status === '2003') { //订单关闭，退款审核
             putRefund(this.form.appointmentId, params).then(response => {
               console.log(response.code)
               if(response.status == 200) {

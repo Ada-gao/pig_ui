@@ -204,7 +204,7 @@
     mounted() {
       // console.log('mounted事件')
       Bus.$on('searchProduct', listQuery => {
-        // console.log(listQuery)
+        console.log(listQuery)
         this.listQuery = listQuery
         this.getList()
       })
