@@ -670,7 +670,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="11" style="white-space: nowrap"
-                    v-for="item in normalList" :key="item.age">
+                    v-for="item in normalList1" :key="item.age">
               <el-form-item :label="`佣金系数（第${item.age}年）`">
                 <el-input style="width: 300px"
                   :disabled="operationDisabled"
@@ -682,8 +682,8 @@
               @click="addCommission"
               style="position: absolute; right: 180px; top: 10px;"></i>
           </el-row>
-          <el-row v-for="item in addNormList" :key="item.idx" v-if="addNormList">
-            <el-col :span="11" :offset="11" style="white-space: nowrap">
+          <el-row v-if="addNormList">
+            <el-col :span="11" v-for="item in addNormList" :key="item.idx" style="white-space: nowrap">
               <el-form-item :label="`佣金系数（第${item.age}年）`">
                 <el-input style="width: 300px"
                   :disabled="operationDisabled"
@@ -956,7 +956,7 @@
   import { getToken } from '@/utils/auth'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
-  import { transformText } from '@/utils'
+  import { transformText, sortKey } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -1243,7 +1243,7 @@
           age: 1,
           brokerageCoefficient: ''
         }],
-        normalList1: [],
+        // normalList1: [],
         addNormList: [],
         cmsIndex: 1,
         normalData: {},
@@ -1291,7 +1291,10 @@
         'productStatus',
         'productRiskLevel',
         'investHorizonUnit'
-      ])
+      ]),
+      normalList1() {
+        return sortKey(this.normalList, 'age')
+      }
     },
     created() {
       this.uploadData.productId = this.$route.params.id
@@ -1310,11 +1313,8 @@
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
-      // this.cmsIndex = this.form2.cmsIndex
-      let list = this.normalList
-      this.cmsIndex = list[list.length - 1].age
-    },
-    mounted() {
+      // let list = this.normalList
+      // this.cmsIndex = list[list.length - 1].age
       Bus.$on('activeIndex', url => {
         this.url = url
         console.log(this.url)
@@ -1507,8 +1507,8 @@
         this.form2.normalDTO = this.normalData
         // this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
         this.form2.activityDTO = this.activityList
-        this.normalList1 = this.normalList.concat(this.addNormList)
-        this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
+        this.form2.normalDTO.normalBrokerageCoefficients = this.normalList.concat(this.addNormList)
+        // this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
         this.form2.productId = this.uploadData.productId
         addOperationObj(this.form2).then(res => {
           this.$notify({
@@ -1538,7 +1538,7 @@
           msgText = '兑付完成'
         }
         // let _this = this
-        console.log('跳转地址： ' + this.url)
+        // console.log('跳转地址： ' + this.url)
         updProductType(this.uploadData.productId, params).then(res => {
           // console.log('跳转地址1： ' + _this.url)
           this.$notify({
@@ -1840,6 +1840,8 @@
               age: '1'
             }]
           }
+          let list = this.normalList1
+          this.cmsIndex = list[list.length - 1].age
           if(!this.activityData.length) {
             this.activityData = [{
               activeDate: [],
