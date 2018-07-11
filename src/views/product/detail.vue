@@ -1243,7 +1243,6 @@
           age: 1,
           brokerageCoefficient: ''
         }],
-        // normalList1: [],
         addNormList: [],
         cmsIndex: 1,
         normalData: {},
@@ -1302,14 +1301,14 @@
         // console.log('this.createStatus')
         this.createStatus = 'update'
       }
-      // fetchProductTypeList().then(res => { // 获取产品类型
-      //   this.productTypes = res.data
-      // })
-      // getObjList().then(response => { // 获取币种
-      //   this.currencyList = response.data
-      //   this.form.currencyId = 1
-      // })
-      this.getList()
+      fetchProductTypeList().then(res => { // 获取产品类型
+        this.productTypes = res.data
+        getObjList().then(response => { // 获取币种
+          this.currencyList = response.data
+          this.form.currencyId = 1
+          this.getList()
+        })
+      })
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
@@ -1360,7 +1359,6 @@
             this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
             this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
             this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
-            console.log('this.form.productTypeId:' + this.form.productTypeId)
             if(this.productStatusNo === 6) {
               this.shortNameDisabled = true
             }
