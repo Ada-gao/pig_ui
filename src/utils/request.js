@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '../store'
-import { getToken } from '@/utils/auth'
+import { getToken, removeToken } from '@/utils/auth'
 import interceptorsMsg from '@/api/interceptor'
 import router from '../router'
 
@@ -56,11 +56,13 @@ service.interceptors.response.use(
     } else if(res.status.toString().indexOf('401') !== -1) {
       message('登陆时间过期，请重新登陆', 'error')
       // console.log(router.fullPath)
-      store.dispatch('LogOut')
+      removeToken()
+      // store.dispatch('LogOut')
       router.replace({
         path: '/login',
         query: {redirect: router.fullPath}
       })
+      console.log('router.fullPath: ' + router.fullPath)
     }else if(res.status === 403) {
       message('管理权限不足，请联系管理员')
     } else if(res.status === 500) {

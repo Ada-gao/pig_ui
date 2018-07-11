@@ -917,7 +917,7 @@
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===5" type="primary" @click="updateProductType(6)">
         <svg-icon icon-class="shutDown"></svg-icon> 进入兑付完成</el-button>
     </div>
-
+    ---{{url}}---
     <el-dialog
       title="提示"
       :visible.sync="dialogComVisible"
@@ -1315,9 +1315,9 @@
       this.cmsIndex = list[list.length - 1].age
     },
     mounted() {
-      let _this = this
       Bus.$on('activeIndex', url => {
-        _this.url = url
+        this.url = url
+        console.log(this.url)
       })
     },
     methods: {
@@ -1418,7 +1418,6 @@
         })
       },
       addCommission() {
-        // if(this.addNormList.length & !this.addNormList[this.addNormList.length - 1].brokerageCoefficient) return ''
         if(this.cmsIndex > 4) return
         this.cmsIndex++
         this.addNormList.push({
@@ -1427,8 +1426,6 @@
         })
       },
       addActivity() {
-        // this.cmsIndex++
-        // if(!this.addActivityList[this.addActivityList - 1].brokerageCoefficient) return ''
         this.addActivityList.push({
           activeDate: '',
           brokerageCoefficient: ''

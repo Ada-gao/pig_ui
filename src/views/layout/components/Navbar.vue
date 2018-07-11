@@ -41,6 +41,7 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
+import { removeToken } from '@/utils/auth'
 
 export default {
   components: {
@@ -60,6 +61,12 @@ export default {
       this.$store.dispatch('ToggleSideBar')
     },
     logout() {
+      removeToken()
+      // store.dispatch('LogOut')
+      // this.$router.replace({
+      //   path: '/login',
+      //   query: {redirect: this.$router.fullPath}
+      // })
       this.$store.dispatch('LogOut').then(() => {
         location.reload() // 为了重新实例化vue-router对象 避免bug
       })
