@@ -879,12 +879,12 @@
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===1&allDisabled" type="primary" @click="update('form1')">保 存</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" type="primary" @click="updateRouter">保 存</el-button>
       <!-- 在建 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===0" type="primary" @click="updateProductType(1)">
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===0" type="primary" @click="updateProductType(1, '/product/building')">
         <svg-icon icon-class="preheating"></svg-icon> 进入产品预热</el-button>
       <!-- 预热 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(2)">
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(2, '/product/preheating')">
         <svg-icon icon-class="collecting"></svg-icon> 进入产品募集</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(0)">
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(0, '/product/preheating')">
         <svg-icon icon-class="return"></svg-icon> 返回在建</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductDisplay">
         <svg-icon v-if="form.isDisplay==='1'" icon-class="eye"></svg-icon> 
@@ -892,7 +892,7 @@
         {{form.isDisplay==='1'?'设为隐藏':'设为显示'}}</el-button>
       <!--{{form.isDisplay==='1'?'设为显示':'设为隐藏'}}</el-button>-->
       <!-- 募集中 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType(3)">
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType(3, '/product/collecting')">
         <svg-icon icon-class="close"></svg-icon> 进入已关账</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductPause">
         <svg-icon v-if="form.isPause==='1'" icon-class="play"></svg-icon> 
@@ -906,18 +906,18 @@
         <!--{{form.isDisplay==='1'?'设为显示':'设为隐藏'}}-->
       </el-button>
       <!-- 已关账 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(4)">
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(4, '/product/shutDown')">
         <svg-icon icon-class="establish"></svg-icon> 进入已成立</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(2)">
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(2, '/product/shutDown')">
         <svg-icon icon-class="return"></svg-icon> 返回募集中</el-button>
       <!-- 已成立 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===4" type="primary" @click="updateProductType(5)">
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===4" type="primary" @click="updateProductType(5, '/product/established')">
         <svg-icon icon-class="shutDown"></svg-icon> 进入兑付中</el-button>
       <!-- 兑付中 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===5" type="primary" @click="updateProductType(6)">
+      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===5" type="primary" @click="updateProductType(6, '/product/cashing')">
         <svg-icon icon-class="shutDown"></svg-icon> 进入兑付完成</el-button>
     </div>
-    {{url}}---
+
     <el-dialog
       title="提示"
       :visible.sync="dialogComVisible"
@@ -996,12 +996,6 @@
     name: 'table_user',
     directives: {
       waves
-    },
-    mounted() {
-      Bus.$on('activeRouter', url => {
-        this.url = url
-        console.log(this.url)
-      })
     },
     data() {
       return {
@@ -1284,6 +1278,7 @@
         stageType: '',
         // pause: '1',
         // display: '1',
+        ada_url: {},
         url: '',
         fileType: '',
         createStatus: 'create',
@@ -1318,12 +1313,26 @@
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
-      // Bus.$on('activeRouter', url => {
-      //   this.url = url
-      //   console.log(this.url)
-      // })
     },
+    mounted() {
+      var vm = this
+      Bus.$on('activeRouter', activeRouter => {
+        vm.ada_url.z = activeRouter
+        // this.newUrl(url)
+        // vm.$set(vm.ada_url, 'z', activeRouter)
+      })
+
+    },
+    // watch: {
+    //   url(curVal, oldVal) {
+    //     console.log('curVal: ' + curVal, 'oldVal: ' + oldVal)
+    //   }
+    // },
     methods: {
+      // newUrl(url) {
+      //   this.url = url
+      //   console.log('this.url1: ' + this.url)
+      // },
       getList() {
         this.listQuery.productId = this.$route.params.id
         // if(!this.uploadData.productId) this.nextToUpdate = false
@@ -1521,7 +1530,7 @@
           })
         })
       },
-      updateProductType(status) {
+      updateProductType(status, url) {
         let params = {
           status: status
         }
@@ -1539,18 +1548,16 @@
         } else if(status == 6) {
           msgText = '兑付完成'
         }
-        // let _this = this
-        console.log('跳转地址： ' + this.url)
-        console.log(this)
-        // updProductType(this.uploadData.productId, params).then(res => {
-        //   // console.log('跳转地址1： ' + _this.url)
-        //   this.$notify({
-        //     title: '成功',
-        //     message: '产品进入' + msgText + '成功',
-        //     type: 'success',
-        //     duration: 2000
-        //   })
-        // })
+        // console.log('跳转地址： ' + url)
+        updProductType(this.uploadData.productId, params).then(res => {
+          this.$notify({
+            title: '成功',
+            message: '产品进入' + msgText + '成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.$router.push({path: url})
+        })
       },
       updateProductPause() {
         let pause = this.form.isPause === '0' ? '1' : '0'
