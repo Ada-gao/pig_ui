@@ -85,8 +85,8 @@
         </el-col>
 
         <el-col :span="11">
-          <el-form-item label="募集额度" prop="collectionAmount" style="white-space: nowrap">
-            <el-input type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入"></el-input><span>万</span>
+          <el-form-item label="募集额度（万）" prop="collectionAmount" style="white-space: nowrap">
+            <el-input type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -96,13 +96,13 @@
         </el-col>
 
         <el-col :span="11">
-          <el-form-item label="起投金额" prop="minimalAmount" style="white-space: nowrap">
-            <el-input type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额"></el-input><span>万</span>
+          <el-form-item label="起投金额（万）" prop="minimalAmount" style="white-space: nowrap">
+            <el-input type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="追加金额" prop="minimalAddAmount" style="white-space: nowrap">
-            <el-input type="number" v-model.number="form.minimalAddAmount" :maxlength="10"></el-input><span>万</span>
+          <el-form-item label="追加金额（万）" prop="minimalAddAmount" style="white-space: nowrap">
+            <el-input type="number" v-model.number="form.minimalAddAmount" :maxlength="10"></el-input>
           </el-form-item>
         </el-col>
 
@@ -129,7 +129,7 @@
               <el-radio :label="0" style="display: inline-block">浮动收益率</el-radio>
               <el-radio :label="1" style="display: inline-block">收益对标基准（%）</el-radio>
               <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn"></el-input>
-              <span style="display: inline-block" v-show="!isDisabled">%月</span>
+              <!-- <span style="display: inline-block" v-show="!isDisabled">%月</span> -->
             </el-radio-group>
           </el-form-item>
         </el-col>
@@ -253,8 +253,8 @@
         </el-col>
 
         <el-col :span="11">
-          <el-form-item label="募集额度" prop="collectionAmount" style="white-space: nowrap">
-            <el-input type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" :disabled="collectDisabled"></el-input><span>万</span>
+          <el-form-item label="募集额度（万）" prop="collectionAmount" style="white-space: nowrap">
+            <el-input type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" :disabled="collectDisabled"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -264,13 +264,13 @@
         </el-col>
 
         <el-col :span="11">
-          <el-form-item label="起投金额" prop="minimalAmount" style="white-space: nowrap">
-            <el-input type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额" disabled></el-input><span>万</span>
+          <el-form-item label="起投金额（万）" prop="minimalAmount" style="white-space: nowrap">
+            <el-input type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="追加金额" prop="minimalAddAmount" style="white-space: nowrap">
-            <el-input type="number" v-model.number="form.minimalAddAmount" :maxlength="10" disabled></el-input><span>万</span>
+          <el-form-item label="追加金额（万）" prop="minimalAddAmount" style="white-space: nowrap">
+            <el-input type="number" v-model.number="form.minimalAddAmount" :maxlength="10" disabled></el-input>
           </el-form-item>
         </el-col>
 
@@ -291,9 +291,9 @@
           <el-form-item label="收益" prop="isFloat">
             <el-radio-group v-model="form.isFloat" @change="radioChange" disabled>
               <el-radio :label="0" style="display: inline-block">浮动收益率</el-radio>
-              <el-radio :label="1" style="display: inline-block">收益对标基准</el-radio>
+              <el-radio :label="1" style="display: inline-block">收益对标基准（%）</el-radio>
               <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn" disabled></el-input>
-              <span style="display: inline-block" v-show="!isDisabled">%月</span>
+              <!-- <span style="display: inline-block" v-show="!isDisabled">%月</span> -->
             </el-radio-group>
           </el-form-item>
         </el-col>
@@ -917,7 +917,7 @@
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===5" type="primary" @click="updateProductType(6)">
         <svg-icon icon-class="shutDown"></svg-icon> 进入兑付完成</el-button>
     </div>
-    ---{{url}}---
+    {{url}}---
     <el-dialog
       title="提示"
       :visible.sync="dialogComVisible"
@@ -996,6 +996,12 @@
     name: 'table_user',
     directives: {
       waves
+    },
+    mounted() {
+      Bus.$on('activeRouter', url => {
+        this.url = url
+        console.log(this.url)
+      })
     },
     data() {
       return {
@@ -1312,12 +1318,10 @@
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
-      // let list = this.normalList
-      // this.cmsIndex = list[list.length - 1].age
-      Bus.$on('activeIndex', url => {
-        this.url = url
-        console.log(this.url)
-      })
+      // Bus.$on('activeRouter', url => {
+      //   this.url = url
+      //   console.log(this.url)
+      // })
     },
     methods: {
       getList() {
@@ -1536,17 +1540,17 @@
           msgText = '兑付完成'
         }
         // let _this = this
-        // console.log('跳转地址： ' + this.url)
-        updProductType(this.uploadData.productId, params).then(res => {
-          // console.log('跳转地址1： ' + _this.url)
-          this.$notify({
-            title: '成功',
-            message: '产品进入' + msgText + '成功',
-            type: 'success',
-            duration: 2000
-          })
-          // this.$router.push({path: '_this.url'})
-        })
+        console.log('跳转地址： ' + this.url)
+        console.log(this)
+        // updProductType(this.uploadData.productId, params).then(res => {
+        //   // console.log('跳转地址1： ' + _this.url)
+        //   this.$notify({
+        //     title: '成功',
+        //     message: '产品进入' + msgText + '成功',
+        //     type: 'success',
+        //     duration: 2000
+        //   })
+        // })
       },
       updateProductPause() {
         let pause = this.form.isPause === '0' ? '1' : '0'
