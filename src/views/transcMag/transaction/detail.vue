@@ -4,7 +4,7 @@
     <el-tabs v-model="activeName2" type="card" @tab-click="handleClick" class="transc">
       <el-tab-pane label="预约详情" name="first">
         <el-form :model="form" ref="form" label-width="100px">
-          <div style="border-bottom: 1px solid #ccc"></div>
+          <div class="split-line"></div>
           <h5>客户信息</h5>
           <el-row :gutter="20">
             <el-col :span="11">
@@ -39,7 +39,7 @@
             </el-col>
           </el-row>
 
-          <div style="border-bottom: 1px solid #ccc"></div>
+          <div class="split-line"></div>
 
           <h5>预约信息</h5>
           <el-row :gutter="20">
@@ -66,7 +66,7 @@
           </el-row>
 
           <div class="payInfo" v-if="orderStatus != 2 & statusH">
-            <div style="border-bottom: 1px solid #ccc"></div>
+            <div class="split-line"></div>
             <h5>打款信息</h5>
             <el-row>
               <el-col :span="11">
@@ -95,7 +95,7 @@
           </div>
 
           <div class="contraInfo" v-if="orderStatus == 4">
-            <div style="border-bottom: 1px solid #ccc"></div>
+            <div class="split-line"></div>
             <h5>合同信息</h5>
             <el-row>
               <el-col :span="11">
@@ -122,7 +122,7 @@
           </div>
 
           <div class="bankCard" v-if="orderStatus != 2 & statusH">
-            <div style="border-bottom: 1px solid #ccc"></div>
+            <div class="split-line"></div>
 
             <h5>客户银行卡信息</h5>
             <el-row>
@@ -151,7 +151,7 @@
 
           <div class="payVoucher" v-if="orderStatus != 2 & statusH">
             <h5>打款凭证</h5>
-            <div style="border-bottom: 1px solid #ccc"></div>
+            <div class="split-line"></div>
             <div class="imgs">
               <img :src="item.pictureUrl" alt="" @click="previewImg(item.pictureUrl)" v-for="item in remitFiles">
             </div>
@@ -159,7 +159,7 @@
 
           <div class="transFile" v-if="orderStatus != 2 & statusH">
             <h5>交易所需材料</h5>
-            <div style="border-bottom: 1px solid #ccc"></div>
+            <div class="split-line"></div>
             <div class="imgs">
               <img :src="item.pictureUrl" alt="" @click="previewImg(item.pictureUrl)" v-for="item in dealFiles">
             </div>
@@ -167,7 +167,7 @@
 
           <div class="transFile" v-if="orderStatus == 5 & statusH">
             <h5>退款申请书</h5>
-            <div style="border-bottom: 1px solid #ccc"></div>
+            <div class="split-line"></div>
             <div class="imgs">
               <img :src="item.pictureUrl" alt="" @click="previewImg(item.pictureUrl)" v-for="item in refundFiles">
             </div>

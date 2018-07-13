@@ -4,7 +4,7 @@
     <h3 v-if="type_is_update==1">修改产品</h3>
     <h3 v-else>审核信息</h3>
     <el-form v-if="!nextToUpdate" :model="form" ref="form" label-width="100px">
-      <div style="border-bottom: 1px solid #ccc"></div>
+      <div class="split-line"></div>
 
       <div class="general-investor" v-if="investorType == 0">
         <h5>风险测评问卷审核</h5>
@@ -47,7 +47,7 @@
         </el-table>
       </div>
 
-      <div style="border-bottom: 1px solid #ccc; margin-top: 20px"></div>
+      <div class="split-line" style="margin-top: 20px"></div>
       
       <h5>过往客户审核日志</h5>
       <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -92,7 +92,7 @@
       </el-table>
 
       <div v-if="isView == 1">
-        <div style="border-bottom: 1px solid #ccc; margin-top: 20px"></div>
+        <div class="split-line" style="margin-top: 20px"></div>
         <!-- <h5>备注：</h5> -->
         <el-row style="margin-top: 20px">
           <el-col :span="22">

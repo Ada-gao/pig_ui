@@ -4,7 +4,7 @@
     <h3 v-if="!isReadonly">编辑客户信息</h3>
     <h3 v-else>客户详情</h3>
     <el-form :model="form" :rules="rules" ref="form" label-width="100px">
-      <div style="border-bottom: 1px solid #ccc"></div>
+      <div class="split-line"></div>
       <h5>客户信息</h5>
       <el-row :gutter="20">
         <el-col :span="11">

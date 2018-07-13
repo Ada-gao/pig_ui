@@ -4,7 +4,7 @@
     <!-- <h3 v-if="type_is_update==1">修改产品</h3> -->
     <h3>客户详情</h3>
     <el-form :model="form" ref="form" label-width="100px">
-      <div style="border-bottom: 1px solid #ccc"></div>
+      <div class="split-line"></div>
       <h5>客户信息</h5>
       <el-row :gutter="20">
         <el-col :span="11">
@@ -64,7 +64,7 @@
         </el-col>
       </el-row>
 
-      <div style="border-bottom: 1px solid #ccc"></div>
+      <div class="split-line"></div>
       
       <h5>客户状态</h5>
       <el-row :gutter="20">
@@ -110,7 +110,7 @@
         </el-col>
       </el-row>
 
-      <div style="border-bottom: 1px solid #ccc"></div>
+      <div class="split-line"></div>
       
       <h5 v-if="realnameStatus">客户银行卡信息</h5>
       <el-table :data="bankcardList" element-loading-text="给我一点时间" border fit
@@ -133,7 +133,7 @@
         </el-table-column>
       </el-table>
 
-      <div style="border-bottom: 1px solid #ccc"></div>
+      <div class="split-line"></div>
       
       <h5 v-if="form.clientClass">客户已购买产品</h5>
       <el-table :data="productList" element-loading-text="给我一点时间" border fit
@@ -170,7 +170,7 @@
         </el-table-column>
       </el-table>
 
-      <div style="border-bottom: 1px solid #ccc"></div>
+      <div class="split-line"></div>
       
       <h5>客户备注</h5>
       <el-table :data="remarkList" element-loading-text="给我一点时间" border fit
@@ -182,7 +182,7 @@
         </el-table-column>
       </el-table>
 
-      <div style="border-bottom: 1px solid #ccc"></div>
+      <div class="split-line"></div>
       
       <h5>客户理财师变动列表</h5>
       <el-table :data="plannerList" element-loading-text="给我一点时间" border fit

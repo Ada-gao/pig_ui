@@ -27,7 +27,7 @@
       <el-input v-model="form.productName" style="width: 180px" placeholder="请输入"></el-input>
     </div>
 
-    <div style="border-bottom: 1px solid #ccc; margin-bottom: 20px;"></div>
+    <div class="split-line" style="margin-bottom: 20px;"></div>
 
     <el-form :model="form" :rules="rules" ref="form" label-width="100px" v-if="step===1&(productStatusNo===0||stageType=='0')||!uploadData.productId">
       <el-row :gutter="90">
@@ -585,7 +585,7 @@
         </el-row>
       </div>
 
-      <div style="border-bottom: 1px solid #ccc; margin: 20px 0;"></div>
+      <div class="split-line" style="margin: 20px 0;"></div>
 
       <el-form :rules="rules2" ref="form2" label-width="120px">
         <div class="group-item">

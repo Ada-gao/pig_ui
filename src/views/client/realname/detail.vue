@@ -4,7 +4,7 @@
     <h3 v-if="type_is_update==1">修改产品</h3>
     <h3 v-else>实名认证审核</h3>
     <el-form v-if="!nextToUpdate" :model="form" :rules="rules" ref="form" label-width="100px">
-      <div style="border-bottom: 1px solid #ccc"></div>
+      <div class="split-line"></div>
       <h5>客户信息</h5>
       <el-row :gutter="20">
         <el-col :span="11">
@@ -64,7 +64,7 @@
         </el-col> -->
       </el-row>
 
-      <div style="border-bottom: 1px solid #ccc"></div>
+      <div class="split-line"></div>
       
       <h5>客户状态</h5>
       <el-row :gutter="20">
@@ -120,7 +120,7 @@
           </el-form-item>
         </el-row>
 
-      <div style="border-bottom: 1px solid #ccc"></div>
+      <div class="split-line"></div>
       
       <h5>客户银行卡信息</h5>
       <el-table :data="bankcardList" element-loading-text="给我一点时间" border fit
@@ -143,7 +143,7 @@
         </el-table-column>
       </el-table>
 
-      <div style="border-bottom: 1px solid #ccc"></div>
+      <div class="split-line"></div>
       <el-row style="margin-top: 20px">
         <el-col :span="22">
           <el-form-item label="备注" prop="bankName">
