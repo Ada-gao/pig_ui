@@ -18,8 +18,8 @@
         :on-success="handleCreate"
         :show-file-list="false"
         accept=".pdf, .doc">
-        <el-button size="small"
-          class="btn-padding add_btn">新增材料</el-button>
+        <el-button
+          class="add_btn"><svg-icon icon-class="add"></svg-icon> 新增材料</el-button>
       </el-upload>
       <el-button v-else class="add_btn" @click="openCreate">
         <svg-icon icon-class="add"></svg-icon> 新增资料</el-button>

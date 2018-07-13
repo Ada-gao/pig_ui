@@ -1,7 +1,7 @@
 
 <template>
   <div class="app-container calendar-list-container">
-    <el-row :gutter="12" class="def-el">
+    <el-row :gutter="12" class="def-el bref">
       <el-col :span=spanNum class="first-col">
         <el-card shadow="always">
           <div class="card-box">

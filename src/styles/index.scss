@@ -81,6 +81,7 @@ a:hover {
 //全局按钮
 $hover_add: #00C1DF;
 $danger_btn: #FF4949;
+$danger_btn_hover: #FF8686;
 $btn: #0299CC;
 
 .el-table {
@@ -97,10 +98,9 @@ $btn: #0299CC;
 }
 .danger_btn {
   color: $danger_btn;
-  
 }
 .danger_btn:hover {
-  color: #FF8686;
+  color: $danger_btn_hover;
 }
 .danger_btn::before {
   width: 1px;
@@ -110,6 +110,12 @@ $btn: #0299CC;
   content: '';
   margin: 0 5px;
   vertical-align: text-bottom;
+}
+.danger_btn_noline {
+  color: $danger_btn;
+  &:hover {
+    color: $danger_btn_hover;
+  }
 }
 .space_line {
   color: #8F8F8F;

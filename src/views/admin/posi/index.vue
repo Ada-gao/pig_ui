@@ -29,7 +29,8 @@
           <a v-if="sys_position_upd" size="small" class="common_btn"
                      @click="handleUpdate(scope.row)">编辑
           </a>
-          <a v-if="sys_position_del" size="small" class="danger_btn"
+          <span v-if="sys_position_upd" class="space_line"> | </span>
+          <a v-if="sys_position_del" size="small" class="danger_btn_noline"
                      @click="deletes(scope.row)">删除
           </a>
         </template>

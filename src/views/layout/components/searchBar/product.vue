@@ -25,8 +25,8 @@
           class="query-color"
           style="text-align: right; float: right; cursor: pointer">
           <div @click="isSpread = !isSpread">
-            <span v-show="isSpread">收起搜索条件</span>
-            <span v-show="!isSpread">展开搜索条件</span>
+            <span v-show="isSpread"><svg-icon icon-class="searchHide"></svg-icon> 收起搜索条件</span>
+            <span v-show="!isSpread"><svg-icon icon-class="searchUp"></svg-icon> 展开搜索条件</span>
           </div>
         </el-col>
       </el-row>

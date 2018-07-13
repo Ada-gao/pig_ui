@@ -90,7 +90,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="净值" prop="netValue">
+          <el-form-item label="净值（元）" prop="netValue">
             <el-input type="number" v-model="form.netValue" :maxlength="5" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
@@ -258,7 +258,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="净值" prop="netValue">
+          <el-form-item label="净值（元）" prop="netValue">
             <el-input type="number" v-model="form.netValue" :maxlength="5" placeholder="请输入" disabled></el-input>
           </el-form-item>
         </el-col>
@@ -829,10 +829,10 @@
           <el-col :md="8" :lg="5">
             <el-card shadow="always">
               <div class="card-box">
-                <div class="left-box green-box">
-                  <svg-icon icon-class="successmon"></svg-icon>
+                <div class="left-box red-box">
+                  <svg-icon icon-class="surplus"></svg-icon>
                 </div>
-                <div class="right-box green-right">
+                <div class="right-box red-right">
                   <div class="title">剩余额度</div>
                   <div class="btm-box"><span>{{statistic.surplusAmounts||0}}</span><i>万</i></div>
                 </div>
@@ -844,15 +844,17 @@
       <div class="transc-tab">
         <el-button @click="handleAppoint('0')" class="search_btn first_btn" label="1">预约成功人数</el-button>
         <el-button @click="handleAppoint('1')" class="search_btn sec_btn" label="2">打款成功人数</el-button>
+        <a class="filter-item add_btn"
+          style="margin-left: 10px; padding: 10px; border-radius: 5px; float: right;"
+          :href="batchExport()" type="primary">
+          <svg-icon icon-class="add"></svg-icon> 批量导出</a>
       </div>
-      <div style="text-align: right">
-        <!-- <el-button class="filter-item add_btn" style="margin-left: 10px;" @click="batchExport" type="primary">
-          <svg-icon icon-class="add"></svg-icon> 批量导出</el-button> -->
+      <!-- <div style="text-align: right">
         <a class="filter-item add_btn"
           style="margin-left: 10px; padding: 10px; border-radius: 5px;"
           :href="batchExport()" type="primary">
           <svg-icon icon-class="add"></svg-icon> 批量导出</a>
-      </div>
+      </div> -->
       <transc-table-component
         :productCollect="true"
         :productNameCol="false"
@@ -1940,6 +1942,7 @@
   .upfile-group {
     .btn-padding {
       @include padding;
+      margin-top: 10px;
     }
   }
   .tabs {
@@ -2105,6 +2108,17 @@
         .green-right {
           .btm-box {
             color: #30cdaa;
+          }
+        }
+        .red-box {
+          background: #FF4949;
+          .circle {
+            background-color: #FF4949;
+          }
+        }
+        .red-right {
+          .btm-box {
+            color: #FF4949;
           }
         }
       }
