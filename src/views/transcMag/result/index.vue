@@ -3,7 +3,7 @@
     <div class="filter-container" style="text-align: right">
       <el-tabs v-model="type" type="card" @tab-click="handleClick" class="contract-tabs">
         <el-tab-pane label="预约不通过原因" name="0"></el-tab-pane>
-        <el-tab-pane label="打款不通过原因" name="1"></el-tab-pane>
+        <el-tab-pane label="打款不通过/订单关闭原因" name="1"></el-tab-pane>
         <el-tab-pane label="合同不通过原因" name="2"></el-tab-pane>
         <el-tab-pane label="退款不通过原因" name="3"></el-tab-pane>
       </el-tabs>

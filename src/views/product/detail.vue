@@ -637,13 +637,14 @@
           <el-row>
             <el-col :span="6">
               <el-form-item prop="keyProduct" label="是否标注重点产品" style="white-space: nowrap;" :rules="keyProRules">
-                <el-radio-group v-model="form2.keyProduct" :disabled="operationDisabled" @change="test">
+                <el-radio-group v-model="radio2" @change="test">
+                <!-- <el-radio-group v-model="form2.keyProduct" :disabled="operationDisabled" @change="test"> -->
                   <el-radio :label="1">否</el-radio>
                   <el-radio :label="2">是</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
-            <el-col :span="10" v-show="form2.keyProduct===2">
+            <el-col :span="10" v-show="radio2===2">
               <el-form-item label="重点产品时间段">
                 <el-date-picker
                   style="width: 80%"
@@ -875,8 +876,8 @@
       <el-button class="add_btn" v-if="dialogStatus=='create'&step===2" type="primary" @click="updateRouter">保 存</el-button>
       <!-- 编辑 -->
       <el-button class="search_btn" v-if="dialogStatus=='update'&step===1&allDisabled" @click="cancel()">取 消</el-button>
-      <el-button class="search_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" @click="cancel()">取 消</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===1&allDisabled" type="primary" @click="update('form1')">保 存</el-button>
+      <el-button class="search_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" @click="cancel()">取 消</el-button>
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" type="primary" @click="updateRouter">保 存</el-button>
       <!-- 在建 -->
       <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===0" type="primary" @click="updateProductType(1, '/product/building')">
@@ -1183,7 +1184,7 @@
         },
         statusOptions: ['0', '1'],
         rolesOptions: [],
-        nextToUpdate: false,
+        // nextToUpdate: false,
         dialogDeptVisible: false,
         userAdd: false,
         userUpd: false,
@@ -1237,7 +1238,8 @@
           activityDTO: [],
           normalDTO: {
             normalBrokerageCoefficients: []
-          }
+          },
+          keyProduct: 1
         },
         normalList: [{
           age: 1,
@@ -1282,7 +1284,8 @@
         url: '',
         fileType: '',
         createStatus: 'create',
-        selectFile: null
+        selectFile: null,
+        radio2: 1
       }
     },
     computed: {
@@ -1321,7 +1324,6 @@
         // this.newUrl(url)
         // vm.$set(vm.ada_url, 'z', activeRouter)
       })
-
     },
     // watch: {
     //   url(curVal, oldVal) {
@@ -1348,7 +1350,7 @@
           .then(response => {
             this.stepStatus = 'update'
             this.form = response.data
-            this.nextToUpdate = true
+            // this.nextToUpdate = true
             // this.dialogFormVisible = true
             this.dialogStatus = 'update'
             if(this.form.isFloat === 0) {
@@ -1412,16 +1414,18 @@
           if (valid) {
             addObj(this.form)
               .then(response => {
-                this.nextToUpdate = true
-                this.getList()
-                this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
-                this.uploadData.productId = response.data.productId
-                this.step = 2
+                // this.nextToUpdate = true
+                // this.getList()
+                if(response.status === 200) {
+                  this.$notify({
+                    title: '成功',
+                    message: '创建成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                  this.uploadData.productId = response.data.productId
+                  this.step = 2
+                }
               })
           } else {
             return false
@@ -1521,6 +1525,7 @@
         this.form2.normalDTO.normalBrokerageCoefficients = this.normalList.concat(this.addNormList)
         // this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
         this.form2.productId = this.uploadData.productId
+        // this.form2.keyProduct = this.radio2
         addOperationObj(this.form2).then(res => {
           this.$notify({
             title: '成功',
@@ -1789,7 +1794,6 @@
             productClientFileManageId: this.selectFile.productClientFileManageId,
             productId: this.uploadData.productId
           }
-          console.log('kehu')
           addCustFile(params).then(res => {
             // this.clientFile = res.data
             // this.clientFiles.push(this.clientFile)
@@ -1838,8 +1842,10 @@
           this.form2.normalDTO = res.data.normalDTO || {}
           this.activityData = res.data.activityDTO || []
           if(this.form2.importantStart || this.form2.importantEnd) {
-            console.log('keyProduct: ' + this.form2.keyProduct)
-            this.form2.keyProduct = 2
+            console.log('keyProduct: ' + this.radio2)
+            this.radio2 = 2
+          } else {
+            this.radio2 = 1
           }
           this.importantDate = [this.form2.importantStart, this.form2.importantEnd]
           this.normalData = this.form2.normalDTO
@@ -1906,7 +1912,7 @@
       },
       test(val) {
         console.log(val)
-        this.form2.keyProduct = val
+        // this.form2.keyProduct = val
       },
       changeFileList(val) {
         // console.log(val)

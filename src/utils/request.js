@@ -13,8 +13,10 @@ const service = axios.create({
 
 // request拦截器
 service.interceptors.request.use(config => {
-  if (store.getters.token) {
-    config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
+  if (config.url !== '/auth/authentication/removeToken') {
+    if (store.getters.token) {
+      config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
+    }
   }
   return config
 }, error => {
@@ -56,8 +58,8 @@ service.interceptors.response.use(
     } else if(res.status.toString().indexOf('401') !== -1) {
       message('登陆时间过期，请重新登陆', 'error')
       // console.log(router.fullPath)
-      removeToken()
-      // store.dispatch('LogOut')
+      // removeToken()
+      store.dispatch('FedLogOut')
       router.replace({
         path: '/login',
         query: {redirect: router.fullPath}
