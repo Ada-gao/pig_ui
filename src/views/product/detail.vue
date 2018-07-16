@@ -29,7 +29,19 @@
 
     <div class="split-line" style="margin-bottom: 20px;"></div>
 
-    <el-form :model="form" :rules="rules" ref="form" label-width="100px" v-if="step===1&(productStatusNo===0||stageType=='0')||!uploadData.productId">
+    <product-detail
+      :productId="productId"></product-detail>
+
+    <!-- <div class="split-line" style="margin-bottom: 20px;"></div> -->
+
+    <!-- <el-form :model="form" :rules="rules" ref="form" label-width="100px" v-if="step===1&(productStatusNo===0||stageType=='0')||!uploadData.productId">
+      <el-row :gutter="90">
+        <el-col :span="11" v-if="uploadData.productId&!stage">
+          <el-form-item label="产品编号" prop="productCode">
+            <el-input v-model="form.productCode" placeholder="请输入产品编号" ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="产品全称" prop="productName">
@@ -39,11 +51,6 @@
         <el-col :span="11">
           <el-form-item label="产品简称" prop="productShortName">
             <el-input v-model="form.productShortName" placeholder="请输入产品名称"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11" v-if="uploadData.productId&!stage">
-          <el-form-item label="产品编号" prop="productCode">
-            <el-input v-model="form.productCode" placeholder="请输入产品编号" ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -111,7 +118,6 @@
             <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" :disabled="stageType=='0'"></el-input>
             <el-select v-model="form.investmentHorizonUnit" style="width: 20%;" :disabled="stageType=='0'">
               <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
-                <!-- <span style="float: left">{{ item.label }}</span> -->
               </el-option>
             </el-select>
           </el-form-item>
@@ -129,7 +135,6 @@
               <el-radio :label="0" style="display: inline-block">浮动收益率</el-radio>
               <el-radio :label="1" style="display: inline-block">收益对标基准（%）</el-radio>
               <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn"></el-input>
-              <!-- <span style="display: inline-block" v-show="!isDisabled">%月</span> -->
             </el-radio-group>
           </el-form-item>
         </el-col>
@@ -208,11 +213,23 @@
           </el-form-item>
         </el-col>
       </el-row>
-    </el-form>
-    <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&productStatusNo!==0&stageType!='0'&createStatus==='update'">
+    </el-form> -->
+    <!-- <el-form :model="form" ref="form1" label-width="100px" v-if="step===1&productStatusNo!==0&stageType!='0'&createStatus==='update'">
+      <el-row :gutter="90">
+        <el-col :span="11" v-if="!stage">
+          <el-form-item label="产品编号" prop="productCode">
+            <el-input v-model="form.productCode" placeholder="请输入产品编号" disabled></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="产品全称" prop="productName">
+            <el-input v-model="form.productName" placeholder="请输入产品名称" disabled></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="产品结构类型" prop="productName">
             <el-input v-model="form.productName" placeholder="请输入产品名称" disabled></el-input>
           </el-form-item>
         </el-col>
@@ -221,24 +238,22 @@
             <el-input v-model="form.productShortName" placeholder="请输入产品名称" :disabled="shortNameDisabled"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="!stage">
-          <el-form-item label="产品编号" prop="productCode">
-            <el-input v-model="form.productCode" placeholder="请输入产品编号" disabled></el-input>
-          </el-form-item>
-        </el-col>
         <el-col :span="11">
-          <el-form-item label="产品类型" prop="productTypeId">
-            <el-input v-model="form.productTypeId" placeholder="" disabled></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="募集人数" prop="productLp">
-            <el-input v-model.number="form.productLp" placeholder="请输入" :disabled="collectDisabled"></el-input>
+          <el-form-item label="产品收益类型" prop="productTypeId">
+            <el-select class="filter-item" v-model="form.productTypeId" placeholder="请选择" :disabled="stageType=='0'">
+              <el-option v-for="item in productTypes" :key="item.productTypeId" :value="item.productTypeId" :label="item.name">
+                <span style="float: left">{{ item.name }}</span>
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="11" style="white-space: nowrap">
           <el-form-item label="产品风险级别" prop="productRiskLevel">
-            <el-input v-model="form.productRiskLevel" placeholder="" disabled></el-input>
+            <el-select class="filter-item" v-model="form.productRiskLevel" placeholder="请选择" :disabled="stageType=='0'">
+              <el-option v-for="item in productRiskLevel" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -248,18 +263,55 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="交易币种" prop="currencyId">
+            <el-select class="filter-item" v-model="form.currencyId" placeholder="请选择" @change="changeCurrency" :disabled="stageType=='0'">
+              <el-option v-for="item in currencyList" :key="item.currencyId" :value="item.currencyId" :label="item.name">
+                <span style="float: left">{{ item.name }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="汇率" prop="currencyId">
             <el-input v-model="form.currencyId" placeholder="" disabled></el-input>
           </el-form-item>
         </el-col>
-
+        <el-col :span="11">
+          <el-form-item label="购买人群" prop="currencyId">
+            <el-input v-model="form.currencyId" placeholder="" disabled></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="产品期限" prop="investmentHorizon">
+            <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" :disabled="stageType=='0'"></el-input>
+            <el-select v-model="form.investmentHorizonUnit" style="width: 20%;" :disabled="stageType=='0'">
+              <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="90">
+        <el-col>
+          <el-form-item label="收益" prop="isFloat">
+            <el-radio-group v-model="form.isFloat" @change="radioChange" disabled>
+              <el-radio :label="0" style="display: inline-block">浮动收益率</el-radio>
+              <el-radio :label="1" style="display: inline-block">收益对标基准（%）</el-radio>
+              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn" disabled></el-input>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col>
+        </el-col>
+      </el-row>
+      <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="募集额度（万）" prop="collectionAmount" style="white-space: nowrap">
             <el-input type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" :disabled="collectDisabled"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="净值（元）" prop="netValue">
-            <el-input type="number" v-model="form.netValue" :maxlength="5" placeholder="请输入" disabled></el-input>
+          <el-form-item label="募集人数" prop="productLp">
+            <el-input v-model.number="form.productLp" placeholder="请输入" :disabled="collectDisabled"></el-input>
           </el-form-item>
         </el-col>
 
@@ -273,52 +325,9 @@
             <el-input type="number" v-model.number="form.minimalAddAmount" :maxlength="10" disabled></el-input>
           </el-form-item>
         </el-col>
-
         <el-col :span="11">
-          <el-form-item label="产品期限" prop="investmentHorizon">
-            <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" disabled></el-input>
-            <el-input v-model="form.investmentHorizonUnit" style="width: 22%;" disabled></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="产品过往业绩" prop="historyPerformance">
-            <el-input v-model="form.historyPerformance" placeholder="请输入" disabled></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="90">
-        <el-col>
-          <el-form-item label="收益" prop="isFloat">
-            <el-radio-group v-model="form.isFloat" @change="radioChange" disabled>
-              <el-radio :label="0" style="display: inline-block">浮动收益率</el-radio>
-              <el-radio :label="1" style="display: inline-block">收益对标基准（%）</el-radio>
-              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn" disabled></el-input>
-              <!-- <span style="display: inline-block" v-show="!isDisabled">%月</span> -->
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-        <el-col>
-        </el-col>
-      </el-row>
-      <el-row :gutter="90">
-        <el-col :span="11">
-          <el-form-item label="开户银行" prop="bankName">
-            <el-input v-model="form.bankName" placeholder="请输入" disabled></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="关账日期" prop="closeDate">
-            <el-date-picker
-              v-model="form.closeDate"
-              type="date"
-              :disabled="closeDateDisabled"
-              placeholder="选择日期">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="支行">
-            <el-input v-model="form.subBranchName" placeholder="请输入" disabled></el-input>
+          <el-form-item label="收益分配方式" prop="incomeDistribution" style="white-space: nowrap">
+            <el-input type="number" v-model.number="form.incomeDistribution" :maxlength="10" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -327,34 +336,48 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="打款账号">
-            <el-input v-model.number="form.cardNo" placeholder="请输入" disabled></el-input>
+          <el-form-item label="托管银行">
+            <el-input v-model="form.assetTeam" placeholder="请输入" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="起息日" prop="valueDate">
-            <el-date-picker
-              v-model="form.valueDate"
-              type="date"
-              :disabled="valueDateDisabled||stage"
-              placeholder="选择日期">
-            </el-date-picker>
+          <el-form-item label="渠道打款金额">
+            <el-input v-model="form.assetTeam" placeholder="请输入" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="成立日" prop="establishmentDate">
-            <el-date-picker
-              v-model="form.establishmentDate"
-              type="date"
-              :disabled="establishedDisabled"
-              placeholder="选择日期">
-            </el-date-picker>
+          <el-form-item label="渠道人数">
+            <el-input v-model="form.assetTeam" placeholder="请输入" disabled></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="关联产品">
+            <el-input v-model="form.assetTeam" placeholder="请输入" disabled></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11" style="white-space: nowrap">
+          <el-form-item label="付息方式" prop="productRiskLevel">
+            <el-input v-model="form.productRiskLevel" placeholder="" disabled></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="认购费">
+            <el-input v-model="form.assetTeam" placeholder="请输入" disabled></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="产品归属">
+            <el-radio-group v-model="form.isFloat" @change="radioChange" disabled>
+              <el-radio :label="0" style="display: inline-block">自营</el-radio>
+              <el-radio :label="1" style="display: inline-block">代购</el-radio>
+              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn" disabled></el-input>
+            </el-radio-group>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="90">
         <el-col :span="22">
-          <el-form-item label="收益分配方式" prop="incomeDistribution">
+          <el-form-item label="产品公告" prop="incomeDistribution">
             <el-input
               type="textarea"
               :row="2"
@@ -363,9 +386,64 @@
           </el-form-item>
         </el-col>
       </el-row>
+
+      <div class="split-line" style="margin-bottom: 20px;"></div>
+
+      <el-row>
+        <el-col :span="11">
+          <el-form-item label="成立日" prop="establishmentDate">
+            <el-input v-model="form.establishmentDate" placeholder="请输入" disabled></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="11">
+          <el-form-item label="起息日" prop="valueDate">
+            <el-input v-model="form.valueDate" placeholder="请输入" disabled></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="11">
+          <el-form-item label="关账日" prop="closeDate">
+            <el-input v-model="form.closeDate" placeholder="请输入" disabled></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <div class="split-line" style="margin-bottom: 20px;"></div>
+
+      <el-row>
+        <el-col :span="11">
+          <el-form-item label="账户名称" prop="bankName">
+            <el-input v-model="form.bankName" placeholder="请输入" disabled></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="11">
+          <el-form-item label="账号">
+            <el-input v-model.number="form.cardNo" placeholder="请输入" disabled></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="11">
+          <el-form-item label="开户银行（支行）名称">
+            <el-input v-model="form.subBranchName" placeholder="请输入" disabled></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="11">
+          <el-form-item label="大额支付行号">
+            <el-input v-model="form.subBranchName" placeholder="请输入" disabled></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      
       <el-row :gutter="90">
         <el-col :span="22">
-          <el-form-item label="产品亮点" prop="highlight">
+          <el-form-item label="备注" prop="highlight">
             <el-input
               type="textarea"
               :row="2"
@@ -374,7 +452,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-    </el-form>
+    </el-form> -->
 
     <div class="upfile-group" v-if="step===2">
       <div class="trade-item">
@@ -429,7 +507,7 @@
             :action="importFile('transc')"
             :on-change="handleChange"
             :show-file-list="false"
-            accept=".pdf, .doc">
+            accept=".pdf">
             <el-button size="small"
                        v-if="!operationDisabled"
                        class="btn-padding add_btn">追加材料</el-button>
@@ -521,7 +599,7 @@
             :action="importFile('product')"
             :on-change="handleChange2"
             :show-file-list="false"
-            accept=".pdf, .doc">
+            accept=".pdf">
             <el-button size="small"
                        v-if="!operationDisabled"
                        class="btn-padding add_btn">追加材料</el-button>
@@ -577,7 +655,7 @@
             :action="importFile('announcement')"
             :on-change="handleChange3"
             :show-file-list="false"
-            accept=".pdf, .doc">
+            accept=".pdf">
             <el-button size="small"
                        v-if="!operationDisabled"
                        class="btn-padding add_btn">追加材料</el-button>
@@ -593,37 +671,37 @@
           <el-row>
             <el-col :md="12" :lg="8" style="margin-bottom: 10px">
               <el-checkbox v-model="checked1" :disabled="operationDisabled">
-                <span style="width: 120px; display: inline-block">预约总额度满</span>
+                <span style="width: 110px; display: inline-block">预约总额度满</span>
                 <el-input v-model="form2.appointAmountPercent" :disabled="!checked1" style="width: 100px;"></el-input> %，进入人工审核
               </el-checkbox>
             </el-col>
             <el-col :md="12" :lg="8" style="margin-bottom: 10px">
               <el-checkbox v-model="checked2" :disabled="operationDisabled">
-                <span style="width: 120px; display: inline-block">预约人数满</span>
+                <span style="width: 110px; display: inline-block">预约人数满</span>
                 <el-input v-model="form2.appointNums" :disabled="!checked2" style="width: 100px;"></el-input> 人，进入人工审核
               </el-checkbox>
             </el-col>
             <el-col :md="12" :lg="8" style="margin-bottom: 10px">
               <el-checkbox v-model="checked3" :disabled="operationDisabled">
-                <span style="width: 120px; display: inline-block">单笔打款金额大于</span>
+                <span style="width: 110px; display: inline-block">单笔打款金额大于</span>
                 <el-input v-model="form2.onceAppointGt" :disabled="!checked3" style="width: 100px;"></el-input> 万，进入人工审核
               </el-checkbox>
             </el-col>
             <el-col :md="12" :lg="8" style="margin-bottom: 10px">
               <el-checkbox v-model="checked4" :disabled="operationDisabled">
-                <span style="width: 120px; display: inline-block">单笔打款金额小于</span>
+                <span style="width: 110px; display: inline-block">单笔打款金额小于</span>
                 <el-input v-model="form2.onceAppointLt" :disabled="!checked4" style="width: 100px;"></el-input> 万，进入人工审核
               </el-checkbox>
             </el-col>
             <el-col :md="12" :lg="8" style="margin-bottom: 10px">
               <el-checkbox v-model="checked5" :disabled="operationDisabled">
-                <span style="width: 120px; display: inline-block">打款金额满</span>
+                <span style="width: 110px; display: inline-block">打款金额满</span>
                 <el-input v-model="form2.remitAmountsPercent" :disabled="!checked5" style="width: 100px;"></el-input> %，进入人工审核
               </el-checkbox>
             </el-col>
             <el-col :md="12" :lg="8" style="margin-bottom: 10px">
               <!-- <el-form-item label="预约时效" prop="timeliness" style="padding-left: 71px"> -->
-              <span style="width: 145px; display: inline-block; text-align: right">预约时效</span>
+              <span style="width: 135px; display: inline-block; text-align: right">预约时效</span>
               <el-input style="width: 100px;"
                         :disabled="operationDisabled"
                         v-model="form2.timeliness"></el-input> 小时
@@ -692,15 +770,6 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <!--<el-row v-for="item in addNormList" :key="item.idx" v-if="addNormList">-->
-          <!--<el-col :span="11" :offset="11" style="white-space: nowrap">-->
-          <!--<el-form-item :label="`佣金系数（第${cmsIndex}年）`">-->
-          <!--<el-input style="width: 300px"-->
-          <!--:disabled="operationDisabled"-->
-          <!--v-model="item.brokerageCoefficient"></el-input>-->
-          <!--</el-form-item>-->
-          <!--</el-col>-->
-          <!--</el-row>-->
         </div>
 
         <div class="group-item" style="position: relative">
@@ -842,8 +911,8 @@
         </el-row>
       </div>
       <div class="transc-tab">
-        <el-button @click="handleAppoint('0')" class="search_btn first_btn" label="1">预约成功人数</el-button>
-        <el-button @click="handleAppoint('1')" class="search_btn sec_btn" label="2">打款成功人数</el-button>
+        <el-button @click="handleAppoint('0')" class="first_btn" :class="{'search_btn': listQuery.type=='0'}" label="1">预约成功人数</el-button>
+        <el-button @click="handleAppoint('1')" class="sec_btn" label="2">打款成功人数</el-button>
         <a class="filter-item add_btn"
           style="margin-left: 10px; padding: 10px; border-radius: 5px; float: right;"
           :href="batchExport()" type="primary">
@@ -947,6 +1016,7 @@
 </template>
 
 <script>
+  import productDetail from './product/pdcDetail'
   import transcTableComponent from 'components/table/transcTable'
   import { fetchList, getObj, addObj, putObj, delObj, getAppointList,
     addOperationObj, putFileObj, delCustFile, getCustFile,
@@ -994,7 +1064,8 @@
     components: {
       ElOption,
       ElRadioGroup,
-      transcTableComponent
+      transcTableComponent,
+      productDetail
     },
     name: 'table_user',
     directives: {
@@ -1003,14 +1074,7 @@
     data() {
       return {
         dialogVis: false,
-        treeDeptData: [],
-        checkedKeys: [],
-        defaultProps: {
-          children: 'children',
-          label: 'name'
-        },
         total: null,
-        role: undefined,
         form: {
           username: undefined,
           password: undefined,
@@ -1184,49 +1248,33 @@
             { required: true, trigger: 'change'}
           ]
         },
-        statusOptions: ['0', '1'],
-        rolesOptions: [],
-        // nextToUpdate: false,
-        dialogDeptVisible: false,
         userAdd: false,
         userUpd: false,
         userDel: false,
         dialogStatus: 'create',
-        textMap: {
-          update: '编辑员工',
-          create: '新增员工'
-        },
         isDisabled: {
           0: false,
           1: true
         },
-        sex: '',
-        edu: '',
-        maritalStatus: '',
         fileList: [],
         fileList1: [],
         fileList2: [],
         fileList3: [],
         clientFiles: [],
-        indexList: [],
-        productStus: '',
         uploadData: {
           productId: '',
         },
         productTypes: [],
-        currencyList: '',
+        currencyList: [], //
         headers: {
           Authorization: 'Bearer ' + getToken()
         },
-        indexList1: [],
-        indexList2: [],
-        indexList3: [],
         productStatusNo: '',
-        elDate: {
-          inputStyle: 'number',
-          model: 'product_name',
-          text: '产品名称'
-        },
+        // elDate: {
+        //   inputStyle: 'number',
+        //   model: 'product_name',
+        //   text: '产品名称'
+        // },
         step: 1,
         // checked: 0,
         importantDate: [],
@@ -1287,7 +1335,8 @@
         fileType: '',
         createStatus: 'create',
         selectFile: null,
-        radio2: 1
+        radio2: 1,
+        productId: ''
       }
     },
     computed: {
@@ -1303,6 +1352,7 @@
     },
     created() {
       this.uploadData.productId = this.$route.params.id
+      this.productId = this.$route.params.id
       if(this.uploadData.productId) {
         // console.log('this.createStatus')
         this.createStatus = 'update'
@@ -1461,7 +1511,6 @@
         const set = this.$refs
         if(this.stageType==='0' || this.productStatusNo == '0') formName = 'form'
         if(!this.form.isFloat) {
-          // this.radio2 === 3 ? 0 : 1
           this.form.annualizedReturn = null
           this.isDisabled = true
         }
@@ -1517,9 +1566,13 @@
           item.activityEnd = item.activeDate[1]
           item.activityStart = item.activeDate[0]
         })
-        if(this.importantDate) {
+        if (this.importantDate) {
           this.form2.importantStart = this.importantDate[0]
           this.form2.importantEnd = this.importantDate[1]
+        } else {
+          // console.log('this.radio2 is not important product')
+          this.form2.importantStart = ''
+          this.form2.importantEnd = ''
         }
         this.form2.normalDTO = this.normalData
         // this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
@@ -1593,8 +1646,7 @@
         this.form = {
           id: undefined,
           username: '',
-          password: '',
-          role: undefined
+          password: ''
         }
       },
       getAllFiles(productId) {
@@ -1914,6 +1966,9 @@
       },
       test(val) {
         console.log(val)
+        if(val === 1) {
+          this.importantDate = []
+        }
         // this.form2.keyProduct = val
       },
       changeFileList(val) {

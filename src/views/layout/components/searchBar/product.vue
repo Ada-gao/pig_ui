@@ -31,20 +31,6 @@
         </el-col>
       </el-row>
 
-      <!-- <el-row>
-        <el-col :sm="12" :lg="8" v-show="isSpread & searchDate">
-          <el-form-item label="日期">
-              <el-date-picker
-                v-model="entryDate"
-                type="daterange"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :default-time="['00:00:00', '23:59:59']">
-              </el-date-picker>
-            </el-form-item>
-        </el-col>
-      </el-row> -->
-
       <el-row>
         <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="isSpread & searchProductType">
           <el-form-item label="产品分类">
@@ -59,8 +45,8 @@
         <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="isSpread & searchProductStatus">
           <el-form-item label="产品状态">
             <el-checkbox-group v-model="listQuery.productStatus">
-            <el-checkbox-button v-for="status in productStatus" :label="status.value" :key="status.value">{{status.label}}</el-checkbox-button>
-          </el-checkbox-group>
+              <el-checkbox-button v-for="status in productStatus" :label="status.value" :key="status.value">{{status.label}}</el-checkbox-button>
+            </el-checkbox-group>
           </el-form-item>
         </el-col>
       </el-row>
@@ -96,9 +82,6 @@ export default {
   },
   data() {
     return {
-      listQuery: {},
-      deptId: [],
-      treeDeptData: [],
       listQuery: {
         page: 1,
         limit: 20,
@@ -107,14 +90,6 @@ export default {
         productStatus: [],
         annualizedReturns: [],
         isFloat: null
-      },
-      defaultProps: {
-        children: 'children',
-        label: 'name',
-        value: 'id'
-      },
-      defaultProps2: {
-        value: 'label'
       },
       // city: [],
       productTypes: [],
@@ -144,10 +119,11 @@ export default {
         limit: 20,
         name: '',
         productTypeIds: [],
-        productStatus: []
+        productStatus: [],
+        orderByField: 'create_time',
+        isAsc: false
       },
       this.entryDate = []
-      // this.handleFilter()
       Bus.$emit('searchProduct', this.listQuery)
     },
     fetchList() {

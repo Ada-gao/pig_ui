@@ -337,7 +337,7 @@
                 :file-list="fileList"
                 :show-file-list="true"
                 :before-upload="beforeUpload"
-                accept=".pdf, .doc">
+                accept=".pdf">
                 <el-button size="small" class="add_btn">上传简历</el-button>
               </el-upload>
             </el-form-item>
