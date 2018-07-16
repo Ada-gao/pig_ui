@@ -15,7 +15,7 @@
               :action="'/zuul/client/certFile/' + type"
               :on-success="handleChange1"
               :show-file-list="false"
-              accept=".pdf, .doc">
+              accept=".pdf">
               <el-button size="small" class="btn-padding add_btn" type="primary">新增资料</el-button>
             </el-upload>
     </div>

@@ -87,7 +87,6 @@
 <script>
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/product/product'
   import { fetchProductTypeList } from '@/api/product/productType'
-  import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
   import { fetchCurrency, getObjList } from '@/api/currency'
   import { getToken } from '@/utils/auth'
@@ -120,7 +119,7 @@
     },
     props: {
       productStatusNo: {
-        default: '0'
+        default: ''
       },
       activeUrl: {
         default: '/product/productList'
@@ -138,12 +137,6 @@
     },
     data() {
       return {
-        treeDeptData: [],
-        checkedKeys: [],
-        defaultProps: {
-          children: 'children',
-          label: 'name'
-        },
         list: null,
         total: null,
         listLoading: true,
@@ -158,38 +151,20 @@
           orderByField: 'create_time',
           isAsc: false
         },
-        role: undefined,
+        // role: undefined,
         form: {
           name: undefined,
           password: undefined,
           // delFlag: undefined,
           deptId: undefined
         },
-        statusOptions: ['0', '1'],
-        rolesOptions: [],
-        dialogFormVisible: false,
-        dialogDeptVisible: false,
         userAdd: false,
         userUpd: false,
         userDel: false,
         dialogStatus: '',
         tableKey: 0,
-        sex: '',
-        edu: '',
         currencyList: [],
-        IDsType: '',
-        entryDate: '',
         productTypes: [],
-        productTypesList: [],
-        input2: '',
-        // nextToUpdate: false,
-        productStus: '',
-        // radio2: null,
-        profitTextarea: '',
-        highlight: '',
-        isDisabled: true,
-        form: [],
-        isSpread: false
       }
     },
     computed: {
@@ -277,25 +252,25 @@
         this.form = {
           id: undefined,
           name: '',
-          role: undefined
+          // role: undefined
         }
       },
-      resetFilter() {
-        this.listQuery = {
-          name: '',
-          // type: [],
-          productTypeIds: [],
-          annualizedReturns: [],
-          productStatus: [],
-          isFloat: 0
-        }
-        this.getList()
-      },
-      searchList(data) {
-        this.listQuery = data
-        // this.listQuery.type = 1
-        this.getList()
-      },
+      // resetFilter() {
+      //   this.listQuery = {
+      //     name: '',
+      //     // type: [],
+      //     productTypeIds: [],
+      //     annualizedReturns: [],
+      //     productStatus: [],
+      //     isFloat: 0
+      //   }
+      //   this.getList()
+      // },
+      // searchList(data) {
+      //   this.listQuery = data
+      //   // this.listQuery.type = 1
+      //   this.getList()
+      // },
       deletes(id) {
         delObj(id).then(res => {
           if(res.data.code === 0) {

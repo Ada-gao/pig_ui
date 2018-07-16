@@ -5,7 +5,7 @@
                 v-model="listQuery.name">
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button> -->
-      <el-button v-if="sys_prd_type_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">
+      <el-button v-if="sys_prd_type_add" class="filter-item add_btn" style="margin-bottom: 0;" @click="handleCreate" type="primary" icon="edit">
         <svg-icon icon-class="add"></svg-icon> 新增产品类型</el-button>
     </div>
 

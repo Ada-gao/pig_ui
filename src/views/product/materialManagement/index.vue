@@ -3,7 +3,7 @@
   <div class="app-container calendar-list-container">
 
     <div class="main-tab">
-      <el-radio-group v-model="step" @change="changeStep" style="margin-bottom: 30px;">
+      <el-radio-group v-model="step" @change="changeStep" style="margin-bottom: 0;">
         <el-radio-button label="1">交易所需材料</el-radio-button>
         <el-radio-button label="2">上传客户材料</el-radio-button>
       </el-radio-group>
@@ -17,7 +17,7 @@
         :action="importUrl"
         :on-success="handleCreate"
         :show-file-list="false"
-        accept=".pdf, .doc">
+        accept=".pdf">
         <el-button
           class="add_btn"><svg-icon icon-class="add"></svg-icon> 新增材料</el-button>
       </el-upload>
