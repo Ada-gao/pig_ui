@@ -5,7 +5,8 @@ const app = {
     sidebar: {
       opened: !+Cookies.get('sidebarStatus')
     },
-    visitedViews: []
+    visitedViews: [],
+    productStatusNum: ''
   },
   mutations: {
     TOGGLE_SIDEBAR: state => {
@@ -29,6 +30,9 @@ const app = {
         }
       }
       state.visitedViews.splice(index, 1)
+    },
+    SET_PRODUCT_STATUS: (state, productStatusNum) => {
+      state.productStatusNum = productStatusNum
     }
   },
   actions: {
@@ -43,6 +47,9 @@ const app = {
         commit('DEL_VISITED_VIEWS', view)
         resolve([...state.visitedViews])
       })
+    },
+    SetProductStatus: ({ commit }, view) => {
+      commit('SET_PRODUCT_STATUS', view)
     }
   }
 }

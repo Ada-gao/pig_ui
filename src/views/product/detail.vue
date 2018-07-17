@@ -21,16 +21,19 @@
         <b class="right"><i class="right-arrow1"></i><i class="right-arrow2"></i></b>
       </div>
     </div>
-    <div class="pageTitle" style="text-align: right" v-if="stage&step===1">
-      <!-- <el-button v-if="sys_user_add & step === 1" class="add_btn">新增字段属性</el-button> -->
+    <!-- <div class="pageTitle" style="text-align: right" v-if="stage&step===1">
       关联产品
       <el-input v-model="form.productName" style="width: 180px" placeholder="请输入"></el-input>
-    </div>
+    </div> -->
 
     <div class="split-line" style="margin-bottom: 20px;"></div>
 
     <product-detail
-      :productId="productId"></product-detail>
+      v-if="step===1"
+      :stageType="this.stageType"
+      :formData="formData"
+      :productId="productId"
+      v-on:listen="listenProStatus"></product-detail>
 
     <!-- <div class="split-line" style="margin-bottom: 20px;"></div> -->
 
@@ -470,7 +473,6 @@
               <el-input v-model="scope.row.name"
                         v-if="productFileId===scope.row.productFileId"
                         @keyup.enter.native="updateFileName(scope.row, 'transaction')"></el-input>
-                        <!-- @blur="updateFileName(scope.row, 'transaction')" -->
               <span v-else>{{scope.row.name}}</span>
             </template>
           </el-table-column>
@@ -488,7 +490,8 @@
           <el-table-column
             prop=""
             label="操作"
-            align="center">
+            align="center"
+            v-if="!operationDisabled">
             <template slot-scope="scope">
               <a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>
               <a class="danger_btn" size="small" @click="delfiles(scope.row, 'transaction')">删除</a>
@@ -500,18 +503,6 @@
                      class="btn-padding add_btn"
                      v-if="!operationDisabled"
                      @click="addClientFile('transc')">追加材料</el-button>
-          <!-- <el-upload
-            class="upload-demo"
-            style="display: inline-block;"
-            :headers="headers"
-            :action="importFile('transc')"
-            :on-change="handleChange"
-            :show-file-list="false"
-            accept=".pdf">
-            <el-button size="small"
-                       v-if="!operationDisabled"
-                       class="btn-padding add_btn">追加材料</el-button>
-          </el-upload> -->
         </el-row>
       </div>
 
@@ -529,14 +520,14 @@
               <el-input v-model="scope.row.fileName"
                         v-if="productFileId===scope.row.productClientFileId"
                         @keyup.enter.native="updateClientFileName(scope.row)"></el-input>
-                        <!-- @blur="updateClientFileName(scope.row)" -->
               <span v-else>{{scope.row.fileName}}</span>
             </template>
           </el-table-column>
           <el-table-column
             prop=""
             label="操作"
-            align="center">
+            align="center"
+            v-if="!operationDisabled">
             <template slot-scope="scope">
               <a class="common_btn" size="small" @click="productFileId=scope.row.productClientFileId">编辑</a>
               <a class="danger_btn" size="small" @click="delCustFile(scope.row)">删除</a>
@@ -566,7 +557,6 @@
               <el-input v-model="scope.row.name"
                         v-if="productFileId===scope.row.productFileId"
                         @keyup.enter.native="updateFileName(scope.row, 'product')"></el-input>
-                        <!-- @blur="updateFileName(scope.row, 'product')" -->
               <span v-else>{{scope.row.name}}</span>
             </template>
           </el-table-column>
@@ -597,7 +587,7 @@
             style="display: inline-block;"
             :headers="headers"
             :action="importFile('product')"
-            :on-change="handleChange2"
+            :on-success="handleChange2"
             :show-file-list="false"
             accept=".pdf">
             <el-button size="small"
@@ -607,7 +597,7 @@
         </el-row>
       </div>
 
-      <div class="trade-item">
+      <!-- <div class="trade-item">
         <h3>产品公告</h3>
         <el-table
           :data="fileList3"
@@ -622,7 +612,6 @@
               <el-input v-model="scope.row.name"
                         v-if="productFileId===scope.row.productFileId"
                         @keyup.enter.native="updateFileName(scope.row, 'announcement')"></el-input>
-                        <!-- @blur="updateFileName(scope.row, 'announcement')" -->
               <span v-else>{{scope.row.name}}</span>
             </template>
           </el-table-column>
@@ -661,7 +650,7 @@
                        class="btn-padding add_btn">追加材料</el-button>
           </el-upload>
         </el-row>
-      </div>
+      </div> -->
 
       <div class="split-line" style="margin: 20px 0;"></div>
 
@@ -715,8 +704,7 @@
           <el-row>
             <el-col :span="6">
               <el-form-item prop="keyProduct" label="是否标注重点产品" style="white-space: nowrap;" :rules="keyProRules">
-                <el-radio-group v-model="radio2" @change="test">
-                <!-- <el-radio-group v-model="form2.keyProduct" :disabled="operationDisabled" @change="test"> -->
+                <el-radio-group v-model="radio2" :disabled="operationDisabled" @change="test">
                   <el-radio :label="1">否</el-radio>
                   <el-radio :label="2">是</el-radio>
                 </el-radio-group>
@@ -839,7 +827,7 @@
         </div>
       </el-form>
     </div>
-
+    <!-- 交易信息 -->
     <div v-if="step===3">
       <div class="bref">
         <el-row :gutter="12" class="def-el">
@@ -918,12 +906,6 @@
           :href="batchExport()" type="primary">
           <svg-icon icon-class="add"></svg-icon> 批量导出</a>
       </div>
-      <!-- <div style="text-align: right">
-        <a class="filter-item add_btn"
-          style="margin-left: 10px; padding: 10px; border-radius: 5px;"
-          :href="batchExport()" type="primary">
-          <svg-icon icon-class="add"></svg-icon> 批量导出</a>
-      </div> -->
       <transc-table-component
         :productCollect="true"
         :productNameCol="false"
@@ -937,56 +919,56 @@
     </div>
 
     <div slot="footer" class="dialog-footer" style="text-align: center;">
-      <span class="stage_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('0')">
+      <span class="stage_btn" v-if="createStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('0')">
         <svg-icon icon-class="stage"></svg-icon> 产品分期</span>
-      <span class="stage_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('1')">
+      <span class="stage_btn" v-if="createStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('1')">
         <svg-icon icon-class="stage"></svg-icon> 募集分期</span>
       <!-- 创建 -->
-      <el-button class="search_btn" v-if="dialogStatus=='create'&allDisabled" @click="cancel()">取 消</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='create'&step===1" type="primary" @click="create('form')">保 存</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='create'&step===2" type="primary" @click="updateRouter">保 存</el-button>
+      <el-button class="search_btn" v-if="createStatus=='create'&allDisabled" @click="cancel()">取 消1</el-button>
+      <el-button class="add_btn" v-if="createStatus=='create'&step===1" type="primary" @click="create('form')">保 存1</el-button>
+      <el-button class="add_btn" v-if="createStatus=='create'&step===2" type="primary" @click="updateRouter">保 存2</el-button>
       <!-- 编辑 -->
-      <el-button class="search_btn" v-if="dialogStatus=='update'&step===1&allDisabled" @click="cancel()">取 消</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===1&allDisabled" type="primary" @click="update('form1')">保 存</el-button>
-      <el-button class="search_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" @click="cancel()">取 消</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&allDisabled&someDisabled" type="primary" @click="updateRouter">保 存</el-button>
+      <el-button class="search_btn" v-if="createStatus=='update'&step===1&allDisabled" @click="cancel()">取 消c1</el-button>
+      <el-button class="add_btn" v-if="createStatus=='update'&step===1&allDisabled" type="primary" @click="update('form1')">保 存c1</el-button>
+      <el-button class="search_btn" v-if="createStatus=='update'&step===2&allDisabled&someDisabled" @click="cancel()">取 消c2</el-button>
+      <el-button class="add_btn" v-if="createStatus=='update'&step===2&allDisabled&someDisabled" type="primary" @click="updateRouter">保 存c2</el-button>
       <!-- 在建 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===0" type="primary" @click="updateProductType(1, '/product/building')">
+      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===0" type="primary" @click="updateProductType(1, '/product/building')">
         <svg-icon icon-class="preheating"></svg-icon> 进入产品预热</el-button>
       <!-- 预热 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(2, '/product/preheating')">
+      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(2, '/product/preheating')">
         <svg-icon icon-class="collecting"></svg-icon> 进入产品募集</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(0, '/product/preheating')">
+      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(0, '/product/preheating')">
         <svg-icon icon-class="return"></svg-icon> 返回在建</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductDisplay">
+      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductDisplay">
         <svg-icon v-if="form.isDisplay==='1'" icon-class="eye"></svg-icon> 
         <svg-icon v-else icon-class="product_eye"></svg-icon> 
         {{form.isDisplay==='1'?'设为隐藏':'设为显示'}}</el-button>
       <!--{{form.isDisplay==='1'?'设为显示':'设为隐藏'}}</el-button>-->
       <!-- 募集中 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType(3, '/product/collecting')">
+      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType(3, '/product/collecting')">
         <svg-icon icon-class="close"></svg-icon> 进入已关账</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductPause">
+      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductPause">
         <svg-icon v-if="form.isPause==='1'" icon-class="play"></svg-icon> 
         <svg-icon v-else icon-class="pause"></svg-icon> 
         {{form.isPause==='1'?'开始预约':'暂停预约'}}
       </el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductDisplay">
+      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductDisplay">
         <svg-icon v-if="form.isDisplay==='1'" icon-class="eye"></svg-icon> 
         <svg-icon v-else icon-class="eyeShow"></svg-icon> 
         {{form.isDisplay==='1'?'设为隐藏':'设为显示'}}
         <!--{{form.isDisplay==='1'?'设为显示':'设为隐藏'}}-->
       </el-button>
       <!-- 已关账 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(4, '/product/shutDown')">
+      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(4, '/product/shutDown')">
         <svg-icon icon-class="establish"></svg-icon> 进入已成立</el-button>
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(2, '/product/shutDown')">
+      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(2, '/product/shutDown')">
         <svg-icon icon-class="return"></svg-icon> 返回募集中</el-button>
       <!-- 已成立 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===4" type="primary" @click="updateProductType(5, '/product/established')">
+      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===4" type="primary" @click="updateProductType(5, '/product/established')">
         <svg-icon icon-class="shutDown"></svg-icon> 进入兑付中</el-button>
       <!-- 兑付中 -->
-      <el-button class="add_btn" v-if="dialogStatus=='update'&step===2&productStatusNo===5" type="primary" @click="updateProductType(6, '/product/cashing')">
+      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===5" type="primary" @click="updateProductType(6, '/product/cashing')">
         <svg-icon icon-class="shutDown"></svg-icon> 进入兑付完成</el-button>
     </div>
 
@@ -1090,156 +1072,6 @@
             }
           ]
         },
-        rules: {
-          productName: [
-            {
-              required: true,
-              message: '请输入产品名称',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 20,
-              message: '长度在 3 到 20 个字符',
-              trigger: 'blur'
-            }
-          ],
-          isFloat: [
-            {
-              required: true,
-              message: '请选择收益',
-              trigger: 'blue'
-            }
-          ],
-          bankName: [
-            {
-              required: true,
-              message: '请输入开户银行名称',
-              trigger: 'blur'
-            }
-          ],
-          subBranchName: [
-            {
-              required: true,
-              message: '请输入支行名称',
-              trigger: 'blur'
-            }
-          ],
-          cardNo: [
-            {
-              required: true,
-              message: '请输入打款帐号',
-              trigger: 'blur'
-            }
-          ],
-          productCode: [
-            {
-              required: true,
-              message: '请输入产品名称',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 20,
-              message: '长度在 3 到 20 个字符',
-              trigger: 'blur'
-            }
-          ],
-          // productCode: [
-          //   {
-          //     required: true,
-          //     message: '请输入产品编号',
-          //     trigger: 'blur'
-          //   }
-          // ],
-          productTypeId: [
-            {
-              required: true,
-              message: '请选择产品类型',
-              trigger: 'blur'
-            }
-          ],
-          productRiskLevel: [
-            {
-              required: true,
-              message: '请选择产品风险级别',
-              trigger: 'blur'
-            }
-          ],
-          manager: [
-            {
-              required: true,
-              message: '请输入基金管理人',
-              trigger: 'blur'
-            }
-          ],
-          currencyId: [
-            {
-              required: true,
-              message: '请选择交易币种',
-              trigger: 'blur'
-            }
-          ],
-          collectionAmount: [
-            {
-              required: true,
-              message: '请输入募集额度',
-              trigger: 'change'
-            },
-            {
-              // message: '金额必须为数字值',
-              trigger: 'change',
-              validator: certNumber
-            }
-          ],
-          minimalAmount: [
-            {
-              required: true,
-              message: '请输入起投金额',
-              trigger: 'change'
-            },
-            {
-              message: '金额必须为数字值',
-              trigger: 'change',
-              validator: certNumber
-            }
-          ],
-          minimalAddAmount: [
-            {
-              required: true,
-              message: '请输入追加金额',
-              trigger: 'change'
-            },
-            {
-              // type: 'number',
-              message: '金额必须为数字值',
-              validator: certNumber
-            }
-          ],
-          netValue: [
-            {
-              // required: false,
-              max: 5,
-              message: '请输入小于100，且小数不能超过两位',
-              trigger: 'change',
-              validator: twoDecimals
-            }
-          ],
-          investmentHorizon: [
-            {
-              required: true,
-              message: '请输入产品期限',
-              trigger: 'blur'
-            }
-          ]
-          // isFloat: [
-          //   {
-          //     required: true,
-          //     message: '请选择收益',
-          //     trigger: 'change'
-          //   }
-          // ],
-        },
         rules2: {
           aging: [
             { required: true, trigger: 'bulr'}
@@ -1251,7 +1083,6 @@
         userAdd: false,
         userUpd: false,
         userDel: false,
-        dialogStatus: 'create',
         isDisabled: {
           0: false,
           1: true
@@ -1336,21 +1167,25 @@
         createStatus: 'create',
         selectFile: null,
         radio2: 1,
-        productId: ''
+        productId: '',
+        productStatus: '',
+        formData: {}
       }
     },
     computed: {
       ...mapGetters([
         'permissions',
-        'productStatus',
+        // 'productStatus',
         'productRiskLevel',
-        'investHorizonUnit'
+        'investHorizonUnit',
+        'productStatusNum'
       ]),
       normalList1() {
         return sortKey(this.normalList, 'age')
       }
     },
     created() {
+      this.listQuery.productId = this.$route.params.id
       this.uploadData.productId = this.$route.params.id
       this.productId = this.$route.params.id
       if(this.uploadData.productId) {
@@ -1362,12 +1197,14 @@
         getObjList().then(response => { // 获取币种
           this.currencyList = response.data
           this.form.currencyId = 1
-          this.getList()
+          // this.getList()
         })
       })
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
+      // this.productStatusNo = this.productStatusNum
+      // console.log(this.productStatusNum)
     },
     mounted() {
       var vm = this
@@ -1377,81 +1214,68 @@
         // vm.$set(vm.ada_url, 'z', activeRouter)
       })
     },
-    // watch: {
-    //   url(curVal, oldVal) {
-    //     console.log('curVal: ' + curVal, 'oldVal: ' + oldVal)
-    //   }
-    // },
     methods: {
-      // newUrl(url) {
-      //   this.url = url
-      //   console.log('this.url1: ' + this.url)
-      // },
-      getList() {
-        this.listQuery.productId = this.$route.params.id
-        // if(!this.uploadData.productId) this.nextToUpdate = false
-        fetchProductTypeList().then(res => { // 获取产品类型
-          this.productTypes = res.data
-        })
-        getObjList().then(response => { // 获取币种
-          this.currencyList = response.data
-          this.form.currencyId = 1
-        })
-        if(this.uploadData.productId) { // 查询产品详情
-          getObj(this.uploadData.productId)
-          .then(response => {
-            this.stepStatus = 'update'
-            this.form = response.data
-            // this.nextToUpdate = true
-            // this.dialogFormVisible = true
-            this.dialogStatus = 'update'
-            if(this.form.isFloat === 0) {
-              this.form.annualizedReturn = null
-              this.isDisabled = true
-            } else {
-              this.isDisabled = false
-            }
-            this.productStatusNo = this.form.productStatus
-            // fetchProductTypeList().then(res => { // 获取产品类型
-            //   this.productTypes = res.data
-            // })
-            // getObjList().then(response => { // 获取币种
-            //   this.currencyList = response.data
-            //   // this.form.currencyId = 1
-            // })
-            this.form.currencyIdNo = this.form.currencyId
-            this.form.productTypeIdNo = this.form.productTypeId
-            this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
-            this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
-            this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
-            this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
-            this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
-            if(this.productStatusNo === 6) {
-              this.shortNameDisabled = true
-            }
-            if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
-              this.collectDisabled = true
-            }
-            if(this.productStatusNo === 4) {
-              // this.closeDateDisabled = false
-              this.someDisabled = false
-            }
-            if(this.productStatusNo === 2) {
-              this.closeDateDisabled = false
-            }
-            if(this.productStatusNo === 5) {
-              this.establishedDisabled = false
-              this.someDisabled = false
-            }
-            if(this.productStatusNo === 5||this.productStatusNo === 6) {
-              this.valueDateDisabled = true
-            }
-            if(this.productStatusNo === 6) {
-              this.allDisabled = false
-            }
-          })
-        }
+      listenProStatus(msg) {
+        this.productStatusNo = msg
       },
+      // getList() {
+      //   this.listQuery.productId = this.$route.params.id
+      //   // if(!this.uploadData.productId) this.nextToUpdate = false
+      //   if(this.uploadData.productId) { // 查询产品详情
+      //     getObj(this.uploadData.productId)
+      //     .then(response => {
+      //       this.stepStatus = 'update'
+      //       this.form = response.data
+      //       // this.nextToUpdate = true
+      //       // this.dialogFormVisible = true
+      //       this.createStatus = 'update'
+      //       if(this.form.isFloat === 0) {
+      //         this.form.annualizedReturn = null
+      //         this.isDisabled = true
+      //       } else {
+      //         this.isDisabled = false
+      //       }
+      //       this.productStatusNo = this.form.productStatus
+      //       // fetchProductTypeList().then(res => { // 获取产品类型
+      //       //   this.productTypes = res.data
+      //       // })
+      //       // getObjList().then(response => { // 获取币种
+      //       //   this.currencyList = response.data
+      //       //   // this.form.currencyId = 1
+      //       // })
+      //       this.form.currencyIdNo = this.form.currencyId
+      //       this.form.productTypeIdNo = this.form.productTypeId
+      //       this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
+      //       this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
+      //       this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
+      //       this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
+      //       this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
+      //       if(this.productStatusNo === 6) {
+      //         this.shortNameDisabled = true
+      //       }
+      //       if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
+      //         this.collectDisabled = true
+      //       }
+      //       if(this.productStatusNo === 4) {
+      //         // this.closeDateDisabled = false
+      //         this.someDisabled = false
+      //       }
+      //       if(this.productStatusNo === 2) {
+      //         this.closeDateDisabled = false
+      //       }
+      //       if(this.productStatusNo === 5) {
+      //         this.establishedDisabled = false
+      //         this.someDisabled = false
+      //       }
+      //       if(this.productStatusNo === 5||this.productStatusNo === 6) {
+      //         this.valueDateDisabled = true
+      //       }
+      //       if(this.productStatusNo === 6) {
+      //         this.allDisabled = false
+      //       }
+      //     })
+      //   }
+      // },
       handleDept() {
         console.log('产品状态')
       },
@@ -1590,7 +1414,7 @@
           })
         })
       },
-      updateProductType(status, url) {
+      updateProductType(status, url) { // 产品状态转化
         let params = {
           status: status
         }
@@ -1619,7 +1443,7 @@
           this.$router.push({path: url})
         })
       },
-      updateProductPause() {
+      updateProductPause() { // 暂停预约
         let pause = this.form.isPause === '0' ? '1' : '0'
         let params = {
           pause: pause
@@ -1631,7 +1455,7 @@
           // this.getOperations()
         })
       },
-      updateProductDisplay() {
+      updateProductDisplay() { // 显示/隐藏
         let display = this.form.isDisplay === '0' ? '1' : '0'
         let params = {
           display: display
@@ -1695,22 +1519,6 @@
           this.$message.error('只能上传pdf文档')
         }
         return isFile
-      },
-      handleChange(file, fileList) {
-        this.uploadData.fileType = 'transc'
-        getFiles(this.uploadData).then(response => {
-          this.fileList1 = response.data
-        })
-      },
-      handleChange1(file, fileList) { // 上传材料，列表展示
-        // this.fileList1 = fileList.slice(-3)
-        this.uploadData.fileType = 'client'
-        // debugger
-        getFiles(this.uploadData).then(response => {
-          // console.log('上传1')
-          // console.log(response.data)
-          this.clientFiles = response.data
-        })
       },
       delfiles(item, type) { // 删除材料
         let productFileType = type
@@ -1777,23 +1585,20 @@
           this.fileList2 = response.data
         })
       },
-      handleChange3(file, fileList) { // 上传材料，列表展示
-        // this.fileList3 = fileList.slice(-3)
-        this.uploadData.fileType = 'announcement'
-        getFiles(this.uploadData).then(response => {
-          this.fileList3 = response.data
-        })
-      },
-      radioChange(value) {
-        if(value === 0) {
-          this.isDisabled = true
-        } else {
-          this.isDisabled = false
-        }
-      },
-      uploadError2(err, file, fileList) {
-        console.log(err)
-      },
+      // handleChange3(file, fileList) { // 上传材料，列表展示
+      //   // this.fileList3 = fileList.slice(-3)
+      //   this.uploadData.fileType = 'announcement'
+      //   getFiles(this.uploadData).then(response => {
+      //     this.fileList3 = response.data
+      //   })
+      // },
+      // radioChange(value) {
+      //   if(value === 0) {
+      //     this.isDisabled = true
+      //   } else {
+      //     this.isDisabled = false
+      //   }
+      // },
       importFile(fileType) {
         return uploadFiles(this.uploadData.productId, fileType)
       },
@@ -1816,9 +1621,9 @@
           })
         }
       },
-      changeCurrency(val) {
-        this.currencyList = this.currencyList.slice(0)
-      },
+      // changeCurrency(val) {
+      //   this.currencyList = this.currencyList.slice(0)
+      // },
       changeStep(val) { // 切换tab
         this.step = val - 0
         if(this.step === 2) {
@@ -1868,21 +1673,22 @@
           })
         }
       },
-      handleCollect(type) {
+      handleCollect(type) { // 募集分期/产品分期
         this.stageType = type // 0 产品分期； 1 募集分期
+        // Bus.$emit('stageTypeNo', type)
+        // console.log('产品分期' + type)
         getProductStage(this.uploadData.productId, type).then(res => {
-          console.log(res)
+          // console.log(res)
           this.step = 1
-          this.stage = true
-          this.form = res.data
+          // this.stage = true
+          this.formData = res.data
           // console.log(this.stage)
-          this.form.currencyIdNo = this.form.currencyId
-          this.form.productTypeIdNo = this.form.productTypeId
-          this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
-          this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
-          this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
-          this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
-          // this.form.productCode = this.form.productCode + '-01'
+          this.formData.currencyIdNo = this.formData.currencyId
+          this.formData.productTypeIdNo = this.formData.productTypeId
+          this.formData.investmentHorizonUnitNo = this.formData.investmentHorizonUnit
+          this.formData.productTypeId = transformText(this.productTypes, this.formData.productTypeId)
+          this.formData.currencyId = transformText(this.currencyList, this.formData.currencyId)
+          this.formData.investmentHorizonUnit = transformText(this.investHorizonUnit, this.formData.investmentHorizonUnit)
         })
       },
       handleAppoint(type) {

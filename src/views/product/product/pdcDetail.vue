@@ -1,6 +1,6 @@
 <template>
   <div class="product-detail">
-    <el-form :model="form" ref="form1" label-width="100px">
+    <el-form :model="form" :rules="rules" ref="form1" label-width="110px">
       <el-row :gutter="90">
         <el-col :span="11" v-if="!stage">
           <el-form-item label="产品编号" prop="productCode">
@@ -76,7 +76,7 @@
             <!-- <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" disabled></el-input>
             <el-input v-model="form.investmentHorizonUnit" style="width: 22%;" disabled></el-input> -->
             <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" :disabled="detailDisabled||stageType=='0'"></el-input>
-            <el-select v-model="form.investmentHorizonUnit" style="width: 20%;" :disabled="detailDisabled||stageType=='0'">
+            <el-select v-model="form.investmentHorizonUnit" style="width: 23%;" :disabled="detailDisabled||stageType=='0'">
               <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
               </el-option>
             </el-select>
@@ -185,28 +185,28 @@
 
       <div class="split-line" style="margin-bottom: 20px;"></div>
 
-      <el-row>
+      <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="账户名称" prop="bankName">
             <el-input v-model="form.bankName" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
+      <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="账号">
             <el-input v-model.number="form.cardNo" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
+      <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="开户银行（支行）名称">
             <el-input v-model="form.subBranchName" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
+      <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="大额支付行号">
             <el-input v-model="form.subBranchName" placeholder="请输入" :disabled="detailDisabled"></el-input>
@@ -231,17 +231,17 @@
       <el-row>
         <el-col :span="6">
           <el-form-item label="成立日:">
-            <span>{{form.establishmentDate}}</span>
+            <span>{{form.establishmentDate|parseTime('{y}-{m}-{d}')||'--'}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="关账日:">
-            <span>{{form.closeDate|parseTime('{y}-{m}-{d}')}}</span>
+            <span>{{form.closeDate|parseTime('{y}-{m}-{d}')||'--'}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="起息日:">
-            <span>{{form.valueDate}}</span>
+            <span>{{form.valueDate|parseTime('{y}-{m}-{d}')||'--'}}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -250,13 +250,36 @@
 </template>
 
 <script>
-  import { getObj } from '@/api/product/product'
+  import { getObj, getProductStage } from '@/api/product/product'
   import transcTableComponent from 'components/table/transcTable'
   import { fetchProductTypeList } from '@/api/product/productType'
   import { fetchCurrency, getObjList } from '@/api/currency'
   import { mapGetters } from 'vuex'
   import { transformText, sortKey } from '@/utils'
   import { parseTime } from '@/utils'
+  import { decimals, isNumber } from '@/utils/validate'
+  import Bus from '@/assets/js/bus'
+
+  const certNumber = (rule, value, callback) => {
+    if (!value) {
+      return null
+    } else if(!Number.isInteger(value)) {
+      callback(new Error('只能输入整数金额'))
+    } else if (!isNumber(value)) {
+      callback(new Error('请输入10位以内的数字'))
+    } else {
+      callback()
+    }
+  }
+  const twoDecimals = (rule, value, callback) => {
+    if (!value) {
+      return null
+    } else if (!decimals(value)) {
+      callback(new Error('请输入正确的净值数字'))
+    } else {
+      callback()
+    }
+  }
 
   export default {
     data() {
@@ -266,26 +289,165 @@
         currencyList: [],
         isDisabled: true,
         stage: false,
-        stageType: '',
+        stageTypeNo: '',
         collectDisabled: false,
         shortNameDisabled: false,
-        detailDisabled: false
+        detailDisabled: false,
+        rules: {
+          productName: [
+            {
+              required: true,
+              message: '请输入产品名称',
+              trigger: 'blur'
+            },
+            {
+              min: 3,
+              max: 20,
+              message: '长度在 3 到 20 个字符',
+              trigger: 'blur'
+            }
+          ],
+          isFloat: [
+            {
+              required: true,
+              message: '请选择收益',
+              trigger: 'blue'
+            }
+          ],
+          bankName: [
+            {
+              required: true,
+              message: '请输入开户银行名称',
+              trigger: 'blur'
+            }
+          ],
+          subBranchName: [
+            {
+              required: true,
+              message: '请输入支行名称',
+              trigger: 'blur'
+            }
+          ],
+          cardNo: [
+            {
+              required: true,
+              message: '请输入打款帐号',
+              trigger: 'blur'
+            }
+          ],
+          productCode: [
+            {
+              required: true,
+              message: '请输入产品名称',
+              trigger: 'blur'
+            },
+            {
+              min: 3,
+              max: 20,
+              message: '长度在 3 到 20 个字符',
+              trigger: 'blur'
+            }
+          ],
+          productTypeId: [
+            {
+              required: true,
+              message: '请选择产品类型',
+              trigger: 'blur'
+            }
+          ],
+          productRiskLevel: [
+            {
+              required: true,
+              message: '请选择产品风险级别',
+              trigger: 'blur'
+            }
+          ],
+          manager: [
+            {
+              required: true,
+              message: '请输入基金管理人',
+              trigger: 'blur'
+            }
+          ],
+          currencyId: [
+            {
+              required: true,
+              message: '请选择交易币种',
+              trigger: 'blur'
+            }
+          ],
+          collectionAmount: [
+            {
+              required: true,
+              message: '请输入募集额度',
+              trigger: 'change'
+            },
+            {
+              // message: '金额必须为数字值',
+              trigger: 'change',
+              validator: certNumber
+            }
+          ],
+          minimalAmount: [
+            {
+              required: true,
+              message: '请输入起投金额',
+              trigger: 'change'
+            },
+            {
+              message: '金额必须为数字值',
+              trigger: 'change',
+              validator: certNumber
+            }
+          ],
+          minimalAddAmount: [
+            {
+              required: true,
+              message: '请输入追加金额',
+              trigger: 'change'
+            },
+            {
+              // type: 'number',
+              message: '金额必须为数字值',
+              validator: certNumber
+            }
+          ],
+          netValue: [
+            {
+              // required: false,
+              max: 5,
+              message: '请输入小于100，且小数不能超过两位',
+              trigger: 'change',
+              validator: twoDecimals
+            }
+          ],
+          investmentHorizon: [
+            {
+              required: true,
+              message: '请输入产品期限',
+              trigger: 'blur'
+            }
+          ]
+        }
       }
     },
-    props: {
-      productId: {
-        default: null
-      }
-    },
+    props: ['productId', 'stageType', 'formData'],
     computed: {
       ...mapGetters([
         'permissions',
         'productStatus',
         'productRiskLevel',
         'investHorizonUnit'
-      ]),
-      normalList1() {
-        return sortKey(this.normalList, 'age')
+      ])
+      // normalList1() {
+      //   return sortKey(this.normalList, 'age')
+      // }
+    },
+    filters: {
+      parseTime (time) {
+        if(!time) return
+        let date = new Date(time)
+        return parseTime(date)
       }
     },
     created() {
@@ -294,20 +456,47 @@
         getObjList().then(response => { // 获取币种
           this.currencyList = response.data
           this.form.currencyId = 1
-          this.getList()
+          if(!this.stage) {
+            this.getList()
+          }
         })
       })
     },
+    watch:{
+      // watch 无效，直接在 mounted 里可获取到
+      stageType(curVal, oldVal) {
+        console.log(curVal + ';' + oldVal)
+        if(curVal) {
+          this.stageTypeNo = curVal
+          this.stage = true
+          if(this.stageTypeNo === '0') {
+            this.detailDisabled = false
+          }
+          console.log('maybe something is wrong')
+          this.getCollectList(this.productId, this.stageTypeNo)
+        }
+      }
+    },
+    mounted() {
+      this.form = this.formData
+      let list = Object.keys(this.formData)
+      
+      if(list.length > 1 & !list.productId) {
+        if(this.stageType === '0') {
+          // 产品分期
+          this.detailDisabled = false
+          this.stage = true
+        }
+      }
+    },
     methods: {
       getList() {
-        // this.listQuery.productId = this.$route.params.id
-        // if(!this.productId) this.nextToUpdate = false
+        // console.log(this.stageType)
         if(this.productId) { // 查询产品详情
           getObj(this.productId)
           .then(response => {
             // this.stepStatus = 'update'
             this.form = response.data
-            console.log(response.data)
             // this.dialogFormVisible = true
             this.dialogStatus = 'update' // 设置每个产品详情对应显示的提交按钮
             if(this.form.isFloat === 0) {
@@ -317,6 +506,8 @@
               this.isDisabled = false
             }
             this.productStatusNo = this.form.productStatus //根据产品状态判断禁用字段
+            this.$emit('listen', this.productStatusNo) // 传递产品状态到父组件
+            // this.$store.dispatch('SetProductStatus', this.productStatusNo)
             this.form.currencyIdNo = this.form.currencyId
             this.form.productTypeIdNo = this.form.productTypeId
             this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
@@ -333,6 +524,7 @@
               this.shortNameDisabled = true
             }
             if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
+              // 募集人数和募集额度禁用
               this.collectDisabled = true
             }
             // if(this.productStatusNo === 4) {
@@ -357,6 +549,21 @@
           this.detailDisabled = false
         }
       },
+      // getCollectList(id, stageType) {
+      //   getProductStage(id, stageType).then(res => {
+      //     console.log('这是自己获得额')
+      //     this.step = 1
+      //     this.stage = true
+      //     this.formData = res.data
+      //     // console.log(this.stage)
+      //     this.formData.currencyIdNo = this.formData.currencyId
+      //     this.formData.productTypeIdNo = this.formData.productTypeId
+      //     this.formData.investmentHorizonUnitNo = this.formData.investmentHorizonUnit
+      //     this.formData.productTypeId = transformText(this.productTypes, this.formData.productTypeId)
+      //     this.formData.currencyId = transformText(this.currencyList, this.formData.currencyId)
+      //     this.formData.investmentHorizonUnit = transformText(this.investHorizonUnit, this.formData.investmentHorizonUnit)
+      //   })
+      // },
       changeCurrency(val) {
         this.currencyList = this.currencyList.slice(0)
       },
@@ -372,6 +579,8 @@
 </script>
 
 <style lang="scss" scoped>
-
+.filter-item {
+  display: block;
+}
 </style>
 
