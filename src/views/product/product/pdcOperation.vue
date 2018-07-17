@@ -382,23 +382,23 @@
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="updateProductType(0, '/product/preheating')">
         <svg-icon icon-class="return"></svg-icon> 返回在建</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="updateProductDisplay">
-        <svg-icon v-if="form.isDisplay==='1'" icon-class="eye"></svg-icon> 
+        <svg-icon v-if="form2.isDisplay==='1'" icon-class="eye"></svg-icon> 
         <svg-icon v-else icon-class="product_eye"></svg-icon> 
-        {{form.isDisplay==='1'?'设为隐藏':'设为显示'}}</el-button>
-      <!--{{form.isDisplay==='1'?'设为显示':'设为隐藏'}}</el-button>-->
+        {{form2.isDisplay==='1'?'设为隐藏':'设为显示'}}</el-button>
+      <!--{{form2.isDisplay==='1'?'设为显示':'设为隐藏'}}</el-button>-->
       <!-- 募集中 -->
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===2" type="primary" @click="updateProductType(3, '/product/collecting')">
         <svg-icon icon-class="close"></svg-icon> 进入已关账</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===2" type="primary" @click="updateProductPause">
-        <svg-icon v-if="form.isPause==='1'" icon-class="play"></svg-icon> 
+        <svg-icon v-if="form2.isPause==='1'" icon-class="play"></svg-icon> 
         <svg-icon v-else icon-class="pause"></svg-icon> 
-        {{form.isPause==='1'?'开始预约':'暂停预约'}}
+        {{form2.isPause==='1'?'开始预约':'暂停预约'}}
       </el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===2" type="primary" @click="updateProductDisplay">
-        <svg-icon v-if="form.isDisplay==='1'" icon-class="eye"></svg-icon> 
+        <svg-icon v-if="form2.isDisplay==='1'" icon-class="eye"></svg-icon> 
         <svg-icon v-else icon-class="eyeShow"></svg-icon> 
-        {{form.isDisplay==='1'?'设为隐藏':'设为显示'}}
-        <!--{{form.isDisplay==='1'?'设为显示':'设为隐藏'}}-->
+        {{form2.isDisplay==='1'?'设为隐藏':'设为显示'}}
+        <!--{{form2.isDisplay==='1'?'设为显示':'设为隐藏'}}-->
       </el-button>
       <!-- 已关账 -->
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===3" type="primary" @click="updateProductType(4, '/product/shutDown')">
@@ -440,12 +440,12 @@
 
 <script>
   import { putFileObj, delCustFile, fetchOperation, addCustFile, postTranscFile, getCustFile,
-    updCustFile, updProductDisplay, updProductPause } from '@/api/product/product'
+    updCustFile, updProductDisplay, updProductPause, getProductStage } from '@/api/product/product'
   // import transcTableComponent from 'components/table/transcTable'
   // import { fetchProductTypeList } from '@/api/product/productType'
   // import { fetchCurrency, getObjList } from '@/api/currency'
   // import { mapGetters } from 'vuex'
-  import { sortKey } from '@/utils'
+  import { transformText, sortKey } from '@/utils'
   // import { parseTime } from '@/utils'
   // import { decimals, isNumber } from '@/utils/validate'
   // import Bus from '@/assets/js/bus'
@@ -572,14 +572,13 @@
     mounted() {
       // this.form = this.formData
       this.productStatusNo = this.productStatus
-      console.log(this.productStatusNo)
+      // console.log(this.productStatusNo)
     },
     methods: {
       getOperations() { // 获取操作指南信息
         if(!this.productId) return false
         this.getAllFiles(this.productId)
         fetchOperation(this.productId).then(res => {
-          console.log('查询到操作指南信息')
           this.form2 = res.data
           this.form2.normalDTO = res.data.normalDTO || {}
           this.activityData = res.data.activityDTO || []
@@ -668,26 +667,46 @@
         })
       },
       updateProductDisplay() { // 显示/隐藏
-        let display = this.form.isDisplay === '0' ? '1' : '0'
+        let display = this.form2.isDisplay === '0' ? '1' : '0'
         let params = {
           display: display
         }
         updProductDisplay(this.productId, params).then(res => {
           console.log(res)
-          this.form.isDisplay = display
+          this.form2.isDisplay = display
           // this.getOperations()
         })
       },
       updateProductPause() { // 暂停预约
-        let pause = this.form.isPause === '0' ? '1' : '0'
+        let pause = this.form2.isPause === '0' ? '1' : '0'
         let params = {
           pause: pause
         }
         // console.log('跳转地址： ' + this.url)
         updProductPause(this.productId, params).then(res => {
           console.log(res)
-          this.form.isPause = pause
+          this.form2.isPause = pause
           // this.getOperations()
+        })
+      },
+      handleCollect(type) { // 募集分期/产品分期
+        this.stageType = type // 0 产品分期； 1 募集分期
+        // Bus.$emit('stageTypeNo', type)
+        getProductStage(this.productId, type).then(res => {
+          // this.stage = true
+          this.formData = res.data
+          // console.log(this.stage)
+          this.formData.currencyIdNo = this.formData.currencyId
+          this.formData.productTypeIdNo = this.formData.productTypeId
+          this.formData.investmentHorizonUnitNo = this.formData.investmentHorizonUnit
+          this.formData.productTypeId = transformText(this.productTypes, this.formData.productTypeId)
+          this.formData.currencyId = transformText(this.currencyList, this.formData.currencyId)
+          this.formData.investmentHorizonUnit = transformText(this.investHorizonUnit, this.formData.investmentHorizonUnit)
+          let params = {
+            data: this.formData,
+            stageType: this.stageType
+          }
+          this.$emit('detailByOperation', params)
         })
       },
       addCommission() {

@@ -490,6 +490,7 @@
     },
     mounted() {
       this.form = this.formData
+      console.log(this.form)
       let list = Object.keys(this.formData)
       
       if(list.length > 1 & !list.productId) {
@@ -553,32 +554,32 @@
         }
       },
       create(formName) { // 创建提交
-        this.$emit('productIdByDetail', '')
-        // const set = this.$refs
-        // if(!this.form.isFloat) {
-        //   this.form.annualizedReturn = null
-        //   this.isDisabled = true
-        // }
-        // set[formName].validate(valid => {
-        //   if (valid) {
-        //     addObj(this.form)
-        //       .then(response => {
-        //         if(response.status === 200) {
-        //           this.$notify({
-        //             title: '成功',
-        //             message: '创建成功',
-        //             type: 'success',
-        //             duration: 2000
-        //           })
-        //           this.$emit('productIdByDetail', response.data.productId)
-        //         }
-        //       })
-        //   } else {
-        //     return false
-        //   }
-        // })
+        // this.$emit('productIdByDetail', '')
+        const set = this.$refs
+        if(!this.form.isFloat) {
+          this.form.annualizedReturn = null
+          this.isDisabled = true
+        }
+        set[formName].validate(valid => {
+          if (valid) {
+            addObj(this.form)
+              .then(response => {
+                if(response.status === 200) {
+                  this.$notify({
+                    title: '成功',
+                    message: '创建成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                  this.$emit('productIdByDetail', response.data.productId)
+                }
+              })
+          } else {
+            return false
+          }
+        })
       },
-      update(formName) { // 产品详情修改提交（第一步）
+      update(formName) { // 产品详情修改提交
         const set = this.$refs
         // if(this.stageType==='0' || this.productStatusNo == '0') formName = 'form'
         if(!this.form.isFloat) {
@@ -601,7 +602,8 @@
                 }
                 console.log(response)
                 this.form = response.data
-                this.productId = this.form.productId
+                // this.productId = this.form.productId
+                this.$emit('productIdByDetail', response.data.productId)
                 this.step = 2
                 // 此处应该 $emit 发送数据到父组件
                 // this.changeStep(this.step)

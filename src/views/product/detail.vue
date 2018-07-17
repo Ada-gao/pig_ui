@@ -462,7 +462,8 @@
 
       <product-operation
         :productStatus="productStatusNo"
-        :productId="productId"></product-operation>
+        :productId="productId"
+        v-on:detailByOperation="listenDetail"></product-operation>
       <!-- <div class="trade-item">
         <h3>交易所需材料</h3>
         <el-table
@@ -1162,6 +1163,12 @@
         this.step = 2
         this.changeStep(this.step)
       },
+      listenDetail(params) {
+        this.stageType = params.stageType
+        this.formData = params.data
+        this.step = 1
+        // this.changeStep(this.step)
+      },
       handleDept() {
         console.log('产品状态')
       },
@@ -1560,89 +1567,89 @@
           })
         }
       },
-      handleCollect(type) { // 募集分期/产品分期
-        this.stageType = type // 0 产品分期； 1 募集分期
-        // Bus.$emit('stageTypeNo', type)
-        // console.log('产品分期' + type)
-        getProductStage(this.productId, type).then(res => {
-          // console.log(res)
-          this.step = 1
-          // this.stage = true
-          this.formData = res.data
-          // console.log(this.stage)
-          this.formData.currencyIdNo = this.formData.currencyId
-          this.formData.productTypeIdNo = this.formData.productTypeId
-          this.formData.investmentHorizonUnitNo = this.formData.investmentHorizonUnit
-          this.formData.productTypeId = transformText(this.productTypes, this.formData.productTypeId)
-          this.formData.currencyId = transformText(this.currencyList, this.formData.currencyId)
-          this.formData.investmentHorizonUnit = transformText(this.investHorizonUnit, this.formData.investmentHorizonUnit)
-        })
-      },
+      // handleCollect(type) { // 募集分期/产品分期
+      //   this.stageType = type // 0 产品分期； 1 募集分期
+      //   // Bus.$emit('stageTypeNo', type)
+      //   // console.log('产品分期' + type)
+      //   getProductStage(this.productId, type).then(res => {
+      //     // console.log(res)
+      //     this.step = 1
+      //     // this.stage = true
+      //     this.formData = res.data
+      //     // console.log(this.stage)
+      //     this.formData.currencyIdNo = this.formData.currencyId
+      //     this.formData.productTypeIdNo = this.formData.productTypeId
+      //     this.formData.investmentHorizonUnitNo = this.formData.investmentHorizonUnit
+      //     this.formData.productTypeId = transformText(this.productTypes, this.formData.productTypeId)
+      //     this.formData.currencyId = transformText(this.currencyList, this.formData.currencyId)
+      //     this.formData.investmentHorizonUnit = transformText(this.investHorizonUnit, this.formData.investmentHorizonUnit)
+      //   })
+      // },
       handleAppoint(type) {
         this.listQuery.type = type
         Bus.$emit('queryAppoints', this.listQuery)
       },
-      getOperations() { // 获取操作指南信息
-        this.getAllFiles(this.productId)
-        if(!this.productId) return false
-        fetchOperation(this.productId).then(res => {
-          this.form2 = res.data
-          this.form2.normalDTO = res.data.normalDTO || {}
-          this.activityData = res.data.activityDTO || []
-          if(this.form2.importantStart || this.form2.importantEnd) {
-            console.log('keyProduct: ' + this.radio2)
-            this.radio2 = 2
-          } else {
-            this.radio2 = 1
-          }
-          this.importantDate = [this.form2.importantStart, this.form2.importantEnd]
-          this.normalData = this.form2.normalDTO
-          this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
-          if(!this.normalList) {
-            this.normalList = [{
-              age: '1'
-            }]
-          }
-          let list = this.normalList1
-          this.cmsIndex = list[list.length - 1].age
-          if(!this.activityData.length) {
-            this.activityData = [{
-              activeDate: [],
-              performanceCoefficient: ''
-            }]
-          } else {
-            this.activityData.forEach(item => {
-              item.activeDate = []
-              item.activeDate[0] = item.activityStart
-              item.activeDate[1] = item.activityEnd
-            })
-          }
-          // console.log(res)
-          // 判断产品预约审核条件是否禁用
-          // if(!this.form2.importantEnd) {
-          //   this.form2.keyProduct = 1
-          // }
-          if(this.form2.appointAmountPercent) {
-            this.checked1 = true
-          }
-          if(this.form2.appointNums) {
-            this.checked2 = true
-          }
-          if(this.form2.onceAppointGt) {
-            this.checked3 = true
-          }
-          if(this.form2.onceAppointLt) {
-            this.checked4 = true
-          }
-          if(this.form2.remitAmountsPercent) {
-            this.checked5 = true
-          }
-          // 不同产品状态可编辑项
-          if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
-            this.operationDisabled = true
-          }
-        })
-      },
+      // getOperations() { // 获取操作指南信息
+      //   this.getAllFiles(this.productId)
+      //   if(!this.productId) return false
+      //   fetchOperation(this.productId).then(res => {
+      //     this.form2 = res.data
+      //     this.form2.normalDTO = res.data.normalDTO || {}
+      //     this.activityData = res.data.activityDTO || []
+      //     if(this.form2.importantStart || this.form2.importantEnd) {
+      //       console.log('keyProduct: ' + this.radio2)
+      //       this.radio2 = 2
+      //     } else {
+      //       this.radio2 = 1
+      //     }
+      //     this.importantDate = [this.form2.importantStart, this.form2.importantEnd]
+      //     this.normalData = this.form2.normalDTO
+      //     this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
+      //     if(!this.normalList) {
+      //       this.normalList = [{
+      //         age: '1'
+      //       }]
+      //     }
+      //     let list = this.normalList1
+      //     this.cmsIndex = list[list.length - 1].age
+      //     if(!this.activityData.length) {
+      //       this.activityData = [{
+      //         activeDate: [],
+      //         performanceCoefficient: ''
+      //       }]
+      //     } else {
+      //       this.activityData.forEach(item => {
+      //         item.activeDate = []
+      //         item.activeDate[0] = item.activityStart
+      //         item.activeDate[1] = item.activityEnd
+      //       })
+      //     }
+      //     // console.log(res)
+      //     // 判断产品预约审核条件是否禁用
+      //     // if(!this.form2.importantEnd) {
+      //     //   this.form2.keyProduct = 1
+      //     // }
+      //     if(this.form2.appointAmountPercent) {
+      //       this.checked1 = true
+      //     }
+      //     if(this.form2.appointNums) {
+      //       this.checked2 = true
+      //     }
+      //     if(this.form2.onceAppointGt) {
+      //       this.checked3 = true
+      //     }
+      //     if(this.form2.onceAppointLt) {
+      //       this.checked4 = true
+      //     }
+      //     if(this.form2.remitAmountsPercent) {
+      //       this.checked5 = true
+      //     }
+      //     // 不同产品状态可编辑项
+      //     if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
+      //       this.operationDisabled = true
+      //     }
+      //   })
+      // },
       batchExport() {
         let type = this.listQuery.type
         let id = this.productId
