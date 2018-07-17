@@ -439,9 +439,6 @@
         'productRiskLevel',
         'investHorizonUnit'
       ])
-      // normalList1() {
-      //   return sortKey(this.normalList, 'age')
-      // }
     },
     filters: {
       parseTime (time) {
