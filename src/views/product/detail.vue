@@ -463,6 +463,7 @@
       <product-operation
         :proStatus="productStatusNo"
         :productId="productId"
+        :productInfo="productInfo"
         v-on:detailByOperation="listenDetail"></product-operation>
       <!-- <div class="trade-item">
         <h3>交易所需材料</h3>
@@ -1154,15 +1155,16 @@
       // })
     },
     methods: {
-      listenProStatus(msg) {
-        this.productStatusNo = msg
+      listenProStatus(msg) { // 从产品详情接收--修改：接收字段增加
+        this.productStatusNo = msg.productStatusNo
+        this.productInfo = msg
       },
-      listenProId(val) {
+      listenProId(val) { // 从产品详情接收
         this.productId = val
         this.step = 2
         this.changeStep(this.step)
       },
-      listenDetail(params) {
+      listenDetail(params) { // 从操作指南接收
         this.stageType = params.stageType
         this.formData = params.data
         this.step = 1

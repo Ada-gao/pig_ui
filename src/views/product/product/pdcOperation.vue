@@ -435,6 +435,71 @@
         <el-button type="primary" @click="chooseClientFile">确 定</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogStVisible"
+      width="30%">
+      <div style="margin-bottom: 30px;">此产品现在为{{productStatusText}}，确定进入{{msgText}}吗？</div>
+      <el-form label-width="110px">
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="产品名称:" prop="minimalAmount" style="white-space: nowrap">
+              <span>{{productInfo.productName}}</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="已募集人数:" prop="minimalAmount" style="white-space: nowrap">
+              <span>{{productInfo.collectLP}}</span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="已募集额度:" prop="minimalAmount" style="white-space: nowrap">
+              <span>{{productInfo.collectAmount}}万</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-show="productStatusNo===2">
+          <el-col :span="11">
+            <el-form-item label="关账时间:" prop="closeDate">
+              <el-date-picker
+                v-model="dto.closeDate"
+                type="datetime"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-show="productStatusNo===3">
+          <el-col :span="11">
+            <el-form-item label="已成立时间" prop="establishmentDate">
+              <el-date-picker
+                v-model="dto.establishmentDate"
+                type="datetime"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-show="productStatusNo===3">
+          <el-col :span="11">
+            <el-form-item label="起息日期" prop="valueDate">
+              <el-date-picker
+                v-model="dto.valueDate"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div class="dialog-footer text-right">
+        <el-button @click="dialogStVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleProStatus">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -529,19 +594,24 @@
         },
         createStatus: 'create',
         dialogComVisible: false,
+        dialogStVisible: false,
         selectFile: null,
         clientFileList: [],
         clientFile: '',
         productFileId: 0,
         productStatusNo: 100,
-        form: {}
+        form: {},
+        productStatusText: '',
+        msgText: '',
+        dto: {},
+        url: ''
         // form: {},
         // isDisabled: true,
         // stage: false,
         // stageTypeNo: '',
       }
     },
-    props: ['productId', 'proStatus'],
+    props: ['productId', 'proStatus', 'productInfo'],
     computed: {
       ...mapGetters([
       //   'permissions',
@@ -568,7 +638,6 @@
     },
     mounted() {
       this.productStatusNo = this.proStatus
-      // console.log(this.productStatusNo)
     },
     methods: {
       getOperations() { // 获取操作指南信息
@@ -707,51 +776,54 @@
         })
       },
       updateProductType(status, url) { // 产品状态转化
-        let params = {
-          status: status
-        }
-        let msgText = ''
-        if(status == 1) {
-          msgText = '预热'
-        } else if(status == 2) {
-          msgText = '募集中'
-        } else if(status == 3) {
-          msgText = '已关账'
-        } else if(status == 4) {
-          msgText = '已成立'
-        } else if(status == 5) {
-          msgText = '兑付中'
-        } else if(status == 6) {
-          msgText = '兑付完成'
-        }
-        let productStatusText = transformText(this.productStatus, this.productStatusNo)
+        // let params = {
+        //   status: status,
+        // }
+        this.dto.status = status
+        this.url = url
+        // if(status == 1) {
+        //   this.msgText = '预热'
+        // } else if(status == 2) {
+        //   this.msgText = '募集中'
+        // } else if(status == 3) {
+        //   this.msgText = '已关账'
+        // } else if(status == 4) {
+        //   this.msgText = '已成立'
+        // } else if(status == 5) {
+        //   this.msgText = '兑付中'
+        // } else if(status == 6) {
+        //   this.msgText = '兑付完成'
+        // }
+        this.productStatusText = transformText(this.productStatus, this.productStatusNo)
+        this.msgText = transformText(this.productStatus, status)
         
-        this.$confirm('此产品现在为' + productStatusText + ', 确定进入' + msgText + '吗?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          // this.$message({
-          //   type: 'success',
-          //   message: '删除成功!'
-          // })
-          console.log('跳转地址--：' + url)
-          updProductType(this.productId, params).then(res => {
-            // this.$notify({
-            //   title: '成功',
-            //   message: '产品进入' + msgText + '成功',
-            //   type: 'success',
-            //   duration: 2000
-            // })
-            console.log('跳转地址：' + url)
-            this.$router.push({path: url})
+        if(status == 3 || status == 4) {
+          this.dialogStVisible = true
+
+        } else {
+          this.$confirm('此产品现在为' + this.productStatusText + ', 确定进入' + this.msgText + '吗?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            updProductType(this.productId, this.dto).then(res => {
+              this.$router.push({path: url})
+            })
+          }).catch(() => {
+
           })
-        }).catch(() => {
-          // this.$message({
-          //   type: 'info',
-          //   message: '已取消删除'
-          // })       
+        }
+      },
+      handleProStatus() {
+        updProductType(this.productId, this.dto).then(res => {
+          this.dialogStVisible = false
+          this.$router.push({path: this.url})
         })
+      },
+      cancel(formName) {
+        // this.dialogFormVisible = false
+        // this.$refs[formName].resetFields()
+        this.$router.push({path: '/product/productList'})
       },
       addCommission() {
         if(this.cmsIndex > 4) return

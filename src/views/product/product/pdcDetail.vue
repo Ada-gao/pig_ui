@@ -515,7 +515,13 @@
               this.isDisabled = false
             }
             this.productStatusNo = this.form.productStatus //根据产品状态判断禁用字段
-            this.$emit('listen', this.productStatusNo) // 传递产品状态到父组件
+            let params = {
+              productStatusNo: this.productStatusNo,
+              productName: this.form.productName,
+              collectLP: this.form.productLp,
+              collectAmount: this.form.collectionAmount
+            }
+            this.$emit('listen', params) // 传递产品状态到父组件
             // this.$store.dispatch('SetProductStatus', this.productStatusNo)
             this.form.currencyIdNo = this.form.currencyId
             this.form.productTypeIdNo = this.form.productTypeId
