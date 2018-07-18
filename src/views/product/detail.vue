@@ -461,7 +461,7 @@
     <div class="upfile-group" v-if="step===2">
 
       <product-operation
-        :productStatus="productStatusNo"
+        :proStatus="productStatusNo"
         :productId="productId"
         v-on:detailByOperation="listenDetail"></product-operation>
       <!-- <div class="trade-item">
@@ -910,7 +910,7 @@
         <svg-icon icon-class="shutDown"></svg-icon> 进入兑付完成</el-button> -->
     </div>
 
-    <el-dialog
+    <!-- <el-dialog
       title="提示"
       :visible.sync="dialogComVisible"
       width="30%">
@@ -931,7 +931,7 @@
         <el-button @click="dialogComVisible = false">取 消</el-button>
         <el-button type="primary" @click="chooseClientFile">确 定</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -1147,16 +1147,15 @@
     },
     mounted() {
       var vm = this
-      Bus.$on('activeRouter', activeRouter => {
-        vm.ada_url.z = activeRouter
-        // this.newUrl(url)
-        // vm.$set(vm.ada_url, 'z', activeRouter)
-      })
+      // Bus.$on('activeRouter', activeRouter => {
+      //   vm.ada_url.z = activeRouter
+      //   // this.newUrl(url)
+      //   // vm.$set(vm.ada_url, 'z', activeRouter)
+      // })
     },
     methods: {
       listenProStatus(msg) {
         this.productStatusNo = msg
-        
       },
       listenProId(val) {
         this.productId = val
@@ -1441,22 +1440,22 @@
           }
         })
       },
-      updateFileName(item, fileType) { // 编辑材料名称
-        let params = {
-          id: item.productFileId,
-          name: item.name,
-          fileType: fileType
-        }
-        putFileObj(params).then(res => {
-          this.productFileId = 0
-          this.$notify({
-            title: '成功',
-            message: '材料名称修改成功',
-            type: 'success',
-            duration: 2000
-          })
-        })
-      },
+      // updateFileName(item, fileType) { // 编辑材料名称
+      //   let params = {
+      //     id: item.productFileId,
+      //     name: item.name,
+      //     fileType: fileType
+      //   }
+      //   putFileObj(params).then(res => {
+      //     this.productFileId = 0
+      //     this.$notify({
+      //       title: '成功',
+      //       message: '材料名称修改成功',
+      //       type: 'success',
+      //       duration: 2000
+      //     })
+      //   })
+      // },
       updateClientFileName(item) { // 编辑上传客户材料名称
         let params = {
           name: item.fileName
@@ -1495,25 +1494,25 @@
       importFile(fileType) {
         return uploadFiles(this.productId, fileType)
       },
-      addClientFile(type) { // 上传客户材料
-        let params = {
-          limit: 100,
-          page: 1
-        }
-        this.fileType = type
-        this.clientFile = ''
-        if (type === 'client') {
-          getClientFile(params).then(res => {
-            this.clientFileList = res.data.records
-            this.dialogComVisible = true
-          })
-        } else {
-          getTranscFile(params).then(res => {
-            this.clientFileList = res.data.records
-            this.dialogComVisible = true
-          })
-        }
-      },
+      // addClientFile(type) { // 上传客户材料
+      //   let params = {
+      //     limit: 100,
+      //     page: 1
+      //   }
+      //   this.fileType = type
+      //   this.clientFile = ''
+      //   if (type === 'client') {
+      //     getClientFile(params).then(res => {
+      //       this.clientFileList = res.data.records
+      //       this.dialogComVisible = true
+      //     })
+      //   } else {
+      //     getTranscFile(params).then(res => {
+      //       this.clientFileList = res.data.records
+      //       this.dialogComVisible = true
+      //     })
+      //   }
+      // },
       // changeCurrency(val) {
       //   this.currencyList = this.currencyList.slice(0)
       // },
@@ -1665,24 +1664,24 @@
         // console.log(fileDownload(res.data,'fileName'))
         // })
       },
-      test(val) {
-        console.log(val)
-        if(val === 1) {
-          this.importantDate = []
-        }
-        // this.form2.keyProduct = val
-      },
-      changeFileList(val) {
-        // console.log(val)
-        // this.clientFileList = this.clientFileList.slice(0)
-        let obj = {}
-        obj = this.clientFileList.find(item => {
-          let id = item.productClientFileManageId || item.transactionFileManageId
-          return id === val
-        })
-        this.selectFile = obj
-        console.log(this.clientFile)
-      }
+      // test(val) {
+      //   console.log(val)
+      //   if(val === 1) {
+      //     this.importantDate = []
+      //   }
+      //   // this.form2.keyProduct = val
+      // },
+      // changeFileList(val) {
+      //   // console.log(val)
+      //   // this.clientFileList = this.clientFileList.slice(0)
+      //   let obj = {}
+      //   obj = this.clientFileList.find(item => {
+      //     let id = item.productClientFileManageId || item.transactionFileManageId
+      //     return id === val
+      //   })
+      //   this.selectFile = obj
+      //   console.log(this.clientFile)
+      // }
     }
   }
 </script>

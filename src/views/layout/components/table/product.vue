@@ -246,7 +246,8 @@
       handleUpdate(row) { // 查看
         this.$router.push({path: '/product/productDetail/' + row.productId})
         Bus.$emit('activeIndex', this.activeUrl)
-        Bus.$emit('activeRouter', this.activeUrl)
+        // Bus.$emit('activeRouter', this.activeUrl)
+        // console.log(Bus.$emit('activeRouter', this.activeUrl))
       },
       resetTemp() {
         this.form = {

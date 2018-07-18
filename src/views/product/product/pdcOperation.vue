@@ -368,11 +368,11 @@
       <span class="stage_btn" v-if="createStatus=='update'&productStatusNo===2" @click="handleCollect('1')">
         <svg-icon icon-class="stage"></svg-icon> 募集分期</span>
       <!-- 创建 -->
-      <el-button class="search_btn" v-if="createStatus=='create'" @click="cancel()">取 消1</el-button>
-      <el-button class="add_btn" v-if="createStatus=='create'" type="primary" @click="updateRouter">保 存2</el-button>
+      <el-button class="search_btn" v-if="createStatus=='create'" @click="cancel()">取 消</el-button>
+      <el-button class="add_btn" v-if="createStatus=='create'" type="primary" @click="updateRouter">保 存</el-button>
       <!-- 编辑 -->
-      <el-button class="search_btn" v-if="createStatus=='update'&!operationDisabled" @click="cancel()">取 消c2</el-button>
-      <el-button class="add_btn" v-if="createStatus=='update'&!operationDisabled" type="primary" @click="updateRouter">保 存c2</el-button>
+      <el-button class="search_btn" v-if="createStatus=='update'&!operationDisabled" @click="cancel()">取 消</el-button>
+      <el-button class="add_btn" v-if="createStatus=='update'&!operationDisabled" type="primary" @click="updateRouter">保 存</el-button>
       <!-- 在建 -->
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===0" type="primary" @click="updateProductType(1, '/product/building')">
         <svg-icon icon-class="preheating"></svg-icon> 进入产品预热</el-button>
@@ -440,15 +440,12 @@
 
 <script>
   import { putFileObj, delCustFile, fetchOperation, addCustFile, postTranscFile, getCustFile,
-    updCustFile, updProductDisplay, updProductPause, getProductStage } from '@/api/product/product'
-  // import transcTableComponent from 'components/table/transcTable'
-  // import { fetchProductTypeList } from '@/api/product/productType'
-  // import { fetchCurrency, getObjList } from '@/api/currency'
-  // import { mapGetters } from 'vuex'
+    updCustFile, updProductDisplay, updProductPause, getProductStage, addOperationObj, updProductType } from '@/api/product/product'
+  import { mapGetters } from 'vuex'
   import { transformText, sortKey } from '@/utils'
   // import { parseTime } from '@/utils'
   // import { decimals, isNumber } from '@/utils/validate'
-  // import Bus from '@/assets/js/bus'
+  import Bus from '@/assets/js/bus'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
   import { getClientFile, getTranscFile } from '@/api/product/fileManage'
   import { getToken } from '@/utils/auth'
@@ -544,14 +541,14 @@
         // stageTypeNo: '',
       }
     },
-    props: ['productId', 'productStatus'],
+    props: ['productId', 'proStatus'],
     computed: {
-      // ...mapGetters([
+      ...mapGetters([
       //   'permissions',
-      //   // 'productStatus',
+        'productStatus',
       //   'productRiskLevel',
       //   'investHorizonUnit'
-      // ]),
+      ]),
       normalList1() {
         return sortKey(this.normalList, 'age')
       }
@@ -570,8 +567,7 @@
       }
     },
     mounted() {
-      // this.form = this.formData
-      this.productStatusNo = this.productStatus
+      this.productStatusNo = this.proStatus
       // console.log(this.productStatusNo)
     },
     methods: {
@@ -664,6 +660,7 @@
             type: 'success',
             duration: 2000
           })
+          this.$router.push({path: '/product/productList'})
         })
       },
       updateProductDisplay() { // 显示/隐藏
@@ -707,6 +704,53 @@
             stageType: this.stageType
           }
           this.$emit('detailByOperation', params)
+        })
+      },
+      updateProductType(status, url) { // 产品状态转化
+        let params = {
+          status: status
+        }
+        let msgText = ''
+        if(status == 1) {
+          msgText = '预热'
+        } else if(status == 2) {
+          msgText = '募集中'
+        } else if(status == 3) {
+          msgText = '已关账'
+        } else if(status == 4) {
+          msgText = '已成立'
+        } else if(status == 5) {
+          msgText = '兑付中'
+        } else if(status == 6) {
+          msgText = '兑付完成'
+        }
+        let productStatusText = transformText(this.productStatus, this.productStatusNo)
+        
+        this.$confirm('此产品现在为' + productStatusText + ', 确定进入' + msgText + '吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // this.$message({
+          //   type: 'success',
+          //   message: '删除成功!'
+          // })
+          console.log('跳转地址--：' + url)
+          updProductType(this.productId, params).then(res => {
+            // this.$notify({
+            //   title: '成功',
+            //   message: '产品进入' + msgText + '成功',
+            //   type: 'success',
+            //   duration: 2000
+            // })
+            console.log('跳转地址：' + url)
+            this.$router.push({path: url})
+          })
+        }).catch(() => {
+          // this.$message({
+          //   type: 'info',
+          //   message: '已取消删除'
+          // })       
         })
       },
       addCommission() {

@@ -249,11 +249,11 @@
 
     <div slot="footer" class="dialog-footer" style="text-align: center;">
       <!-- 创建 -->
-      <el-button class="search_btn" v-if="createStatus=='create'" @click="cancel()">取 消c1</el-button>
-      <el-button class="add_btn" v-if="createStatus=='create'" type="primary" @click="create('form')">保 存c1</el-button>
+      <el-button class="search_btn" v-if="createStatus=='create'" @click="cancel()">取 消</el-button>
+      <el-button class="add_btn" v-if="createStatus=='create'" type="primary" @click="create('form')">保 存</el-button>
       <!-- 编辑 -->
-      <el-button class="search_btn" v-if="createStatus=='update'" @click="cancel()">取 消u1</el-button>
-      <el-button class="add_btn" v-if="createStatus=='update'" type="primary" @click="update('form')">保 存u1</el-button>
+      <el-button class="search_btn" v-if="createStatus=='update'" @click="cancel()">取 消</el-button>
+      <el-button class="add_btn" v-if="createStatus=='update'" type="primary" @click="update('form')">保 存</el-button>
      
     </div>
   </div>
@@ -490,7 +490,6 @@
     },
     mounted() {
       this.form = this.formData
-      console.log(this.form)
       let list = Object.keys(this.formData)
       
       if(list.length > 1 & !list.productId) {
