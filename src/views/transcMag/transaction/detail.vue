@@ -186,8 +186,8 @@
         </div>
         <!-- 打款审核 -->
         <div v-if="(status == '2001' || status == '2002' || status == '2004') & orderStatus != 1" class="dialog-footer" style="text-align: center;">
-          <el-button v-show="status == '2001'&!form.refundStatus" class="search_btn" @click="submitResult('2004')">通 过</el-button>
-          <el-button v-show="status == '2001'&!form.refundStatus" class="add_btn" @click="rejectResult('2002')">不通过</el-button>
+          <el-button v-show="status == '2001'&!form.refundStatus" class="search_btn" @click="submitResult('2004')">通 过（打款）</el-button>
+          <el-button v-show="status == '2001'&!form.refundStatus" class="add_btn" @click="rejectResult('2002')">不通过（打款）</el-button>
           <!-- <el-button v-show="!form.refundStatus" class="add_btn" @click="submitOperat('2003')">关闭订单</el-button> -->
           <el-button v-show="!form.refundStatus" class="add_btn" @click="rejectResult('2003')">关闭订单</el-button>
         </div>
@@ -203,8 +203,8 @@
         </div>
         <!-- 退款审核 -->
         <div v-if="form.refundStatus == '2' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
-          <el-button class="search_btn" @click="submitResult('4')">通 过</el-button>
-          <el-button class="add_btn" @click="rejectResult('3')">不通过</el-button>
+          <el-button class="search_btn" @click="submitResult('4')">通 过（退款）</el-button>
+          <el-button class="add_btn" @click="rejectResult('3')">不通过（退款）</el-button>
         </div>
 
         <!-- <el-dialog
@@ -548,7 +548,7 @@
               }
             })
           } else {
-            params.auditRemark = params.contractMail = null
+            // params.auditRemark = params.contractMail = null
             putPay(this.form.appointmentId, params).then(response => {
               console.log(response.code)
               if(response.status == 200) {
@@ -597,7 +597,7 @@
           })
         }
       },
-      getRejectReason(type) {
+      getRejectReason(type) { // 获取原因
         // console.log(type)
         getReject({type: type}).then(res => {
           this.options = res.data
@@ -628,7 +628,7 @@
       changeReason(val) {
         this.result.auditRemark = transformText(this.options, val)
         this.result.auditFailReasonId = val
-        // console.log(this.result)
+        console.log(this.result)
       }
     }
   }

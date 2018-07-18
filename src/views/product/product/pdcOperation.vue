@@ -379,13 +379,12 @@
       <!-- 预热 -->
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="updateProductType(2, '/product/preheating')">
         <svg-icon icon-class="collecting"></svg-icon> 进入产品募集</el-button>
-      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="updateProductType(0, '/product/preheating')">
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="backProductType(0, '/product/preheating')">
         <svg-icon icon-class="return"></svg-icon> 返回在建</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="updateProductDisplay">
         <svg-icon v-if="form2.isDisplay==='1'" icon-class="eye"></svg-icon> 
         <svg-icon v-else icon-class="product_eye"></svg-icon> 
         {{form2.isDisplay==='1'?'设为隐藏':'设为显示'}}</el-button>
-      <!--{{form2.isDisplay==='1'?'设为显示':'设为隐藏'}}</el-button>-->
       <!-- 募集中 -->
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===2" type="primary" @click="updateProductType(3, '/product/collecting')">
         <svg-icon icon-class="close"></svg-icon> 进入已关账</el-button>
@@ -398,12 +397,11 @@
         <svg-icon v-if="form2.isDisplay==='1'" icon-class="eye"></svg-icon> 
         <svg-icon v-else icon-class="eyeShow"></svg-icon> 
         {{form2.isDisplay==='1'?'设为隐藏':'设为显示'}}
-        <!--{{form2.isDisplay==='1'?'设为显示':'设为隐藏'}}-->
       </el-button>
       <!-- 已关账 -->
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===3" type="primary" @click="updateProductType(4, '/product/shutDown')">
         <svg-icon icon-class="establish"></svg-icon> 进入已成立</el-button>
-      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===3" type="primary" @click="updateProductType(2, '/product/shutDown')">
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===3" type="primary" @click="backProductType(2, '/product/shutDown')">
         <svg-icon icon-class="return"></svg-icon> 返回募集中</el-button>
       <!-- 已成立 -->
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===4" type="primary" @click="updateProductType(5, '/product/established')">
@@ -737,23 +735,43 @@
         let params = {
           display: display
         }
-        updProductDisplay(this.productId, params).then(res => {
-          console.log(res)
-          this.form2.isDisplay = display
-          // this.getOperations()
-        })
+        let displayText = this.form2.isDisplay === '0' ? '隐藏' : '显示'
+        let msgText = display === '0' ? '隐藏' : '显示'
+        this.$confirm('此产品现在为' + displayText + ', 确定在APP上' + msgText + '吗?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            updProductDisplay(this.productId, params).then(res => {
+              console.log(res)
+              this.form2.isDisplay = display
+              this.getOperations()
+            })
+          }).catch(() => {
+
+          })
       },
       updateProductPause() { // 暂停预约
         let pause = this.form2.isPause === '0' ? '1' : '0'
         let params = {
           pause: pause
         }
+        let pauseText = this.form2.isPause === '0' ? '预约中' : '暂停预约'
+        let msgText = pause === '0' ? '开始预约' : '暂停预约'
+        this.$confirm('此产品现在为' + pauseText + ', 确定开始' + msgText + '吗?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            updProductPause(this.productId, params).then(res => {
+              console.log(res)
+              this.form2.isPause = pause
+              this.getOperations()
+            })
+          }).catch(() => {
+
+          })
         // console.log('跳转地址： ' + this.url)
-        updProductPause(this.productId, params).then(res => {
-          console.log(res)
-          this.form2.isPause = pause
-          // this.getOperations()
-        })
       },
       handleCollect(type) { // 募集分期/产品分期
         this.stageType = type // 0 产品分期； 1 募集分期
@@ -774,6 +792,21 @@
           }
           this.$emit('detailByOperation', params)
         })
+      },
+      backProductType(status, url) {
+        this.productStatusText = transformText(this.productStatus, this.productStatusNo)
+        this.msgText = transformText(this.productStatus, status)
+        this.$confirm('此产品现在为' + this.productStatusText + ', 确定返回' + this.msgText + '吗?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            updProductType(this.productId, this.dto).then(res => {
+              this.$router.push({path: url})
+            })
+          }).catch(() => {
+
+          })
       },
       updateProductType(status, url) { // 产品状态转化
         // let params = {
@@ -814,7 +847,7 @@
           })
         }
       },
-      handleProStatus() {
+      handleProStatus() { // 弹框确定事件
         updProductType(this.productId, this.dto).then(res => {
           this.dialogStVisible = false
           this.$router.push({path: this.url})
@@ -905,8 +938,6 @@
         }
       },
       changeFileList(val) {
-        // console.log(val)
-        // this.clientFileList = this.clientFileList.slice(0)
         let obj = {}
         obj = this.clientFileList.find(item => {
           let id = item.productClientFileManageId || item.transactionFileManageId
