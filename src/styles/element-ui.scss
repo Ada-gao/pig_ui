@@ -215,3 +215,10 @@ $leave_status: #FF4C4C;
     padding: 10px;
   }
 }
+
+// step
+.el-step__head.is-process,
+.el-step__title.is-process {
+  color: #00C1DF;
+  border-color: #00C1DF;
+}

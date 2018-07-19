@@ -54,7 +54,7 @@ export function getObj(id) {
 }
 
 /**
- * 删除产品（无）
+ * 删除产品
  */
 export function delObj(id) {
   return request({

@@ -192,18 +192,19 @@
     methods: {
       getList() {
         if(this.productQuery) {
-          this.listQuery.productStatus.push(this.productStatusNo)
-        
-          let list = this.listQuery.productStatus
-          list.forEach((item, index) => {
-            if(item === '') {
-              list.splice(index, 1)
-            }
-          })
-        } else {
+          console.log('进来请求数据了')
           // this.listQuery.productStatus.push(this.productStatusNo)
-          this.listQuery.productStatus[0] = this.productStatusNo
-          this.listQuery.productStatus.length = 1
+         
+          // let list = this.listQuery.productStatus
+          // list.forEach((item, index) => {
+          //   if(item === '') {
+          //     list.splice(index, 1)
+          //   }
+          // })
+        } else {
+          this.listQuery.productStatus = []
+          this.listQuery.productStatus.push(this.productStatusNo)
+          // this.listQuery.productStatus.length = 1
         }
         
         this.listLoading = true
@@ -273,13 +274,24 @@
       //   this.getList()
       // },
       deletes(id) {
-        delObj(id).then(res => {
-          if(res.data.code === 0) {
-            const idx = this.list.findIndex((item, index) => {
-              return item.productId === id
-            })
-            this.list.splice(idx, 1)
-          }
+        this.$confirm('此操作将删除该产品, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delObj(id).then(res => {
+            if(res.data.code === 0) {
+              const idx = this.list.findIndex((item, index) => {
+                return item.productId === id
+              })
+              this.list.splice(idx, 1)
+            }
+          })
+        }).catch(() => {
+          // this.$message({
+          //   type: 'info',
+          //   message: '已取消删除'
+          // })       
         })
       }
     }

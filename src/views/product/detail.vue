@@ -13,13 +13,18 @@
         <el-radio-button v-if="productStatusNo!==0&productStatusNo!==1&stageType!='0'" label="3">交易信息</el-radio-button>
       </el-radio-group>
     </div>
+    <el-steps v-else :active="activeStep" finish-status="success" simple style="margin-top: 20px">
+        <el-step title="产品详情" icon=""></el-step>
+        <el-step title="产品操作指南" ></el-step>
+      </el-steps>
     <div v-else class="tabs">
-      <div class="tab-item" :class="{'tab-active':step===1,'tab-done':step===2}">产品详情
+      
+      <!-- <div class="tab-item" :class="{'tab-active':step===1,'tab-done':step===2}">产品详情
         <b class="right"><i class="right-arrow1"></i><i class="right-arrow2"></i></b>
       </div>
       <div class="tab-item" :class="{'tab-active':step===2}">产品操作指南
         <b class="right"><i class="right-arrow1"></i><i class="right-arrow2"></i></b>
-      </div>
+      </div> -->
     </div>
     <!-- <div class="pageTitle" style="text-align: right" v-if="stage&step===1">
       关联产品
@@ -1110,7 +1115,9 @@
         radio2: 1,
         productId: '',
         productStatus: '',
-        formData: {}
+        formData: {},
+        activeStep: 0,
+        productInfo: {}
       }
     },
     computed: {
@@ -1143,6 +1150,7 @@
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
+      this.activeStep = this.step - 1
       // this.productStatusNo = this.productStatusNum
       // console.log(this.productStatusNum)
     },

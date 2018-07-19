@@ -60,7 +60,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="预约金额" v-if="aptCol">
+      <el-table-column align="center" label="预约金额/万" v-if="aptCol">
         <template slot-scope="scope">
         <span>{{scope.row.appointmentAmount}}</span>
         </template>
@@ -72,7 +72,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="打款金额" v-if="paymentCol">
+      <el-table-column align="center" label="打款金额/万" v-if="paymentCol">
         <template slot-scope="scope">
         <span>{{scope.row.remitAmount}}</span>
         </template>
