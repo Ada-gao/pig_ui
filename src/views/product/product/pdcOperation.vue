@@ -249,13 +249,29 @@
           </el-col>
           <el-col :span="10" v-show="radio2===2">
             <el-form-item label="重点产品时间段">
+              <!--<el-date-picker-->
+                <!--style="width: 80%"-->
+                <!--v-model="importantDate"-->
+                <!--:disabled="operationDisabled"-->
+                <!--type="daterange"-->
+                <!--start-placeholder="开始日期"-->
+                <!--end-placeholder="结束日期"-->
+                <!--:default-time="['00:00:00', '23:59:59']">-->
+              <!--</el-date-picker>-->
               <el-date-picker
-                style="width: 80%"
-                v-model="importantDate"
+                      style="width: 40%"
+                      v-model="importantStart"
+                      :disabled="operationDisabled"
+                      type="date"
+                      placeholder="开始日期"
+                      :default-time="['00:00:00', '23:59:59']">
+              </el-date-picker>
+              <el-date-picker
+                style="width: 40%"
+                v-model="importantEnd"
                 :disabled="operationDisabled"
-                type="daterange"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
+                type="date"
+                placeholder="结束日期"
                 :default-time="['00:00:00', '23:59:59']">
               </el-date-picker>
             </el-form-item>
@@ -382,20 +398,20 @@
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="backProductType(0, '/product/preheating')">
         <svg-icon icon-class="return"></svg-icon> 返回在建</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="updateProductDisplay">
-        <svg-icon v-if="form2.isDisplay==='1'" icon-class="eye"></svg-icon> 
-        <svg-icon v-else icon-class="product_eye"></svg-icon> 
+        <svg-icon v-if="form2.isDisplay==='1'" icon-class="eye"></svg-icon>
+        <svg-icon v-else icon-class="product_eye"></svg-icon>
         {{form2.isDisplay==='1'?'设为隐藏':'设为显示'}}</el-button>
       <!-- 募集中 -->
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===2" type="primary" @click="updateProductType(3, '/product/collecting')">
         <svg-icon icon-class="close"></svg-icon> 进入已关账</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===2" type="primary" @click="updateProductPause">
-        <svg-icon v-if="form2.isPause==='1'" icon-class="play"></svg-icon> 
-        <svg-icon v-else icon-class="pause"></svg-icon> 
+        <svg-icon v-if="form2.isPause==='1'" icon-class="play"></svg-icon>
+        <svg-icon v-else icon-class="pause"></svg-icon>
         {{form2.isPause==='1'?'开始预约':'暂停预约'}}
       </el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===2" type="primary" @click="updateProductDisplay">
-        <svg-icon v-if="form2.isDisplay==='1'" icon-class="eye"></svg-icon> 
-        <svg-icon v-else icon-class="eyeShow"></svg-icon> 
+        <svg-icon v-if="form2.isDisplay==='1'" icon-class="eye"></svg-icon>
+        <svg-icon v-else icon-class="eyeShow"></svg-icon>
         {{form2.isDisplay==='1'?'设为隐藏':'设为显示'}}
       </el-button>
       <!-- 已关账 -->
@@ -557,7 +573,9 @@
         addActivityList: [],
         addNormList: [],
         normalData: {},
-        importantDate: [],
+        // importantDate: [],
+        importantStart: '',
+        importantEnd: '',
         normalList: [{
           age: 1,
           brokerageCoefficient: ''
@@ -664,7 +682,9 @@
           } else {
             this.radio2 = 1
           }
-          this.importantDate = [this.form2.importantStart, this.form2.importantEnd]
+          // this.importantDate = [this.form2.importantStart, this.form2.importantEnd]
+          this.importantStart = this.form2.importantStart
+          this.importantEnd = this.form2.importantEnd
           this.normalData = this.form2.normalDTO
           this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
           if(!this.normalList) {
@@ -718,11 +738,21 @@
           item.activityEnd = item.activeDate[1]
           item.activityStart = item.activeDate[0]
         })
-        if (this.importantDate) {
-          this.form2.importantStart = this.importantDate[0]
-          this.form2.importantEnd = this.importantDate[1]
+        // if (this.importantDate) {
+        //   this.form2.importantStart = this.importantDate[0]
+        //   this.form2.importantEnd = this.importantDate[1]
+        // } else {
+        //   this.form2.importantStart = ''
+        //   this.form2.importantEnd = ''
+        // }
+        if (this.importantStart) {
+          this.form2.importantStart = this.importantStart
+          if (this.importantEnd) {
+            this.form2.importantEnd = this.importantEnd
+          } else {
+            this.form2.importantEnd = new Date('9999-01-01')
+          }
         } else {
-          // console.log('this.radio2 is not important product')
           this.form2.importantStart = ''
           this.form2.importantEnd = ''
         }
@@ -733,6 +763,16 @@
         // this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
         this.form2.productId = this.productId
         // this.form2.keyProduct = this.radio2
+        console.log(this.form2)
+        if (this.form2.importantStart && window.Number(this.form2.importantEnd) < Number(this.form2.importantStart)) {
+          this.$notify({
+            title: '失败',
+            message: '重点产品结束时间须不小于开始时间',
+            type: 'error',
+            duration: 2000
+          })
+          return false
+        }
         addOperationObj(this.form2).then(res => {
           this.$notify({
             title: '成功',
@@ -828,7 +868,7 @@
         this.url = url
         this.productStatusText = transformText(this.productStatus, this.productStatusNo)
         this.msgText = transformText(this.productStatus, status)
-        
+
         if(status == 3 || status == 4) {
           this.dialogStVisible = true
 
@@ -875,7 +915,8 @@
       test(val) {
         console.log(val)
         if(val === 1) {
-          this.importantDate = []
+//          this.importantDate = []
+          this.importantEnd = this.importantStart = ''
         }
         // this.form2.keyProduct = val
       },
