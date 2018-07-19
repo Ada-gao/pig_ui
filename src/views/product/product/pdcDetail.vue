@@ -88,9 +88,9 @@
         <el-col>
           <el-form-item label="收益" prop="isFloat">
             <el-radio-group v-model="form.isFloat" @change="radioChange" :disabled="detailDisabled||stageType=='0'">
-              <el-radio :label="0" style="display: inline-block">浮动收益率</el-radio>
+              <el-radio :label="0" style="display: inline-block">浮动收益</el-radio>
               <el-radio :label="1" style="display: inline-block">收益对标基准（%）</el-radio>
-              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn" disabled></el-input>
+              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn" :disabled="collectDisabled||stageType=='0'"></el-input>
             </el-radio-group>
           </el-form-item>
         </el-col>
