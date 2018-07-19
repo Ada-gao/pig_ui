@@ -915,7 +915,7 @@
       test(val) {
         console.log(val)
         if(val === 1) {
-//          this.importantDate = []
+        //  this.importantDate = []
           this.importantEnd = this.importantStart = ''
         }
         // this.form2.keyProduct = val
@@ -1077,7 +1077,6 @@
 </script>
 
 <style lang="scss" scoped>
-  // @import "src/styles/mixin.scss";
   @import "src/styles/variables.scss";
 
   .filter-item {
