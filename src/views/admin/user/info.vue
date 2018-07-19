@@ -8,13 +8,13 @@
               <el-input type="text" :value="name" disabled></el-input>
             </el-form-item>
             <el-form-item label="原密码" prop="pass">
-              <el-input type="password" v-model="ruleForm2.password" auto-complete="off"></el-input>
+              <el-input type="password" v-model="ruleForm2.pass" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="密码" prop="pass">
+            <el-form-item label="密码" prop="newpassword">
               <el-input type="password" v-model="ruleForm2.newpassword" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="确认密码" prop="checkPass">
-              <el-input type="password" v-model="ruleForm2.repassword" auto-complete="off"></el-input>
+              <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="头像">
               <my-upload field="file"
@@ -55,13 +55,14 @@
     },
     data() {
       var validatePass = (rule, value, callback) => {
+        console.log(value)
         if (value === '') {
           callback(new Error('请输入密码'))
         } else if (value.length < 6) {
           callback(new Error('密码不能小于6位'))
         } else {
-          if (this.ruleForm2.newpassword !== '') {
-            this.$refs.ruleForm2.validateField('newpassword')
+          if (this.ruleForm2.checkPass !== '') {
+            this.$refs.ruleForm2.validateField('checkPass')
           }
           callback()
         }
@@ -69,7 +70,7 @@
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'))
-        } else if (value !== this.ruleForm2.repassword) {
+        } else if (value !== this.ruleForm2.newpassword) {
           callback(new Error('两次输入密码不一致!'))
         } else {
           callback()
@@ -85,13 +86,18 @@
           password: '',
           newpassword: '',
           repassword: '',
-          avatar: ''
+          avatar: '',
+          pass: '',
+          checkPass: ''
         },
         rules2: {
+          pass: [
+            { validator: validatePass, trigger: 'blur' }
+          ],
           newpassword: [
             { validator: validatePass, trigger: 'blur' }
           ],
-          repassword: [
+          checkPass: [
             { validator: validatePass2, trigger: 'blur' }
           ]
         }

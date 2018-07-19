@@ -767,11 +767,12 @@
               this.form.idType = transformText(this.idTypeOptions, this.form.idType)
               this.form.positionId = transformText(this.positionsOptions, this.form.positionId)
               this.form.marriageStatus = transformText(this.marriageStatusOptions, this.form.marriageStatus)
+              this.form.employeeDate = parseTime(this.form.employeeDate, '{y}-{m}-{d}')
             } else {
               this.dialogFormView = false
               this.dialogFormVisible = true
               this.dialogStatus = 'update'
-              this.form.directSupervisorId = this.form.directSupervisorName
+              this.form.directSupervisorId = this.form.directSupervisorId
             }
             let obj = {
               name: this.form.resumeName,

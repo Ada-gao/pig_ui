@@ -46,7 +46,7 @@
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :model="form" ref="form" label-width="100px">
+      <el-form :model="form" ref="form" label-width="100px" :rules="rules">
         
         <el-form-item label="币种" prop="name">
           <el-input v-model="form.name"></el-input>
@@ -113,7 +113,12 @@
           update: '编辑币种',
           create: '新增币种'
         },
-        tableKey: 0
+        tableKey: 0,
+        rules: {
+          name: [
+           { required: true, message: '请输入币种名称' }
+          ]
+        }
       }
     },
     computed: {
