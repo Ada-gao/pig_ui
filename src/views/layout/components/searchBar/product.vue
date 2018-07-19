@@ -44,7 +44,7 @@
       <el-row>
         <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="isSpread & searchProductStatus">
           <el-form-item label="产品状态">
-            <el-checkbox-group v-model="listQuery.productStatus">
+            <el-checkbox-group v-model="listQuery.productStatus" @change="handleChange">
               <el-checkbox-button v-for="status in productStatus" :label="status.value" :key="status.value">{{status.label}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
@@ -89,7 +89,9 @@ export default {
         productTypeIds: [],
         productStatus: [],
         annualizedReturns: [],
-        isFloat: null
+        isFloat: null,
+        orderByField: 'create_time',
+        isAsc: false
       },
       // city: [],
       productTypes: [],
@@ -107,10 +109,10 @@ export default {
   },
   methods: {
     handleFilter() { // 搜索
-      this.listQuery.page = 1
+      // this.listQuery.page = 1
 
-      this.listQuery.orderByField = 'create_time'
-      this.listQuery.isAsc = false
+      // this.listQuery.orderByField = 'create_time'
+      // this.listQuery.isAsc = false
       Bus.$emit('searchProduct', this.listQuery)
     },
     resetFilter() { // 重置搜索条件
@@ -124,6 +126,7 @@ export default {
         isAsc: false
       },
       this.entryDate = []
+      console.log(this.listQuery.productStatus)
       Bus.$emit('searchProduct', this.listQuery)
     },
     fetchList() {
@@ -134,6 +137,9 @@ export default {
         //   item.productStatus = transformText(this.productStatus, item.productStatus)
         // })
       })
+    },
+    handleChange(val) {
+      this.listQuery.productStatus = val
     }
   }
 }

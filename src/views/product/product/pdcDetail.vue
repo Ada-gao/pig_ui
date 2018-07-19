@@ -559,30 +559,30 @@
         }
       },
       create(formName) { // 创建提交
-        // this.$emit('productIdByDetail', '')
-        const set = this.$refs
-        if(!this.form.isFloat) {
-          this.form.annualizedReturn = null
-          this.isDisabled = true
-        }
-        set[formName].validate(valid => {
-          if (valid) {
-            addObj(this.form)
-              .then(response => {
-                if(response.status === 200) {
-                  this.$notify({
-                    title: '成功',
-                    message: '创建成功',
-                    type: 'success',
-                    duration: 2000
-                  })
-                  this.$emit('productIdByDetail', response.data.productId)
-                }
-              })
-          } else {
-            return false
-          }
-        })
+        this.$emit('productIdByDetail', '')
+        // const set = this.$refs
+        // if(!this.form.isFloat) {
+        //   this.form.annualizedReturn = null
+        //   this.isDisabled = true
+        // }
+        // set[formName].validate(valid => {
+        //   if (valid) {
+        //     addObj(this.form)
+        //       .then(response => {
+        //         if(response.status === 200) {
+        //           this.$notify({
+        //             title: '成功',
+        //             message: '创建成功',
+        //             type: 'success',
+        //             duration: 2000
+        //           })
+        //           this.$emit('productIdByDetail', response.data.productId)
+        //         }
+        //       })
+        //   } else {
+        //     return false
+        //   }
+        // })
       },
       update(formName) { // 产品详情修改提交
         const set = this.$refs
@@ -629,11 +629,18 @@
                   type: 'success',
                   duration: 2000
                 })
+                this.form = res.data
                 this.step = 2
                 console.log(res)
               })
             }
-
+            let params = {
+              productStatusNo: this.productStatusNo,
+              productName: this.form.productName,
+              collectLP: this.form.productLp,
+              collectAmount: this.form.collectionAmount
+            }
+            this.$emit('listen', params) // 传递产品状态到父组件
           } else {
             return false
           }

@@ -609,7 +609,20 @@
         // stageTypeNo: '',
       }
     },
-    props: ['productId', 'proStatus', 'productInfo'],
+    // props: ['productId', 'proStatus', 'productInfo'],
+    props: {
+      productId: {
+        default: ''
+      },
+      proStatus: {
+        default: ''
+      },
+      productInfo: {
+        default() {
+          return {}
+        }
+      }
+    },
     computed: {
       ...mapGetters([
       //   'permissions',
@@ -727,7 +740,9 @@
             type: 'success',
             duration: 2000
           })
+          // if(this.createStatus = 'create') {}
           this.$router.push({path: '/product/productList'})
+          Bus.$emit('activeIndex', '/product/productList')
         })
       },
       updateProductDisplay() { // 显示/隐藏
@@ -809,24 +824,8 @@
           })
       },
       updateProductType(status, url) { // 产品状态转化
-        // let params = {
-        //   status: status,
-        // }
         this.dto.status = status
         this.url = url
-        // if(status == 1) {
-        //   this.msgText = '预热'
-        // } else if(status == 2) {
-        //   this.msgText = '募集中'
-        // } else if(status == 3) {
-        //   this.msgText = '已关账'
-        // } else if(status == 4) {
-        //   this.msgText = '已成立'
-        // } else if(status == 5) {
-        //   this.msgText = '兑付中'
-        // } else if(status == 6) {
-        //   this.msgText = '兑付完成'
-        // }
         this.productStatusText = transformText(this.productStatus, this.productStatusNo)
         this.msgText = transformText(this.productStatus, status)
         

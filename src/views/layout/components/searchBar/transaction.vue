@@ -2,11 +2,19 @@
   <div class="filter-container">
     <el-form label-position="right" label-width="100px">
       <el-row :gutter="20">
-        <el-col :sm="10" :lg="7">
+        <el-col :sm="10" :lg="7" v-show="!searchContract">
           <el-form-item label="产品名称">
             <el-input
             placeholder="请输入产品名称/简称"
             v-model="listQuery.productName">
+          </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :sm="10" :lg="7" v-show="searchContract">
+          <el-form-item label="合同编号">
+            <el-input
+            placeholder="请输入合同编号"
+            v-model="listQuery.contractNo">
           </el-input>
           </el-form-item>
         </el-col>
@@ -232,7 +240,7 @@ export default {
       if(this.deptId.length) {
         this.listQuery.deptId = this.deptId[this.deptId.length - 1]
       }
-      if(!this.listQuery.status.length) {
+      if(!this.listQuery.status.length) { // 若是未选status，而是选了大类状态transcStep，传大类
         this.listQuery.status.push(this.transcStep)
       } else if(this.listQuery.status.length > 1) {
         this.listQuery.status.forEach((item, index) => {
