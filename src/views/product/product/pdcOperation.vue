@@ -764,6 +764,15 @@
         this.form2.productId = this.productId
         // this.form2.keyProduct = this.radio2
         console.log(this.form2)
+        if (!this.operationDisabled && !this.form2.importantStart) {
+          this.$notify({
+            title: '失败',
+            message: '开始时间不能为空',
+            type: 'error',
+            duration: 2000
+          })
+          return false
+        }
         if (this.form2.importantStart && window.Number(this.form2.importantEnd) < Number(this.form2.importantStart)) {
           this.$notify({
             title: '失败',

@@ -26,10 +26,10 @@
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <a v-if="sys_position_upd" size="small" class="common_btn"
+          <a v-if="sys_position_edit" size="small" class="common_btn"
                      @click="handleUpdate(scope.row)">编辑
           </a>
-          <span v-if="sys_position_upd" class="space_line"> | </span>
+          <span v-if="sys_position_edit && sys_position_del" class="space_line"> | </span>
           <a v-if="sys_position_del" size="small" class="danger_btn_noline"
                      @click="deletes(scope.row)">删除
           </a>
@@ -155,7 +155,7 @@
     created() {
       this.getList()
       this.sys_position_add = this.permissions['sys_position_add']
-      this.sys_position_upd = this.permissions['sys_position_upd']
+      this.sys_position_edit = this.permissions['sys_position_edit']
       this.sys_position_del = this.permissions['sys_position_del']
     },
     methods: {

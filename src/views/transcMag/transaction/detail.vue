@@ -237,7 +237,41 @@
           width="30%">
           <el-tabs v-model="activeName1" type="card">
             <el-tab-pane label="不通过原因" name="first">
-              <span>原因</span>
+              <el-form :model="result" ref="result" :rules="rules" class="demo-form-inline">
+                <el-form-item label="原因" prop="reasonId">
+                  <el-select v-model="result.reasonId"
+                    clearable
+                    placeholder="请选择"
+                    @change="changeReason"
+                    style="margin-bottom: 30px;">
+                    <el-option
+                      v-for="item in options"
+                      :key="item.auditFailReasonId"
+                      :label="item.failAuditReason"
+                      :value="item.auditFailReasonId">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item v-show="result.status == 3003" label="寄出方式" prop="contractMail">
+                  <el-select v-model="result.contractMail"
+                    v-show="result.status == 3003"
+                    clearable
+                    placeholder="请选择"
+                    style="margin-bottom: 30px;">
+                    <el-option
+                      v-for="item in expressType"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-form>
+              <div class="dialog-footer text-right">
+                <el-button @click="dialogReject = false">取 消</el-button>
+                <el-button type="primary" @click="submitRejectCheck('result')">确 定</el-button>
+              </div>
+              <!-- <span>原因</span>
               <el-select v-model="result.reasonId"
                 clearable
                 placeholder="请选择"
@@ -249,7 +283,47 @@
                   :label="item.failAuditReason"
                   :value="item.auditFailReasonId">
                 </el-option>
-              </el-select>
+              </el-select> -->
+              <!-- <span v-show="result.status == 3003">寄出方式</span>
+              <el-select v-model="result.contractMail"
+                v-show="result.status == 3003"
+                clearable
+                placeholder="请选择"
+                style="margin-bottom: 30px;">
+                <el-option
+                  v-for="item in expressType"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select> -->
+            </el-tab-pane>
+            <el-tab-pane label="新增原因" name="second">
+              <el-form :model="result1" ref="result1" :rules="rules" class="demo-form-inline">
+                <el-form-item label="原因" prop="auditRemark">
+                  <el-input v-model="result1.auditRemark" style="margin-bottom: 30px;"></el-input>
+                </el-form-item>
+                <el-form-item v-show="result.status == 3003" label="寄出方式" prop="contractMail">
+                  <el-select v-model="result1.contractMail"
+                    v-show="result.status == 3003"
+                    clearable
+                    placeholder="请选择"
+                    style="margin-bottom: 30px;">
+                    <el-option
+                      v-for="item in expressType"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-form>
+              <div class="dialog-footer text-right">
+                <el-button @click="dialogReject = false">取 消</el-button>
+                <el-button type="primary" @click="submitRejectCheck('result1')">确 定</el-button>
+              </div>
+              <!-- <span>原因</span>
+              <el-input v-model="result.auditRemark" style="margin-bottom: 30px;"></el-input>
               <span v-show="result.status == 3003">寄出方式</span>
               <el-select v-model="result.contractMail"
                 v-show="result.status == 3003"
@@ -262,31 +336,9 @@
                   :label="item.label"
                   :value="item.value">
                 </el-option>
-              </el-select>
-            </el-tab-pane>
-            <el-tab-pane label="新增原因" name="second">
-              <span>原因</span>
-              <el-input v-model="result.auditRemark" style="margin-bottom: 30px;"></el-input>
-              <span v-show="form.status == 3003">寄出方式</span>
-              <el-select v-model="result.contractMail"
-                v-show="form.status == 3003"
-                clearable
-                placeholder="请选择"
-                style="margin-bottom: 30px;">
-                <el-option
-                  v-for="item in expressType"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
+              </el-select> -->
             </el-tab-pane>
           </el-tabs>
-
-          <div class="dialog-footer text-right">
-            <el-button @click="dialogReject = false">取 消</el-button>
-            <el-button type="primary" @click="submitRejectCheck">确 定</el-button>
-          </div>
         </el-dialog>
 
       </el-tab-pane>
@@ -403,9 +455,26 @@
         rejectReason: '',
         activeName1: 'first',
         result: {
+          reasonId: '',
           contractMail: '',
           auditRemark: '',
           status: ''
+        },
+        result1: {
+          contractMail: '',
+          auditRemark: '',
+          status: ''
+        },
+        rules: {
+          reasonId: [
+            { required: true, message: '请输入原因'}
+          ],
+          contractMail: [
+            { required: true, message: '请输入寄出方式'}
+          ],
+          auditRemark: [
+            { required: true, message: '请填写原因'}            
+          ]
         },
         clientId: ''
       }
@@ -502,18 +571,30 @@
         this.result.status = sts
         this.dialogComVisible = true
       },
-      submitRejectCheck() { // 审核不通过/订单关闭提交
+      submitRejectCheck(result) { // 审核不通过/订单关闭提交
         if(this.orderStatus == '4') {
-          if (!this.result.contractMail) return false
+          // if (!this.result.contractMail) {
+            const set = this.$refs
+            set[result].validate(valid => {
+            if (valid) {
+              this.dialogReject = false
+              this.submitCheck()
+            } else {
+              return false
+            }
+          })
+          // }
         }
-        if (!this.result.auditRemark) return false
-        this.submitCheck()
+        // if (!this.result.auditRemark) {
+        //   console.log('nonono')
+        //   return false
+        // }
       },
       submitCheck() {
         let params = {
           auditFailReasonId: this.result.auditFailReasonId,
-          auditRemark: this.result.auditRemark,
-          contractMail: this.result.contractMail,
+          auditRemark: this.result1.auditRemark,
+          contractMail: this.result.contractMail || this.result1.contractMail,
           status: this.result.status
         }
         // console.log('params:' + params)
@@ -641,6 +722,9 @@
 .el-select,
 .el-date-editor {
   width: 100%;
+}
+.el-input,.el-select{
+  margin-bottom: 0px !important;
 }
 .upfile-group {
   .btn-padding {

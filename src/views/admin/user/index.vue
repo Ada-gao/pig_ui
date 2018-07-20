@@ -176,7 +176,7 @@
     <!-- 新增 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :model="form" ref="form" label-width="100px">
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="姓名" prop="name">
@@ -189,7 +189,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="工号" prop="empNo">
@@ -206,7 +206,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="性别" prop="gender">
@@ -227,7 +227,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="证件类型" prop="idType">
@@ -248,7 +248,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="证件号码" prop="idNo">
@@ -261,12 +261,12 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="部门" prop="deptName">
               <!-- deptId -->
-              <el-input v-model="form.deptName" placeholder="选择部门" 
+              <el-input v-model="form.deptName" placeholder="选择部门"
                 @focus="handleDept"
                 @change="changeDept"
                 readonly></el-input>
@@ -285,7 +285,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="职位" prop="positionId">
@@ -303,7 +303,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="直属上级" prop="directSupervisorId">
@@ -351,7 +351,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button class="search_btn" @click="cancel('form')">取 消</el-button>
@@ -363,7 +363,7 @@
     <!-- 查看 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormView">
       <el-form :model="form" :rules="rules" ref="form1" label-width="100px">
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="姓名" prop="name">
@@ -376,7 +376,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="工号" prop="empNo">
@@ -389,7 +389,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="性别" prop="gender">
@@ -402,7 +402,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="证件类型" prop="idType">
@@ -415,7 +415,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="证件号码" prop="idNo">
@@ -428,7 +428,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="部门" prop="deptName">
@@ -442,7 +442,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="职位" prop="positionId">
@@ -456,7 +456,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="直属上级" prop="directSupervisorName">
@@ -482,7 +482,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
       </el-form>
     </el-dialog>
 
@@ -675,12 +675,12 @@
         this.listQuery.orderByField = '`user`.create_time'
         this.listQuery.isAsc = false
         if(this.entryDate.length > 0) {
-          this.listQuery.startTime = parseTime(this.entryDate[0], '{y}-{m}-{d}') 
+          this.listQuery.startTime = parseTime(this.entryDate[0], '{y}-{m}-{d}')
           this.listQuery.endTime = parseTime(this.entryDate[1], '{y}-{m}-{d}')
         } else {
           this.listQuery.startTime = ''
           this.listQuery.endTime = ''
-        } 
+        }
         // this.handlePosition()
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
@@ -767,11 +767,12 @@
               this.form.idType = transformText(this.idTypeOptions, this.form.idType)
               this.form.positionId = transformText(this.positionsOptions, this.form.positionId)
               this.form.marriageStatus = transformText(this.marriageStatusOptions, this.form.marriageStatus)
+              this.form.employeeDate = parseTime(this.form.employeeDate, '{y}-{m}-{d}')
             } else {
               this.dialogFormView = false
               this.dialogFormVisible = true
               this.dialogStatus = 'update'
-              this.form.directSupervisorId = this.form.directSupervisorName
+              this.form.directSupervisorId = this.form.directSupervisorId
             }
             let obj = {
               name: this.form.resumeName,
@@ -799,15 +800,17 @@
         set[formName].validate(valid => {
           if (valid) {
             addObj(this.form)
-              .then(() => {
-                this.dialogFormVisible = false
-                this.getList()
-                this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
+              .then((res) => {
+                if (res.status === 200) {
+                  this.dialogFormVisible = false
+                  this.getList()
+                  this.$notify({
+                    title: '成功',
+                    message: '创建成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                }
               })
           } else {
             return false
