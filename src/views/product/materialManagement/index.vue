@@ -5,8 +5,12 @@
     <div class="main-tab">
       <el-radio-group v-model="step" @change="changeStep" style="margin-bottom: 0;">
         <el-radio-button label="1">交易所需材料</el-radio-button>
-        <el-radio-button label="2">上传客户材料</el-radio-button>
+        <el-radio-button label="2">客户所需提交材料</el-radio-button>
       </el-radio-group>
+    </div>
+    <div class="second-tab" v-show="step==='2'">
+      <span class="second-item" @click="changeSecStep('1')" :class="{'query-color': secStep==='1'}">专业投资者</span>
+      <span class="second-item" @click="changeSecStep('2')" :class="{'query-color': secStep==='2'}">普通投资者</span>
     </div>
     <div style="text-align: right">
       <el-upload
@@ -19,7 +23,7 @@
         :show-file-list="false"
         accept=".pdf">
         <el-button
-          class="add_btn"><svg-icon icon-class="add"></svg-icon> 新增材料</el-button>
+          class="add_btn"><svg-icon icon-class="add"></svg-icon> 新增资料</el-button>
       </el-upload>
       <el-button v-else class="add_btn" @click="openCreate">
         <svg-icon icon-class="add"></svg-icon> 新增资料</el-button>
@@ -205,7 +209,8 @@
         isSpread: false,
         step: 1,
         importUrl: 'zuul/product/productTransactionFileManage/',
-        transcId: ''
+        transcId: '',
+        secStep: '1'
       }
     },
     computed: {
@@ -232,6 +237,9 @@
         } else {
           this.getClientList()
         }
+      },
+      changeSecStep(val) {
+        this.secStep = val
       },
       handleCreate() { //新增
         this.getTranscList()
@@ -311,11 +319,11 @@
       },
       handleSizeChange(val) {
         this.listQuery.limit = val
-        this.getList()
+        this.getClientList()
       },
       handleCurrentChange(val) {
         this.listQuery.page = val
-        this.getList()
+        this.getClientList()
       },
     }
   }
@@ -356,6 +364,14 @@
 }
 .query-color {
   @include mainColor;
+}
+.second-tab {
+  color: #606266;
+  .second-item {
+    display: inline-block;
+    padding: 16px;
+    cursor: pointer;
+  }
 }
 </style>
 

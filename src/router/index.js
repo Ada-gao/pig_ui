@@ -88,14 +88,14 @@ export const constantRouterMap = [
     children: [
       { 
         path: 'productDetail/:id',
-        component: _import('product/detail'),
+        component: _import('product/product/detail'),
         name: '产品详情页',
         meta: { title: '产品详情', icon: '', noCache: true },
         hidden: true
       },
       { 
         path: 'productDetail',
-        component: _import('product/detail'),
+        component: _import('product/product/detail'),
         name: '产品新建页',
         meta: { title: '产品详情', icon: '', noCache: true },
         hidden: true
@@ -190,8 +190,8 @@ export const asyncRouterMap = [
       icon: 'product_mg'
     },
     children: [
-      { menuId: 48, path: 'productList', component: _import('product/list'), name: '产品列表', meta: { title: '产品列表', icon: 'product' }},
-      { menuId: 48, path: 'detail', component: _import('product/detail'), name: '产品新增', meta: { title: '产品新增', icon: 'createpro' }},
+      { menuId: 48, path: 'productList', component: _import('product/product/list'), name: '产品列表', meta: { title: '产品列表', icon: 'product' }},
+      { menuId: 48, path: 'detail', component: _import('product/product/detail'), name: '产品新增', meta: { title: '产品新增', icon: 'createpro' }},
       { menuId: 48, path: 'building', component: _import('product/buildingProduct/index'), name: '在建列表', meta: { title: '在建列表', icon: 'product' }},
       { menuId: 48, path: 'preheating', component: _import('product/preheatingProduct/index'), name: '预热列表', meta: { title: '预热列表', icon: 'preheating' }},
       { menuId: 48, path: 'collecting', component: _import('product/collecting/index'), name: '募集中列表', meta: { title: '募集中列表', icon: 'collecting' }},

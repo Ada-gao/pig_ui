@@ -697,8 +697,8 @@
 </template>
 
 <script>
-  import productDetail from './product/pdcDetail'
-  import productOperation from './product/pdcOperation'
+  import productDetail from 'components/productDetail/pdcDetail'
+  import productOperation from 'components/productDetail/pdcOperation'
   import transcTableComponent from 'components/table/transcTable'
   import { fetchList, getObj, addObj, putObj, delObj, getAppointList,
     addOperationObj, putFileObj, delCustFile, getCustFile,
