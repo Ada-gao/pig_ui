@@ -242,7 +242,9 @@
           page: 1,
           limit: 20,
           annualizedReturns: [],
-          isFloat: null
+          isFloat: null,
+          orderByField: 'create_time',
+          isAsc: false
         },
         dialogFormVisible: false,
         dialogDeptVisible: false,

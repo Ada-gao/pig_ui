@@ -239,7 +239,7 @@
       <div class="group-item">
         <h3>是否标注重点产品</h3>
         <el-row>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item prop="keyProduct" label="是否标注重点产品" style="white-space: nowrap;" :rules="keyProRules">
               <el-radio-group v-model="radio2" :disabled="operationDisabled" @change="test">
                 <el-radio :label="1">否</el-radio>
@@ -247,7 +247,7 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="10" v-show="radio2===2">
+          <el-col :span="12" v-show="radio2===2">
             <el-form-item label="重点产品时间段">
               <!--<el-date-picker-->
                 <!--style="width: 80%"-->
@@ -262,7 +262,7 @@
                       style="width: 40%"
                       v-model="importantStart"
                       :disabled="operationDisabled"
-                      type="date"
+                      type="datetime"
                       placeholder="开始日期"
                       :default-time="['00:00:00', '23:59:59']">
               </el-date-picker>
@@ -270,7 +270,7 @@
                 style="width: 40%"
                 v-model="importantEnd"
                 :disabled="operationDisabled"
-                type="date"
+                type="datetime"
                 placeholder="结束日期"
                 :default-time="['00:00:00', '23:59:59']">
               </el-date-picker>
@@ -849,6 +849,7 @@
         })
       },
       backProductType(status, url) {
+        this.dto.status = status
         this.productStatusText = transformText(this.productStatus, this.productStatusNo)
         this.msgText = transformText(this.productStatus, status)
         this.$confirm('此产品现在为' + this.productStatusText + ', 确定返回' + this.msgText + '吗?', '提示', {
@@ -857,6 +858,12 @@
             type: 'warning'
           }).then(() => {
             updProductType(this.productId, this.dto).then(res => {
+              this.$notify({
+                title: '成功',
+                message: '状态操作成功',
+                type: 'success',
+                duration: 2000
+              })
               this.$router.push({path: url})
             })
           }).catch(() => {
@@ -879,6 +886,12 @@
             type: 'warning'
           }).then(() => {
             updProductType(this.productId, this.dto).then(res => {
+              this.$notify({
+                title: '成功',
+                message: '状态操作成功',
+                type: 'success',
+                duration: 2000
+              })
               this.$router.push({path: url})
             })
           }).catch(() => {

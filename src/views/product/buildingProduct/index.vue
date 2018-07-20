@@ -3,12 +3,14 @@
   <div class="app-container calendar-list-container">
     
     <product-search-component
-      :searchProductStatus="false">
+      :searchProductStatus="false"
+      @searchProduct="getListQuery">
     </product-search-component>
 
     <product-table-component
-      :productStatusNo="productStatusId"
-      :activeUrl="url">
+      :productList="data"
+      :activeUrl="url"
+      @searchProduct="getListQuery">
     </product-table-component>
     
   </div>
@@ -58,7 +60,7 @@
           limit: 20,
           // name: '',
           productTypeIds: [],
-          productStatus: [],
+          productStatus: [0],
           annualizedReturns: [],
           isFloat: null
         },
@@ -84,7 +86,7 @@
         tableKey: 0,
         sex: '',
         edu: '',
-        currencyList: [],
+        // currencyList: [],
         IDsType: '',
         entryDate: '',
         fileList: [],
@@ -113,7 +115,8 @@
         form: [],
         isSpread: false,
         productStatusId: '0',
-        url: '/product/building'
+        url: '/product/building',
+        data: {}
       }
     },
     computed: {
@@ -125,32 +128,39 @@
     },
     created() {
       // console.log(this.productStatus)
-      // this.getList()
+      this.getList()
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
-    }
-    // methods: {
-    //   getList() {
-    //     this.listLoading = true
+    },
+    methods: {
+      getListQuery(data) {
+        console.log('data')
+        console.log(data)
+        this.listQuery = data
+        this.listQuery.productStatus = [0]
+        this.getList()
+      },
+      getList() {
+        console.log('看谁快')
+        // this.listLoading = true
         
-    //     this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
-    //     fetchList(this.listQuery).then(response => {
-    //       this.list = response.data.records
-    //       this.total = response.data.total
-    //       this.listLoading = false
-    //       fetchProductTypeList().then(res => { // 获取产品类型
-    //         this.productTypes = res.data
-    //         this.list.forEach(item => {
-    //           item.productTypeId = transformText(this.productTypes, item.productTypeId)
-    //           item.productStatus = transformText(this.productStatus, item.productStatus)
-    //         })
-    //       })
-    //     })
-
-    //     getObjList().then(response => {
-    //       this.currencyList = response.data
-    //     })
-    //   },
+        this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
+        fetchList(this.listQuery).then(response => {
+          this.data = response.data
+          this.list = response.data.records
+          this.total = response.data.total
+          this.listLoading = false
+          // console.log(this.list)
+          fetchProductTypeList().then(res => { // 获取产品类型
+            this.productTypes = res.data
+            this.list.forEach(item => {
+              item.productTypeId = transformText(this.productTypes, item.productTypeId)
+              item.productStatus = transformText(this.productStatus, item.productStatus)
+            })
+            // console.log(this.list)
+          })
+        })
+      },
     //   handleFilter() {
     //     this.listQuery.page = 1
     //     this.getList()
@@ -172,13 +182,6 @@
     //     // this.dialogFormVisible = true
     //     // this.nextToUpdate = false
     //   },
-    //   handleUpdate(row) { // 编辑
-    //     this.$router.push({path: '/product/productDetail/' + row.productId})
-    //     Bus.$emit('activeIndex', '/product/productList')
-
-    //     // this.nextToUpdate = false
-      
-    //   },
     //   resetTemp() {
     //     this.form = {
     //       id: undefined,
@@ -197,12 +200,7 @@
     //     }
     //     this.getList()
     //   }
-    //   // searchList(data) {
-    //   //   this.listQuery = data
-    //   //   // this.listQuery.type = 1
-    //   //   this.getList()
-    //   // }
-    // }
+    }
   }
 </script>
 

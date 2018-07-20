@@ -10,7 +10,7 @@
           </el-input>
           </el-form-item>
         </el-col>
-        <el-col :sm="10" :lg="8" v-show="searchDate">
+        <el-col :sm="10" :lg="8" v-if="searchDate">
           <el-form-item label="日期">
               <el-date-picker
                 v-model="entryDate"
@@ -32,7 +32,7 @@
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="isSpread & searchProductType">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchProductType">
           <el-form-item label="产品分类">
              <el-checkbox-group v-model="listQuery.productTypeIds">
               <el-checkbox-button v-for="item in productTypes" :label="item.productTypeId" :key="item.productTypeId">{{item.name}}</el-checkbox-button>
@@ -42,7 +42,7 @@
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="isSpread & searchProductStatus">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchProductStatus">
           <el-form-item label="产品状态">
             <el-checkbox-group v-model="listQuery.productStatus" @change="handleChange">
               <el-checkbox-button v-for="status in productStatus" :label="status.value" :key="status.value">{{status.label}}</el-checkbox-button>
@@ -113,7 +113,8 @@ export default {
 
       // this.listQuery.orderByField = 'create_time'
       // this.listQuery.isAsc = false
-      Bus.$emit('searchProduct', this.listQuery)
+      console.log('搜索条件 ' + this.listQuery)
+      this.$emit('searchProduct', this.listQuery)
     },
     resetFilter() { // 重置搜索条件
       this.listQuery = {

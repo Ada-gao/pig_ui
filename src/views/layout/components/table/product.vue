@@ -126,6 +126,11 @@
       },
       productQuery: {
         default: false
+      },
+      productList: {
+        default: () => {
+          return {}
+        }
       }
     },
     filters: {
@@ -163,7 +168,7 @@
         userDel: false,
         dialogStatus: '',
         tableKey: 0,
-        currencyList: [],
+        // currencyList: [],
         productTypes: [],
       }
     },
@@ -176,23 +181,40 @@
       ])
     },
     created() {
-      this.getList()
+      console.log('create 事件')
+      // console.log(this.list)
+
+      // this.getList()
+      // console.log('create 事件')
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
       this.sys_product_del = this.permissions['sys_product_del']
     },
     mounted() {
-      // console.log('mounted事件')
-      Bus.$on('searchProduct', listQuery => {
-        // console.log(listQuery)
-        this.listQuery = listQuery
-        this.getList()
-      })
+      // Bus.$on('searchProduct', listQuery => {
+      //   console.log('mounted 事件')
+      //   // console.log(listQuery)
+      //   this.listQuery = listQuery
+      //   this.getList()
+      // })
+      // if(this.list) {
+        // this.listLoading = false
+      // }
+    },
+    watch: {
+      productList(curVal, oldVal) {
+        if(curVal) {
+          this.listLoading = false
+          this.list = curVal.records
+          this.total = curVal.total
+        }
+      }
     },
     methods: {
       getList() {
         if(this.productQuery) {
-          console.log('进来请求数据了')
+          console.log('进来请求数据了(总表)')
+          console.log(this.listQuery.productStatus)
           // this.listQuery.productStatus.push(this.productStatusNo)
          
           // let list = this.listQuery.productStatus
@@ -202,13 +224,15 @@
           //   }
           // })
         } else {
+          console.log('单独类查询（分表）')
+          console.log(this.productStatusNo)
           this.listQuery.productStatus = []
           this.listQuery.productStatus.push(this.productStatusNo)
           // this.listQuery.productStatus.length = 1
         }
         
         this.listLoading = true
-        this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
+        // this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
@@ -224,21 +248,22 @@
             })
           })
         })
-        getObjList().then(response => {
-          this.currencyList = response.data
-        })
+        // getObjList().then(response => {
+        //   this.currencyList = response.data
+        // })
       },
-      handleFilter() {
-        this.listQuery.page = 1
-        this.getList()
-      },
+      // handleFilter() {
+      //   this.listQuery.page = 1
+      //   this.getList()
+      // },
       handleSizeChange(val) {
         this.listQuery.limit = val
-        this.getList()
+        this.$emit('searchProduct', this.listQuery)
+        // this.getList()
       },
       handleCurrentChange(val) {
         this.listQuery.page = val
-        this.getList()
+        // this.getList()
       },
       // handleCreate() { //新增
       //   this.$router.push({path: '/product/productDetail'})
@@ -257,22 +282,6 @@
           // role: undefined
         }
       },
-      // resetFilter() {
-      //   this.listQuery = {
-      //     name: '',
-      //     // type: [],
-      //     productTypeIds: [],
-      //     annualizedReturns: [],
-      //     productStatus: [],
-      //     isFloat: 0
-      //   }
-      //   this.getList()
-      // },
-      // searchList(data) {
-      //   this.listQuery = data
-      //   // this.listQuery.type = 1
-      //   this.getList()
-      // },
       deletes(id) {
         this.$confirm('此操作将删除该产品, 是否继续?', '提示', {
           confirmButtonText: '确定',

@@ -187,7 +187,9 @@ export default {
         limit: 20,
         status: [],
         refundStatus: [],
-        date: []
+        date: [],
+        orderByField: 'create_time',
+        isAsc: false
       },
       transcStep: '',
       defaultProps: {
@@ -266,7 +268,9 @@ export default {
         status: [],
         refundStatus: [],
         deptId: '',
-        date: []
+        date: [],
+        orderByField: 'create_time',
+        isAsc: false
       },
       // this.entryDate = []
       this.deptId = []
