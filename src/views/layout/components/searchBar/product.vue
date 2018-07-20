@@ -109,11 +109,6 @@ export default {
   },
   methods: {
     handleFilter() { // 搜索
-      // this.listQuery.page = 1
-
-      // this.listQuery.orderByField = 'create_time'
-      // this.listQuery.isAsc = false
-      console.log('搜索条件 ' + this.listQuery)
       this.$emit('searchProduct', this.listQuery)
     },
     resetFilter() { // 重置搜索条件
@@ -127,16 +122,12 @@ export default {
         isAsc: false
       },
       this.entryDate = []
-      console.log(this.listQuery.productStatus)
-      Bus.$emit('searchProduct', this.listQuery)
+      console.log(this.listQuery)
+      this.$emit('searchProduct', this.listQuery)
     },
     fetchList() {
       fetchProductTypeList().then(res => { // 获取产品类型
         this.productTypes = res.data
-        // this.list.forEach(item => {
-        //   item.productTypeId = transformText(this.productTypes, item.productTypeId)
-        //   item.productStatus = transformText(this.productStatus, item.productStatus)
-        // })
       })
     },
     handleChange(val) {

@@ -181,7 +181,7 @@
       ])
     },
     created() {
-      console.log('create 事件')
+      // console.log('create 事件')
       // console.log(this.list)
 
       // this.getList()
@@ -211,51 +211,6 @@
       }
     },
     methods: {
-      getList() {
-        if(this.productQuery) {
-          console.log('进来请求数据了(总表)')
-          console.log(this.listQuery.productStatus)
-          // this.listQuery.productStatus.push(this.productStatusNo)
-         
-          // let list = this.listQuery.productStatus
-          // list.forEach((item, index) => {
-          //   if(item === '') {
-          //     list.splice(index, 1)
-          //   }
-          // })
-        } else {
-          console.log('单独类查询（分表）')
-          console.log(this.productStatusNo)
-          this.listQuery.productStatus = []
-          this.listQuery.productStatus.push(this.productStatusNo)
-          // this.listQuery.productStatus.length = 1
-        }
-        
-        this.listLoading = true
-        // this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.records
-          this.total = response.data.total
-          this.listLoading = false
-          this.list.forEach(item => {
-            item.investmentHorizonUnit = transformText(this.investHorizonUnit, item.investmentHorizonUnit)
-          })
-          fetchProductTypeList().then(res => { // 获取产品类型
-            this.productTypes = res.data
-            this.list.forEach(item => {
-              item.productTypeId = transformText(this.productTypes, item.productTypeId)
-              item.productStatus = transformText(this.productStatus, item.productStatus)
-            })
-          })
-        })
-        // getObjList().then(response => {
-        //   this.currencyList = response.data
-        // })
-      },
-      // handleFilter() {
-      //   this.listQuery.page = 1
-      //   this.getList()
-      // },
       handleSizeChange(val) {
         this.listQuery.limit = val
         this.$emit('searchProduct', this.listQuery)
@@ -263,12 +218,9 @@
       },
       handleCurrentChange(val) {
         this.listQuery.page = val
+        this.$emit('searchProduct', this.listQuery)
         // this.getList()
       },
-      // handleCreate() { //新增
-      //   this.$router.push({path: '/product/productDetail'})
-      //   Bus.$emit('activeIndex', '/product/productList')
-      // },
       handleUpdate(row) { // 查看
         this.$router.push({path: '/product/productDetail/' + row.productId})
         Bus.$emit('activeIndex', this.activeUrl)

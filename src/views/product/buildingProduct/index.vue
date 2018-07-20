@@ -60,9 +60,10 @@
           limit: 20,
           // name: '',
           productTypeIds: [],
-          productStatus: [0],
+          productStatus: ['0'],
           annualizedReturns: [],
-          isFloat: null
+          orderByField: 'create_time',
+          isAsc: false
         },
         role: undefined,
         form: {
@@ -141,7 +142,6 @@
         this.getList()
       },
       getList() {
-        console.log('看谁快')
         // this.listLoading = true
         
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null

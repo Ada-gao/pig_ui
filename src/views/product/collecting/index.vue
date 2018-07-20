@@ -4,12 +4,13 @@
     
     <product-search-component
       :searchProductStatus="false"
-      @searchProduct="searchList">
+      @searchProduct="getListQuery">
     </product-search-component>
 
     <product-table-component
-      :productStatusNo="productStatusId"
-      :activeUrl="url">
+      :productList="data"
+      :activeUrl="url"
+      @searchProduct="getListQuery">
     </product-table-component>
 
   </div>
@@ -57,11 +58,11 @@
         listQuery: {
           page: 1,
           limit: 20,
-          // name: '',
           productTypeIds: [],
-          productStatus: [],
+          productStatus: ['2'],
           annualizedReturns: [],
-          isFloat: null
+          orderByField: 'create_time',
+          isAsc: false
         },
         role: undefined,
         form: {
@@ -91,24 +92,6 @@
         fileList: [],
         productTypes: [],
         productTypesList: [],
-        productIncome: [
-          {
-            label: '10%以下',
-            value: 1
-          },
-          {
-            label: '10-15%',
-            value: 3
-          },
-          {
-            label: '15%以上',
-            value: 2
-          },
-          {
-            label: '浮动',
-            value: 4
-          }
-        ],
         input2: '',
         // nextToUpdate: false,
         fileList: [],
@@ -132,7 +115,8 @@
         form: [],
         isSpread: false,
         productStatusId: '2',
-        url: '/product/collecting'
+        url: '/product/collecting',
+        data: {}
       }
     },
     computed: {
@@ -149,11 +133,19 @@
       this.sys_product_upd = this.permissions['sys_product_upd']
     },
     methods: {
+      getListQuery(data) {
+        console.log('data')
+        console.log(data)
+        this.listQuery = data
+        this.listQuery.productStatus = ['2']
+        this.getList()
+      },
       getList() {
-        this.listLoading = true
+        // this.listLoading = true
         
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         fetchList(this.listQuery).then(response => {
+          this.data = response.data
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false

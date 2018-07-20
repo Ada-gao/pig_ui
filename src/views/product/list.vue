@@ -59,13 +59,14 @@
       </el-row>
     </div>
     <product-search-component
-      @searchProduct="searchList">
+      @searchProduct="getListQuery">
     </product-search-component>
 
     <product-table-component
-      :productStatusNo="productStatusId"
       :productQuery="true"
-      :activeUrl="url">
+      :productList="data"
+      :activeUrl="url"
+      @searchProduct="getListQuery">
     </product-table-component>
 
     <!-- <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -204,7 +205,9 @@
           productTypeIds: [],
           productStatus: [],
           annualizedReturns: [],
-          isFloat: null
+          isFloat: null,
+          orderByField: 'create_time',
+          isAsc: false
         },
         role: undefined,
         form: {
@@ -369,7 +372,8 @@
         isSpread: false,
         statistic: {},
         productStatusId: '',
-        url: '/product/productList'
+        url: '/product/productList',
+        data: {}
       }
     },
     computed: {
@@ -388,11 +392,16 @@
       this.sys_product_del = this.permissions['sys_product_del']
     },
     methods: {
+      getListQuery(data) {
+        this.listQuery = data
+        this.getList()
+      },
       getList() {
-        this.listLoading = true
+        // this.listLoading = true
         
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         fetchList(this.listQuery).then(response => {
+          this.data = response.data
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
@@ -403,10 +412,6 @@
               item.productStatus = transformText(this.productStatus, item.productStatus)
             })
           })
-        })
-
-        getObjList().then(response => {
-          this.currencyList = response.data
         })
       },
       getStatisc() {

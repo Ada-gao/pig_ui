@@ -4,12 +4,13 @@
     
     <product-search-component
       :searchProductStatus="false"
-      @searchProduct="searchList">
+      @searchProduct="getListQuery">
     </product-search-component>
 
     <product-table-component
-      :productStatusNo="productStatusId"
-      :activeUrl="url">
+      :productList="data"
+      :activeUrl="url"
+      @searchProduct="getListQuery">
     </product-table-component>
 
   </div>
@@ -59,9 +60,11 @@
           limit: 20,
           // name: '',
           productTypeIds: [],
-          productStatus: [],
+          productStatus: ['5'],
           annualizedReturns: [],
-          isFloat: null
+          isFloat: null,
+          orderByField: 'create_time',
+          isAsc: false
         },
         role: undefined,
         form: {
@@ -114,7 +117,8 @@
         form: [],
         isSpread: false,
         productStatusId: '5',
-        url: '/product/cashing'
+        url: '/product/cashing',
+        data: {}
       }
     },
     computed: {
@@ -131,11 +135,19 @@
       this.sys_product_upd = this.permissions['sys_product_upd']
     },
     methods: {
+      getListQuery(data) {
+        console.log('data')
+        console.log(data)
+        this.listQuery = data
+        this.listQuery.productStatus = ['5']
+        this.getList()
+      },
       getList() {
         this.listLoading = true
         
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         fetchList(this.listQuery).then(response => {
+          this.data = response.data
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
