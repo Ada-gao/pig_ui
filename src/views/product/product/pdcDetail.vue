@@ -439,7 +439,8 @@
             }
           ]
         },
-        createStatus: 'create'
+        createStatus: 'create',
+        backUrl: ''
       }
     },
     props: ['productId', 'stageType', 'formData'],
@@ -499,6 +500,7 @@
           this.stage = true
         }
       }
+      this.backUrl = localStorage.getItem('activeUrl')
     },
     methods: {
       getList() {
@@ -595,7 +597,6 @@
         this.form.currencyId = this.form.currencyIdNo
         this.form.productTypeId = this.form.productTypeIdNo
         this.form.investmentHorizonUnit = this.form.investmentHorizonUnitNo
-        // console.log(formName)
         set[formName].validate(valid => {
           if (valid) {
             if (this.stage) { //分期
@@ -605,7 +606,6 @@
                   return
                   // this.getList()
                 }
-                console.log(response)
                 this.form = response.data
                 // this.productId = this.form.productId
                 this.$emit('productIdByDetail', response.data.productId)
@@ -631,7 +631,6 @@
                 })
                 this.form = res.data
                 this.step = 2
-                console.log(res)
               })
             }
             let params = {
@@ -649,7 +648,8 @@
       cancel(formName) {
         // this.dialogFormVisible = false
         // this.$refs[formName].resetFields()
-        this.$router.push({path: '/product/productList'})
+        this.$router.push({path: this.backUrl})
+        Bus.$emit('activeIndex', this.backUrl)
       },
     }
   }

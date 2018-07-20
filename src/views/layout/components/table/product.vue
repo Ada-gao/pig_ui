@@ -181,25 +181,9 @@
       ])
     },
     created() {
-      // console.log('create 事件')
-      // console.log(this.list)
-
-      // this.getList()
-      // console.log('create 事件')
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
       this.sys_product_del = this.permissions['sys_product_del']
-    },
-    mounted() {
-      // Bus.$on('searchProduct', listQuery => {
-      //   console.log('mounted 事件')
-      //   // console.log(listQuery)
-      //   this.listQuery = listQuery
-      //   this.getList()
-      // })
-      // if(this.list) {
-        // this.listLoading = false
-      // }
     },
     watch: {
       productList(curVal, oldVal) {
@@ -224,8 +208,7 @@
       handleUpdate(row) { // 查看
         this.$router.push({path: '/product/productDetail/' + row.productId})
         Bus.$emit('activeIndex', this.activeUrl)
-        // Bus.$emit('activeRouter', this.activeUrl)
-        // console.log(Bus.$emit('activeRouter', this.activeUrl))
+        localStorage.setItem('activeUrl', this.activeUrl)
       },
       resetTemp() {
         this.form = {

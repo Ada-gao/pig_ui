@@ -693,71 +693,6 @@
       </transc-table-component>
     </div>
 
-    <div slot="footer" class="dialog-footer" style="text-align: center;">
-      <!-- <span class="stage_btn" v-if="createStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('0')">
-        <svg-icon icon-class="stage"></svg-icon> 产品分期</span>
-      <span class="stage_btn" v-if="createStatus=='update'&step===2&productStatusNo===2" @click="handleCollect('1')">
-        <svg-icon icon-class="stage"></svg-icon> 募集分期</span> -->
-      <!-- 在建 -->
-      <!-- <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===0" type="primary" @click="updateProductType(1, '/product/building')">
-        <svg-icon icon-class="preheating"></svg-icon> 进入产品预热</el-button> -->
-      <!-- 预热 -->
-      <!-- <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(2, '/product/preheating')">
-        <svg-icon icon-class="collecting"></svg-icon> 进入产品募集</el-button>
-      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductType(0, '/product/preheating')">
-        <svg-icon icon-class="return"></svg-icon> 返回在建</el-button>
-      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===1" type="primary" @click="updateProductDisplay">
-        <svg-icon v-if="form.isDisplay==='1'" icon-class="eye"></svg-icon> 
-        <svg-icon v-else icon-class="product_eye"></svg-icon> 
-        {{form.isDisplay==='1'?'设为隐藏':'设为显示'}}</el-button> -->
-      <!-- 募集中 -->
-      <!-- <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductType(3, '/product/collecting')">
-        <svg-icon icon-class="close"></svg-icon> 进入已关账</el-button>
-      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductPause">
-        <svg-icon v-if="form.isPause==='1'" icon-class="play"></svg-icon> 
-        <svg-icon v-else icon-class="pause"></svg-icon> 
-        {{form.isPause==='1'?'开始预约':'暂停预约'}}
-      </el-button>
-      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===2" type="primary" @click="updateProductDisplay">
-        <svg-icon v-if="form.isDisplay==='1'" icon-class="eye"></svg-icon> 
-        <svg-icon v-else icon-class="eyeShow"></svg-icon> 
-        {{form.isDisplay==='1'?'设为隐藏':'设为显示'}}
-      </el-button> -->
-      <!-- 已关账 -->
-      <!-- <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(4, '/product/shutDown')">
-        <svg-icon icon-class="establish"></svg-icon> 进入已成立</el-button>
-      <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===3" type="primary" @click="updateProductType(2, '/product/shutDown')">
-        <svg-icon icon-class="return"></svg-icon> 返回募集中</el-button> -->
-      <!-- 已成立 -->
-      <!-- <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===4" type="primary" @click="updateProductType(5, '/product/established')">
-        <svg-icon icon-class="shutDown"></svg-icon> 进入兑付中</el-button> -->
-      <!-- 兑付中 -->
-      <!-- <el-button class="add_btn" v-if="createStatus=='update'&step===2&productStatusNo===5" type="primary" @click="updateProductType(6, '/product/cashing')">
-        <svg-icon icon-class="shutDown"></svg-icon> 进入兑付完成</el-button> -->
-    </div>
-
-    <!-- <el-dialog
-      title="提示"
-      :visible.sync="dialogComVisible"
-      width="30%">
-      <div style="margin-bottom: 30px;">请选择新增材料</div>
-      <el-select v-model="clientFile"
-        clearable
-        placeholder="请选择"
-        style="margin-bottom: 30px;"
-        @change="changeFileList">
-        <el-option
-          v-for="item in clientFileList"
-          :key="item.productClientFileManageId||item.transactionFileManageId"
-          :label="item.fileName||item.name"
-          :value="item.productClientFileManageId||item.transactionFileManageId">
-        </el-option>
-      </el-select>
-      <div class="dialog-footer text-right">
-        <el-button @click="dialogComVisible = false">取 消</el-button>
-        <el-button type="primary" @click="chooseClientFile">确 定</el-button>
-      </div>
-    </el-dialog> -->
   </div>
 </template>
 
@@ -927,7 +862,7 @@
         stageType: '',
         // pause: '1',
         // display: '1',
-        ada_url: {},
+        ada_url: '',
         url: '',
         fileType: '',
         createStatus: 'create',
@@ -975,12 +910,15 @@
       // console.log(this.productStatusNum)
     },
     mounted() {
-      var vm = this
-      // Bus.$on('activeRouter', activeRouter => {
-      //   vm.ada_url.z = activeRouter
-      //   // this.newUrl(url)
-      //   // vm.$set(vm.ada_url, 'z', activeRouter)
-      // })
+      Bus.$on('activeRouter', activeRouter => {
+        this.ada_url = activeRouter
+        console.log(this.ada_url)
+      })
+    },
+    watch: {
+      activeRouter(curVal, oldVal) {
+        console.log(curVal)
+      }
     },
     methods: {
       listenProStatus(msg) { // 从产品详情接收--修改：接收字段增加

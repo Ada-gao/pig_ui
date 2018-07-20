@@ -390,19 +390,19 @@
       <el-button class="search_btn" v-if="createStatus=='update'&!operationDisabled" @click="cancel()">取 消</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&!operationDisabled" type="primary" @click="updateRouter">保 存</el-button>
       <!-- 在建 -->
-      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===0" type="primary" @click="updateProductType(1, '/product/building')">
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===0" type="primary" @click="updateProductType(1)">
         <svg-icon icon-class="preheating"></svg-icon> 进入产品预热</el-button>
       <!-- 预热 -->
-      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="updateProductType(2, '/product/preheating')">
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="updateProductType(2)">
         <svg-icon icon-class="collecting"></svg-icon> 进入产品募集</el-button>
-      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="backProductType(0, '/product/preheating')">
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="backProductType(0)">
         <svg-icon icon-class="return"></svg-icon> 返回在建</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="updateProductDisplay">
         <svg-icon v-if="form2.isDisplay==='1'" icon-class="eye"></svg-icon>
         <svg-icon v-else icon-class="product_eye"></svg-icon>
         {{form2.isDisplay==='1'?'设为隐藏':'设为显示'}}</el-button>
       <!-- 募集中 -->
-      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===2" type="primary" @click="updateProductType(3, '/product/collecting')">
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===2" type="primary" @click="updateProductType(3)">
         <svg-icon icon-class="close"></svg-icon> 进入已关账</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===2" type="primary" @click="updateProductPause">
         <svg-icon v-if="form2.isPause==='1'" icon-class="play"></svg-icon>
@@ -415,15 +415,15 @@
         {{form2.isDisplay==='1'?'设为隐藏':'设为显示'}}
       </el-button>
       <!-- 已关账 -->
-      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===3" type="primary" @click="updateProductType(4, '/product/shutDown')">
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===3" type="primary" @click="updateProductType(4)">
         <svg-icon icon-class="establish"></svg-icon> 进入已成立</el-button>
-      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===3" type="primary" @click="backProductType(2, '/product/shutDown')">
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===3" type="primary" @click="backProductType(2)">
         <svg-icon icon-class="return"></svg-icon> 返回募集中</el-button>
       <!-- 已成立 -->
-      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===4" type="primary" @click="updateProductType(5, '/product/established')">
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===4" type="primary" @click="updateProductType(5)">
         <svg-icon icon-class="shutDown"></svg-icon> 进入兑付中</el-button>
       <!-- 兑付中 -->
-      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===5" type="primary" @click="updateProductType(6, '/product/cashing')">
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===5" type="primary" @click="updateProductType(6)">
         <svg-icon icon-class="shutDown"></svg-icon> 进入兑付完成</el-button>
     </div>
 
@@ -667,6 +667,7 @@
     },
     mounted() {
       this.productStatusNo = this.proStatus
+      this.url = localStorage.getItem('activeUrl')
     },
     methods: {
       getOperations() { // 获取操作指南信息
@@ -677,7 +678,6 @@
           this.form2.normalDTO = res.data.normalDTO || {}
           this.activityData = res.data.activityDTO || []
           if(this.form2.importantStart || this.form2.importantEnd) {
-            console.log('keyProduct: ' + this.radio2)
             this.radio2 = 2
           } else {
             this.radio2 = 1
@@ -763,7 +763,6 @@
         // this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
         this.form2.productId = this.productId
         // this.form2.keyProduct = this.radio2
-        console.log(this.form2)
         if (!this.operationDisabled && !this.form2.importantStart) {
           this.$notify({
             title: '失败',
@@ -807,7 +806,6 @@
             type: 'warning'
           }).then(() => {
             updProductDisplay(this.productId, params).then(res => {
-              console.log(res)
               this.form2.isDisplay = display
               this.getOperations()
             })
@@ -828,14 +826,12 @@
             type: 'warning'
           }).then(() => {
             updProductPause(this.productId, params).then(res => {
-              console.log(res)
               this.form2.isPause = pause
               this.getOperations()
             })
           }).catch(() => {
 
           })
-        // console.log('跳转地址： ' + this.url)
       },
       handleCollect(type) { // 募集分期/产品分期
         this.stageType = type // 0 产品分期； 1 募集分期
@@ -857,7 +853,7 @@
           this.$emit('detailByOperation', params)
         })
       },
-      backProductType(status, url) {
+      backProductType(status) {
         this.dto.status = status
         this.productStatusText = transformText(this.productStatus, this.productStatusNo)
         this.msgText = transformText(this.productStatus, status)
@@ -873,15 +869,15 @@
                 type: 'success',
                 duration: 2000
               })
-              this.$router.push({path: url})
+              this.$router.push({path: this.url})
+              Bus.$emit('activeUrl', this.url)
             })
           }).catch(() => {
 
           })
       },
-      updateProductType(status, url) { // 产品状态转化
+      updateProductType(status) { // 产品状态转化
         this.dto.status = status
-        this.url = url
         this.productStatusText = transformText(this.productStatus, this.productStatusNo)
         this.msgText = transformText(this.productStatus, status)
 
@@ -901,7 +897,8 @@
                 type: 'success',
                 duration: 2000
               })
-              this.$router.push({path: url})
+              this.$router.push({path: this.url})
+              Bus.$emit('activeUrl', this.url)
             })
           }).catch(() => {
 
@@ -912,12 +909,13 @@
         updProductType(this.productId, this.dto).then(res => {
           this.dialogStVisible = false
           this.$router.push({path: this.url})
+          Bus.$emit('activeUrl', this.url)
         })
       },
       cancel(formName) {
-        // this.dialogFormVisible = false
         // this.$refs[formName].resetFields()
-        this.$router.push({path: '/product/productList'})
+        this.$router.push({path: this.url})
+        Bus.$emit('activeUrl', this.url)
       },
       addCommission() {
         if(this.cmsIndex > 4) return
@@ -935,7 +933,6 @@
         this.activityList = this.activityList.concat(this.addActivityList)
       },
       test(val) {
-        console.log(val)
         if(val === 1) {
         //  this.importantDate = []
           this.importantEnd = this.importantStart = ''
@@ -992,9 +989,7 @@
             transactionFileManageId: this.selectFile.transactionFileManageId,
             productId: this.productId - 0
           }
-          console.log('transaction吗')
           postTranscFile(params).then(res => {
-            console.log(res)
             this.getFiles1(params.productId)
           })
         }
@@ -1006,7 +1001,6 @@
           return id === val
         })
         this.selectFile = obj
-        console.log(this.clientFile)
       },
       updateClientFileName(item) { // 编辑上传客户材料名称
         let params = {

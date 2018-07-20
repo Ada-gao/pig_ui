@@ -136,8 +136,6 @@
     },
     methods: {
       getListQuery(data) {
-        console.log('data')
-        console.log(data)
         this.listQuery = data
         this.listQuery.productStatus = ['6']
         this.getList()
