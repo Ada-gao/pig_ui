@@ -160,46 +160,7 @@
             // console.log(this.list)
           })
         })
-      },
-    //   handleFilter() {
-    //     this.listQuery.page = 1
-    //     this.getList()
-    //   },
-    //   handleSizeChange(val) {
-    //     this.listQuery.limit = val
-    //     this.getList()
-    //   },
-    //   handleCurrentChange(val) {
-    //     this.listQuery.page = val
-    //     this.getList()
-    //   },
-    //   handleCreate() { //新增
-    //     this.$router.push({path: '/product/productDetail'})
-    //     Bus.$emit('activeIndex', '/product/productList')
-
-    //     // this.resetTemp()
-    //     // this.dialogStatus = 'create'
-    //     // this.dialogFormVisible = true
-    //     // this.nextToUpdate = false
-    //   },
-    //   resetTemp() {
-    //     this.form = {
-    //       id: undefined,
-    //       name: '',
-    //       role: undefined
-    //     }
-    //   },
-    //   resetFilter() {
-    //     this.listQuery = {
-    //       name: '',
-    //       // type: [],
-    //       productTypeIds: [],
-    //       annualizedReturns: [],
-    //       productStatus: [],
-    //       isFloat: 0
-    //     }
-    //     this.getList()
-    //   }
+      }
     }
   }
 </script>
