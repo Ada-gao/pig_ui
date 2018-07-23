@@ -226,6 +226,23 @@ export const asyncRouterMap = [
     ]
   },
   {
+    menuId: 3,
+    path: '/achievement',
+    component: Layout,
+    name: '业绩/佣金管理',
+    hidden: false,
+    redirect: '/achievement/allList',
+    // icon: 'table',
+    meta: {
+      title: '业绩/佣金管理',
+      icon: 'product_mg'
+    },
+    children: [
+      { menuId: 48, path: 'balanced', component: _import('achievement/balanced/index'), name: '平衡计分卡', meta: { title: '平衡计分卡', icon: 'product' }},
+      { menuId: 48, path: 'list', component: _import('achievement/list/index'), name: '业绩/佣金列表', meta: { title: '业绩/佣金列表', icon: 'product' }},
+    ]
+  },
+  {
     menuId: 4,
     path: '/setting',
     component: Layout,
