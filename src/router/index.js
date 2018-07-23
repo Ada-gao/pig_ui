@@ -43,28 +43,28 @@ export const constantRouterMap = [
       icon: 'client'
     },
     children: [
-      { 
+      {
         path: 'detail/:id/:isView',
         component: _import('client/customer/detail'),
         name: '编辑客户详情页',
         meta: { title: '编辑客户详情', icon: '', noCache: true },
         hidden: true
       },
-      { 
+      {
         path: 'readDetail/:id/:isView',
         component: _import('client/customer/readOnlyDetail'),
         name: '客户详情页',
         meta: { title: '查看客户详情', icon: '', noCache: true },
         hidden: true
       },
-      { 
+      {
         path: 'realnameDetail/:id',
         component: _import('client/realname/detail'),
         name: '实名认证审核详情页',
         meta: { title: '实名认证审核信息', icon: '', noCache: true },
         hidden: true
       },
-      { 
+      {
         path: 'investorDetail/:id/:type/:isView',
         component: _import('client/investor/detail'),
         name: '投资者审核详情页',
@@ -86,14 +86,14 @@ export const constantRouterMap = [
       icon: 'product_mg'
     },
     children: [
-      { 
+      {
         path: 'productDetail/:id',
         component: _import('product/product/detail'),
         name: '产品详情页',
         meta: { title: '产品详情', icon: '', noCache: true },
         hidden: true
       },
-      { 
+      {
         path: 'productDetail',
         component: _import('product/product/detail'),
         name: '产品新建页',
@@ -116,7 +116,7 @@ export const constantRouterMap = [
       icon: 'product_mg'
     },
     children: [
-      { 
+      {
         path: 'transc/detail/:appointmentId/:orderStatus/:status',
         component: _import('transcMag/transaction/detail'),
         name: '订单详情',
@@ -240,6 +240,7 @@ export const asyncRouterMap = [
     children: [
       { menuId: 48, path: 'balanced', component: _import('achievement/balanced/index'), name: '平衡计分卡', meta: { title: '平衡计分卡', icon: 'product' }},
       { menuId: 48, path: 'list', component: _import('achievement/list/index'), name: '业绩/佣金列表', meta: { title: '业绩/佣金列表', icon: 'product' }},
+      { menuId: 48, path: 'perform', component: _import('achievement/performance_indicator/index'), name: '业绩指标列表', meta: { title: '业绩指标列表', icon: 'product' }}
     ]
   },
   {
