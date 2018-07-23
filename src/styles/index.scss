@@ -171,3 +171,9 @@ input[type="number"]{
 .split-line {
   border-bottom: 1px solid #e9e9e9;
 }
+.el-table__header {
+  .ml5.el-icon-sort-down {
+    margin-left: 5px;
+    cursor: pointer;
+  }
+}

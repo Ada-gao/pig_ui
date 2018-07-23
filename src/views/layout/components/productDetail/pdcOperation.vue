@@ -14,7 +14,8 @@
           <template slot-scope="scope">
             <el-input v-model="scope.row.name"
                       v-if="productFileId===scope.row.productFileId"
-                      @keyup.enter.native="updateFileName(scope.row, 'transaction')"></el-input>
+                      @keyup.enter.native="$event.target.blur"
+                      @blur="updateFileName(scope.row, 'transaction')"></el-input>
             <span v-else>{{scope.row.name}}</span>
           </template>
         </el-table-column>
@@ -49,32 +50,16 @@
     </div>
     <div class="trade-item">
       <h3>上传客户材料</h3>
-      <el-table
-        :data="clientFiles"
-        border
-        style="width: 100%">
-        <el-table-column
-          prop="fileName"
-          label="材料名称"
-          align="center">
-          <template slot-scope="scope">
-            <el-input v-model="scope.row.fileName"
-                      v-if="productFileId===scope.row.productClientFileId"
-                      @keyup.enter.native="updateClientFileName(scope.row)"></el-input>
-            <span v-else>{{scope.row.fileName}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop=""
-          label="操作"
-          align="center"
-          v-if="!operationDisabled">
-          <template slot-scope="scope">
-            <a class="common_btn" size="small" @click="productFileId=scope.row.productClientFileId">编辑</a>
-            <a class="danger_btn" size="small" @click="delCustFile(scope.row)">删除</a>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="second-tab">
+        <span class="second-item" @click="changeSecStep('1')" :class="{'query-color': secStep==='1'}">专业投资者</span>
+        <span class="second-item" @click="changeSecStep('2')" :class="{'query-color': secStep==='2'}">普通投资者</span>
+      </div>
+      <product-material-component
+        :productList="data"
+        @del-client-file="deleteClient"
+        @upd-client-file="updateClientFile">
+      </product-material-component>
+
       <el-row style="text-align: right;">
         <el-button size="small"
           class="btn-padding add_btn"
@@ -96,7 +81,8 @@
           <template slot-scope="scope">
             <el-input v-model="scope.row.name"
                       v-if="productFileId===scope.row.productFileId"
-                      @keyup.enter.native="updateFileName(scope.row, 'product')"></el-input>
+                      @keyup.enter.native="$event.target.blur"
+                      @blur="updateFileName(scope.row, 'product')"></el-input>
             <span v-else>{{scope.row.name}}</span>
           </template>
         </el-table-column>
@@ -435,7 +421,7 @@
       <el-select v-model="clientFile"
         clearable
         placeholder="请选择"
-        style="margin-bottom: 30px;"
+        style="margin-bottom: 30px; width: 100%"
         @change="changeFileList">
         <el-option
           v-for="item in clientFileList"
@@ -518,6 +504,7 @@
 </template>
 
 <script>
+  import productMaterialComponent from 'components/table/material'
   import { putFileObj, delCustFile, fetchOperation, addCustFile, postTranscFile, getCustFile,
     updCustFile, updProductDisplay, updProductPause, getProductStage, addOperationObj, updProductType } from '@/api/product/product'
   import { mapGetters } from 'vuex'
@@ -552,11 +539,14 @@
   }
 
   export default {
+    components: {
+      productMaterialComponent
+    },
     data() {
       return {
         fileList1: [],
         fileList2: [],
-        clientFiles: [],
+        // clientFiles: [],
         form2: {
           activityDTO: [],
           normalDTO: {
@@ -620,7 +610,9 @@
         productStatusText: '',
         msgText: '',
         dto: {},
-        url: ''
+        url: '',
+        secStep: '1',
+        data: {}
         // form: {},
         // isDisabled: true,
         // stage: false,
@@ -968,6 +960,9 @@
           })
         }
       },
+      changeSecStep(val) {
+        this.secStep = val
+      },
       chooseClientFile() {
         this.dialogComVisible = false
         if (this.fileType === 'client') {
@@ -1002,7 +997,7 @@
         })
         this.selectFile = obj
       },
-      updateClientFileName(item) { // 编辑上传客户材料名称
+      updateClientFile(item) { // 编辑上传客户材料名称
         let params = {
           name: item.fileName
         }
@@ -1013,7 +1008,8 @@
             type: 'success',
             duration: 2000
           })
-          this.productFileId = ''
+          // this.productFileId = ''
+          this.getFiles4(this.productId)
         })
       },
       updateFileName(item, fileType) { // 编辑材料名称
@@ -1053,8 +1049,8 @@
           }
         })
       },
-      delCustFile(item) { // 删除上传客户材料
-        delCustFile(item.productClientFileId).then(res => {
+      deleteClient(id) { // 删除上传客户材料
+        delCustFile(id).then(res => {
           if(res.status === 200) {
             this.getFiles4(88)
           }
@@ -1085,7 +1081,8 @@
       },
       getFiles4(productId) { // 客户所需材料
         getCustFile(productId).then(response => {
-          this.clientFiles = response.data || []
+          // this.clientFiles = response.data || []
+          this.data = response.data
         })
       }
     }
@@ -1104,6 +1101,17 @@
       line-height: 40px;
       margin-right: 10px;
       cursor: pointer;
+  }
+  .second-tab {
+    color: #606266;
+    .second-item {
+      display: inline-block;
+      padding: 0 16px;
+      cursor: pointer;
+    }
+  }
+  .query-color {
+    color: $mainColor;
   }
 </style>
 
