@@ -63,10 +63,10 @@
       <el-button class="add_btn" @click="handleCreate">
         <svg-icon icon-class="add"></svg-icon>新增指标
       </el-button>
-      <el-button class="add_btn" @click="handleImport">
+      <el-button class="search_btn" @click="handleImport">
         <svg-icon icon-class="upload"></svg-icon>批量导入
       </el-button>
-      <el-button class="add_btn" @click="handleExport">
+      <el-button class="search_btn" @click="handleExport">
         <svg-icon icon-class="upload"></svg-icon>批量导出
       </el-button>
     </div>
@@ -96,32 +96,132 @@
           <span>{{scope.row.roleList[0].roleDesc}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="业绩指标" :render-header="tableHeader">
+      <el-table-column align="center"
+                       label="业绩指标"
+                       :render-header="tableHeader">
         <template slot-scope="scope">
           <span>
             {{scope.row.roleList[0].roleDesc}}
           </span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" fixed="right" width="150">
+      <el-table-column align="center"
+                       label="操作"
+                       fixed="right"
+                       width="150">
         <template slot-scope="scope">
           <a size="small"
              @click="handleUpdate(scope.row, 'edit')"
              class="common_btn">编辑</a>
-          <span class="space_line"> | </span>
+          <!--<span class="space_line"> | </span>-->
           <a size="small"
-             class="common_btn"
+             class="danger_btn"
              @click="handleUpdate(scope.row, 'del')">删除</a>
         </template>
       </el-table-column>
     </el-table>
     <div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+      <el-pagination @size-change="handleSizeChange"
+                     @current-change="handleCurrentChange"
                      :current-page.sync="listQuery.page"
-                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
-                     layout="total, sizes, prev, pager, next, jumper" :total="total">
+                     :page-sizes="[10,20,30, 50]"
+                     :page-size="listQuery.limit"
+                     layout="total, sizes, prev, pager, next, jumper"
+                     :total="total">
       </el-pagination>
     </div>
+    <!--新建和编辑业绩指标-->
+    <el-dialog :title="textMap[dialogStatus]"
+               class="perform_dialog"
+               @close="cancel('form')"
+               :visible.sync="dialogCreate">
+      <el-form :model="form"
+               ref="form"
+               :rules="rules1"
+               label-width="100px">
+        <el-row>
+          <el-col>
+            <el-form-item label="周期" prop="period">
+              <el-date-picker
+                v-model="form.period"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+            <el-form-item label="部门" prop="id">
+              <el-select class="filter-item"
+                         placeholder="请选择部门"
+                         multiple
+                         v-model="form.id">
+                <el-option v-for="item in departs"
+                           :value="item.id"
+                           :label="item.name"
+                           :key="item.id">
+                  <span style="float: left;">{{item.name}}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+            <el-form-item label="职位" prop="positionId">
+              <el-select class="filter-item"
+                         placeholder="请选择职位"
+                         multiple
+                         v-model="form.positionId">
+                <el-option v-for="item in positions"
+                           :value="item.positionId"
+                           :label="item.positionName"
+                           :key="item.positionId">
+                  <span style="float: left;">{{item.positionName}}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+            <el-form-item label="职级" prop="rank">
+              <el-select class="filter-item"
+                         placeholder="请选择职级"
+                         multiple
+                         v-model="form.rank">
+                <el-option v-for="item in level"
+                           :value="item.positionId"
+                           :label="item.positionName"
+                           :key="item.positionId">
+                  <span style="float: left;">{{item.positionName}}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+            <el-form-item label="业绩指标" prop="amount">
+              <el-input v-model.number="form.amount"
+                        class="width95"
+                        type="number"
+                        placeholder="请输入业绩指标"></el-input>万
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button class="search_btn" @click="cancel('form')">取 消</el-button>
+        <el-button class="add_btn" v-if="dialogStatus=='create'" @click="create('form')">确 定</el-button>
+        <el-button class="add_btn" v-else @click="update('form')">修 改</el-button>
+      </div>
+    </el-dialog>
+    <!--<el-dialog :title="textMap[dialogStatus]"-->
+               <!--:visible.sync="dialogEdit"></el-dialog>-->
   </div>
 </template>
 <script>
@@ -141,6 +241,31 @@
         listQuery: {
           page: 1,
           limit: 20
+        },
+        form: {},
+        textMap: {
+          edit: '编辑业绩指标',
+          create: '新建业绩指标'
+        },
+        dialogStatus: '',
+        dialogCreate: false,
+        // dialogEdit: false,
+        rules1: {
+          period: [
+            { required: true, message: '请选择周期', trigger: 'blur' }
+          ],
+          id: [
+            { required: true, message: '请选择部门', trigger: 'blur' }
+          ],
+          positionId: [
+            { required: true, message: '请选择职位', trigger: 'blur' }
+          ],
+          rank: [
+            { required: true, message: '请选择职级', trigger: 'blur' }
+          ],
+          amount: [
+            { required: true, message: '请输入业绩指标', trigger: 'blur' }
+          ]
         },
         departs: [], // 部门
         positions: [], // 职位
@@ -209,10 +334,30 @@
         }
         this.handleFilter()
       },
-      handleCreate() {},
+      handleCreate() {
+        this.resetTemp()
+        this.dialogStatus = 'create'
+        this.dialogCreate = true
+      },
+      resetTemp() {
+        this.form = {
+          period: [],
+          id: [],
+          positionId: [],
+          rank: [],
+          amount: null
+        }
+      },
       handleImport() {},
       handleExport() {},
       handleUpdate(row, state) {
+        this.dialogStatus = 'edit'
+        console.log(row)
+        if (state === 'edit') {
+          this.dialogCreate = true
+        } else if (state === 'del') {
+          console.log(222)
+        }
       },
       handleSizeChange(val) {
         this.listQuery.limit = val
@@ -221,6 +366,19 @@
       handleCurrentChange(val) {
         this.listQuery.page = val
         this.getList()
+      },
+      cancel(formName) {
+        this.dialogCreate = false
+        this.$refs[formName].resetFields()
+      },
+      create(formName) {
+        const set = this.$refs
+        console.log(this.form)
+        set[formName].validate(valid => {
+          if (valid) {
+            this.dialogCreate = false
+          }
+        })
       }
     }
   }
@@ -229,6 +387,16 @@
   .filter-container {
     .filter-item {
       display: block;
+    }
+  }
+  .perform_dialog {
+    .el-form-item__content {
+      width: calc(100% - 100px);
+      .el-range-editor.el-input__inner,
+      .el-select,
+      .width95 {
+        width: 95%;
+      }
     }
   }
 </style>
