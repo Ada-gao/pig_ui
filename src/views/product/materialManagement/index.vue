@@ -38,7 +38,7 @@
             <el-input
               v-if="transcId===scope.row.transactionFileManageId"
               v-model="scope.row.name"
-              @keyup.enter.native="updateTranscFile(scope.row)"
+              @keyup.enter.native="$event.target.blur"
               @blur="updateTranscFile(scope.row)"></el-input>
             <span v-else>{{scope.row.name}}</span>
           </template>
@@ -71,44 +71,6 @@
 
       </el-table>
 
-      <!-- <div v-show="!listLoading" class="pagination-container">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                      :current-page.sync="listQuery.page"
-                      :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
-                      layout="total, sizes, prev, pager, next, jumper" :total="total">
-        </el-pagination>
-      </div> -->
-    </div>
-    <div class="table-item" v-else>
-      <el-table :key='tableKey1' :data="list1" v-loading="listLoading" element-loading-text="给我一点时间" border fit
-              highlight-current-row style="width: 100%">
-
-        <el-table-column align="center" label="材料名称">
-          <template slot-scope="scope">
-            <el-input
-              v-if="transcId===scope.row.productClientFileManageId"
-              v-model="scope.row.fileName"
-              @keyup.enter.native="updateClientFile(scope.row)"
-              @blur="updateClientFile(scope.row)"></el-input>
-            <span v-else>{{scope.row.fileName}}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column align="center" label="操作" fixed="right">
-          <template slot-scope="scope">
-            <a size="small" class="common_btn"
-                      @click="transcId=scope.row.productClientFileManageId">编辑
-                      <!-- @click="handleRouter(scope.row.clientId)">编辑 -->
-            </a>
-            <span class="space_line"> | </span>
-            <a size="small" class="common_btn"
-                      @click="deleteClient(scope.row.productClientFileManageId)">删除
-            </a>
-          </template>
-        </el-table-column>
-
-      </el-table>
-
       <div v-show="!listLoading" class="pagination-container">
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                       :current-page.sync="listQuery.page"
@@ -117,13 +79,21 @@
         </el-pagination>
       </div>
     </div>
+    <div class="table-item" v-else>
+      <product-material-component
+        :productList="data"
+        @searchProduct="getListQuery"
+        @del-client-file="deleteClient"
+        @upd-client-file="updateClientFile">
+      </product-material-component>
+    </div>
 
 
   </div>
 </template>
 
 <script>
-  import productFileTable from 'components/table/productFile'
+  import productMaterialComponent from 'components/table/material'
   import { getClientFile, addClientFile, updClientFile, delClientFile,
     getTranscFile, addTranscFile, updTranscFile, delTranscFile } from '@/api/product/fileManage'
   import { fetchProductTypeList } from '@/api/product/productType'
@@ -143,7 +113,7 @@
     components: {
       ElOption,
       ElRadioGroup,
-      productFileTable
+      productMaterialComponent
     },
     name: 'table_user',
     directives: {
@@ -161,7 +131,9 @@
         listQuery: {
           page: 1,
           limit: 20,
-          isFloat: null
+          isFloat: null,
+          orderByField: 'create_time',
+          isAsc: false
         },
         statusOptions: ['0', '1'],
         rolesOptions: [],
@@ -210,7 +182,8 @@
         step: 1,
         importUrl: 'zuul/product/productTransactionFileManage/',
         transcId: '',
-        secStep: '1'
+        secStep: '1',
+        data: {}
       }
     },
     computed: {
@@ -221,15 +194,19 @@
       ])
     },
     created() {
-      console.log(this.step)
       this.getTranscList()
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
     },
     methods: {
+      getListQuery(data) {
+        console.log('data')
+        console.log(data)
+        this.listQuery = data
+        this.getClientList()
+      },
       changeStep(val) {
         this.step = val
-        console.log(this.step)
         this.importUrl = 'zuul/product/productClientFileManage/'
         // Bus.$emit('step', this.step)
         if(this.step === 1) {
@@ -283,6 +260,7 @@
         this.listLoading = true
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         getClientFile(this.listQuery).then(response => {
+          this.data = response.data
           this.list1 = response.data.records
           this.total1 = response.data.total
           this.listLoading = false
@@ -319,11 +297,11 @@
       },
       handleSizeChange(val) {
         this.listQuery.limit = val
-        this.getClientList()
+        this.getTranscList()
       },
       handleCurrentChange(val) {
         this.listQuery.page = val
-        this.getClientList()
+        this.getTranscList()
       },
     }
   }
