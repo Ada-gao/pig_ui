@@ -240,6 +240,7 @@ export const asyncRouterMap = [
     children: [
       { menuId: 48, path: 'balanced', component: _import('achievement/balanced/index'), name: '平衡计分卡', meta: { title: '平衡计分卡', icon: 'product' }},
       { menuId: 48, path: 'list', component: _import('achievement/list/index'), name: '业绩/佣金列表', meta: { title: '业绩/佣金列表', icon: 'product' }},
+      { menuId: 48, path: 'saleSupport', component: _import('achievement/saleSupport/index'), name: '销售支持', meta: { title: '销售支持', icon: 'product' }},
     ]
   },
   {
