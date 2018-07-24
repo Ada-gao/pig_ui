@@ -177,3 +177,13 @@ input[type="number"]{
     cursor: pointer;
   }
 }
+.nopb {
+  .el-dialog__body {
+    padding-bottom: 0;
+  }
+  .el-form-item__content {
+    display: inline-block;
+    width: 59%;
+    margin-left: 0!important;
+  }
+}

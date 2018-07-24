@@ -25,14 +25,15 @@ import XLSX from 'xlsx'
 import { uploadExcel } from '@/api/uploadExcel'
 
 export default {
+  props: ['downloadUrl'],
   data() {
     return {
       loading: false,
       excelData: {
         header: null,
         results: null
-      },
-      downloadUrl: 'http://10.9.60.142:8888/group1/M00/00/0A/Cgk8jlsV8_yAd5EUAAAssi76hjc78.xlsx'
+      }
+      // downloadUrl: 'http://10.9.60.142:8888/group1/M00/00/0A/Cgk8jlsV8_yAd5EUAAAssi76hjc78.xlsx'
     }
   },
   methods: {
@@ -66,12 +67,12 @@ export default {
     handkeFileChange(e) {
       const files = e.target.files
       const itemFile = files[0] // only use files[0]
-     
+
       let formData = new FormData()
       formData.append('file', itemFile)
-      
+
       this.readerData(itemFile, formData)
-      
+
     },
     readerData(itemFile, formData) {
       const reader = new FileReader()

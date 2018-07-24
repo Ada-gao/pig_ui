@@ -73,3 +73,43 @@ export function editBalanced(id, obj) {
     data: obj
   })
 }
+
+/**
+ * 获取试用期业绩列表所有数据
+ */
+export function getPbtList() {
+  return request({
+    url: '/admin/probationNorm/list',
+    method: 'get'
+  })
+}
+/**
+ * 编辑试用期业绩item
+ * @param id item.id
+ */
+export function editPbtItem(id) {
+  return request({
+    url: `/admin/probationNorm/${id}`,
+    method: 'get'
+  })
+}
+/**
+ * 编辑试用期业绩item
+ * @param id item.id
+ */
+export function putPbtItem(id) {
+  return request({
+    url: `/admin/probationNorm/${id}`,
+    method: 'put'
+  })
+}
+/**
+ * 删除试用期业绩item
+ * @param id item.id
+ */
+export function delPbtItem(id) {
+  return request({
+    url: `/admin/probationNorm/${id}`,
+    method: 'delete'
+  })
+}
