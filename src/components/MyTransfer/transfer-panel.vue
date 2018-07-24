@@ -24,19 +24,24 @@
           @click="clearQuery"
         ></i>
       </el-input>
+      
       <el-checkbox-group
         v-model="checked"
         v-show="!hasNoMatch && data.length > 0"
         :class="{ 'is-filterable': filterable }"
         class="el-transfer-panel__list">
-        <el-checkbox
-          class="el-transfer-panel__item"
-          :label="item[keyProp]"
-          :disabled="item[disabledProp]"
-          :key="item[keyProp]"
-          v-for="item in filteredData">
-          <option-content :option="item"></option-content>
-        </el-checkbox>
+        <Container @drop="onDrop">
+          <Draggable v-for="item in filteredData" :key="item.id">
+            <el-checkbox
+              class="el-transfer-panel__item draggable-item"
+              :label="item[keyProp]"
+              :disabled="item[disabledProp]"
+              :key="item[keyProp]">
+              <option-content :option="item"></option-content>
+            </el-checkbox>
+          </Draggable>
+        </Container> 
+        
       </el-checkbox-group>
       <p
         class="el-transfer-panel__empty"
@@ -52,10 +57,12 @@
 </template>
 
 <script>
-  import ElCheckboxGroup from 'element-ui/packages/checkbox-group';
-  import ElCheckbox from 'element-ui/packages/checkbox';
-  import ElInput from 'element-ui/packages/input';
-  import Locale from 'element-ui/src/mixins/locale';
+  import { Container, Draggable } from 'vue-smooth-dnd'
+  import { applyDrag, generateItems } from './utils'
+  import ElCheckboxGroup from 'element-ui/packages/checkbox-group'
+  import ElCheckbox from 'element-ui/packages/checkbox'
+  import ElInput from 'element-ui/packages/input'
+  import Locale from 'element-ui/src/mixins/locale'
 
   export default {
     mixins: [Locale],
@@ -68,6 +75,8 @@
       ElCheckboxGroup,
       ElCheckbox,
       ElInput,
+      Container,
+      Draggable,
       OptionContent: {
         props: {
           option: Object
@@ -75,17 +84,17 @@
         render(h) {
           const getParent = vm => {
             if (vm.$options.componentName === 'ElTransferPanel') {
-              return vm;
+              return vm
             } else if (vm.$parent) {
-              return getParent(vm.$parent);
+              return getParent(vm.$parent)
             } else {
-              return vm;
+              return vm
             }
-          };
-          const parent = getParent(this);
+          }
+          const parent = getParent(this)
           return parent.renderContent
             ? parent.renderContent(h, this.option)
-            : `<span>${ this.option[parent.labelProp] || this.option[parent.keyProp] }</span>`;
+            : `<span>${ this.option[parent.labelProp] || this.option[parent.keyProp] }</span>`
         }
       }
     },
@@ -94,7 +103,7 @@
       data: {
         type: Array,
         default() {
-          return [];
+          return []
         }
       },
       renderContent: Function,
@@ -113,126 +122,139 @@
         allChecked: false,
         query: '',
         inputHover: false
-      };
+        // items: generateItems(50, i => ({id: i, data: 'Draggable ' + i}))
+      }
     },
 
     watch: {
       checked(val) {
-        this.updateAllChecked();
-        this.$emit('checked-change', val);
+        this.updateAllChecked()
+        this.$emit('checked-change', val)
       },
 
       data() {
-        const checked = [];
-        const filteredDataKeys = this.filteredData.map(item => item[this.keyProp]);
+        const checked = []
+        const filteredDataKeys = this.filteredData.map(item => item[this.keyProp])
         this.checked.forEach(item => {
           if (filteredDataKeys.indexOf(item) > -1) {
-            checked.push(item);
+            checked.push(item)
           }
-        });
-        this.checked = checked;
+        })
+        this.checked = checked
       },
 
       checkableData() {
-        this.updateAllChecked();
+        this.updateAllChecked()
       },
 
       defaultChecked: {
         immediate: true,
         handler(val, oldVal) {
           if (oldVal && val.length === oldVal.length &&
-            val.every(item => oldVal.indexOf(item) > -1)) return;
-          const checked = [];
-          const checkableDataKeys = this.checkableData.map(item => item[this.keyProp]);
+            val.every(item => oldVal.indexOf(item) > -1)) return
+          const checked = []
+          const checkableDataKeys = this.checkableData.map(item => item[this.keyProp])
           val.forEach(item => {
             if (checkableDataKeys.indexOf(item) > -1) {
-              checked.push(item);
+              checked.push(item)
             }
-          });
-          this.checked = checked;
+          })
+          this.checked = checked
         }
       }
     },
 
     computed: {
-      filteredData() {
-        return this.data.filter(item => {
-          if (typeof this.filterMethod === 'function') {
-            return this.filterMethod(this.query, item);
-          } else {
-            const label = item[this.labelProp] || item[this.keyProp].toString();
-            return label.toLowerCase().indexOf(this.query.toLowerCase()) > -1;
-          }
-        });
+      filteredData: {
+        get: function () {
+          return this.data.filter(item => {
+            if (typeof this.filterMethod === 'function') {
+              return this.filterMethod(this.query, item)
+            } else {
+              const label = item[this.labelProp] || item[this.keyProp].toString()
+              return label.toLowerCase().indexOf(this.query.toLowerCase()) > -1
+            }
+          })
+        },
+        set: function (newData) {
+          console.log(newData)
+          return newData
+        }
       },
 
       checkableData() {
-        return this.filteredData.filter(item => !item[this.disabledProp]);
+        return this.filteredData.filter(item => !item[this.disabledProp])
       },
 
       checkedSummary() {
-        const checkedLength = this.checked.length;
-        const dataLength = this.data.length;
-        const { noChecked, hasChecked } = this.format;
+        const checkedLength = this.checked.length
+        const dataLength = this.data.length
+        const { noChecked, hasChecked } = this.format
         if (noChecked && hasChecked) {
           return checkedLength > 0
             ? hasChecked.replace(/\${checked}/g, checkedLength).replace(/\${total}/g, dataLength)
-            : noChecked.replace(/\${total}/g, dataLength);
+            : noChecked.replace(/\${total}/g, dataLength)
         } else {
-          return `${ checkedLength }/${ dataLength }`;
+          return `${ checkedLength }/${ dataLength }`
         }
       },
 
       isIndeterminate() {
-        const checkedLength = this.checked.length;
-        return checkedLength > 0 && checkedLength < this.checkableData.length;
+        const checkedLength = this.checked.length
+        return checkedLength > 0 && checkedLength < this.checkableData.length
       },
 
       hasNoMatch() {
-        return this.query.length > 0 && this.filteredData.length === 0;
+        return this.query.length > 0 && this.filteredData.length === 0
       },
 
       inputIcon() {
         return this.query.length > 0 && this.inputHover
           ? 'circle-close'
-          : 'search';
+          : 'search'
       },
 
       labelProp() {
-        return this.props.label || 'label';
+        return this.props.label || 'label'
       },
 
       keyProp() {
-        return this.props.key || 'key';
+        return this.props.key || 'key'
       },
 
       disabledProp() {
-        return this.props.disabled || 'disabled';
+        return this.props.disabled || 'disabled'
       },
 
       hasFooter() {
-        return !!this.$slots.default;
+        return !!this.$slots.default
       }
     },
 
     methods: {
+      onDrop(dropResult) {
+        debugger
+        this.filteredData = applyDrag(this.filteredData, dropResult)
+        console.log(this.filteredData)
+      },
+
       updateAllChecked() {
-        const checkableDataKeys = this.checkableData.map(item => item[this.keyProp]);
+        const checkableDataKeys = this.checkableData.map(item => item[this.keyProp])
         this.allChecked = checkableDataKeys.length > 0 &&
-          checkableDataKeys.every(item => this.checked.indexOf(item) > -1);
+          checkableDataKeys.every(item => this.checked.indexOf(item) > -1)
       },
 
       handleAllCheckedChange(value) {
         this.checked = value
           ? this.checkableData.map(item => item[this.keyProp])
-          : [];
+          : []
       },
 
       clearQuery() {
         if (this.inputIcon === 'circle-close') {
-          this.query = '';
+          this.query = ''
         }
       }
     }
-  };
+  }
 </script>

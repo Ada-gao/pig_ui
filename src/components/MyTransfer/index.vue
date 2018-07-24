@@ -40,11 +40,11 @@
 </template>
 
 <script>
-  import ElButton from 'element-ui/packages/button';
-  import Emitter from 'element-ui/src/mixins/emitter';
-  import Locale from 'element-ui/src/mixins/locale';
-  import TransferPanel from './transfer-panel.vue';
-  import Migrating from 'element-ui/src/mixins/migrating';
+  import ElButton from 'element-ui/packages/button'
+  import Emitter from 'element-ui/src/mixins/emitter'
+  import Locale from 'element-ui/src/mixins/locale'
+  import TransferPanel from './transfer-panel.vue'
+  import Migrating from 'element-ui/src/mixins/migrating'
 
   export default {
     name: 'MyTransfer',
@@ -60,19 +60,19 @@
       data: {
         type: Array,
         default() {
-          return [];
+          return []
         }
       },
       titles: {
         type: Array,
         default() {
-          return [];
+          return []
         }
       },
       buttonTexts: {
         type: Array,
         default() {
-          return [];
+          return []
         }
       },
       filterPlaceholder: {
@@ -83,26 +83,26 @@
       leftDefaultChecked: {
         type: Array,
         default() {
-          return [];
+          return []
         }
       },
       rightDefaultChecked: {
         type: Array,
         default() {
-          return [];
+          return []
         }
       },
       renderContent: Function,
       value: {
         type: Array,
         default() {
-          return [];
+          return []
         }
       },
       format: {
         type: Object,
         default() {
-          return {};
+          return {}
         }
       },
       filterable: Boolean,
@@ -113,7 +113,7 @@
             label: 'label',
             key: 'key',
             disabled: 'disabled'
-          };
+          }
         }
       }
     },
@@ -122,16 +122,16 @@
       return {
         leftChecked: [],
         rightChecked: []
-      };
+      }
     },
 
     computed: {
       sourceData() {
-        return this.data.filter(item => this.value.indexOf(item[this.props.key]) === -1);
+        return this.data.filter(item => this.value.indexOf(item[this.props.key]) === -1)
       },
 
       targetData() {
-        // return this.data.filter(item => this.value.indexOf(item[this.props.key]) > -1);
+        // return this.data.filter(item => this.value.indexOf(item[this.props.key]) > -1)
 
         // 按选择顺序排列
         let tmp = []
@@ -143,26 +143,14 @@
       },
 
       hasButtonTexts() {
-        return this.buttonTexts.length === 2;
+        return this.buttonTexts.length === 2
       }
     },
 
     watch: {
       value(val) {
-        this.dispatch('ElFormItem', 'el.form.change', val);
-      },
-      // leftChecked(curVal, oldVal) {
-      //   console.log(curVal)
-      //   console.log(oldVal)
-      //   if(curVal) {
-      //     let currentValue = this.value.slice()
-      //     if (this.value.indexOf(curVal) === -1) {
-      //       currentValue = currentValue.concat(curVal)
-      //     }
-      //     this.$emit('input', currentValue)
-      //     // this.$emit('change', currentValue, 'right', curVal)
-      //   }
-      // }
+        this.dispatch('ElFormItem', 'el.form.change', val)
+      }
     },
 
     methods: {
@@ -171,39 +159,39 @@
           props: {
             'footer-format': 'footer-format is renamed to format.'
           }
-        };
+        }
       },
 
       onSourceCheckedChange(val) {
-        this.leftChecked = val;
+        this.leftChecked = val
       },
 
       onTargetCheckedChange(val) {
-        this.rightChecked = val;
+        this.rightChecked = val
       },
 
       addToLeft() {
-        let currentValue = this.value.slice();
+        let currentValue = this.value.slice()
         this.rightChecked.forEach(item => {
-          const index = currentValue.indexOf(item);
+          const index = currentValue.indexOf(item)
           if (index > -1) {
-            currentValue.splice(index, 1);
+            currentValue.splice(index, 1)
           }
-        });
-        this.$emit('input', currentValue);
-        this.$emit('change', currentValue, 'left', this.rightChecked);
+        })
+        this.$emit('input', currentValue)
+        this.$emit('change', currentValue, 'left', this.rightChecked)
       },
 
       addToRight() {
-        let currentValue = this.value.slice();
+        let currentValue = this.value.slice()
         this.leftChecked.forEach(item => {
           if (this.value.indexOf(item) === -1) {
-            currentValue = currentValue.concat(item);
+            currentValue = currentValue.concat(item)
           }
-        });
-        this.$emit('input', currentValue);
-        this.$emit('change', currentValue, 'right', this.leftChecked);
+        })
+        this.$emit('input', currentValue)
+        this.$emit('change', currentValue, 'right', this.leftChecked)
       }
     }
-  };
+  }
 </script>
