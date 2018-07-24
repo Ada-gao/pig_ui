@@ -259,7 +259,7 @@ export const asyncRouterMap = [
     },
     children: [
       { menuId: 48, path: 'balanced', component: _import('achievement/balanced/index'), name: '平衡计分卡', meta: { title: '平衡计分卡', icon: 'product' }},
-      { menuId: 48, path: 'list', component: _import('achievement/list/index'), name: '业绩/佣金列表', meta: { title: '业绩/佣金列表', icon: 'product' }},
+      { menuId: 48, path: 'list', component: _import('achievement/list/index'), name: '佣金列表', meta: { title: '佣金列表', icon: 'product' }},
       { menuId: 48, path: 'commCalc', component: _import('achievement/commissionCalc/index'), name: '佣金计算模版', meta: { title: '佣金计算模版', icon: 'product' }},
       { menuId: 48, path: 'perform', component: _import('achievement/performanceIndicator/index'), name: '业绩指标列表', meta: { title: '业绩指标列表', icon: 'product' }},
       { menuId: 48, path: 'probation', component: _import('achievement/performanceIndicator/probation'), name: '试用期业绩标准', meta: { title: '试用期业绩标准', icon: 'product' }},
