@@ -40,3 +40,36 @@ export function getAllRank() {
     method: 'get'
   })
 }
+
+/** 
+ * 获取平衡计分卡列表
+ * @param query
+*/
+export function getBalancedList(query) {
+  return request({
+    url: '/admin/balancedScoreCard',
+    method: 'get',
+    params: query
+  })
+}
+
+/** 
+ * id获取平衡计分卡
+*/
+export function getBalancedId(id) {
+  return request({
+    url: `/admin/balancedScoreCard/${id}`,
+    method: 'get'
+  })
+}
+
+/** 
+ * 修改平衡计分卡
+*/
+export function editBalanced(id, obj) {
+  return request({
+    url: `/admin/balancedScoreCard/${id}`,
+    method: 'put',
+    data: obj
+  })
+}

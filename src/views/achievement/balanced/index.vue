@@ -11,7 +11,7 @@
 								:props="defaultProps"
 								:show-all-levels="false"
 								change-on-select
-								v-model="deptId"
+								v-model="listQuery.deptId"
 							></el-cascader>
 						</el-form-item>
           </el-col>
@@ -98,7 +98,7 @@
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
           <a size="small" class="common_btn"
-             @click="handleUpdate(scope.row, 'update')">编辑
+             @click=" (scope.row, 'update')">编辑
           </a>
         </template>
       </el-table-column>
@@ -127,10 +127,8 @@
   </div>
 </template>
 <script>
-import { fetchDeptTree } from '@/api/role'
-import { fetchList } from '@/api/user'
 import { mapGetters } from 'vuex'
-import { getAllPositon } from '@/api/queryConditions'
+import { getAllPositon, getAllDeparts, getBalancedList } from '@/api/achievement/index'
 import { parseTime, transformText } from '@/utils'
 export default {
 	data () {
@@ -178,13 +176,11 @@ export default {
 	methods: {
 		getList() {
 			this.listLoading = true
-			this.listQuery.orderByField = '`user`.create_time'
-			this.listQuery.isAsc = false
-			fetchDeptTree()
+			getAllDeparts()
 				.then(response => {
 					this.treeDeptData = response.data
 			}),
-			fetchList(this.listQuery).then(response => {
+			getBalancedList(this.listQuery).then(response => {
 				this.list = response.data.records
 				this.total = response.data.total
 				this.listLoading = false

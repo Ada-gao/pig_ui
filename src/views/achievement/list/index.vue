@@ -6,13 +6,13 @@
 					<el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="时间">
               <el-date-picker
-                v-model="entryDate"
+                v-model="entryDateS"
                 type="month"
                 start-placeholder="选择时间"
                 end-placeholder="选择时间">
               </el-date-picker> - 
 							<el-date-picker
-                v-model="entryDate"
+                v-model="entryDateE"
                 type="month"
                 start-placeholder="选择时间"
                 end-placeholder="选择时间">
@@ -188,7 +188,8 @@ export default {
         value: 'id'
 			},
 			tableKey: 0,
-      entryDate: [],			
+			entryDateS: '',
+			entryDateE: '',
 		}
 	},
 	computed: {
@@ -209,13 +210,13 @@ export default {
 			this.listLoading = true
 			this.listQuery.orderByField = '`user`.create_time'
 			this.listQuery.isAsc = false
-			if(this.entryDate.length > 0) {
-				this.listQuery.startTime = parseTime(this.entryDate[0], '{y}-{m}-{d}')
-				this.listQuery.endTime = parseTime(this.entryDate[1], '{y}-{m}-{d}')
-			} else {
-				this.listQuery.startTime = ''
-				this.listQuery.endTime = ''
-			}
+			// if(this.entryDate.length > 0) {
+			// 	this.listQuery.startTime = parseTime(this.entryDate[0], '{y}-{m}-{d}')
+			// 	this.listQuery.endTime = parseTime(this.entryDate[1], '{y}-{m}-{d}')
+			// } else {
+			// 	this.listQuery.startTime = ''
+			// 	this.listQuery.endTime = ''
+			// }
 			fetchDeptTree()
 				.then(response => {
 					this.treeDeptData = response.data
@@ -256,7 +257,8 @@ export default {
         deptId: '',
 			},
 			this.deptId = []
-      this.entryDate = []
+			this.entryDateS = ''
+			this.entryDateE = ''		
 			this.handleFilter()
 		},
 		handleImport() {},
