@@ -40,3 +40,76 @@ export function getAllRank() {
     method: 'get'
   })
 }
+
+/** 
+ * 获取平衡计分卡列表
+ * @param query
+*/
+export function getBalancedList(query) {
+  return request({
+    url: '/admin/balancedScoreCard',
+    method: 'get',
+    params: query
+  })
+}
+
+/** 
+ * id获取平衡计分卡
+*/
+export function getBalancedId(id) {
+  return request({
+    url: `/admin/balancedScoreCard/${id}`,
+    method: 'get'
+  })
+}
+
+/** 
+ * 修改平衡计分卡
+*/
+export function editBalanced(id, obj) {
+  return request({
+    url: `/admin/balancedScoreCard/${id}`,
+    method: 'put',
+    data: obj
+  })
+}
+
+/**
+ * 获取试用期业绩列表所有数据
+ */
+export function getPbtList() {
+  return request({
+    url: '/admin/probationNorm/list',
+    method: 'get'
+  })
+}
+/**
+ * 编辑试用期业绩item
+ * @param id item.id
+ */
+export function editPbtItem(id) {
+  return request({
+    url: `/admin/probationNorm/${id}`,
+    method: 'get'
+  })
+}
+/**
+ * 编辑试用期业绩item
+ * @param id item.id
+ */
+export function putPbtItem(id) {
+  return request({
+    url: `/admin/probationNorm/${id}`,
+    method: 'put'
+  })
+}
+/**
+ * 删除试用期业绩item
+ * @param id item.id
+ */
+export function delPbtItem(id) {
+  return request({
+    url: `/admin/probationNorm/${id}`,
+    method: 'delete'
+  })
+}
