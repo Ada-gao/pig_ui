@@ -10,7 +10,7 @@
         <el-button type="primary" @click="submit">确 定</el-button>
       </span>
     </el-dialog>
-    <upload-excel-component @on-selected-file='selected'></upload-excel-component>
+    <upload-excel-component @on-selected-file='selected' :downloadUrl="downloadUrl"></upload-excel-component>
     <div class="detail-title" style="margin-top:30px">
       <el-button :class="tableData.length > 0 ? 'add_btn' : 'insert_btn'" @click="showDialog">
         <svg-icon icon-class="upload" style="margin-right:10px;"></svg-icon>确认导入
@@ -41,7 +41,8 @@
         tableData: [],
         tableHeader: [],
         formData: null,
-        dialogVisible: false
+        dialogVisible: false,
+        downloadUrl: 'static/excel/业绩指标模版.xlsx'
       }
     },
     methods: {

@@ -20,7 +20,7 @@
 
       <el-table-column align="center" label="业绩标准">
         <template slot-scope="scope">
-          <span>试用期业绩标准第{{scope.row.id+1}}个月：{{scope.row.value}}%</span>
+          <span>试用期业绩标准第{{scope.row.month}}个月：{{scope.row.norm}}%</span>
         </template>
       </el-table-column>
 
@@ -31,7 +31,7 @@
              class="common_btn"
              @click="handleUpdate(scope.row)">编辑
           </a>
-          <a v-if="sys_prd_type_upd && scope.row.id >= list.length-1"
+          <a v-if="sys_prd_type_upd && scope.row.probationNormId >= list.length-1"
              size="small"
              class="danger_btn"
              @click="deletes(scope.row)">删除
@@ -76,20 +76,20 @@
 </template>
 
 <script>
-//  import { fetchProductTypeList, addObj, putObj, getObj } from '@/api/product/productType'
   import { mapGetters } from 'vuex'
+  import { getPbtList, editPbtItem, putPbtItem, delPbtItem } from '@/api/achievement'
 
   export default {
     name: 'table_user',
     data() {
       return {
-        // list: null,
-        list: [
-          { id: 0, value: '20' },
-          { id: 1, value: '30' },
-          { id: 2, value: '40' },
-          { id: 3, value: '50' }
-        ],
+         list: null,
+//        list: [
+//          { id: 0, value: '20' },
+//          { id: 1, value: '30' },
+//          { id: 2, value: '40' },
+//          { id: 3, value: '50' }
+//        ],
         total: null,
         listLoading: false,
         listQuery: {
@@ -122,11 +122,11 @@
         'permissions'
       ]),
       dialogLabel() {
-        return `试用期标准第${this.list.length+1}个月（%）`
+        return `试用期标准第${this.list.length + 1}个月（%）`
       }
     },
     created() {
-//      this.getList()
+      this.getList()
       this.sys_prd_type_add = this.permissions['sys_prd_type_add']
       this.sys_prd_type_upd = this.permissions['sys_prd_type_upd']
       this.sys_prd_type_del = this.permissions['sys_prd_type_del']
@@ -134,10 +134,10 @@
     methods: {
       getList() {
         this.listLoading = true
-//        fetchProductTypeList().then(response => {
-//          this.list = response.data
-//          this.listLoading = false
-//        })
+        getPbtList().then(response => {
+          this.list = response.data
+          this.listLoading = false
+        })
       },
       handleFilter() {
         this.listQuery.page = 1
@@ -157,30 +157,30 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {
-//        getObj(row.productTypeId)
-//          .then(response => {
-//            this.form = response.data
-//            this.dialogFormVisible = true
-//            this.dialogStatus = 'update'
-//          })
+        // getObj(row.productTypeId)
+        //   .then(response => {
+        //     this.form = response.data
+        //     this.dialogFormVisible = true
+        //     this.dialogStatus = 'update'
+        //   })
       },
       create(formName) {
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
-            this.list.push({ id: this.list.length, value: this.form.name })
+            this.list.push({ probationNormId: this.list.length, norm: this.form.name })
             this.dialogFormVisible = false
-//            addObj(this.form)
-//              .then(() => {
-//                this.dialogFormVisible = false
-//                this.getList()
-//                this.$notify({
-//                  title: '成功',
-//                  message: '创建成功',
-//                  type: 'success',
-//                  duration: 2000
-//                })
-//              })
+            // addObj(this.form)
+            //   .then(() => {
+            //     this.dialogFormVisible = false
+            //     this.getList()
+            //     this.$notify({
+            //       title: '成功',
+            //       message: '创建成功',
+            //       type: 'success',
+            //       duration: 2000
+            //     })
+            //   })
           } else {
             return false
           }
@@ -195,28 +195,28 @@
         set[formName].validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
-//            putObj(this.form).then(() => {
-//              this.dialogFormVisible = false
-//              this.getList()
-//              this.$notify({
-//                title: '成功',
-//                message: '修改成功',
-//                type: 'success',
-//                duration: 2000
-//              })
-//            })
+            // putObj(this.form).then(() => {
+            //   this.dialogFormVisible = false
+            //   this.getList()
+            //   this.$notify({
+            //     title: '成功',
+            //     message: '修改成功',
+            //     type: 'success',
+            //     duration: 2000
+            //   })
+            // })
           } else {
             return false
           }
         })
       },
       deletes(row) {
-        this.$confirm('此操作将永久删除(试用期业绩标准：' + row.value + '%), 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除(试用期业绩标准：' + row.norm + '%), 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.list.splice(row.id, 1)
+          this.list.splice(row.probationNormId, 1)
           // delObj(row.currencyId).then(() => {
           //   this.getList()
           //   this.$notify({
@@ -237,8 +237,8 @@
       },
       resetTemp() {
         this.form = {
-          id: undefined,
-          value: ''
+          month: undefined,
+          norm: undefined
         }
       }
     }
