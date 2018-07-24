@@ -107,7 +107,6 @@ export const constantRouterMap = [
     path: '/transcMag',
     component: Layout,
     name: '交易管理',
-    hidden: false,
     redirect: '/transcMag/transc',
     hidden: true,
     // icon: 'table',
@@ -121,6 +120,27 @@ export const constantRouterMap = [
         component: _import('transcMag/transaction/detail'),
         name: '订单详情',
         meta: { title: '订单详情', icon: '', noCache: true },
+        hidden: true
+      }
+    ]
+  },
+  {
+    menuId: 3,
+    path: '/achievement',
+    component: Layout,
+    name: '业绩/佣金管理',
+    hidden: true,
+    redirect: '/achievement/allList',
+    meta: {
+      title: '业绩/佣金管理',
+      icon: 'product_mg'
+    },
+    children: [
+      {
+        path: 'importExcel',
+        component: _import('achievement/performanceIndicator/importExcel'),
+        name: '业绩指标导入',
+        meta: { title: '业绩指标导入', icon: '', noCache: true },
         hidden: true
       }
     ]
@@ -239,9 +259,10 @@ export const asyncRouterMap = [
     },
     children: [
       { menuId: 48, path: 'balanced', component: _import('achievement/balanced/index'), name: '平衡计分卡', meta: { title: '平衡计分卡', icon: 'product' }},
-      { menuId: 48, path: 'list', component: _import('achievement/list/index'), name: '业绩/佣金列表', meta: { title: '业绩/佣金列表', icon: 'product' }},
+      { menuId: 48, path: 'list', component: _import('achievement/list/index'), name: '佣金列表', meta: { title: '佣金列表', icon: 'product' }},
       { menuId: 48, path: 'commCalc', component: _import('achievement/commissionCalc/index'), name: '佣金计算模版', meta: { title: '佣金计算模版', icon: 'product' }},
-      { menuId: 48, path: 'perform', component: _import('achievement/performance_indicator/index'), name: '业绩指标列表', meta: { title: '业绩指标列表', icon: 'product' }},
+      { menuId: 48, path: 'perform', component: _import('achievement/performanceIndicator/index'), name: '业绩指标列表', meta: { title: '业绩指标列表', icon: 'product' }},
+      { menuId: 48, path: 'probation', component: _import('achievement/performanceIndicator/probation'), name: '试用期业绩标准', meta: { title: '试用期业绩标准', icon: 'product' }},
       { menuId: 48, path: 'saleSupport', component: _import('achievement/saleSupport/index'), name: '销售支持', meta: { title: '销售支持', icon: 'product' }},
     ]
   },

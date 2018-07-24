@@ -348,7 +348,9 @@
           amount: null
         }
       },
-      handleImport() {},
+      handleImport() {
+        this.$router.push({ path: '/achievement/importExcel' })
+      },
       handleExport() {},
       handleUpdate(row, state) {
         this.dialogStatus = 'edit'
