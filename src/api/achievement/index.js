@@ -8,7 +8,7 @@ import request from '@/utils/request'
  */
 export function getPerformList(query) {
   return request({
-    url: '/admin/user/userPage',
+    url: '/performance/user/userPage',
     method: 'get',
     params: query
   })
@@ -18,7 +18,7 @@ export function getPerformList(query) {
  */
 export function getAllPositon() {
   return request({
-    url: '/admin/positions/list',
+    url: '/performance/positions/list',
     method: 'get'
   })
 }
@@ -27,7 +27,7 @@ export function getAllPositon() {
  */
 export function getAllDeparts() {
   return request({
-    url: '/admin/dept/tree',
+    url: '/performance/dept/tree',
     method: 'get'
   })
 }
@@ -36,39 +36,39 @@ export function getAllDeparts() {
  */
 export function getAllRank() {
   return request({
-    url: '/admin/rank',
+    url: '/performance/rank',
     method: 'get'
   })
 }
 
-/** 
+/**
  * 获取平衡计分卡列表
  * @param query
 */
 export function getBalancedList(query) {
   return request({
-    url: '/admin/balancedScoreCard',
+    url: '/performance/balancedScoreCard',
     method: 'get',
     params: query
   })
 }
 
-/** 
+/**
  * id获取平衡计分卡
 */
 export function getBalancedId(id) {
   return request({
-    url: `/admin/balancedScoreCard/${id}`,
+    url: `/performance/balancedScoreCard/${id}`,
     method: 'get'
   })
 }
 
-/** 
+/**
  * 修改平衡计分卡
 */
 export function editBalanced(id, obj) {
   return request({
-    url: `/admin/balancedScoreCard/${id}`,
+    url: `/performance/balancedScoreCard/${id}`,
     method: 'put',
     data: obj
   })
@@ -79,7 +79,7 @@ export function editBalanced(id, obj) {
  */
 export function getPbtList() {
   return request({
-    url: '/admin/probationNorm/list',
+    url: '/performance/probationNorm/list',
     method: 'get'
   })
 }
@@ -89,7 +89,7 @@ export function getPbtList() {
  */
 export function editPbtItem(id) {
   return request({
-    url: `/admin/probationNorm/${id}`,
+    url: `/performance/probationNorm/${id}`,
     method: 'get'
   })
 }
@@ -99,7 +99,7 @@ export function editPbtItem(id) {
  */
 export function putPbtItem(id) {
   return request({
-    url: `/admin/probationNorm/${id}`,
+    url: `/performance/probationNorm/${id}`,
     method: 'put'
   })
 }
@@ -109,7 +109,7 @@ export function putPbtItem(id) {
  */
 export function delPbtItem(id) {
   return request({
-    url: `/admin/probationNorm/${id}`,
+    url: `/performance/probationNorm/${id}`,
     method: 'delete'
   })
 }
