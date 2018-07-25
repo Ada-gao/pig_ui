@@ -113,3 +113,44 @@ export function delPbtItem(id) {
     method: 'delete'
   })
 }
+/**
+ * 查询产品信息(带分页查询)
+ * @param
+ */
+export function getSalesSupportList(query) {
+  return request({
+    url: `/performance/salesSupport`,
+    method: 'get',
+    params: query
+  })
+}
+/**
+ * 根据id查询销售支持
+ * @param
+ */
+export function getSalesSupport(id) {
+  return request({
+    url: `/performance/salesSupport/${id}`,
+    method: 'get'
+  })
+}
+/**
+ * 修改销售支持
+ * @param
+ */
+export function updateSalesSupport(id) {
+  return request({
+    url: `/performance/salesSupport/${id}`,
+    method: 'put'
+  })
+}
+/**
+ * 删除试用期业绩标准
+ * @param
+ */
+export function deleteSalesSupport(id) {
+  return request({
+    url: `/performance/salesSupport/${id}`,
+    method: 'delete'
+  })
+}
