@@ -42,10 +42,10 @@
       </el-form>
     </div>
 		<div style="text-align: right;">
-      <el-button class="add_btn" @click="handleImport">
+      <el-button v-if="balanced_score_card_import" class="add_btn" @click="handleImport">
         <svg-icon icon-class="upload"></svg-icon>批量导入
       </el-button>
-      <el-button class="add_btn" @click="handleExport">
+      <el-button v-if="balanced_score_card_export" class="add_btn" @click="handleExport">
         <svg-icon icon-class="upload"></svg-icon>批量导出
       </el-button>
     </div>
@@ -97,7 +97,7 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <a size="small" class="common_btn"
+          <a v-if="balanced_score_card_edit" size="small" class="common_btn"
              @click=" (scope.row, 'update')">编辑
           </a>
         </template>
@@ -172,6 +172,9 @@ export default {
 	},
 	created() {
 		this.getList()
+		this.balanced_score_card_edit = this.permissions['balanced_score_card_edit']
+		this.balanced_score_card_import = this.permissions['balanced_score_card_import']
+		this.balanced_score_card_export = this.permissions['balanced_score_card_export']
   },
 	methods: {
 		getList() {
