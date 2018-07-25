@@ -246,7 +246,7 @@ export const asyncRouterMap = [
     ]
   },
   {
-    menuId: 3,
+    menuId: 282,
     path: '/achievement',
     component: Layout,
     name: '业绩/佣金管理',
