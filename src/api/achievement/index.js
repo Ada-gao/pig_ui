@@ -18,7 +18,7 @@ export function getPerformList(query) {
  */
 export function getAllPositon() {
   return request({
-    url: '/performance/positions/list',
+    url: '/admin/positions/list',
     method: 'get'
   })
 }
@@ -27,7 +27,7 @@ export function getAllPositon() {
  */
 export function getAllDeparts() {
   return request({
-    url: '/performance/dept/tree',
+    url: '/admin/dept/tree',
     method: 'get'
   })
 }
@@ -36,7 +36,7 @@ export function getAllDeparts() {
  */
 export function getAllRank() {
   return request({
-    url: '/performance/rank',
+    url: '/admin/rank',
     method: 'get'
   })
 }

@@ -83,23 +83,13 @@
     name: 'table_user',
     data() {
       return {
-         list: null,
-//        list: [
-//          { id: 0, value: '20' },
-//          { id: 1, value: '30' },
-//          { id: 2, value: '40' },
-//          { id: 3, value: '50' }
-//        ],
+        list: [],
         total: null,
         listLoading: false,
         listQuery: {
           page: 1,
           limit: 20
         },
-//        form: {
-//          name: undefined,
-//          currencyId: undefined
-//        },
         form: {},
         statusOptions: ['0', '1'],
         dialogFormVisible: false,
@@ -108,7 +98,6 @@
           update: '编辑试用期业绩标准',
           create: '新增试用期业绩标准'
         },
-//        dialogLabel: '',
         tableKey: 0,
         rules: {
           name: [
@@ -136,6 +125,7 @@
         this.listLoading = true
         getPbtList().then(response => {
           this.list = response.data
+          this.total = response.data.length || 0
           this.listLoading = false
         })
       },
