@@ -1,11 +1,12 @@
 <template>
-  <div class="el-transfer">
+  <div class="el-transfer" style="padding-left: 30px;">
     <transfer-panel
       v-bind="$props"
       :data="sourceData"
       :title="titles[0] || t('el.transfer.titles.0')"
       :default-checked="leftDefaultChecked"
       :placeholder="filterPlaceholder || t('el.transfer.filterPlaceholder')"
+      :canDrop="false"
       @checked-change="onSourceCheckedChange">
       <slot name="left-footer"></slot>
     </transfer-panel>
