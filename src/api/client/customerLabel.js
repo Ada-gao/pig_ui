@@ -1,0 +1,47 @@
+import request from '@/utils/request'
+// 客户aum标签
+
+
+/**
+ * 获得全部客户aum标签
+ */
+export function fetchList() {
+  return request({
+    url: '/client/clientAumLabel/list',
+    method: 'get'
+  })
+}
+
+/**
+ * 新增或修改客户aum标签
+ */
+export function clientAumLabel(obj) {
+  return request({
+    url: '/client/clientAumLabel',
+    method: 'post',
+    data: obj
+  })
+}
+
+/**
+ * 根据id查询客户aum标签信息
+ */
+export function editClientAumLabel(id) {
+  return request({
+    url: '/client/clientAumLabel/'+id,
+    method: 'get'
+  })
+}
+
+/**
+ * 删除客户aum标签
+ */
+export function deleteClientAumLabel(id) {
+  return request({
+    url: '/client/clientAumLabel/'+id,
+    method: 'delete'
+  })
+}
+
+
+
