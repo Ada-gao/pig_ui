@@ -30,7 +30,7 @@
         v-show="!hasNoMatch && data.length > 0"
         :class="{ 'is-filterable': filterable }"
         class="el-transfer-panel__list">
-        <Container @drop="onDrop">
+        <Container @drop="onDrop" v-if="canDrop">
           <Draggable v-for="item in filteredData" :key="item.id">
             <el-checkbox
               class="el-transfer-panel__item draggable-item"
@@ -40,7 +40,16 @@
               <option-content :option="item"></option-content>
             </el-checkbox>
           </Draggable>
-        </Container> 
+        </Container>
+        <el-checkbox
+          v-else
+          class="el-transfer-panel__item draggable-item"
+          :label="item[keyProp]"
+          :disabled="item[disabledProp]"
+          :key="item[keyProp]"
+          v-for="item in filteredData">
+          <option-content :option="item"></option-content>
+        </el-checkbox>
         
       </el-checkbox-group>
       <p
@@ -113,7 +122,13 @@
       format: Object,
       filterMethod: Function,
       defaultChecked: Array,
-      props: Object
+      props: Object,
+      canDrop: {
+        type: Boolean,
+        default() {
+          return true
+        }
+      }
     },
 
     data() {
@@ -121,7 +136,8 @@
         checked: [],
         allChecked: false,
         query: '',
-        inputHover: false
+        inputHover: false,
+        filteredData: this.data
         // items: generateItems(50, i => ({id: i, data: 'Draggable ' + i}))
       }
     },
@@ -132,7 +148,8 @@
         this.$emit('checked-change', val)
       },
 
-      data() {
+      data(curVal, oldVal) {
+        this.filteredData = curVal
         const checked = []
         const filteredDataKeys = this.filteredData.map(item => item[this.keyProp])
         this.checked.forEach(item => {
@@ -165,22 +182,23 @@
     },
 
     computed: {
-      filteredData: {
-        get: function () {
-          return this.data.filter(item => {
-            if (typeof this.filterMethod === 'function') {
-              return this.filterMethod(this.query, item)
-            } else {
-              const label = item[this.labelProp] || item[this.keyProp].toString()
-              return label.toLowerCase().indexOf(this.query.toLowerCase()) > -1
-            }
-          })
-        },
-        set: function (newData) {
-          console.log(newData)
-          return newData
-        }
-      },
+      // filteredData: {
+      //   get: function () {
+      //     return this.data
+      //     // return this.data.filter(item => {
+      //     //   if (typeof this.filterMethod === 'function') {
+      //     //     return this.filterMethod(this.query, item)
+      //     //   } else {
+      //     //     const label = item[this.labelProp] || item[this.keyProp].toString()
+      //     //     return label.toLowerCase().indexOf(this.query.toLowerCase()) > -1
+      //     //   }
+      //     // })
+      //   },
+      //   set: function (newData) {
+      //     console.log(newData)
+      //     return newData
+      //   }
+      // },
 
       checkableData() {
         return this.filteredData.filter(item => !item[this.disabledProp])
@@ -233,9 +251,7 @@
 
     methods: {
       onDrop(dropResult) {
-        debugger
         this.filteredData = applyDrag(this.filteredData, dropResult)
-        console.log(this.filteredData)
       },
 
       updateAllChecked() {
