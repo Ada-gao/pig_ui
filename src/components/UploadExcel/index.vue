@@ -22,7 +22,7 @@
 
 <script>
 import XLSX from 'xlsx'
-import { uploadExcel } from '@/api/uploadExcel'
+// import { uploadExcel } from '@/api/uploadExcel'
 
 export default {
   props: ['downloadUrl'],
@@ -84,7 +84,7 @@ export default {
         const firstSheetName = workbook.SheetNames[0]
         const worksheet = workbook.Sheets[firstSheetName]
         const header = this.get_header_row(worksheet)
-        const headerList = []
+        // const headerList = []
         // header.forEach((item, index) => {
         //   if(item.indexOf('UNKNOWN') === -1) {
         //     // debugger

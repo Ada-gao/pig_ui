@@ -48,7 +48,6 @@
     methods: {
       showDialog() {
         if (this.tableData.length > 0) {
-          console.log(111111)
           this.dialogVisible = true
         }
       },
