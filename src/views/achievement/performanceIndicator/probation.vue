@@ -31,7 +31,7 @@
              class="common_btn"
              @click="handleUpdate(scope.row)">编辑
           </a>
-          <a v-if="sys_prd_type_upd && scope.row.probationNormId >= list.length-1"
+          <a v-if="sys_prd_type_upd && scope.row.month >= list.length"
              size="small"
              class="danger_btn"
              @click="deletes(scope.row)">删除
@@ -60,8 +60,8 @@
                ref="form"
                label-width="30%">
 
-        <el-form-item :label="dialogLabel" prop="name">
-          <el-input v-model="form.name"></el-input>
+        <el-form-item :label="'试用期标准第' + dialogLabel + '个月（%）'" prop="norm">
+          <el-input v-model.number="form.norm" type="number"></el-input>
         </el-form-item>
 
       </el-form>
@@ -77,41 +77,31 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { getPbtList, editPbtItem, putPbtItem, delPbtItem } from '@/api/achievement'
+  import { getPbtList, editPbtItem, postPbtItem, delPbtItem } from '@/api/achievement'
 
   export default {
     name: 'table_user',
     data() {
       return {
-         list: null,
-//        list: [
-//          { id: 0, value: '20' },
-//          { id: 1, value: '30' },
-//          { id: 2, value: '40' },
-//          { id: 3, value: '50' }
-//        ],
+        list: [],
         total: null,
         listLoading: false,
         listQuery: {
           page: 1,
           limit: 20
         },
-//        form: {
-//          name: undefined,
-//          currencyId: undefined
-//        },
         form: {},
         statusOptions: ['0', '1'],
         dialogFormVisible: false,
         dialogStatus: '',
+        dialogLabel: '1',
         textMap: {
           update: '编辑试用期业绩标准',
           create: '新增试用期业绩标准'
         },
-//        dialogLabel: '',
         tableKey: 0,
         rules: {
-          name: [
+          norm: [
             { required: true, trigger: 'blur', message: '请输入试用期业绩标准' }
           ]
         }
@@ -120,9 +110,20 @@
     computed: {
       ...mapGetters([
         'permissions'
-      ]),
-      dialogLabel() {
-        return `试用期标准第${this.list.length + 1}个月（%）`
+      ])
+      // dialogLabel() {
+      //   let str = ''
+      //   if (this.dialogStatus === 'update') {
+      //     str = `试用期标准第${this.list.length}个月（%）`
+      //   } else if (this.dialogStatus === 'create') {
+      //     str = `试用期标准第${this.list.length + 1}个月（%）`
+      //   }
+      //   return str
+      // }
+    },
+    watch: {
+      'dialogLabel': function(n, o) {
+        console.log(n)
       }
     },
     created() {
@@ -136,6 +137,7 @@
         this.listLoading = true
         getPbtList().then(response => {
           this.list = response.data
+          this.total = response.data.length || 0
           this.listLoading = false
         })
       },
@@ -155,32 +157,41 @@
         this.resetTemp()
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
+        this.dialogLabel = this.form.month = this.list.length + 1
+        this.form.probationNormId = null
       },
       handleUpdate(row) {
-        // getObj(row.productTypeId)
-        //   .then(response => {
-        //     this.form = response.data
-        //     this.dialogFormVisible = true
-        //     this.dialogStatus = 'update'
-        //   })
+        this.dialogStatus = 'update'
+        editPbtItem(row.probationNormId).then(res => {
+          if (res.status === 200) {
+            this.dialogFormVisible = true
+            this.form.norm = res.data.norm
+            this.form.probationNormId = res.data.probationNormId
+            this.form.month = this.dialogLabel = res.data.month
+          }
+        })
+        // postPbtItem(this.form).then(res => {
+        //   if (res.status === 200) {
+        //     console.log('success')
+        //   }
+        // })
       },
       create(formName) {
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
-            this.list.push({ probationNormId: this.list.length, norm: this.form.name })
-            this.dialogFormVisible = false
-            // addObj(this.form)
-            //   .then(() => {
-            //     this.dialogFormVisible = false
-            //     this.getList()
-            //     this.$notify({
-            //       title: '成功',
-            //       message: '创建成功',
-            //       type: 'success',
-            //       duration: 2000
-            //     })
-            //   })
+            postPbtItem(this.form).then(res => {
+              if (res.status === 200) {
+                this.dialogFormVisible = false
+                this.getList()
+                this.$notify({
+                  title: '成功',
+                  message: '创建成功',
+                  type: 'success',
+                  duration: 2000
+                })
+              }
+            })
           } else {
             return false
           }
@@ -191,20 +202,23 @@
         this.$refs[formName].resetFields()
       },
       update(formName) {
+        console.log(this.form)
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
-            // putObj(this.form).then(() => {
-            //   this.dialogFormVisible = false
-            //   this.getList()
-            //   this.$notify({
-            //     title: '成功',
-            //     message: '修改成功',
-            //     type: 'success',
-            //     duration: 2000
-            //   })
-            // })
+            postPbtItem(this.form).then(res => {
+              if (res.status === 200) {
+                this.dialogFormVisible = false
+                this.getList()
+                this.$notify({
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
+                  duration: 2000
+                })
+              }
+            })
           } else {
             return false
           }
@@ -216,29 +230,36 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.list.splice(row.probationNormId, 1)
-          // delObj(row.currencyId).then(() => {
-          //   this.getList()
-          //   this.$notify({
-          //     title: '成功',
-          //     message: '删除成功',
-          //     type: 'success',
-          //     duration: 2000
-          //   })
-          // }).cache(() => {
-          //   this.$notify({
-          //     title: '失败',
-          //     message: '删除失败',
-          //     type: 'error',
-          //     duration: 2000
-          //   })
-          // })
+          delPbtItem(row.probationNormId).then(res => {
+            if (res.status === 200) {
+              this.getList()
+              this.$notify({
+                title: '成功',
+                message: '删除成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
+          }).catch(() => {
+            this.$notify({
+              title: '失败',
+              message: '删除失败',
+              type: 'error',
+              duration: 2000
+            })
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
         })
       },
       resetTemp() {
         this.form = {
           month: undefined,
-          norm: undefined
+          norm: undefined,
+          probationNormId: undefined
         }
       }
     }

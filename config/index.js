@@ -63,13 +63,13 @@ module.exports = {
           '^/client' : '/client'
         }
       },
-      '/performance':{
+      '/performance': {
         target: 'http://10.9.60.141:9999',
         changeOrigin: true,
         pathRewrite: {
           '^/performance' : '/performance'
         }
-      },
+      }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
