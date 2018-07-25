@@ -34,7 +34,8 @@
       :title="titles[1] || t('el.transfer.titles.1')"
       :default-checked="rightDefaultChecked"
       :placeholder="filterPlaceholder || t('el.transfer.filterPlaceholder')"
-      @checked-change="onTargetCheckedChange">
+      @checked-change="onTargetCheckedChange"
+      @emit-filtered="getDragData">
       <slot name="right-footer"></slot>
     </transfer-panel>
   </div>
@@ -111,8 +112,8 @@
         type: Object,
         default() {
           return {
-            label: 'label',
-            key: 'key',
+            label: 'fieldsName',
+            key: 'fieldsKey',
             disabled: 'disabled'
           }
         }
@@ -127,8 +128,17 @@
     },
 
     computed: {
-      sourceData() {
-        return this.data.filter(item => this.value.indexOf(item[this.props.key]) === -1)
+      // sourceData() {
+      //   return this.data.filter(item => this.value.indexOf(item[this.props.key]) === -1)
+      // },
+      sourceData: {
+        get: function() {
+          return this.data.filter(item => this.value.indexOf(item[this.props.key]) === -1)
+        },
+        set: function(newData) {
+          // this.data = newData
+          console.log(newData)
+        }
       },
 
       targetData() {
@@ -165,20 +175,30 @@
 
       onSourceCheckedChange(val) {
         this.leftChecked = val
+        console.log('左边')
+        console.log(val)
       },
 
       onTargetCheckedChange(val) {
         this.rightChecked = val
+        console.log('右边')
+        console.log(val)
       },
 
       addToLeft() {
-        let currentValue = this.value.slice()
+        console.log(this.value)
+        let currentValue = []
+        this.value.slice().forEach(item => {
+          currentValue.push(item[this.props.key])
+        })
         this.rightChecked.forEach(item => {
           const index = currentValue.indexOf(item)
+          console.log(index)
           if (index > -1) {
             currentValue.splice(index, 1)
           }
         })
+        console.log(currentValue)
         this.$emit('input', currentValue)
         this.$emit('change', currentValue, 'left', this.rightChecked)
       },
@@ -192,6 +212,19 @@
         })
         this.$emit('input', currentValue)
         this.$emit('change', currentValue, 'right', this.leftChecked)
+      },
+
+      getDragData(data) {
+        let arr = []
+        data.forEach(item => {
+          arr.push(item.fieldsKey)
+        })
+        let list = this.data.filter(item => {
+          return arr.indexOf(item[this.props.key]) === -1
+        })
+        this.$emit('updata', list)
+        this.$emit('input', data)
+        this.$emit('change', data, 'right', this.leftChecked)
       }
     }
   }
