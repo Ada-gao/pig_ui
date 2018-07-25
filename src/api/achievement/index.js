@@ -94,13 +94,14 @@ export function editPbtItem(id) {
   })
 }
 /**
- * 编辑试用期业绩item
- * @param id item.id
+ * 新增或修改试用期业绩item
+ * @param obj
  */
-export function putPbtItem(id) {
+export function postPbtItem(obj) {
   return request({
-    url: `/performance/probationNorm/${id}`,
-    method: 'put'
+    url: '/performance/probationNorm',
+    method: 'post',
+    data: obj
   })
 }
 /**
