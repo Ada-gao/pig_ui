@@ -189,7 +189,8 @@
         console.log(this.value)
         let currentValue = []
         this.value.slice().forEach(item => {
-          currentValue.push(item[this.props.key])
+          // console.log(item)
+          currentValue.push(item[this.props.key] || item)
         })
         this.rightChecked.forEach(item => {
           const index = currentValue.indexOf(item)
