@@ -31,7 +31,9 @@
              class="common_btn"
              @click="handleUpdate(scope.row)">编辑
           </a>
-          <a v-if="sys_prd_type_upd && scope.row.month >= list.length"
+          <a v-if="sys_prd_type_upd &&
+                   list.length > 1 &&
+                   scope.row.month >= list.length"
              size="small"
              class="danger_btn"
              @click="deletes(scope.row)">删除
@@ -77,7 +79,12 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { getPbtList, editPbtItem, postPbtItem, delPbtItem } from '@/api/achievement'
+  import {
+    getPbtList,
+    editPbtItem,
+    postPbtItem,
+    delPbtItem
+  } from '@/api/achievement'
 
   export default {
     name: 'table_user',
