@@ -138,55 +138,55 @@
         <el-row :gutter="20">
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="订单编号" prop="amount">
-              <el-input v-model.number="form.amount"
-                        type="number"
+            <el-form-item label="订单编号" prop="appointmentcode">
+              <el-input v-model="form.appointmentcode"
+                        type="text"
                         placeholder="请输入订单编号"></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="佣金比例" prop="amount">
-              <el-input v-model.number="form.amount"
-                        type="number"
+            <el-form-item label="佣金比例" prop="commissionrate">
+              <el-input v-model.number="form.commissionrate"
+                        type="text"
                         placeholder="请输入佣金比例"></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="理财师姓名" prop="amount">
+            <el-form-item label="理财师姓名" prop="username">
               <el-select class="filter-item"
                          style="width:100%;"
                          placeholder="请输入理财师姓名"
-                         v-model="listQuery.positionsId">
-                <el-option v-for="item in positions"
-                           :value="item.positionId"
-                           :label="item.positionName"
+                         v-model="form.username">
+                <el-option v-for="item in financialPlannerList"
+                           :value="item.username"
+                           :label="item.username"
                            :key="item.positionId">
-                  <span style="float: left;">{{item.positionName}}</span>
+                  <span style="float: left;">{{item.username}}</span>
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="理财师编号" prop="amount">
-              <el-input v-model="form.parentId" readonly="readonly" placeholder="请输入理财师编号"></el-input>          
+            <el-form-item label="理财师编号" prop="usercode">
+              <el-input v-model="form.usercode" readonly="readonly" placeholder="请输入理财师编号"></el-input>          
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="销售支持姓名" prop="amount">
+            <el-form-item label="销售支持姓名" prop="salesname">
               
               <el-select class="filter-item"
                          style="width:100%;"
                          placeholder="请输入销售支持姓名"
-                         v-model="listQuery.positionsId">
-                <el-option v-for="item in positions"
-                           :value="item.positionId"
-                           :label="item.positionName"
+                         v-model="form.salesname">
+                <el-option v-for="item in salesSupportList"
+                           :value="item.salesname"
+                           :label="item.salesname"
                            :key="item.positionId">
-                  <span style="float: left;">{{item.positionName}}</span>
+                  <span style="float: left;">{{item.salesname}}</span>
                 </el-option>
               </el-select>
 
@@ -223,6 +223,10 @@
     deleteSalesSupport
 
   } from '@/api/achievement'
+  import {
+    getPlannerList, // 查询理财师列表
+    getDirectSupervisorList // 销售支持列表(目前这个方法查询的是所有员工))
+  } from '@/api/user'
   import { mapGetters } from 'vuex'
   export default {
     components: {},
@@ -235,7 +239,15 @@
           page: 1,
           limit: 20
         },
-        form: {},
+        form: {
+          salesSupportId: '',
+          appointmentCode: '',
+          commissionRate: '',
+          salesCode: '',
+          salesName: '',
+          userCode: '',
+          userName: ''
+        },
         textMap: {
           edit: '编辑销售支持',
           create: '新增销售支持'
@@ -263,27 +275,51 @@
         departs: [], // 部门
         positions: [], // 职位
         level: [], // 职级
-        appointmentcode: '', //订单编号
-        username: '', //理财师姓名
-        usercode: '', //理财师编号
-        salesname: '', //销售支持姓名
-        salescode: '', //销售支持编号
-        commissionrate: '', //佣金比例
+        appointmentcode: null, // 订单编号
+        username: null, // 理财师姓名
+        usercode: null, // 理财师编号
+        salesname: null, // 销售支持姓名
+        salescode: null, // 销售支持编号
+        commissionrate: null, // 佣金比例
+
+        financialPlannerList: [], // 所有理财师列表
+        salesSupportList: [], // 所有销售支持列表
       }
     },
     	computed: {
       ...mapGetters([
         'permissions',
-      ])
+      ]),
+      queryProps: function(){
+        return {
+          page:this.listQuery.page,
+          limit:this.listQuery.limit,
+          appointmentcode: this.appointmentcode,
+          username: this.username, 
+          usercode: this.usercode, 
+          salesname: this.salesname, 
+          salescode: this.salescode, 
+          commissionrate: this.commissionrate,
+        }
+      }
     },
     created() {
       this.getAllSearch()
       this.getList()
+      this.getUserLists()
       this.sales_support_add = this.permissions['sales_support_add']
       this.sales_support_edit = this.permissions['sales_support_edit']
       this.sales_support_delete = this.permissions['sales_support_delete']
     },
     methods: {
+      getUserLists(){
+        getPlannerList().then(function(res){
+          console.log(res)
+        })
+        getDirectSupervisorList().then(function(res){
+          console.log(res)
+        })
+      },
       tableHeader(h, { column, $index }) {
         return h('span', [
           h('span', column.label),
@@ -303,17 +339,18 @@
       },
       getList() {
         this.listLoading = true
-        /* getPerformList(this.listQuery).then(res => {
-          this.list = res.data.records
-          this.total = res.data.total
-          this.listLoading = false
-        }) */
         getSalesSupportList(this.listQuery).then(res => {
           this.list = res.data.records
           this.total = res.data.total
           this.listLoading = false
         })
-
+      },
+      getListByProps() {
+        getSalesSupportList(this.queryProps).then(res => {
+          this.list = res.data.records
+          this.total = res.data.total
+          this.listLoading = false
+        })
       },
       getDeparts() { // 获取部门列表
         getAllDeparts().then(res => {
@@ -337,7 +374,7 @@
       },
       handleFilter() { // search
         this.listQuery.page = 1
-        this.getList()
+        this.getListByProps()
       },
       resetFilter() { // reset
         this.listQuery = {
@@ -345,7 +382,14 @@
           limit: 20,
           positionId: ''
         }
-        this.handleFilter()
+        this.appointmentcode = ''
+        this.username = ''
+        this.usercode = ''
+        this.salesname = ''
+        this.salescode = ''
+        this.commissionrate = ''
+
+        this.getList()
       },
       handleCreate() {
         this.resetTemp()

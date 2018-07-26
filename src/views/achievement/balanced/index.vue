@@ -11,13 +11,13 @@
 								:props="defaultProps"
 								:show-all-levels="false"
 								change-on-select
-								v-model="listQuery.deptId"
+								v-model="listQuery.deptid"
 							></el-cascader>
 						</el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="职位">
-              <el-select style="width: 100%" class="filter-item" v-model="listQuery.positionId" placeholder="请选择" @focus="handlePosition()">
+              <el-select style="width: 100%" class="filter-item" v-model="listQuery.positionid" placeholder="请选择" @focus="handlePosition()">
                 <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName">
                   <span style="float: left">{{ item.positionName }}</span>
                 </el-option>
@@ -26,12 +26,12 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="姓名">
-              <el-input class="filter-item" v-model="listQuery.name" placeholder="请输入姓名"></el-input>
+              <el-input class="filter-item" v-model="listQuery.username" placeholder="请输入姓名"></el-input>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="工号">
-              <el-input class="filter-item" v-model="listQuery.empNo" placeholder="请输入工号"></el-input>
+              <el-input class="filter-item" v-model="listQuery.usercode" placeholder="请输入工号"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -56,7 +56,10 @@
 							border fit
               highlight-current-row 
 							style="width: 100%">
-      <el-table-column align="center" label="时间">
+      <el-table-column align="center" label="时间"  width="190">
+				<template slot-scope="scope">
+        <span>{{scope.row.start}}—{{scope.row.end}}</span>
+        </template>
       </el-table-column>
 
       <el-table-column align="center" label="部门" show-overflow-tooltip>
@@ -67,38 +70,38 @@
 
       <el-table-column align="center" label="职位" class-name="toggle">
         <template slot-scope="scope">
-          <span>{{scope.row.positionId}}</span>
+          <span>{{scope.row.positionName}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="职级" class-name="toggle">
         <template slot-scope="scope">
-          <span>{{scope.row.positionId}}</span>
+          <span>{{scope.row.rankName}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="姓名" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.empNo}}</span>
+        <span>{{scope.row.userName}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="工号" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.empNo}}</span>
+        <span>{{scope.row.userCode}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="平衡计分卡系数" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.empNo}}</span>
+        <span>{{scope.row.coefficient}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
           <a v-if="balanced_score_card_edit" size="small" class="common_btn"
-             @click=" (scope.row, 'update')">编辑
+             @click="handleUpdate(scope.row)">编辑
           </a>
         </template>
       </el-table-column>
@@ -114,8 +117,8 @@
 		<el-dialog title="编辑平衡积分卡系数" :visible.sync="dialogEditVisible">
       <el-form :model="form" ref="form" label-width="120px" :rules="rules">
         
-        <el-form-item label="平衡计分卡系数" prop="name">
-          <el-input v-model="form.name"></el-input>
+        <el-form-item label="平衡计分卡系数" prop="coefficient">
+          <el-input v-model="form.coefficient"></el-input>
         </el-form-item>
 
       </el-form>
@@ -128,7 +131,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { getAllPositon, getAllDeparts, getBalancedList } from '@/api/achievement/index'
+import { getAllPositon, getAllDeparts, getBalancedList, getBalancedId, editBalanced } from '@/api/achievement/index'
 import { parseTime, transformText } from '@/utils'
 export default {
 	data () {
@@ -141,7 +144,7 @@ export default {
 				limit: 20
 			},
 			positionsOptions: [],
-      deptId: [],
+      deptid: [],
 			treeDeptData: [],
 			defaultProps: {
         children: 'children',
@@ -151,10 +154,10 @@ export default {
 			tableKey: 0,
 			dialogEditVisible: false,
 			form: {
-        name: undefined,
+        coefficient: undefined,
 			},
 			rules: {
-				name: [
+				coefficient: [
 					{ required: true, message: '请输入平衡计分卡系数' }
 				]
 			}
@@ -185,6 +188,10 @@ export default {
 			}),
 			getBalancedList(this.listQuery).then(response => {
 				this.list = response.data.records
+				this.list.map((item, index) => {
+					item.start = parseTime(item.start, '{y}-{m}-{d}')
+					item.end = parseTime(item.end, '{y}-{m}-{d}')
+				})
 				this.total = response.data.total
 				this.listLoading = false
 				getAllPositon().then(res => {
@@ -205,8 +212,8 @@ export default {
 		handleFilter() {
 			this.listQuery.page = 1
 			this.getList()
-			if(this.deptId.length) {
-        this.listQuery.deptId = this.deptId[this.deptId.length - 1]
+			if(this.deptid.length) {
+        this.listQuery.deptid = this.deptid[this.deptid.length - 1]
       }
 		},
 		resetFilter() { // 重置搜索条件
@@ -214,14 +221,17 @@ export default {
 				page: 1,
 				limit: 20,
 				username: '',
-				positionId: '',
-				status: '',
-        deptId: '',
+				positionid: '',
+				// status: '',
+				deptid: [],
+				usercode: ''
 			},
-      this.deptId = []
+      this.deptid = []
 			this.handleFilter()
 		},
-		handleImport() {},
+		handleImport() {
+			this.$router.push({ path: '/achievement/importBalancedExcel' })
+		},
 		handleExport() {},
 		handleSizeChange(val) {
 			this.listQuery.limit = val
@@ -231,18 +241,35 @@ export default {
 			this.listQuery.page = val
 			this.getList()
 		},
-		handleUpdate () {
+		handleUpdate (item) {
 			this.dialogEditVisible = true
+			getBalancedId(item.balancedScoreCardId).then(response => {
+				this.form = response.data
+			})
 		},
 		cancel(formName) {
-			this.dialogFormVisible = false
+			this.dialogEditVisible = false
 			this.$refs[formName].resetFields()
 		},
 		update(formName) {
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
-            this.dialogFormVisible = false
+						this.form.coefficient -= 0
+						let obj = {
+							"coefficient": this.form.coefficient,
+							"balancedScoreCardId": this.form.balancedScoreCardId
+							}
+						editBalanced(obj).then(response => {
+							this.dialogEditVisible = false
+							this.getList()
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
+              })
+						})
           } else {
             return false
           }

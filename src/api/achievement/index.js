@@ -67,11 +67,37 @@ export function getBalancedId(id) {
 /**
  * 修改平衡计分卡
 */
-export function editBalanced(id, obj) {
+export function editBalanced(obj) {
   return request({
-    url: `/performance/balancedScoreCard/${id}`,
-    method: 'put',
+    url: '/performance/balancedScoreCard',
+    method: 'post',
     data: obj
+  })
+}
+
+/**
+ * 获取查询佣金列表
+ * @param query
+*/
+export function getCommissionList(query) {
+  return request({
+    url: '/performance/commissions',
+    method: 'get',
+    params: query
+  })
+}
+
+/** 
+ * 佣金列表导入
+*/
+export function commissionListImport(file) {
+  return request({
+    url: '/performance/commissions/import',
+    method: 'post',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    data: file
   })
 }
 
@@ -115,6 +141,7 @@ export function delPbtItem(id) {
     method: 'delete'
   })
 }
+
 /**
  * 查询产品信息(带分页查询)
  * @param
