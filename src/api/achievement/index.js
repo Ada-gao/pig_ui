@@ -32,12 +32,13 @@ export function getAllDeparts() {
   })
 }
 /**
- * 获取职级
+ * 根据职位id获取职级
  */
-export function getAllRank() {
+export function getAllRank(query) {
   return request({
-    url: '/admin/rank',
-    method: 'get'
+    url: '/admin/rank/list',
+    method: 'get',
+    params: query
   })
 }
 
@@ -153,5 +154,71 @@ export function deleteSalesSupport(id) {
   return request({
     url: `/performance/salesSupport/${id}`,
     method: 'delete'
+  })
+}
+/**
+ * 查询业绩指标列表
+ */
+export function getPfList() {
+  return request({
+    url: '/performance/performanceIndicator/',
+    method: 'get'
+  })
+}
+/**
+ * 新增业绩指标
+ */
+export function addPfItem() {
+  return request({
+    url: '/performance/performanceIndicator/',
+    method: 'post'
+  })
+}
+/**
+ * 根据id查询业绩指标
+ * @param id
+ */
+export function editPfItem(id) {
+  return request({
+    url: `/performance/performanceIndicator/${id}`,
+    method: 'get'
+  })
+}
+/**
+ * 修改业绩指标
+ * @param id
+ */
+export function putPfItem(id) {
+  return request({
+    url: `/performance/performanceIndicator/${id}`,
+    method: 'put'
+  })
+}
+/**
+ * 删除业绩指标
+ * @param id
+ */
+export function delPfItem(id) {
+  return request({
+    url: `/performance/performanceIndicator/${id}`,
+    method: 'delete'
+  })
+}
+/**
+ * 业绩指标导入
+ */
+export function importPf() {
+  return request({
+    url: '/performance/performanceIndicator/import',
+    method: 'post'
+  })
+}
+/**
+ * 业绩指标导出
+ */
+export function exportPf() {
+  return request({
+    url: '/performance/performanceIndicator/import',
+    method: 'get'
   })
 }
