@@ -159,7 +159,7 @@
                          style="width:100%;"
                          placeholder="请输入理财师姓名"
                          v-model="form.username">
-                <el-option v-for="item in usernameList"
+                <el-option v-for="item in financialPlannerList"
                            :value="item.username"
                            :label="item.username"
                            :key="item.positionId">
@@ -182,7 +182,7 @@
                          style="width:100%;"
                          placeholder="请输入销售支持姓名"
                          v-model="form.salesname">
-                <el-option v-for="item in salesnameList"
+                <el-option v-for="item in salesSupportList"
                            :value="item.salesname"
                            :label="item.salesname"
                            :key="item.positionId">
@@ -275,14 +275,14 @@
         departs: [], // 部门
         positions: [], // 职位
         level: [], // 职级
-        appointmentcode: '', // 订单编号
-        username: '', // 理财师姓名
-        usercode: '', // 理财师编号
-        salesname: '', // 销售支持姓名
-        salescode: '', // 销售支持编号
-        commissionrate: '', // 佣金比例
+        appointmentcode: null, // 订单编号
+        username: null, // 理财师姓名
+        usercode: null, // 理财师编号
+        salesname: null, // 销售支持姓名
+        salescode: null, // 销售支持编号
+        commissionrate: null, // 佣金比例
 
-        financialPlanner: [], // 所有理财师列表
+        financialPlannerList: [], // 所有理财师列表
         salesSupportList: [], // 所有销售支持列表
       }
     },
@@ -306,12 +306,13 @@
     created() {
       this.getAllSearch()
       this.getList()
+      this.getUserLists()
       this.sales_support_add = this.permissions['sales_support_add']
       this.sales_support_edit = this.permissions['sales_support_edit']
       this.sales_support_delete = this.permissions['sales_support_delete']
     },
     methods: {
-      getUsers(){
+      getUserLists(){
         getPlannerList().then(function(res){
           console.log(res)
         })
