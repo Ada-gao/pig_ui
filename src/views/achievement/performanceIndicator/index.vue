@@ -220,8 +220,6 @@
         <el-button class="add_btn" v-else @click="update('form')">修 改</el-button>
       </div>
     </el-dialog>
-    <!--<el-dialog :title="textMap[dialogStatus]"-->
-               <!--:visible.sync="dialogEdit"></el-dialog>-->
   </div>
 </template>
 <script>
