@@ -31,7 +31,7 @@
 
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { uploadExcel } from '@/api/uploadExcel'
+  import { commissionListImport } from '@/api/achievement/index'
 
   export default {
     name: 'uploadExcel',
@@ -65,7 +65,7 @@
             'Content-Type': 'multipart/form-data'
           }
         }
-        uploadExcel(this.formData, config).then(res => {
+        commissionListImport(this.formData, config).then(res => {
           if (!res) {
             console.log('上传失败')
           } else {

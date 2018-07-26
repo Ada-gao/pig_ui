@@ -149,6 +149,8 @@
       },
 
       data(curVal, oldVal) {
+        let hasCurVal = curVal.some(item => item === undefined)
+        if(hasCurVal) return
         this.filteredData = curVal
         const checked = []
         const filteredDataKeys = this.filteredData.map(item => item[this.keyProp])
@@ -201,7 +203,9 @@
       // },
 
       checkableData() {
-        return this.filteredData.filter(item => !item[this.disabledProp])
+        // this.$emit('emit-filtered', this.filteredData)
+        return this.filteredData
+        // return this.filteredData.filter(item => !item[this.disabledProp])
       },
 
       checkedSummary() {
@@ -252,6 +256,9 @@
     methods: {
       onDrop(dropResult) {
         this.filteredData = applyDrag(this.filteredData, dropResult)
+        // this.data = this.filteredData
+        console.log(this.filteredData)
+        this.$emit('emit-filtered', this.filteredData)
       },
 
       updateAllChecked() {

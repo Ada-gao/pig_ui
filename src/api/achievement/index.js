@@ -8,7 +8,7 @@ import request from '@/utils/request'
  */
 export function getPerformList(query) {
   return request({
-    url: '/performance/user/userPage',
+    url: '/admin/user/userPage',
     method: 'get',
     params: query
   })
@@ -75,6 +75,32 @@ export function editBalanced(obj) {
 }
 
 /**
+ * 获取查询佣金列表
+ * @param query
+*/
+export function getCommissionList(query) {
+  return request({
+    url: '/performance/commissions',
+    method: 'get',
+    params: query
+  })
+}
+
+/** 
+ * 佣金列表导入
+*/
+export function commissionListImport(file) {
+  return request({
+    url: '/performance/commissions/import',
+    method: 'post',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    data: file
+  })
+}
+
+/**
  * 获取试用期业绩列表所有数据
  */
 export function getPbtList() {
@@ -94,13 +120,14 @@ export function editPbtItem(id) {
   })
 }
 /**
- * 编辑试用期业绩item
- * @param id item.id
+ * 新增或修改试用期业绩item
+ * @param obj
  */
-export function putPbtItem(id) {
+export function postPbtItem(obj) {
   return request({
-    url: `/performance/probationNorm/${id}`,
-    method: 'put'
+    url: '/performance/probationNorm',
+    method: 'post',
+    data: obj
   })
 }
 /**
@@ -115,13 +142,43 @@ export function delPbtItem(id) {
 }
 
 /**
- * 获取查询佣金列表
- * @param query
-*/
-export function getCommissionList(query) {
+ * 查询产品信息(带分页查询)
+ * @param
+ */
+export function getSalesSupportList(query) {
   return request({
-    url: '/performance/commissions',
+    url: `/performance/salesSupport`,
     method: 'get',
     params: query
+  })
+}
+/**
+ * 根据id查询销售支持
+ * @param
+ */
+export function getSalesSupport(id) {
+  return request({
+    url: `/performance/salesSupport/${id}`,
+    method: 'get'
+  })
+}
+/**
+ * 修改销售支持
+ * @param
+ */
+export function updateSalesSupport(id) {
+  return request({
+    url: `/performance/salesSupport/${id}`,
+    method: 'put'
+  })
+}
+/**
+ * 删除试用期业绩标准
+ * @param
+ */
+export function deleteSalesSupport(id) {
+  return request({
+    url: `/performance/salesSupport/${id}`,
+    method: 'delete'
   })
 }
