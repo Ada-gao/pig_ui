@@ -163,13 +163,25 @@ export function getSalesSupport(id) {
   })
 }
 /**
+ * 添加销售支持
+ * @param
+ */
+export function addSalesSupport(param) {
+  return request({
+    url: `/performance/salesSupport`,
+    method: 'post',
+    data: param
+  })
+}
+/**
  * 修改销售支持
  * @param
  */
-export function updateSalesSupport(id) {
+export function updateSalesSupport(param) {
   return request({
-    url: `/performance/salesSupport/${id}`,
-    method: 'put'
+    url: `/performance/salesSupport`,
+    method: 'post',
+    data: param
   })
 }
 /**
