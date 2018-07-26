@@ -10,77 +10,94 @@
     <div class="filter-container" style="text-align: right">
       <el-button
                  class="filter-item add_btn"
-                 @click="newAddAum = true"
+                 @click="openModel"
                  type="primary"
                  icon="edit">
         <svg-icon icon-class="add"></svg-icon> 新增</el-button>
     </div>
     <!-- 客户标签 -->
-    <el-table v-if="step == 2" :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
-              highlight-current-row style="width: 100%">
+    <el-table v-if="step == 1" :data="clientlist" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%">
 
-      <el-table-column align="center" label="标签">
-        <template slot-scope="scope">
-          <span>{{scope.row.name}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="标签解释">
-        <template slot-scope="scope">
-          <span>{{scope.row.fileSize}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="操作">
-        <template slot-scope="scope">
-          <a size="small" class="common_btn"
-                    :href="scope.row.fileUrl"><a :href="scope.row.fileUrl" target="_blank">查看</a>
-          </a>
-          <span v-if="ssys_cert_material_del" class="space_line"> | </span>
-          <a v-if="ssys_cert_material_del" size="small" class="danger_btn"
-                     @click="deletes(scope.row.certFileId)">删除
-          </a>
-        </template>
-      </el-table-column>
+      <el-table-column align="center" prop="labelName" label="标签" ></el-table-column>
+      <el-table-column align="center" prop="labelDescription" label="标签解释" ></el-table-column>
+        <el-table-column align="center" label="操作">
+          <template slot-scope="scope">
+            <el-button type="text" @click="editAum(scope.row.clientLabelId)">编辑</el-button>
+            <span class="space_line"> | </span>
+            <el-button type="text" class="red" @click="deletes(scope.row.clientLabelId)">删除</el-button>
+          </template>
+        </el-table-column>
 
     </el-table>
     <!-- AUM标签 -->
-    <el-table v-if="step == 1" :key='tableKey' :data="aumlist" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%">
+    <section v-if="step == 2"  v-loading="listLoading" element-loading-text="给我一点时间">
+      <el-table  :data="aumlist" border fit highlight-current-row style="width: 100%">
 
-      <el-table-column align="center" prop="signingAmount" label="签约金额"></el-table-column>
-      <el-table-column align="center" prop="labelName" label="会员等级"></el-table-column>
+        <el-table-column align="center" prop="signingAmount" label="签约金额" ></el-table-column>
+        <el-table-column align="center" prop="labelName" label="会员等级"></el-table-column>
 
-      <el-table-column align="center" label="操作">
-        <template slot-scope="scope">
-          <el-button type="text" @click="editAum(scope.row.clientAumLabelId)">编辑</el-button>
-          <span class="space_line"> | </span>
-          <el-button type="text" class="red" @click="deletes(scope.row.clientAumLabelId)">删除</el-button>
-        </template>
+        <el-table-column align="center" label="操作">
+          <template slot-scope="scope">
+            <el-button type="text" @click="editAum(scope.row.clientAumLabelId)">编辑</el-button>
+            <span class="space_line"> | </span>
+            <el-button type="text" class="red" @click="deletes(scope.row.clientAumLabelId)">删除</el-button>
+          </template>
+        </el-table-column>
 
-      </el-table-column>
-    </el-table>
-    <!-- 新增对话框 -->
+      </el-table>
+      <div class="red remarks">备注：签约金额为客户资产管理规模</div>
+    </section>
+     <!-- 新增客户标签对话框 -->
+    <el-dialog
+      title="新增标签"
+      :visible.sync="newAdd">
+    
+        <el-form :model="newAddClient" ref="numberValidateForm" label-width="100px" class="demo-ruleForm">
+
+          <el-form-item  label="标签名称"  prop="labelName" :rules="[
+            { required: true, message: '标签名称不能为空'},
+          ]"> 
+            <el-input v-model="newAddClient.labelName" placeholder="请输入标签名称" style="width:63%;"></el-input>
+          </el-form-item>
+
+          <el-form-item label="标签解释">
+            <el-input  v-model="newAddClient.labelDescription"  placeholder="请输入标签解释" style="width:63%;"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="cancel">取 消</el-button>
+          <el-button type="primary" @click="clientDetermine">确 定</el-button>
+        </span>
+    </el-dialog>
+    <!-- 新增aum对话框 -->
     <el-dialog
       title="新增客户标签"
       :visible.sync="newAddAum">
-      <article>
-      <span class="red">*</span>
-      <label class="mr10">签约金额</label>
-         <el-input v-model="newAddParamet.lowLimit" placeholder="请输入金额" style="width:30%;"></el-input>
-         <i class="el-icon-minus"></i>
-         <el-input v-model="newAddParamet.highLimit" placeholder="请输入金额" style="width:30%;" class="mr10"></el-input>
-         <span>万</span>
-      </article>
-
-     <article  class="demo-input-size" style="margin-top:20px;">
-      <span class="red">*</span>
-      <label class="mr10">会员等级</label>
-         <el-input v-model="newAddParamet.labelName" placeholder="请输入会员等级" style="width:63%;"></el-input>
-      </article>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="aumDetermine">确 定</el-button>
-      </span>
+    
+        <el-form :model="newAddParamet" :rules="rules" ref="numberValidateForm" label-width="100px" class="demo-ruleForm">
+          <el-form-item  label="签约金额" class="demo-block demo-box demo-zh-CN demo-form"> 
+            <el-col :span="8">
+              <el-form-item  prop="lowLimit" > 
+                <el-input v-model="newAddParamet.lowLimit" placeholder="请输入金额"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col class="line" :span="1">-</el-col>
+            <el-col :span="8">
+               <el-form-item  prop="highLimit" > 
+                <el-input v-model.number="newAddParamet.highLimit" placeholder="请输入金额"  auto-complete="off" ></el-input>
+              </el-form-item>
+            </el-col>
+            <span>万</span>
+          
+          </el-form-item>
+          <el-form-item label="会员等级" prop="labelName">
+            <el-input  v-model="newAddParamet.labelName"  placeholder="请输入会员等级" style="width:63%;" auto-complete="off" ></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="cancel">取 消</el-button>
+          <el-button type="primary" @click="aumDetermine">确 定</el-button>
+        </span>
     </el-dialog>
 
     <el-dialog
@@ -97,7 +114,7 @@
 </template>
 
 <script>
-  import { fetchList,clientAumLabel,editClientAumLabel,deleteClientAumLabel} from '@/api/client/customerLabel'
+  import {getClientList,clientLabel,deleteClientLabel,seeClientLabel,editClientLabel,fetchList,clientAumLabel,editClientAumLabel,deleteClientAumLabel} from '@/api/client/customerLabel'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
@@ -121,79 +138,47 @@
       waves
     },
     data() {
+       var validatePass = (rule, value, callback) => {
+        let reg = /^[0-9]+.?[0-9]*$/;
+        if(!reg.test(value)){
+           callback(new Error('金额必须为数字值'));
+        }
+        
+      };
       return {
+        aumlist: null,
+        clientlist:null,
         step:1,
         newAddAum:false,
+        newAdd:false,
         newAddParamet:{
           highLimit:'',
           lowLimit:'',
           labelName:''
         },
+        newAddClient:{
+          labelName:'',
+          labelDescription:''
+        },
         deletesTitle:'',
-        
-        treeDeptData: [],
-        checkedKeys: [],
-        defaultProps: {
-          children: 'children',
-          label: 'name',
-          value: 'id'
+        rules:{
+           lowLimit:[
+              { required: true, message: '金额不能为空'},
+              { validator: validatePass, trigger: 'change'}
+            ],
+            highLimit:[
+              { required: true, message: '金额不能为空'},
+               { validator: validatePass, trigger: 'change'}
+            ],
+            labelName:[
+              { required: true, message: '会员等级不能为空'},
+            ],
         },
-        defaultProps2: {
-          value: 'label'
-        },
-        aumlist: null,
-        total: null,
-        listLoading: true,
-        listQuery: {
-          page: 1,
-          limit: 20,
-          // clientType: 0 // 1：专业，0：普通
-          certificationType: 1, //0: 普通， 1: 专业投资者
-          certificationStatus: 1,
-          realNameStatus: 2 // 实名认证
-        },
-        role: undefined,
-        form: {
-          name: 'rank',
-          username: undefined,
-          password: undefined,
-          // delFlag: undefined,
-          deptId: undefined
-        },
-        dialogFormVisible: false,
-        dialogDeptVisible: false,
-        userAdd: false,
-        userUpd: false,
-        userDel: false,
-        dialogStatus: '',
-        textMap: {
-          update: '编辑员工',
-          create: '新增员工'
-        },
-        isDisabled: {
-          0: false,
-          1: true
-        },
-        tableKey: 0,
-        input2: '',
-        gender: '',
-        value13: '',
-        eduOptions: [],
-        education: '',
-        // IDType: '',
-        employeeDate: '',
-        maritalStatus: '',
-        fileList: [],
-        positionId: '',
-        // delFlag: '',
-        tableData: [],
-        tableHeader: [],
-        type: 0,
-        headers: {
-          Authorization: 'Bearer ' + getToken()
-        },
-        id: '',
-        dialogVisible: false
+        selfEdit:false,
+        listData:null,
+        listLoading:false,
+        dialogVisible: false,
+        id:'',
       }
     },
     computed: {
@@ -207,20 +192,62 @@
       ])
     },
     created() {
-      // this.handlePosition()
-      this.getList()
-      this.ssys_cert_material_del = this.permissions['ssys_cert_material_del']
+      this.list();
+
     },
     methods: {
-      changeStep(){
-
+        //获取客户标签列表
+      list() {
+        this.listLoading = true;
+        getClientList().then(response => {
+          this.clientlist = response.data;
+          this.listLoading = false;
+         
+        })
       },
+      changeStep(){
+        this.step == 1? this.list():this.getAumList();
+      },
+      openModel(){
+        this.step == 1?this.newAdd = true:this.newAddAum = true;
+        this.newAddParamet = {};
+        this.newAddClient = {};
+      },
+     
       // 取消 关闭对话框
       cancel(){
         this.newAddAum = false;
+        this.newAdd = false;
         this.newAddParamet = {};
+        this.newAddClient = {};
       },
-      // 新增 确定
+      // 新增 确定 客户标签
+      clientDetermine(){
+        let method;
+        if( this.selfEdit){
+
+          this.newAddClient.clientLabelId = this.id;
+          method = 'put'
+        }else{
+          method = 'post'
+        }
+        console.log(this.newAddClient)
+        clientLabel(this.newAddClient,method).then(response =>{
+          if(response.status === 200) {
+            this.list();
+            this.$notify({
+                title: '成功',
+                message: '新增成功',
+                type: 'success',
+                duration: 2000
+              })
+            this.newAddParamet = {};
+            this.newAdd = false;
+          }
+          
+        })
+      },
+      // 新增 确定 aum
       aumDetermine(){
         clientAumLabel(this.newAddParamet).then(response =>{
           if(response.status === 200) {
@@ -239,10 +266,20 @@
       },
       // 据id查询客户aum标签信息
       editAum(id){
-        editClientAumLabel(id).then(response=>{
-          this.newAddAum = true;
-          this.newAddParamet =response.data
-        })
+        if(this.step == 1){
+          seeClientLabel(id).then(response=>{
+            this.id = id;
+            this.newAdd = true;
+            this.selfEdit = true;
+           this.newAddClient =response.data;
+          })
+        }else{
+          editClientAumLabel(id).then(response=>{
+            this.newAddAum = true;
+           this.newAddParamet =response.data;
+          })
+        }
+     
       },
       // 删除客户aum标签
       deleteAum(id){
@@ -251,7 +288,7 @@
         })
       },
       //获得全部客户aum标签
-      getList() {
+      getAumList() {
         this.listLoading = true
       
         fetchList().then(response => {
@@ -264,6 +301,22 @@
          
         })
       },
+
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
+    
+
 
 
       handleClick(tab, event) {
@@ -303,18 +356,31 @@
         this.id = id
       },
       todeletes() {
-        deleteClientAumLabel(this.id).then(response => {
-          if(response.status === 200) {
-            this.getList()
-            this.$notify({
-                title: '成功',
-                message: '删除成功',
-                type: 'success',
-                duration: 2000
-              })
-            this.dialogVisible = false
-          }
-        })
+         
+        if( this.step == 1){
+          deleteClientLabel(this.id).then(response => {
+            if(response.status === 200) {
+               this.list();
+               this.successDeletes();
+            }
+          })
+        }else{
+           deleteClientLabel(this.id).then(response => {
+            if(response.status === 200) {
+              this.getList()
+              this.successDeletes();
+            }
+          })
+        }
+      },
+      successDeletes(){
+        this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+         this.dialogVisible = false;
       }
     }
   }
@@ -333,5 +399,10 @@
 }
 .mr10{
   margin-right:10px;
+}
+.remarks{
+  font-size:18px;
+  color:#D0021B;
+  margin:20px 0 0 20px;
 }
 </style>

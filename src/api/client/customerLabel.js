@@ -1,6 +1,59 @@
 import request from '@/utils/request'
-// 客户aum标签
 
+// 客户标签列表
+
+/**
+ * 获取客户标签列表
+ */
+export function getClientList() {
+  return request({
+    url: '/client/clientLabel/',
+    method: 'get'
+  })
+}
+/**
+ * 新增或修改客户标签
+ */
+export function clientLabel(obj,method) {
+	console.log(obj)
+  return request({
+    url: '/client/clientLabel/',
+    method,
+    data: obj
+  })
+}
+
+/**
+ * 删除客户标签
+ */
+export function deleteClientLabel(id) {
+  return request({
+    url: '/client/clientLabel/'+id,
+    method: 'delete'
+  })
+}
+/**
+ * 根据id查询客户标签
+ */
+export function seeClientLabel(id) {
+  return request({
+    url: '/client/clientLabel/'+id,
+    method: 'get'
+  })
+}
+
+/**
+ * 修改客户标签
+ */
+export function editClientLabel(obj) {
+  return request({
+    url: '/client/clientLabel/',
+    method: 'put',
+    data: obj
+  })
+}
+
+// 客户aum标签
 
 /**
  * 获得全部客户aum标签
