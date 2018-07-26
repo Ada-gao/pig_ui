@@ -8,7 +8,7 @@ import request from '@/utils/request'
  */
 export function getPerformList(query) {
   return request({
-    url: '/performance/user/userPage',
+    url: '/admin/user/userPage',
     method: 'get',
     params: query
   })
