@@ -66,10 +66,10 @@ export function getBalancedId(id) {
 /**
  * 修改平衡计分卡
 */
-export function editBalanced(id, obj) {
+export function editBalanced(obj) {
   return request({
-    url: `/performance/balancedScoreCard/${id}`,
-    method: 'put',
+    url: '/performance/balancedScoreCard',
+    method: 'post',
     data: obj
   })
 }
@@ -111,5 +111,17 @@ export function delPbtItem(id) {
   return request({
     url: `/performance/probationNorm/${id}`,
     method: 'delete'
+  })
+}
+
+/**
+ * 获取查询佣金列表
+ * @param query
+*/
+export function getCommissionList(query) {
+  return request({
+    url: '/performance/commissions',
+    method: 'get',
+    params: query
   })
 }
