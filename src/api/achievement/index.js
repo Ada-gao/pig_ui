@@ -87,6 +87,17 @@ export function getCommissionList(query) {
 }
 
 /** 
+ * 佣金列表导出
+*/
+export function commissionListExport(query) {
+  return request({
+    url: '/performance/commissions/export',
+    method: 'get',
+    params: query
+  })
+}
+
+/** 
  * 佣金列表导入
 */
 export function commissionListImport(file) {

@@ -73,44 +73,50 @@
               highlight-current-row 
 							style="width: 100%">
 			<el-table-column align="center" label="月份">
+				<template slot-scope="scope">
+        <span>{{scope.row.occurrenceDate}}</span>
+        </template>
       </el-table-column>
 
       <el-table-column align="center" label="时间段">
+				<template slot-scope="scope">
+        <span>{{scope.row.timeSlot}}</span>
+        </template>
       </el-table-column>
 
 			<el-table-column align="center" label="区域总" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.regionalManager}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="区域副总" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.regionalViceManager}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="城市总" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.cityManager}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="城市副总" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.cityViceManager}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="团队经理" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.teamManager}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="区域" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.regional}}</span>
         </template>
       </el-table-column>
 
@@ -122,37 +128,37 @@
 
       <el-table-column align="center" label="职位" class-name="toggle">
         <template slot-scope="scope">
-          <span>{{scope.row.positionId}}</span>
+          <span>{{scope.row.positionName}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="职级" class-name="toggle">
         <template slot-scope="scope">
-          <span>{{scope.row.positionId}}</span>
+          <span>{{scope.row.rankName}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="姓名" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.empNo}}</span>
+        <span>{{scope.row.userName}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="工号" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.empNo}}</span>
+        <span>{{scope.row.userCode}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="本期应发佣金(元)" show-overflow-tooltip width="130">
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.commission}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="本期实发佣金(元)" show-overflow-tooltip width="130">
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.finalCommission}}</span>
         </template>
       </el-table-column>
 

@@ -52,12 +52,14 @@
         }
       },
       selected(data) {
+        console.log(data)
         this.tableHeader = data.header
         this.tableData = data.results
         // console.log(this.tableHeader)
         // console.log(this.tableData)
-        this.formData = data.formData
-        // console.log(this.formData)
+        // this.formData = data.formData
+        this.formData = data.results[0]
+        console.log(this.formData)
       },
       submit() {
         const config = {
