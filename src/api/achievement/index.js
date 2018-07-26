@@ -8,7 +8,7 @@ import request from '@/utils/request'
  */
 export function getPerformList(query) {
   return request({
-    url: '/performance/user/userPage',
+    url: '/admin/user/userPage',
     method: 'get',
     params: query
   })
@@ -32,12 +32,13 @@ export function getAllDeparts() {
   })
 }
 /**
- * 获取职级
+ * 根据职位id获取职级
  */
-export function getAllRank() {
+export function getAllRank(query) {
   return request({
-    url: '/admin/rank',
-    method: 'get'
+    url: '/admin/rank/list',
+    method: 'get',
+    params: query
   })
 }
 
@@ -66,11 +67,48 @@ export function getBalancedId(id) {
 /**
  * 修改平衡计分卡
 */
-export function editBalanced(id, obj) {
+export function editBalanced(obj) {
   return request({
-    url: `/performance/balancedScoreCard/${id}`,
-    method: 'put',
+    url: '/performance/balancedScoreCard',
+    method: 'post',
     data: obj
+  })
+}
+
+/**
+ * 获取查询佣金列表
+ * @param query
+*/
+export function getCommissionList(query) {
+  return request({
+    url: '/performance/commissions',
+    method: 'get',
+    params: query
+  })
+}
+
+/** 
+ * 佣金列表导出
+*/
+export function commissionListExport(query) {
+  return request({
+    url: '/performance/commissions/export',
+    method: 'get',
+    params: query
+  })
+}
+
+/** 
+ * 佣金列表导入
+*/
+export function commissionListImport(file) {
+  return request({
+    url: '/performance/commissions/import',
+    method: 'post',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    data: file
   })
 }
 
@@ -114,6 +152,7 @@ export function delPbtItem(id) {
     method: 'delete'
   })
 }
+
 /**
  * 查询产品信息(带分页查询)
  * @param
@@ -136,13 +175,25 @@ export function getSalesSupport(id) {
   })
 }
 /**
+ * 添加销售支持
+ * @param
+ */
+export function addSalesSupport(param) {
+  return request({
+    url: `/performance/salesSupport`,
+    method: 'post',
+    data: param
+  })
+}
+/**
  * 修改销售支持
  * @param
  */
-export function updateSalesSupport(id) {
+export function updateSalesSupport(param) {
   return request({
-    url: `/performance/salesSupport/${id}`,
-    method: 'put'
+    url: `/performance/salesSupport`,
+    method: 'post',
+    data: param
   })
 }
 /**
@@ -153,5 +204,71 @@ export function deleteSalesSupport(id) {
   return request({
     url: `/performance/salesSupport/${id}`,
     method: 'delete'
+  })
+}
+/**
+ * 查询业绩指标列表
+ */
+export function getPfList() {
+  return request({
+    url: '/performance/performanceIndicator/',
+    method: 'get'
+  })
+}
+/**
+ * 新增业绩指标
+ */
+export function addPfItem() {
+  return request({
+    url: '/performance/performanceIndicator/',
+    method: 'post'
+  })
+}
+/**
+ * 根据id查询业绩指标
+ * @param id
+ */
+export function editPfItem(id) {
+  return request({
+    url: `/performance/performanceIndicator/${id}`,
+    method: 'get'
+  })
+}
+/**
+ * 修改业绩指标
+ * @param id
+ */
+export function putPfItem(id) {
+  return request({
+    url: `/performance/performanceIndicator/${id}`,
+    method: 'put'
+  })
+}
+/**
+ * 删除业绩指标
+ * @param id
+ */
+export function delPfItem(id) {
+  return request({
+    url: `/performance/performanceIndicator/${id}`,
+    method: 'delete'
+  })
+}
+/**
+ * 业绩指标导入
+ */
+export function importPf() {
+  return request({
+    url: '/performance/performanceIndicator/import',
+    method: 'post'
+  })
+}
+/**
+ * 业绩指标导出
+ */
+export function exportPf() {
+  return request({
+    url: '/performance/performanceIndicator/import',
+    method: 'get'
   })
 }

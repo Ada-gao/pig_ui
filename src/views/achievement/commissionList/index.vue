@@ -72,42 +72,51 @@
 							border fit
               highlight-current-row 
 							style="width: 100%">
-      <el-table-column align="center" label="时间">
+			<el-table-column align="center" label="月份">
+				<template slot-scope="scope">
+        <span>{{scope.row.occurrenceDate}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="时间段">
+				<template slot-scope="scope">
+        <span>{{scope.row.timeSlot}}</span>
+        </template>
       </el-table-column>
 
 			<el-table-column align="center" label="区域总" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.regionalManager}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="区域副总" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.regionalViceManager}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="城市总" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.cityManager}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="城市副总" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.cityViceManager}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="团队经理" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.teamManager}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="区域" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.regional}}</span>
         </template>
       </el-table-column>
 
@@ -119,37 +128,37 @@
 
       <el-table-column align="center" label="职位" class-name="toggle">
         <template slot-scope="scope">
-          <span>{{scope.row.positionId}}</span>
+          <span>{{scope.row.positionName}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="职级" class-name="toggle">
         <template slot-scope="scope">
-          <span>{{scope.row.positionId}}</span>
+          <span>{{scope.row.rankName}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="姓名" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.empNo}}</span>
+        <span>{{scope.row.userName}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="工号" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.empNo}}</span>
+        <span>{{scope.row.userCode}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="本期应发佣金(元)" show-overflow-tooltip width="130">
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.commission}}</span>
         </template>
       </el-table-column>
 
 			<el-table-column align="center" label="本期实发佣金(元)" show-overflow-tooltip width="130">
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.finalCommission}}</span>
         </template>
       </el-table-column>
 
@@ -164,10 +173,8 @@
   </div>
 </template>
 <script>
-import { fetchDeptTree } from '@/api/role'
-import { fetchList } from '@/api/user'
 import { mapGetters } from 'vuex'
-import { getAllPositon } from '@/api/queryConditions'
+import { getAllPositon, getAllDeparts, getCommissionList } from '@/api/achievement/index'
 import { parseTime, transformText } from '@/utils'
 export default {
 	data () {
@@ -208,8 +215,6 @@ export default {
 	methods: {
 		getList() {
 			this.listLoading = true
-			this.listQuery.orderByField = '`user`.create_time'
-			this.listQuery.isAsc = false
 			// if(this.entryDate.length > 0) {
 			// 	this.listQuery.startTime = parseTime(this.entryDate[0], '{y}-{m}-{d}')
 			// 	this.listQuery.endTime = parseTime(this.entryDate[1], '{y}-{m}-{d}')
@@ -217,11 +222,11 @@ export default {
 			// 	this.listQuery.startTime = ''
 			// 	this.listQuery.endTime = ''
 			// }
-			fetchDeptTree()
+			getAllDeparts()
 				.then(response => {
 					this.treeDeptData = response.data
 			}),
-			fetchList(this.listQuery).then(response => {
+			getCommissionList(this.listQuery).then(response => {
 				this.list = response.data.records
 				this.total = response.data.total
 				this.listLoading = false
@@ -253,15 +258,17 @@ export default {
 				limit: 20,
 				username: '',
 				positionId: '',
-				status: '',
-        deptId: '',
+				// status: '',
+				deptId: [],
+				entryDateE: '',
+				entryDateS: ''
 			},
-			this.deptId = []
-			this.entryDateS = ''
-			this.entryDateE = ''		
+			this.deptId = []	
 			this.handleFilter()
 		},
-		handleImport() {},
+		handleImport() {
+			this.$router.push({ path: '/achievement/importListExcel' })
+		},
 		handleExport() {},
 		handleSizeChange(val) {
 			this.listQuery.limit = val

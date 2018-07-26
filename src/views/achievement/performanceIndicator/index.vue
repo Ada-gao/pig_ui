@@ -7,7 +7,7 @@
             <el-form-item label="部门">
               <el-select class="filter-item"
                          placeholder="请选择部门"
-                         v-model="listQuery.positionsId">
+                         v-model="listQuery.deptId">
                 <el-option v-for="item in departs"
                            :value="item.id"
                            :label="item.name"
@@ -21,7 +21,8 @@
             <el-form-item label="职位">
               <el-select class="filter-item"
                          placeholder="请选择职位"
-                         v-model="listQuery.positionsId">
+                         @change="handlePosition"
+                         v-model="listQuery.positionId">
                 <el-option v-for="item in positions"
                            :value="item.positionId"
                            :label="item.positionName"
@@ -35,7 +36,7 @@
             <el-form-item label="职级">
               <el-select class="filter-item"
                          placeholder="请选择职级"
-                         v-model="listQuery.positionsId">
+                         v-model="listQuery.rankId">
                 <el-option v-for="item in level"
                            :value="item.positionId"
                            :label="item.positionName"
@@ -78,7 +79,7 @@
               v-loading="listLoading">
       <el-table-column align="center" label="周期">
         <template slot-scope="scope">
-          <span>{{scope.row.username}}</span>
+          <span>{{scope.row.start}}—{{scope.row.end}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="部门">
@@ -93,7 +94,7 @@
       </el-table-column>
       <el-table-column align="center" label="职级">
         <template slot-scope="scope">
-          <span>{{scope.row.roleList[0].roleDesc}}</span>
+          <span>{{scope.row.rankName}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center"
@@ -101,7 +102,7 @@
                        :render-header="tableHeader">
         <template slot-scope="scope">
           <span>
-            {{scope.row.roleList[0].roleDesc}}
+            {{scope.row.performanceIndicator}}
           </span>
         </template>
       </el-table-column>
@@ -220,15 +221,14 @@
         <el-button class="add_btn" v-else @click="update('form')">修 改</el-button>
       </div>
     </el-dialog>
-    <!--<el-dialog :title="textMap[dialogStatus]"-->
-               <!--:visible.sync="dialogEdit"></el-dialog>-->
   </div>
 </template>
 <script>
+  import { parseTime, transformText } from '@/utils'
   import {
-    getPerformList,
+    getPfList,
     getAllPositon,
-    // getAllRank,
+    getAllRank,
     getAllDeparts
   } from '@/api/achievement'
   export default {
@@ -296,10 +296,15 @@
       },
       getList() {
         this.listLoading = true
-        getPerformList(this.listQuery).then(res => {
+        getPfList(this.listQuery).then(res => {
           this.list = res.data.records
-          this.total = res.data.total
+          this.total = res.data.total || 0
           this.listLoading = false
+          this.list.map((item, index) => {
+            item.start = parseTime(item.start, '{y}-{m}-{d}')
+            item.end = parseTime(item.end, '{y}-{m}-{d}')
+            // item.deptN
+          })
         })
       },
       getDeparts() { // 获取部门列表
@@ -312,15 +317,23 @@
           this.positions = res.data
         })
       },
-      getLevels() { // 获取职级列表
-        getAllPositon().then(res => {
-          this.level = res.data
-        })
+      // getLevels(id) { // 获取职级列表
+      //   getAllRank({ positionId: id }).then(res => {
+      //     this.level = res.data
+      //   })
+      // },
+      handlePosition(val) {
+        if (val) {
+          getAllRank({ positionId: val }).then(res => {
+            this.level = res.data
+            this.listQuery.rankId = null
+          })
+        }
       },
       getAllSearch() {
         this.getDeparts()
         this.getPosition()
-        this.getLevels()
+        // this.getLevels()
       },
       handleFilter() { // search
         this.listQuery.page = 1
@@ -330,7 +343,9 @@
         this.listQuery = {
           page: 1,
           limit: 20,
-          positionId: ''
+          positionId: undefined,
+          rankId: undefined,
+          deptId: undefined
         }
         this.handleFilter()
       },

@@ -31,7 +31,9 @@
              class="common_btn"
              @click="handleUpdate(scope.row)">编辑
           </a>
-          <a v-if="sys_prd_type_upd && scope.row.month >= list.length"
+          <a v-if="sys_prd_type_upd &&
+                   list.length > 1 &&
+                   scope.row.month >= list.length"
              size="small"
              class="danger_btn"
              @click="deletes(scope.row)">删除
@@ -77,7 +79,12 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { getPbtList, editPbtItem, postPbtItem, delPbtItem } from '@/api/achievement'
+  import {
+    getPbtList,
+    editPbtItem,
+    postPbtItem,
+    delPbtItem
+  } from '@/api/achievement'
 
   export default {
     name: 'table_user',
@@ -111,20 +118,6 @@
       ...mapGetters([
         'permissions'
       ])
-      // dialogLabel() {
-      //   let str = ''
-      //   if (this.dialogStatus === 'update') {
-      //     str = `试用期标准第${this.list.length}个月（%）`
-      //   } else if (this.dialogStatus === 'create') {
-      //     str = `试用期标准第${this.list.length + 1}个月（%）`
-      //   }
-      //   return str
-      // }
-    },
-    watch: {
-      'dialogLabel': function(n, o) {
-        console.log(n)
-      }
     },
     created() {
       this.getList()
@@ -170,11 +163,6 @@
             this.form.month = this.dialogLabel = res.data.month
           }
         })
-        // postPbtItem(this.form).then(res => {
-        //   if (res.status === 200) {
-        //     console.log('success')
-        //   }
-        // })
       },
       create(formName) {
         const set = this.$refs
@@ -202,7 +190,6 @@
         this.$refs[formName].resetFields()
       },
       update(formName) {
-        console.log(this.form)
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
