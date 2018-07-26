@@ -285,3 +285,16 @@ export function sortKey(arr, key) {
     return ((x<y)? -1 : (x>y)? 1: 0)
   })
 }
+/**
+ * 上传文件中文转英文
+ * @param target
+ * @param change
+ * @returns {*}
+ */
+export function replaceKey (target, change) {
+  for (let key in target) {
+    target[change[key]] = target[key]
+    delete target[key]
+  }
+  return target
+}

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <upload-excel-component @on-selected-file='selected'></upload-excel-component>
+    <upload-excel-component @on-selected-file='selected' :downloadUrl="downloadUrl"></upload-excel-component>
     <el-button class="add_btn" v-if="tableHeader.length" size="small" style="float: right" @click="submit">确认导入</el-button>
     <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
       <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item'>
@@ -25,6 +25,7 @@ export default {
   components: { UploadExcelComponent },
   data() {
     return {
+      downloadUrl: 'http://10.9.60.142:8888/group1/M00/00/0A/Cgk8jlsV8_yAd5EUAAAssi76hjc78.xlsx',
       tableData: [],
       tableHeader: [],
       formData: null,
