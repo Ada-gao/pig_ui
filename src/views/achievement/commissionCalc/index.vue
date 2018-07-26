@@ -58,9 +58,11 @@
         </el-form-item>
 
       </el-form>
-      <my-transfer v-model="value1" :data="data"
+      <my-transfer v-model="value1"
+        :data="data"
         :render-content="renderFunc"
         :titles="['系统字段', '已选字段']"
+        @change="targetChange"
         @updata="updateData"></my-transfer>
       <div slot="footer" class="dialog-footer">
         <el-button class="search_btn" @click="cancel('form')">取 消</el-button>
@@ -80,6 +82,7 @@
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
+import data from '../../svg-icons/generateIconsView';
 
   export default {
     components: {
@@ -208,6 +211,8 @@
       },
       handleChange() { // 右侧列表值对应转换
         let temp = []
+        console.log('this.value1')
+        console.log(this.value1)
         this.value1.forEach((item, index) => {
           let i = this.data.find(it => it.fieldsKey === item)
           temp.push(i)
@@ -218,7 +223,7 @@
           this.form.fields = temp
         }
       },
-      handleUpdate(row) {
+      handleUpdate(row) { // 编辑：查询
         getObj(row.templateId)
           .then(response => {
             this.form = response.data
@@ -238,6 +243,15 @@
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
+            if(!this.form.fields.length) {
+              this.$notify({
+                title: '提示',
+                message: '请至少选择一个字段',
+                type: 'danger',
+                duration: 2000
+              })
+              return
+            }
             addObj(this.form)
               .then((res) => {
                 if(res.status === 200) {
@@ -265,6 +279,15 @@
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
+            if(!this.form.fields.length) {
+              this.$notify({
+                title: '提示',
+                message: '请至少选择一个字段',
+                type: 'failed',
+                duration: 2000
+              })
+              return
+            }
             this.dialogFormVisible = false
             putObj(this.form.templateId, this.form).then(() => {
               this.dialogFormVisible = false
@@ -305,8 +328,13 @@
         }
         this.value1 = []
       },
-      updateData(data) { // 将组件内部的变化值传送到外面
-        // this.data = data
+      targetChange(value) {
+        // this.value1 = value
+        console.log(value)
+      },
+      updateData(data) { // 将组件内部的变化值传送到外面(确保拖拽的顺序)
+        this.value1 = data
+
       }
     }
   }
