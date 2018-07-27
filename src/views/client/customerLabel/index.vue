@@ -22,7 +22,7 @@
       <el-table-column align="center" prop="labelDescription" label="标签解释" ></el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="editAum(scope.row.clientLabelId)">编辑</el-button>
+            <el-button type="text" @click="editAum(scope.row.clientLabelId,'newAddClient')">编辑</el-button>
             <span class="space_line"> | </span>
             <el-button type="text" class="red" @click="deletes(scope.row.clientLabelId)">删除</el-button>
           </template>
@@ -50,9 +50,9 @@
      <!-- 新增客户标签对话框 -->
     <el-dialog
       title="新增标签"
-      :visible.sync="newAdd">
+      :visible.sync="newAdd" :before-close="handleClose">
     
-        <el-form :model="newAddClient" ref="numberValidateForm" label-width="100px" class="demo-ruleForm">
+        <el-form :model="newAddClient" ref="newAddClient" label-width="100px" class="demo-ruleForm">
 
           <el-form-item  label="标签名称"  prop="labelName" :rules="[
             { required: true, message: '标签名称不能为空'},
@@ -65,38 +65,38 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="cancel">取 消</el-button>
-          <el-button type="primary" @click="clientDetermine">确 定</el-button>
+          <el-button @click="cancel('newAddClient')">取 消</el-button>
+          <el-button type="primary" @click="clientDetermine('newAddClient')">确 定</el-button>
         </span>
     </el-dialog>
     <!-- 新增aum对话框 -->
     <el-dialog
       title="新增客户标签"
-      :visible.sync="newAddAum">
+      :visible.sync="newAddAum" :before-close="handleClose">
     
-        <el-form :model="newAddParamet" :rules="rules" ref="numberValidateForm" label-width="100px" class="demo-ruleForm">
-          <el-form-item  label="签约金额" class="demo-block demo-box demo-zh-CN demo-form"> 
+        <el-form :model="newAddParamet" :rules="rules" ref="newAddParamet" label-width="100px" class="demo-ruleForm">
+          <el-form-item  label="签约金额" prop="lowLimit"  class="demo-block demo-box demo-zh-CN demo-form"> 
             <el-col :span="8">
               <el-form-item  prop="lowLimit" > 
                 <el-input v-model="newAddParamet.lowLimit" placeholder="请输入金额"></el-input>
               </el-form-item>
             </el-col>
-            <el-col class="line" :span="1">-</el-col>
+            <el-col class="line" :span="1" style="text-align: center;">-</el-col>
             <el-col :span="8">
                <el-form-item  prop="highLimit" > 
                 <el-input v-model.number="newAddParamet.highLimit" placeholder="请输入金额"  auto-complete="off" ></el-input>
               </el-form-item>
             </el-col>
-            <span>万</span>
+            <span class="ml10">万</span>
           
           </el-form-item>
           <el-form-item label="会员等级" prop="labelName">
-            <el-input  v-model="newAddParamet.labelName"  placeholder="请输入会员等级" style="width:63%;" auto-complete="off" ></el-input>
+            <el-input  v-model="newAddParamet.labelName"  placeholder="请输入会员等级" style="width:71%;" auto-complete="off" ></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="cancel">取 消</el-button>
-          <el-button type="primary" @click="aumDetermine">确 定</el-button>
+          <el-button @click="cancel('newAddParamet')">取 消</el-button>
+          <el-button type="primary" @click="aumDetermine('newAddParamet')">确 定</el-button>
         </span>
     </el-dialog>
 
@@ -115,18 +115,10 @@
 
 <script>
   import {getClientList,clientLabel,deleteClientLabel,seeClientLabel,editClientLabel,fetchList,clientAumLabel,editClientAumLabel,deleteClientAumLabel} from '@/api/client/customerLabel'
-  import { deptRoleList, fetchDeptTree } from '@/api/role'
-  import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime } from '@/utils'
-  import { getToken } from '@/utils/auth'
-  import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { isvalidMobile, isvalidID } from '@/utils/validate'
-  import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
-
   export default {
     components: {
       ElOption,
@@ -181,16 +173,7 @@
         id:'',
       }
     },
-    computed: {
-      ...mapGetters([
-        'certificationStatus',
-        'certificationType',
-        'permissions',
-        'genderType',
-        'idTypeOptions',
-        // 'delFlagOptions'
-      ])
-    },
+
     created() {
       this.list();
 
@@ -205,6 +188,10 @@
          
         })
       },
+      handleClose(done){
+       this.step == 1 ? this.$refs["newAddClient"].resetFields():this.$refs["newAddParamet"].resetFields();
+        done();
+      },
       changeStep(){
         this.step == 1? this.list():this.getAumList();
       },
@@ -215,43 +202,71 @@
       },
      
       // 取消 关闭对话框
-      cancel(){
+      cancel(formName){
+        this.$refs[formName].resetFields();
         this.newAddAum = false;
         this.newAdd = false;
         this.newAddParamet = {};
         this.newAddClient = {};
       },
       // 新增 确定 客户标签
-      clientDetermine(){
+      clientDetermine(formName){
+        let self = false;
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            console.log(valid)
+          } else {
+            self = true;
+            console.log('error submit!!');
+            return false;
+          }
+        });
+        if(self) return false;
         let method;
-        if( this.selfEdit){
 
+        if(this.selfEdit){
           this.newAddClient.clientLabelId = this.id;
-          method = 'put'
+          editClientLabel(this.newAddClient,this.id).then(response =>{
+             this.changeLabel(response);
+          
+        })
         }else{
-          method = 'post'
+          clientLabel(this.newAddClient).then(response =>{
+              this.changeLabel(response);
+          })
         }
-        console.log(this.newAddClient)
-        clientLabel(this.newAddClient,method).then(response =>{
-          if(response.status === 200) {
+      },
+      changeLabel(response){
+
+         if(response.status === 200) {
             this.list();
             this.$notify({
                 title: '成功',
-                message: '新增成功',
+                message: '修改成功',
                 type: 'success',
                 duration: 2000
               })
             this.newAddParamet = {};
             this.newAdd = false;
+             this.selfEdit = false;
           }
-          
-        })
       },
       // 新增 确定 aum
-      aumDetermine(){
+      aumDetermine(formName){
+        let self = false;
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+           console.log(valid)
+          } else {
+            self = true;
+            console.log('error submit!!');
+            return false;
+          }
+        });
+        if(self) return false;
         clientAumLabel(this.newAddParamet).then(response =>{
           if(response.status === 200) {
-            this.getList()
+            this.getAumList()
             this.$notify({
                 title: '成功',
                 message: '新增成功',
@@ -277,6 +292,7 @@
           editClientAumLabel(id).then(response=>{
             this.newAddAum = true;
            this.newAddParamet =response.data;
+            this.selfEdit = false;
           })
         }
      
@@ -302,54 +318,7 @@
         })
       },
 
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
-      },
-    
-
-
-
-      handleClick(tab, event) {
-        this.getList()
-      },
-      // handlePosition() {
-      //   getAllPositon().then(res => {
-      //     this.positionsOptions = res.data
-      //   })
-      // },
-      handleDept() {
-        fetchDeptTree()
-          .then(response => {
-            this.treeDeptData = response.data
-            this.dialogDeptVisible = true
-          })
-      },
-      resetTemp() {
-        this.form = {
-          id: undefined,
-          username: '',
-          password: '',
-          role: undefined
-        }
-      },
-      // beforeRemove(file, fileList) {
-      //   return this.$confirm(`确定移除 ${ file.name }？`);
-      // },
-      handleChange1(file, fileList) { // 上传材料，列表展示
-        // this.fileList1 = fileList.slice(-3)
-        // debugger
-        this.getList()
-      },
+    //删除弹出框
       deletes(id) {
         this.deletesTitle = '确定要删除吗'
         this.dialogVisible = true
@@ -365,9 +334,9 @@
             }
           })
         }else{
-           deleteClientLabel(this.id).then(response => {
+           deleteClientAumLabel(this.id).then(response => {
             if(response.status === 200) {
-              this.getList()
+              this.getAumList()
               this.successDeletes();
             }
           })
@@ -399,6 +368,9 @@
 }
 .mr10{
   margin-right:10px;
+}
+.ml10{
+  margin-left:10px;
 }
 .remarks{
   font-size:18px;

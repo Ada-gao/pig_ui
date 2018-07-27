@@ -18,7 +18,7 @@ export function clientLabel(obj,method) {
 	console.log(obj)
   return request({
     url: '/client/clientLabel/',
-    method,
+    method:'post',
     data: obj
   })
 }
@@ -45,9 +45,9 @@ export function seeClientLabel(id) {
 /**
  * 修改客户标签
  */
-export function editClientLabel(obj) {
+export function editClientLabel(obj,id) {
   return request({
-    url: '/client/clientLabel/',
+    url: '/client/clientLabel/'+id,
     method: 'put',
     data: obj
   })
