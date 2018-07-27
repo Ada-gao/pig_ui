@@ -209,10 +209,14 @@ export function getPfList(params) {
 /**
  * 新增业绩指标
  */
-export function addPfItem() {
+export function addPfItem(obj) {
   return request({
     url: '/performance/performanceIndicator/',
-    method: 'post'
+    method: 'post',
+    data: obj,
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }
 /**
