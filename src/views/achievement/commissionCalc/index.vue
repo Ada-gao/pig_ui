@@ -28,7 +28,7 @@
       <el-table-column align="center" label="操作" width="150">
         <template slot-scope="scope">
           <a v-if="template_export" size="small" class="common_btn"
-                     @click="handleUpdate(scope.row)">导出
+                     @click="handleExport(scope.row)">导出
           </a>
           <span class="space_line"> | </span>
           <a v-if="template_upd" size="small" class="common_btn"
@@ -58,9 +58,11 @@
         </el-form-item>
 
       </el-form>
-      <my-transfer v-model="value1" :data="data"
+      <my-transfer v-model="value1"
+        :data="data"
         :render-content="renderFunc"
         :titles="['系统字段', '已选字段']"
+        @change="targetChange"
         @updata="updateData"></my-transfer>
       <div slot="footer" class="dialog-footer">
         <el-button class="search_btn" @click="cancel('form')">取 消</el-button>
@@ -69,39 +71,50 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="导出模板" :visible.sync="dialogTempVisible">
+      <el-form :model="form1" ref="form1" label-width="100px">
+
+        <el-form-item label="时间" prop="templateName">
+          <el-date-picker
+            v-model="form1.date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker>
+        </el-form-item>
+
+        <el-form-item label="模版名称" prop="templateName">
+          <span>{{form1.templateName}}</span>
+        </el-form-item>
+      </el-form>
+      
+      <div slot="footer" class="dialog-footer">
+        <el-button class="search_btn" @click="dialogTempVisible=false">取 消</el-button>
+        <el-button class="add_btn" @click="handleExportTemp()">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
   import MyTransfer from '@/components/MyTransfer'
-  import { fetchList, addObj, putObj, getObj, getFeildsList, delObj } from '@/api/achievement/commission'
+  import { fetchList, addObj, putObj, getObj, getFeildsList, delObj, exportTemplate } from '@/api/achievement/commission'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  // import { parseTime } from '@/utils'
+  import { parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
-  import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
-  import ElOption from "element-ui/packages/select/src/option"
+
 
   export default {
     components: {
-      ElOption,
-      ElRadioGroup,
-      MyTransfer },
+      MyTransfer 
+    },
     name: 'table_user',
     directives: {
       waves
     },
     data() {
-      // const generateData = _ => {
-      //   const data = [];
-      //   for (let i = 1; i <= 15; i++) {
-      //     data.push({
-      //       key: i,
-      //       label: `备选项 ${ i }`
-      //       // disabled: i % 4 === 0
-      //     });
-      //   }
-      //   return data
-      // }
       return {
         list: null,
         total: null,
@@ -116,9 +129,10 @@
           fields: [],
           fieldsName: ''
         },
+        form1: {},
         statusOptions: ['0', '1'],
         dialogFormVisible: false,
-        dialogDeptVisible: false,
+        dialogTempVisible: false,
         userAdd: false,
         userUpd: false,
         userDel: false,
@@ -169,13 +183,6 @@
           this.listLoading = false
         })
       },
-      handleDept() {
-        fetchDeptTree()
-          .then(response => {
-            this.treeDeptData = response.data
-            this.dialogDeptVisible = true
-          })
-      },
       handleFilter() {
         this.listQuery.page = 1
         this.getList()
@@ -193,16 +200,6 @@
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
         getFeildsList().then(res => {
-          // let keyList = {
-          //   fieldsKey: 'key',
-          //   fieldsName: 'label'
-          // }
-          // res.data.forEach((item, index) => {
-          //   for (let key in item) {
-          //     item[keyList[key]] = item[key]
-          //     delete item[key]
-          //   }
-          // })
           this.data = res.data
         })
       },
@@ -218,7 +215,7 @@
           this.form.fields = temp
         }
       },
-      handleUpdate(row) {
+      handleUpdate(row) { // 编辑：查询
         getObj(row.templateId)
           .then(response => {
             this.form = response.data
@@ -233,11 +230,43 @@
             })
           })
       },
+      handleExport(row) {
+        this.dialogTempVisible = true
+        this.form1 = row
+
+      },
+      handleExportTemp() { // 确认导出文件
+        let params = {
+          date: this.form1.date
+        }
+        if(params.date) {
+          params.date[0] = parseTime(params.date[0], '{y}-{m}-{d}')
+          params.date[1] = parseTime(params.date[1], '{y}-{m}-{d}')
+        }
+        exportTemplate(this.form1.templateId, params, {
+          responseType: 'arraybuffer'
+        }).then(res => {
+          let blob = new Blob([res.data], {type: "application/octet-stream"})
+          let objectUrl = URL.createObjectURL(blob)
+          window.location.href = objectUrl
+          this.dialogTempVisible = false
+          // Vue.prototype.api.apiList.EXPORT_BILL
+        })
+      },
       create(formName) {
         this.handleChange()
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
+            if(!this.form.fields.length) {
+              this.$notify({
+                title: '提示',
+                message: '请至少选择一个字段',
+                type: 'danger',
+                duration: 2000
+              })
+              return
+            }
             addObj(this.form)
               .then((res) => {
                 if(res.status === 200) {
@@ -265,6 +294,15 @@
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
+            if(!this.form.fields.length) {
+              this.$notify({
+                title: '提示',
+                message: '请至少选择一个字段',
+                type: 'failed',
+                duration: 2000
+              })
+              return
+            }
             this.dialogFormVisible = false
             putObj(this.form.templateId, this.form).then(() => {
               this.dialogFormVisible = false
@@ -305,8 +343,12 @@
         }
         this.value1 = []
       },
-      updateData(data) { // 将组件内部的变化值传送到外面
-        // this.data = data
+      targetChange(value) {
+        console.log(value)
+      },
+      updateData(data) { // 将组件内部的变化值传送到外面(确保拖拽的顺序)
+        this.value1 = data
+
       }
     }
   }

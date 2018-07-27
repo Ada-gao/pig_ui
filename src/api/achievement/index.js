@@ -3,17 +3,6 @@
  */
 import request from '@/utils/request'
 /**
- * 获取业绩指标列表
- * @param query
- */
-export function getPerformList(query) {
-  return request({
-    url: '/admin/user/userPage',
-    method: 'get',
-    params: query
-  })
-}
-/**
  * 获取全部职位
  */
 export function getAllPositon() {
@@ -101,7 +90,8 @@ export function getCommissionList(query) {
   })
 }
 
-/** 
+/**
+/**
  * 佣金列表导出
 */
 export function commissionListExport(query) {
@@ -113,7 +103,7 @@ export function commissionListExport(query) {
   })
 }
 
-/** 
+/**
  * 佣金列表导入
 */
 export function commissionListImport(file) {
@@ -190,13 +180,25 @@ export function getSalesSupport(id) {
   })
 }
 /**
+ * 添加销售支持
+ * @param
+ */
+export function addSalesSupport(param) {
+  return request({
+    url: `/performance/salesSupport`,
+    method: 'post',
+    data: param
+  })
+}
+/**
  * 修改销售支持
  * @param
  */
-export function updateSalesSupport(id) {
+export function updateSalesSupport(param) {
   return request({
-    url: `/performance/salesSupport/${id}`,
-    method: 'put'
+    url: `/performance/salesSupport`,
+    method: 'post',
+    data: param
   })
 }
 /**
@@ -212,10 +214,11 @@ export function deleteSalesSupport(id) {
 /**
  * 查询业绩指标列表
  */
-export function getPfList() {
+export function getPfList(params) {
   return request({
     url: '/performance/performanceIndicator/',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 /**

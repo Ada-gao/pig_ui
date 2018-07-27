@@ -257,7 +257,6 @@
       onDrop(dropResult) {
         this.filteredData = applyDrag(this.filteredData, dropResult)
         // this.data = this.filteredData
-        console.log(this.filteredData)
         this.$emit('emit-filtered', this.filteredData)
       },
 
