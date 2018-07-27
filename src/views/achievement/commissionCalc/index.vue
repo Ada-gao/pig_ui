@@ -243,15 +243,18 @@
           params.date[0] = parseTime(params.date[0], '{y}-{m}-{d}')
           params.date[1] = parseTime(params.date[1], '{y}-{m}-{d}')
         }
-        exportTemplate(this.form1.templateId, params, {
-          responseType: 'arraybuffer'
-        }).then(res => {
-          let blob = new Blob([res.data], {type: "application/octet-stream"})
-          let objectUrl = URL.createObjectURL(blob)
-          window.location.href = objectUrl
+        exportTemplate(this.form1.templateId, params).then(res => {
+          let fileName = res.headers['content-disposition'].split('=')[1]
+          let objectUrl = URL.createObjectURL(new Blob([res.data]))
+          this.forceDownload(objectUrl, fileName)
           this.dialogTempVisible = false
-          // Vue.prototype.api.apiList.EXPORT_BILL
         })
+      },
+      forceDownload(blob, filename) {
+        const a = document.createElement('a')
+        a.download = filename
+        a.href = blob
+        a.click()
       },
       create(formName) {
         this.handleChange()

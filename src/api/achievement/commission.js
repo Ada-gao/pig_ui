@@ -70,6 +70,7 @@ export function exportTemplate(templateId, query) {
   return request({
     url: '/performance/template/export/' + templateId,
     method: 'get',
-    params: query
+    params: query,
+    responseType: 'blob'
   })
 }
