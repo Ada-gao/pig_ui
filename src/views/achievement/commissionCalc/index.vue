@@ -28,7 +28,7 @@
       <el-table-column align="center" label="操作" width="150">
         <template slot-scope="scope">
           <a v-if="template_export" size="small" class="common_btn"
-                     @click="handleUpdate(scope.row)">导出
+                     @click="handleExport(scope.row)">导出
           </a>
           <span class="space_line"> | </span>
           <a v-if="template_upd" size="small" class="common_btn"
@@ -71,12 +71,36 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="导出模板" :visible.sync="dialogTempVisible">
+      <el-form :model="form1" ref="form1" label-width="100px">
+
+        <el-form-item label="时间" prop="templateName">
+          <el-date-picker
+            v-model="form1.date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker>
+        </el-form-item>
+
+        <el-form-item label="模版名称" prop="templateName">
+          <span>{{form1.templateName}}</span>
+        </el-form-item>
+      </el-form>
+      
+      <div slot="footer" class="dialog-footer">
+        <el-button class="search_btn" @click="dialogTempVisible=false">取 消</el-button>
+        <el-button class="add_btn" @click="handleExportTemp()">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
   import MyTransfer from '@/components/MyTransfer'
-  import { fetchList, addObj, putObj, getObj, getFeildsList, delObj } from '@/api/achievement/commission'
+  import { fetchList, addObj, putObj, getObj, getFeildsList, delObj, exportTemplate } from '@/api/achievement/commission'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
@@ -119,9 +143,10 @@ import data from '../../svg-icons/generateIconsView';
           fields: [],
           fieldsName: ''
         },
+        form1: {},
         statusOptions: ['0', '1'],
         dialogFormVisible: false,
-        dialogDeptVisible: false,
+        dialogTempVisible: false,
         userAdd: false,
         userUpd: false,
         userDel: false,
@@ -171,13 +196,6 @@ import data from '../../svg-icons/generateIconsView';
           this.total = response.data.total
           this.listLoading = false
         })
-      },
-      handleDept() {
-        fetchDeptTree()
-          .then(response => {
-            this.treeDeptData = response.data
-            this.dialogDeptVisible = true
-          })
       },
       handleFilter() {
         this.listQuery.page = 1
@@ -237,6 +255,19 @@ import data from '../../svg-icons/generateIconsView';
               this.dialogFormVisible = true
             })
           })
+      },
+      handleExport(row) {
+        this.dialogTempVisible = true
+        this.form1 = row
+
+      },
+      handleExportTemp() {
+        let params = {
+          date: this.form1.date
+        }
+        exportTemplate(this.form1.templateId, params).then(res => {
+          this.dialogTempVisible = false
+        })
       },
       create(formName) {
         this.handleChange()
