@@ -77,6 +77,18 @@ export function getCommissionList(query) {
 }
 
 /**
+/**
+ * 佣金列表导出
+*/
+export function commissionListExport(query) {
+  return request({
+    url: '/performance/commissions/export',
+    method: 'get',
+    params: query
+  })
+}
+
+/**
  * 佣金列表导入
 */
 export function commissionListImport(file) {
@@ -153,13 +165,25 @@ export function getSalesSupport(id) {
   })
 }
 /**
+ * 添加销售支持
+ * @param
+ */
+export function addSalesSupport(param) {
+  return request({
+    url: `/performance/salesSupport`,
+    method: 'post',
+    data: param
+  })
+}
+/**
  * 修改销售支持
  * @param
  */
-export function updateSalesSupport(id) {
+export function updateSalesSupport(param) {
   return request({
-    url: `/performance/salesSupport/${id}`,
-    method: 'put'
+    url: `/performance/salesSupport`,
+    method: 'post',
+    data: param
   })
 }
 /**

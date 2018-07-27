@@ -123,7 +123,9 @@
     data() {
       return {
         leftChecked: [],
-        rightChecked: []
+        rightChecked: [],
+        arr: [],
+
       }
     },
 
@@ -136,21 +138,25 @@
           return this.data.filter(item => this.value.indexOf(item[this.props.key]) === -1)
         },
         set: function(newData) {
-          // this.data = newData
+          return this.data.filter(item => this.value.indexOf(item[this.props.key]) === -1)
           console.log(newData)
         }
       },
 
-      targetData() {
+      targetData: {
         // return this.data.filter(item => this.value.indexOf(item[this.props.key]) > -1)
 
-        // 按选择顺序排列
-        let tmp = []
-        this.value.forEach(item => {
-          let i = this.data.find(it => it[this.props.key] === item)
-          tmp.push(i)
-        })
-        return tmp
+        get: function() {
+          let tmp = []
+          this.value.forEach(item => {
+            let i = this.data.find(it => it[this.props.key] === item) || item
+            tmp.push(i)
+          })
+          return tmp
+        },
+        set: function(newData) {
+          return newData
+        }
       },
 
       hasButtonTexts() {
@@ -160,6 +166,7 @@
 
     watch: {
       value(val) {
+        console.log(val)
         this.dispatch('ElFormItem', 'el.form.change', val)
       }
     },
@@ -175,37 +182,32 @@
 
       onSourceCheckedChange(val) {
         this.leftChecked = val
-        console.log('左边')
-        console.log(val)
       },
 
       onTargetCheckedChange(val) {
         this.rightChecked = val
-        console.log('右边')
-        console.log(val)
       },
 
       addToLeft() {
-        console.log(this.value)
         let currentValue = []
         this.value.slice().forEach(item => {
-          // console.log(item)
           currentValue.push(item[this.props.key] || item)
         })
         this.rightChecked.forEach(item => {
           const index = currentValue.indexOf(item)
-          console.log(index)
           if (index > -1) {
             currentValue.splice(index, 1)
           }
         })
-        console.log(currentValue)
         this.$emit('input', currentValue)
         this.$emit('change', currentValue, 'left', this.rightChecked)
       },
 
       addToRight() {
-        let currentValue = this.value.slice()
+        let currentValue = []
+        this.value.slice().forEach(item => {
+          currentValue.push(item[this.props.key] || item)
+        })
         this.leftChecked.forEach(item => {
           if (this.value.indexOf(item) === -1) {
             currentValue = currentValue.concat(item)
@@ -216,16 +218,17 @@
       },
 
       getDragData(data) {
-        let arr = []
-        data.forEach(item => {
-          arr.push(item.fieldsKey)
-        })
-        let list = this.data.filter(item => {
-          return arr.indexOf(item[this.props.key]) === -1
-        })
-        this.$emit('updata', list)
-        this.$emit('input', data)
-        this.$emit('change', data, 'right', this.leftChecked)
+        this.targetData = data
+        // let arr = []
+        // data.forEach(item => {
+        //   arr.push(item.fieldsKey)
+        // })
+        // let list = this.data.filter(item => {
+        //   return arr.indexOf(item[this.props.key]) === -1
+        // })
+        this.$emit('updata', data)
+        // this.$emit('input', data)
+        // this.$emit('change', data, 'right', this.leftChecked)
       }
     }
   }
