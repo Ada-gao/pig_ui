@@ -49,6 +49,9 @@
     </div>
 
     <div v-if="sales_support_add"  style="text-align: right;">
+      <el-button class="add_btn" @click="handleImport">
+        <svg-icon icon-class="upload"></svg-icon>批量导入
+      </el-button>
       <el-button class="add_btn" @click="handleCreate">
         <svg-icon icon-class="add"></svg-icon>新增销售支持
       </el-button>
@@ -431,7 +434,9 @@
           userName: null
         }
       },
-      handleImport() {},
+      handleImport() {
+        this.$router.push({ path: '/achievement/importSaleSupportExcel' })
+      },
       handleExport() {},
       handleUpdate(row, state) {
         this.resetTemp()

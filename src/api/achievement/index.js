@@ -172,6 +172,20 @@ export function delPbtItem(id) {
 }
 
 /**
+ * 销售支持导入
+*/
+export function salesSupportListImport(file) {
+  return request({
+    url: '/performance/salesSupport/import',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: file
+  })
+}
+
+/**
  * 查询产品信息(带分页查询)
  * @param
  */
