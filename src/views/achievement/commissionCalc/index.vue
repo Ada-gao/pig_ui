@@ -74,7 +74,12 @@
     <el-dialog title="导出模板" :visible.sync="dialogTempVisible">
       <el-form :model="form1" ref="form1" label-width="100px">
 
-        <el-form-item label="时间" prop="templateName">
+        <el-form-item
+          label="时间"
+          prop="date"
+          :rules="{
+            required: true, message: '请选择时间', trigger: 'blur'
+          }">
           <el-date-picker
             v-model="form1.date"
             type="daterange"
@@ -84,7 +89,7 @@
           </el-date-picker>
         </el-form-item>
 
-        <el-form-item label="模版名称" prop="templateName">
+        <el-form-item label="模版名称">
           <span>{{form1.templateName}}</span>
         </el-form-item>
       </el-form>
@@ -233,25 +238,31 @@
       handleExport(row) {
         this.dialogTempVisible = true
         this.form1 = row
-
       },
       handleExportTemp() { // 确认导出文件
-        let params = {
-          date: this.form1.date
-        }
-        if(params.date) {
-          params.date[0] = parseTime(params.date[0], '{y}-{m}-{d}')
-          params.date[1] = parseTime(params.date[1], '{y}-{m}-{d}')
-        }
-        exportTemplate(this.form1.templateId, params, {
-          responseType: 'arraybuffer'
-        }).then(res => {
-          let blob = new Blob([res.data], {type: "application/octet-stream"})
-          let objectUrl = URL.createObjectURL(blob)
-          window.location.href = objectUrl
-          this.dialogTempVisible = false
-          // Vue.prototype.api.apiList.EXPORT_BILL
+        this.$refs.form1.validate(valid => {
+          if(valid) {
+            const date = this.form1.date
+            date[0] = parseTime(date[0], '{y}-{m}-{d}')
+            date[1] = parseTime(date[1], '{y}-{m}-{d}')
+            exportTemplate(this.form1.templateId, {
+              date: date
+            }).then(res => {
+              let fileName = res.headers['content-disposition'].split('=')[1]
+              let objectUrl = URL.createObjectURL(new Blob([res.data]))
+              this.forceDownload(objectUrl, fileName)
+              this.dialogTempVisible = false
+            })
+          } else {
+            return false
+          }
         })
+      },
+      forceDownload(blob, filename) {
+        const a = document.createElement('a')
+        a.download = filename
+        a.href = blob
+        a.click()
       },
       create(formName) {
         this.handleChange()
