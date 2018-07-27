@@ -64,6 +64,20 @@ export function editBalanced(obj) {
   })
 }
 
+/** 
+ *平衡计分卡导出
+*/
+export function balancedListImport(file) {
+  return request({
+    url: '/performance/balancedScoreCard/import',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: file
+  })
+}
+
 /**
  * 获取查询佣金列表
  * @param query
@@ -84,7 +98,8 @@ export function commissionListExport(query) {
   return request({
     url: '/performance/commissions/export',
     method: 'get',
-    params: query
+    params: query,
+    responseType:'text'
   })
 }
 
@@ -96,7 +111,7 @@ export function commissionListImport(file) {
     url: '/performance/commissions/import',
     method: 'post',
     headers: {
-      'Content-Type': 'multipart/form-data'
+      'Content-Type': 'application/json'
     },
     data: file
   })

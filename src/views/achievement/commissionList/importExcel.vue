@@ -32,6 +32,7 @@
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import { commissionListImport } from '@/api/achievement/index'
+  import { replaceKey } from '@/utils'
 
   export default {
     name: 'uploadExcel',
@@ -42,7 +43,8 @@
         tableHeader: [],
         formData: null,
         dialogVisible: false,
-        downloadUrl: 'static/excel/佣金列表模版.xlsx'
+        downloadUrl: 'static/excel/佣金列表模版.xlsx',
+        formContent: []
       }
     },
     methods: {
@@ -52,26 +54,54 @@
         }
       },
       selected(data) {
-        console.log(data)
-        this.tableHeader = data.header
-        this.tableData = data.results
+        // this.tableHeader = data.header
+        const temp = Object.assign({}, data)
+        this.tableHeader = temp.header
+        this.tableData = temp.results
+        this.formData = JSON.parse(JSON.stringify(this.tableData))
+        // this.tableData = Object.assign([], data.results)
         // console.log(this.tableHeader)
         // console.log(this.tableData)
         // this.formData = data.formData
-        this.formData = data.results[0]
-        console.log(this.formData)
+        // this.formData = Object.assign([], data.results)
+        // this.formContent = this.formData
+        let kepMap = {
+          '公司': "company",
+          '区域': "regional",
+          '区域副总': "regionalViceManager",
+          '区域总': "regionalManager",
+          '团队经理': "teamManager",
+          '城市副总': "cityViceManager",
+          '城市总': "cityManager",
+          '姓名': "userName",
+          '工号': "userCode",
+          '月份': "occurrenceDate",
+          '本期实发佣金（元）': "finalCommission",
+          '本期应发佣金（元）': "commission",
+          '职位': "positionName",
+          '职级': "rankName",
+          '订单段': "timeSlot",
+          '部门': "deptName"
+        }
+        this.formData.forEach( item => {
+          replaceKey(item, kepMap)
+          item.commission = parseInt(item.commission)
+          item.finalCommission = parseInt(item.finalCommission)
+          item.occurrenceDate = new Date(item.occurrenceDate).getTime()
+        })
       },
       submit() {
-        const config = {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-        commissionListImport(this.formData, config).then(res => {
+        // const config = {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // }
+        commissionListImport(this.formData).then(res => {
           if (!res) {
             console.log('上传失败')
           } else {
             console.log('上传成功')
+            this.dialogVisible = false
           }
         })
       }

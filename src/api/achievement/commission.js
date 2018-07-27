@@ -62,3 +62,14 @@ export function delObj(templateId) {
     method: 'delete'
   })
 }
+
+/**
+ * 导出模版
+ */
+export function exportTemplate(templateId, query) {
+  return request({
+    url: '/performance/template/export/' + templateId,
+    method: 'get',
+    params: query
+  })
+}

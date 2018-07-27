@@ -17,6 +17,7 @@
                 start-placeholder="选择时间"
                 end-placeholder="选择时间">
               </el-date-picker>
+							<span class="error" v-if="errorTip">{{errorMes}}</span>							
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
@@ -27,14 +28,14 @@
 								:props="defaultProps"
 								:show-all-levels="false"
 								change-on-select
-								v-model="deptId"
+								v-model="deptName"
 							></el-cascader>
 						</el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="职位">
-              <el-select style="width: 100%" class="filter-item" v-model="listQuery.positionId" placeholder="请选择" @focus="handlePosition()">
-                <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName">
+              <el-select style="width: 100%" class="filter-item" v-model="listQuery.positionName" placeholder="请选择" @focus="handlePosition()">
+                <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionName" :label="item.positionName">
                   <span style="float: left">{{ item.positionName }}</span>
                 </el-option>
               </el-select>
@@ -42,12 +43,12 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="姓名">
-              <el-input class="filter-item" v-model="listQuery.name" placeholder="请输入姓名"></el-input>
+              <el-input class="filter-item" v-model="listQuery.userName" placeholder="请输入姓名"></el-input>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="工号">
-              <el-input class="filter-item" v-model="listQuery.empNo" placeholder="请输入工号"></el-input>
+              <el-input class="filter-item" v-model="listQuery.userCode" placeholder="请输入工号"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -78,7 +79,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="时间段">
+      <el-table-column align="center" label="时间段" width="170">
 				<template slot-scope="scope">
         <span>{{scope.row.timeSlot}}</span>
         </template>
@@ -114,6 +115,12 @@
         </template>
       </el-table-column>
 
+			<el-table-column align="center" label="公司" show-overflow-tooltip>
+        <template slot-scope="scope">
+        <span>{{scope.row.company}}</span>
+        </template>
+      </el-table-column>
+
 			<el-table-column align="center" label="区域" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.regional}}</span>
@@ -126,13 +133,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="职位" class-name="toggle">
+      <el-table-column align="center" label="职位" class-name="toggle" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{scope.row.positionName}}</span>
         </template>
       </el-table-column>
 
-			<el-table-column align="center" label="职级" class-name="toggle">
+			<el-table-column align="center" label="职级" class-name="toggle" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{scope.row.rankName}}</span>
         </template>
@@ -174,7 +181,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { getAllPositon, getAllDeparts, getCommissionList } from '@/api/achievement/index'
+import { getAllPositon, getAllDeparts, getCommissionList, commissionListExport } from '@/api/achievement/index'
 import { parseTime, transformText } from '@/utils'
 export default {
 	data () {
@@ -187,16 +194,18 @@ export default {
 				limit: 20
 			},
 			positionsOptions: [],
-      deptId: [],
+      deptName: [],
 			treeDeptData: [],
 			defaultProps: {
         children: 'children',
         label: 'name',
-        value: 'id'
+        value: 'name'
 			},
 			tableKey: 0,
 			entryDateS: '',
 			entryDateE: '',
+			errorTip: false,
+			errorMes: ''
 		}
 	},
 	computed: {
@@ -215,13 +224,6 @@ export default {
 	methods: {
 		getList() {
 			this.listLoading = true
-			// if(this.entryDate.length > 0) {
-			// 	this.listQuery.startTime = parseTime(this.entryDate[0], '{y}-{m}-{d}')
-			// 	this.listQuery.endTime = parseTime(this.entryDate[1], '{y}-{m}-{d}')
-			// } else {
-			// 	this.listQuery.startTime = ''
-			// 	this.listQuery.endTime = ''
-			// }
 			getAllDeparts()
 				.then(response => {
 					this.treeDeptData = response.data
@@ -229,6 +231,9 @@ export default {
 			getCommissionList(this.listQuery).then(response => {
 				this.list = response.data.records
 				this.total = response.data.total
+				this.list.map((item, index) => {
+					item.occurrenceDate = parseTime(item.occurrenceDate, '{y}-{m}')
+				})
 				this.listLoading = false
 				getAllPositon().then(res => {
 					this.positionsOptions = res.data
@@ -246,30 +251,57 @@ export default {
 			})
 		},
 		handleFilter() {
+			if (new Date(this.entryDateS).getTime() > new Date(this.entryDateE).getTime()) {
+				this.errorTip = true
+				this.errorMes = '结束时间不能小于开始时间'
+				 setTimeout(() => {
+					this.errorTip = false
+				}, 5000)
+				return
+			} else if ( this.entryDateS === undefined || this.entryDateE === undefined) {
+				this.errorTip = true
+				this.errorMes = '时间不能为空'
+				 setTimeout(() => {
+					this.errorTip = false
+				}, 5000)
+				return
+			} else if (this.entryDateS && this.entryDateE) {
+				this.listQuery.date = [parseTime(this.entryDateS, '{y}-{m}'), parseTime(this.entryDateE, '{y}-{m}')]
+			}
+			console.log(this.listQuery.date)
 			this.listQuery.page = 1
-			this.getList()
-			if(this.deptId.length) {
-        this.listQuery.deptId = this.deptId[this.deptId.length - 1]
+			if(this.deptName.length) {
+				this.listQuery.deptName = this.deptName[this.deptName.length - 1]
       }
+			this.getList()
 		},
 		resetFilter() { // 重置搜索条件
 			this.listQuery = {
 				page: 1,
 				limit: 20,
-				username: '',
-				positionId: '',
-				// status: '',
-				deptId: [],
-				entryDateE: '',
-				entryDateS: ''
+				username: undefined,
+				positionName: undefined,
+				deptName: undefined,
+				date: undefined
 			},
-			this.deptId = []	
-			this.handleFilter()
+			this.entryDateE = '',
+			this.entryDateS = ''
+			this.deptName = []	
+			// this.handleFilter()
+			this.getList()
 		},
 		handleImport() {
 			this.$router.push({ path: '/achievement/importListExcel' })
 		},
-		handleExport() {},
+		handleExport() {
+			commissionListExport(this.listQuery).then(response => {
+				console.log(response)
+				// let blob = new Blob([response.data], {type: "blob"}); 
+				// let objectUrl = URL.createObjectURL(blob);
+				// console.log(objectUrl)
+				// window.location.href = objectUrl;
+			})
+		},
 		handleSizeChange(val) {
 			this.listQuery.limit = val
 			this.getList()
@@ -284,5 +316,12 @@ export default {
 <style lang="scss" scoped>
 .el-date-editor.el-input{
 	width: 143px;
+}
+.error{
+	position: absolute;
+	top: 50px;
+	line-height: 0;
+	color: #f56c6c;
+  font-size: 12px;
 }
 </style>

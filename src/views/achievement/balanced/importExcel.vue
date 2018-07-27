@@ -31,7 +31,8 @@
 
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { uploadExcel } from '@/api/uploadExcel'
+  import { balancedListImport } from '@/api/achievement/index'
+  import { replaceKey } from '@/utils'  
 
   export default {
     name: 'uploadExcel',
@@ -52,24 +53,45 @@
         }
       },
       selected(data) {
-        this.tableHeader = data.header
-        this.tableData = data.results
+        // this.tableHeader = data.header
+        // this.tableData = data.results
         // console.log(this.tableHeader)
         // console.log(this.tableData)
-        this.formData = data.formData
+        // this.formData = data.formData
         // console.log(this.formData)
+        const temp = Object.assign({}, data)
+        this.tableHeader = temp.header
+        this.tableData = temp.results
+        this.formData = JSON.parse(JSON.stringify(this.tableData))
+        let kepMap = {
+          '姓名': "userName",
+          '工号': "userCode",
+          '平衡计分卡系数': "coefficient",
+          '职位': "positionName",
+          '职级': "rankName",
+          '部门': "deptName",
+          '时间': "time",
+        }
+        this.formData.forEach( item => {
+          replaceKey(item, kepMap)
+          let timeRange = item.time.split('—')
+          item.start =  new Date(timeRange[0]).getTime()
+          item.end = new Date(timeRange[1]).getTime()
+          delete item.time
+        })
       },
       submit() {
-        const config = {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-        uploadExcel(this.formData, config).then(res => {
+        // const config = {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // }
+        balancedListImport(this.formData).then(res => {
           if (!res) {
             console.log('上传失败')
           } else {
             console.log('上传成功')
+            this.dialogVisible = false
           }
         })
       }

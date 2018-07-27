@@ -135,7 +135,17 @@
       // },
       sourceData: {
         get: function() {
-          return this.data.filter(item => this.value.indexOf(item[this.props.key]) === -1)
+          return this.data.filter(item => {
+            if(typeof this.value[0] === 'object') {
+              let arr = []
+              this.value.forEach(item => {
+                arr.push(item[this.props.key])
+              })
+              return arr.indexOf(item[this.props.key]) === -1
+            } else {
+              return this.value.indexOf(item[this.props.key]) === -1
+            }
+          })
         },
         set: function(newData) {
           return this.data.filter(item => this.value.indexOf(item[this.props.key]) === -1)
@@ -168,6 +178,10 @@
       value(val) {
         console.log(val)
         this.dispatch('ElFormItem', 'el.form.change', val)
+      },
+      sourceData(val) {
+        console.log('sourcedata')
+        console.log(val)
       }
     },
 
