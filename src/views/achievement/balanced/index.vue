@@ -11,14 +11,14 @@
 								:props="defaultProps"
 								:show-all-levels="false"
 								change-on-select
-								v-model="listQuery.deptid"
+								v-model="deptid"
 							></el-cascader>
 						</el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="职位">
               <el-select style="width: 100%" class="filter-item" v-model="listQuery.positionid" placeholder="请选择" @focus="handlePosition()">
-                <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName">
+                <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionName" :label="item.positionName">
                   <span style="float: left">{{ item.positionName }}</span>
                 </el-option>
               </el-select>
@@ -211,22 +211,22 @@ export default {
 		},
 		handleFilter() {
 			this.listQuery.page = 1
-			this.getList()
 			if(this.deptid.length) {
-        this.listQuery.deptid = this.deptid[this.deptid.length - 1]
+				this.listQuery.deptid = this.deptid[this.deptid.length - 1]
       }
+			this.getList()
 		},
 		resetFilter() { // 重置搜索条件
 			this.listQuery = {
 				page: 1,
 				limit: 20,
-				username: '',
-				positionid: '',
+				username: undefined,
+				positionid: undefined,
 				// status: '',
-				deptid: [],
-				usercode: ''
+				deptid: undefined,
+				usercode: undefined
 			},
-      this.deptid = []
+			this.deptid = []
 			this.handleFilter()
 		},
 		handleImport() {
@@ -252,7 +252,8 @@ export default {
 			this.$refs[formName].resetFields()
 		},
 		update(formName) {
-        const set = this.$refs
+				const set = this.$refs
+				console.log(this.form)
         set[formName].validate(valid => {
           if (valid) {
 						this.form.coefficient -= 0
