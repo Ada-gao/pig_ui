@@ -102,33 +102,19 @@
   import MyTransfer from '@/components/MyTransfer'
   import { fetchList, addObj, putObj, getObj, getFeildsList, delObj, exportTemplate } from '@/api/achievement/commission'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  // import { parseTime } from '@/utils'
+  import { parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
-  import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
-  import ElOption from "element-ui/packages/select/src/option"
-import data from '../../svg-icons/generateIconsView';
+
 
   export default {
     components: {
-      ElOption,
-      ElRadioGroup,
-      MyTransfer },
+      MyTransfer 
+    },
     name: 'table_user',
     directives: {
       waves
     },
     data() {
-      // const generateData = _ => {
-      //   const data = [];
-      //   for (let i = 1; i <= 15; i++) {
-      //     data.push({
-      //       key: i,
-      //       label: `备选项 ${ i }`
-      //       // disabled: i % 4 === 0
-      //     });
-      //   }
-      //   return data
-      // }
       return {
         list: null,
         total: null,
@@ -214,23 +200,11 @@ import data from '../../svg-icons/generateIconsView';
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
         getFeildsList().then(res => {
-          // let keyList = {
-          //   fieldsKey: 'key',
-          //   fieldsName: 'label'
-          // }
-          // res.data.forEach((item, index) => {
-          //   for (let key in item) {
-          //     item[keyList[key]] = item[key]
-          //     delete item[key]
-          //   }
-          // })
           this.data = res.data
         })
       },
       handleChange() { // 右侧列表值对应转换
         let temp = []
-        console.log('this.value1')
-        console.log(this.value1)
         this.value1.forEach((item, index) => {
           let i = this.data.find(it => it.fieldsKey === item)
           temp.push(i)
@@ -261,12 +235,22 @@ import data from '../../svg-icons/generateIconsView';
         this.form1 = row
 
       },
-      handleExportTemp() {
+      handleExportTemp() { // 确认导出文件
         let params = {
           date: this.form1.date
         }
-        exportTemplate(this.form1.templateId, params).then(res => {
+        if(params.date) {
+          params.date[0] = parseTime(params.date[0], '{y}-{m}-{d}')
+          params.date[1] = parseTime(params.date[1], '{y}-{m}-{d}')
+        }
+        exportTemplate(this.form1.templateId, params, {
+          responseType: 'arraybuffer'
+        }).then(res => {
+          let blob = new Blob([res.data], {type: "application/octet-stream"})
+          let objectUrl = URL.createObjectURL(blob)
+          window.location.href = objectUrl
           this.dialogTempVisible = false
+          // Vue.prototype.api.apiList.EXPORT_BILL
         })
       },
       create(formName) {
@@ -360,7 +344,6 @@ import data from '../../svg-icons/generateIconsView';
         this.value1 = []
       },
       targetChange(value) {
-        // this.value1 = value
         console.log(value)
       },
       updateData(data) { // 将组件内部的变化值传送到外面(确保拖拽的顺序)
