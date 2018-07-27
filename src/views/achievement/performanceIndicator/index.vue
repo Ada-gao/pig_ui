@@ -249,7 +249,8 @@
     getAllDeparts,
     delPfItem,
     editPfItem,
-    addPfItem
+    addPfItem,
+    exportPf
   } from '@/api/achievement'
   export default {
     components: {},
@@ -416,7 +417,19 @@
       handleImport() {
         this.$router.push({ path: '/achievement/importExcel' })
       },
-      handleExport() {},
+      handleExport() {
+        exportPf().then(res => {
+          // const blob = new Blob([res.data], { type: 'blob' })
+          // const objectUrl = URL.createObjectURL(blob)
+          // this.forceDownload(objectUrl, 'test.xlsx')
+        })
+      },
+      forceDownload(url, name) {
+        const link = document.createElement('a')
+        link.href = url
+        link.download = name
+        link.click()
+      },
       handleUpdate(id) {
         this.dialogStatus = 'edit'
         editPfItem(id).then(res => {

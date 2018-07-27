@@ -64,7 +64,7 @@ export function editBalanced(obj) {
   })
 }
 
-/** 
+/**
  *平衡计分卡导出
 */
 export function balancedListImport(file) {
@@ -267,18 +267,24 @@ export function delPfItem(id) {
 /**
  * 业绩指标导入
  */
-export function importPf() {
+export function importPf(file) {
   return request({
     url: '/performance/performanceIndicator/import',
-    method: 'post'
+    method: 'post',
+    data: file,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
   })
 }
 /**
  * 业绩指标导出
  */
-export function exportPf() {
+export function exportPf(params) {
   return request({
     url: '/performance/performanceIndicator/import',
-    method: 'get'
+    method: 'get',
+    params
+    // responseType: 'blob'
   })
 }

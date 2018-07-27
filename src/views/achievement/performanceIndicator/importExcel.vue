@@ -31,7 +31,8 @@
 
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { uploadExcel } from '@/api/uploadExcel'
+  import { importPf } from '@/api/achievement'
+  import { replaceKey } from '@/utils'
 
   export default {
     name: 'uploadExcel',
@@ -52,20 +53,26 @@
         }
       },
       selected(data) {
-        this.tableHeader = data.header
-        this.tableData = data.results
-        // console.log(this.tableHeader)
-        // console.log(this.tableData)
-        this.formData = data.formData
-        // console.log(this.formData)
+        const temp = Object.assign({}, data)
+        this.tableHeader = temp.header
+        this.tableData = temp.results
+        this.formData = JSON.parse(JSON.stringify(this.tableData))
+        let kepMap = {
+          '公司': "company",
+          '区域': "regional",
+          '区域副总': "regionalViceManager",
+          '区域总': "regionalManager",
+          '团队经理': "teamManager",
+        }
+        this.formData.forEach( item => {
+          replaceKey(item, kepMap)
+          item.commission = parseInt(item.commission)
+          item.finalCommission = parseInt(item.finalCommission)
+          item.occurrenceDate = new Date(item.occurrenceDate).getTime()
+        })
       },
       submit() {
-        const config = {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-        uploadExcel(this.formData, config).then(res => {
+        importPf(this.formData).then(res => {
           if (!res) {
             console.log('上传失败')
           } else {
