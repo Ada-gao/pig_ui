@@ -31,7 +31,7 @@
 
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { balancedListImport } from '@/api/achievement/index'
+  import { balancedImport } from '@/api/achievement/index'
   import { replaceKey } from '@/utils'  
 
   export default {
@@ -86,7 +86,7 @@
         //     'Content-Type': 'multipart/form-data'
         //   }
         // }
-        balancedListImport(this.formData).then(res => {
+        balancedImport(this.formData).then(res => {
           if (!res) {
             console.log('上传失败')
           } else {

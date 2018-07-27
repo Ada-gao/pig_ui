@@ -11,13 +11,13 @@
 								:props="defaultProps"
 								:show-all-levels="false"
 								change-on-select
-								v-model="deptid"
+								v-model="deptname"
 							></el-cascader>
 						</el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="职位">
-              <el-select style="width: 100%" class="filter-item" v-model="listQuery.positionid" placeholder="请选择" @focus="handlePosition()">
+              <el-select style="width: 100%" class="filter-item" v-model="listQuery.positionname" placeholder="请选择" @focus="handlePosition()">
                 <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionName" :label="item.positionName">
                   <span style="float: left">{{ item.positionName }}</span>
                 </el-option>
@@ -131,7 +131,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { getAllPositon, getAllDeparts, getBalancedList, getBalancedId, editBalanced } from '@/api/achievement/index'
+import { getAllPositon, getAllDeparts, getBalancedList, getBalancedId, editBalanced, balancedExport } from '@/api/achievement/index'
 import { parseTime, transformText } from '@/utils'
 export default {
 	data () {
@@ -144,12 +144,12 @@ export default {
 				limit: 20
 			},
 			positionsOptions: [],
-      deptid: [],
+      deptname: [],
 			treeDeptData: [],
 			defaultProps: {
         children: 'children',
         label: 'name',
-        value: 'id'
+        value: 'name'
 			},
 			tableKey: 0,
 			dialogEditVisible: false,
@@ -211,8 +211,8 @@ export default {
 		},
 		handleFilter() {
 			this.listQuery.page = 1
-			if(this.deptid.length) {
-				this.listQuery.deptid = this.deptid[this.deptid.length - 1]
+			if(this.deptname.length) {
+				this.listQuery.deptname = this.deptname[this.deptname.length - 1]
       }
 			this.getList()
 		},
@@ -221,18 +221,30 @@ export default {
 				page: 1,
 				limit: 20,
 				username: undefined,
-				positionid: undefined,
+				positionname: undefined,
 				// status: '',
-				deptid: undefined,
+				deptname: undefined,
 				usercode: undefined
 			},
-			this.deptid = []
+			this.deptname = []
 			this.handleFilter()
 		},
 		handleImport() {
 			this.$router.push({ path: '/achievement/importBalancedExcel' })
 		},
-		handleExport() {},
+		handleExport() {
+			balancedExport(this.listQuery).then(response => {
+				let blob = new Blob([response.data], {type: "blob"})
+				let objectUrl = URL.createObjectURL(blob)
+				this.forceDownload(objectUrl, 'test.xlsx')
+			})
+		},
+		forceDownload (url, name) {
+			const link = document.createElement('a')
+			link.href = url
+			link.download = name
+			link.click()
+		},
 		handleSizeChange(val) {
 			this.listQuery.limit = val
 			this.getList()
