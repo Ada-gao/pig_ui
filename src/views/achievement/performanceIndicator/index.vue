@@ -23,7 +23,7 @@
                 :props="defaultProps"
                 :show-all-levels="false"
                 change-on-select
-                v-model="listQuery.deptId"
+                v-model="deptId"
               ></el-cascader>
             </el-form-item>
           </el-col>
@@ -71,7 +71,9 @@
     </div>
 
     <div style="text-align: right;">
-      <el-button class="add_btn" @click="handleCreate">
+      <el-button v-if="sys_prd_type_add"
+                 class="add_btn"
+                 @click="handleCreate">
         <svg-icon icon-class="add"></svg-icon>新增指标
       </el-button>
       <el-button class="search_btn" @click="handleImport">
@@ -122,10 +124,12 @@
                        width="150">
         <template slot-scope="scope">
           <a size="small"
+             v-if="sys_prd_type_upd"
              @click="handleUpdate(scope.row.performanceIndicatorId)"
              class="common_btn">编辑</a>
           <!--<span class="space_line"> | </span>-->
           <a size="small"
+             v-if="sys_prd_type_upd"
              class="danger_btn"
              @click="deletes(scope.row.performanceIndicatorId)">删除</a>
         </template>
@@ -144,7 +148,7 @@
     <!--新建和编辑业绩指标-->
     <el-dialog :title="textMap[dialogStatus]"
                class="perform_dialog"
-               @close="cancel('form')"
+               @click="cancel('form')"
                :visible.sync="dialogCreate">
       <el-form :model="form"
                ref="form"
@@ -172,16 +176,14 @@
         <el-row>
           <el-col>
             <el-form-item label="部门" prop="deptId">
-              <el-select class="filter-item"
-                         placeholder="请选择部门"
-                         v-model="form.deptId">
-                <el-option v-for="item in departs"
-                           :value="item.id"
-                           :label="item.name"
-                           :key="item.id">
-                  <span style="float: left;">{{item.name}}</span>
-                </el-option>
-              </el-select>
+              <el-cascader
+                style="width: 95%"
+                :options="departs"
+                :props="defaultProps"
+                :show-all-levels="false"
+                change-on-select
+                v-model="form.deptId"
+              ></el-cascader>
             </el-form-item>
           </el-col>
         </el-row>
@@ -238,7 +240,8 @@
   </div>
 </template>
 <script>
-  import { parseTime } from '@/utils'
+  import { mapGetters } from 'vuex'
+  import { parseTime, transformText } from '@/utils'
   import {
     getPfList,
     getAllPositon,
@@ -252,6 +255,10 @@
     components: {},
     data() {
       return {
+        deptId: [],
+        deptName: [],
+        positionName: [],
+        rankName: [],
         list: null,
         total: null,
         listLoading: true,
@@ -298,9 +305,17 @@
         level: [] // 职级
       }
     },
+    computed: {
+      ...mapGetters([
+        'permissions'
+      ])
+    },
     created() {
-      this.getAllSearch()
+      // this.getAllSearch()
       this.getList()
+      this.sys_prd_type_add = this.permissions['sys_prd_type_add']
+      this.sys_prd_type_upd = this.permissions['sys_prd_type_upd']
+      this.sys_prd_type_del = this.permissions['sys_prd_type_del']
     },
     methods: {
       tableHeader(h, { column, $index }) {
@@ -329,7 +344,18 @@
           this.list.map((item, index) => {
             item.start = parseTime(item.start, '{y}-{m}-{d}')
             item.end = parseTime(item.end, '{y}-{m}-{d}')
-            // item.deptN
+          })
+          getAllDeparts().then(res => {
+            this.departs = res.data
+            this.list.map((item, index) => {
+              item.deptName = transformText(this.departs, item.deptId)
+            })
+          })
+          getAllPositon().then(res => {
+            this.positions = res.data
+            this.list.map((item, index) => {
+              item.positionName = transformText(this.positions, item.positionId)
+            })
           })
         })
       },
@@ -347,7 +373,6 @@
         if (val) {
           getAllRank({ positionId: val }).then(res => {
             this.level = res.data
-            this.listQuery.rankId = null
           })
         }
       },
@@ -357,6 +382,9 @@
       },
       handleFilter() { // search
         this.listQuery.page = 1
+        if (this.deptId.length) {
+          this.listQuery.deptId = this.deptId[0]
+        }
         this.getList()
       },
       resetFilter() { // reset
@@ -367,10 +395,11 @@
           rankId: undefined,
           deptId: undefined
         }
+        this.deptId = []
         this.handleFilter()
       },
       handleCreate() {
-        // this.resetTemp()
+        this.resetTemp()
         this.dialogStatus = 'create'
         this.dialogCreate = true
       },
@@ -437,6 +466,7 @@
       },
       cancel(formName) {
         console.log(this.form)
+        console.log(2222)
         this.dialogCreate = false
         this.$refs[formName].resetFields()
       },
@@ -444,7 +474,6 @@
         const set = this.$refs
         this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
         this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
-        console.log(this.form)
         if (Number(new Date(this.form.end)) < Number(new Date(this.form.start))) {
           this.$notify({
             title: '失败',
@@ -454,9 +483,12 @@
           })
           return false
         }
+        const temp = JSON.parse(JSON.stringify(this.form))
+        temp.deptId = temp.deptId[0]
+        console.log(temp)
         set[formName].validate(valid => {
           if (valid) {
-            addPfItem(this.form).then(res => {
+            addPfItem(temp).then(res => {
               if (res.status === 200) {
                 this.dialogCreate = false
                 this.getList()
