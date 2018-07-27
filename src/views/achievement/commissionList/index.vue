@@ -295,12 +295,16 @@ export default {
 		},
 		handleExport() {
 			commissionListExport(this.listQuery).then(response => {
-				console.log(response)
-				// let blob = new Blob([response.data], {type: "blob"}); 
-				// let objectUrl = URL.createObjectURL(blob);
-				// console.log(objectUrl)
-				// window.location.href = objectUrl;
+				let blob = new Blob([response.data], {type: "blob"})
+				let objectUrl = URL.createObjectURL(blob)
+				this.forceDownload(objectUrl, 'test.xlsx')
 			})
+		},
+		forceDownload (url, name) {
+			const link = document.createElement('a')
+			link.href = url
+			link.download = name
+			link.click()
 		},
 		handleSizeChange(val) {
 			this.listQuery.limit = val

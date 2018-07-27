@@ -31,8 +31,8 @@
 
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { balancedImport } from '@/api/achievement/index'
-  import { replaceKey } from '@/utils'  
+  import { commissionListImport } from '@/api/achievement/index'
+  import { replaceKey } from '@/utils'
 
   export default {
     name: 'uploadExcel',
@@ -43,7 +43,8 @@
         tableHeader: [],
         formData: null,
         dialogVisible: false,
-        downloadUrl: 'static/excel/平衡计分卡系数模版.xlsx'
+        downloadUrl: 'static/excel/销售支持模版.xlsx',
+        formContent: []
       }
     },
     methods: {
@@ -54,30 +55,29 @@
       },
       selected(data) {
         // this.tableHeader = data.header
-        // this.tableData = data.results
-        // console.log(this.tableHeader)
-        // console.log(this.tableData)
-        // this.formData = data.formData
-        // console.log(this.formData)
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
         this.tableData = temp.results
         this.formData = JSON.parse(JSON.stringify(this.tableData))
+        // this.tableData = Object.assign([], data.results)
+        // console.log(this.tableHeader)
+        // console.log(this.tableData)
+        // this.formData = data.formData
+        // this.formData = Object.assign([], data.results)
+        // this.formContent = this.formData
         let kepMap = {
-          '姓名': "userName",
-          '工号': "userCode",
-          '平衡计分卡系数': "coefficient",
-          '职位': "positionName",
-          '职级': "rankName",
-          '部门': "deptName",
-          '时间': "time",
+          '预约编号': "appointmentCode",
+          '理财师姓名': "userName",
+          '理财师编号': "userCode",
+          '销售支持姓名': "salesName",
+          '销售支持编号': "salesCode",
+          '佣金比例': "commissionRate",
         }
         this.formData.forEach( item => {
           replaceKey(item, kepMap)
-          let timeRange = item.time.split('—')
-          item.start =  new Date(timeRange[0]).getTime()
-          item.end = new Date(timeRange[1]).getTime()
-          delete item.time
+          item.commission = parseInt(item.commission)
+          item.finalCommission = parseInt(item.finalCommission)
+          item.occurrenceDate = new Date(item.occurrenceDate).getTime()
         })
       },
       submit() {
@@ -86,7 +86,7 @@
         //     'Content-Type': 'multipart/form-data'
         //   }
         // }
-        balancedImport(this.formData).then(res => {
+        commissionListImport(this.formData).then(res => {
           if (!res) {
             console.log('上传失败')
           } else {

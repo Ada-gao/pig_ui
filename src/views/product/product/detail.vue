@@ -656,22 +656,6 @@
           }
         })
       },
-      // updateFileName(item, fileType) { // 编辑材料名称
-      //   let params = {
-      //     id: item.productFileId,
-      //     name: item.name,
-      //     fileType: fileType
-      //   }
-      //   putFileObj(params).then(res => {
-      //     this.productFileId = 0
-      //     this.$notify({
-      //       title: '成功',
-      //       message: '材料名称修改成功',
-      //       type: 'success',
-      //       duration: 2000
-      //     })
-      //   })
-      // },
       updateClientFileName(item) { // 编辑上传客户材料名称
         let params = {
           name: item.fileName
@@ -693,45 +677,9 @@
           this.fileList2 = response.data
         })
       },
-      // handleChange3(file, fileList) { // 上传材料，列表展示
-      //   // this.fileList3 = fileList.slice(-3)
-      //   this.uploadData.fileType = 'announcement'
-      //   getFiles(this.uploadData).then(response => {
-      //     this.fileList3 = response.data
-      //   })
-      // },
-      // radioChange(value) {
-      //   if(value === 0) {
-      //     this.isDisabled = true
-      //   } else {
-      //     this.isDisabled = false
-      //   }
-      // },
       importFile(fileType) {
         return uploadFiles(this.productId, fileType)
       },
-      // addClientFile(type) { // 上传客户材料
-      //   let params = {
-      //     limit: 100,
-      //     page: 1
-      //   }
-      //   this.fileType = type
-      //   this.clientFile = ''
-      //   if (type === 'client') {
-      //     getClientFile(params).then(res => {
-      //       this.clientFileList = res.data.records
-      //       this.dialogComVisible = true
-      //     })
-      //   } else {
-      //     getTranscFile(params).then(res => {
-      //       this.clientFileList = res.data.records
-      //       this.dialogComVisible = true
-      //     })
-      //   }
-      // },
-      // changeCurrency(val) {
-      //   this.currencyList = this.currencyList.slice(0)
-      // },
       changeStep(val) { // 切换tab
         this.step = val - 0
         if(this.step === 2) {
@@ -782,89 +730,10 @@
           })
         }
       },
-      // handleCollect(type) { // 募集分期/产品分期
-      //   this.stageType = type // 0 产品分期； 1 募集分期
-      //   // Bus.$emit('stageTypeNo', type)
-      //   // console.log('产品分期' + type)
-      //   getProductStage(this.productId, type).then(res => {
-      //     // console.log(res)
-      //     this.step = 1
-      //     // this.stage = true
-      //     this.formData = res.data
-      //     // console.log(this.stage)
-      //     this.formData.currencyIdNo = this.formData.currencyId
-      //     this.formData.productTypeIdNo = this.formData.productTypeId
-      //     this.formData.investmentHorizonUnitNo = this.formData.investmentHorizonUnit
-      //     this.formData.productTypeId = transformText(this.productTypes, this.formData.productTypeId)
-      //     this.formData.currencyId = transformText(this.currencyList, this.formData.currencyId)
-      //     this.formData.investmentHorizonUnit = transformText(this.investHorizonUnit, this.formData.investmentHorizonUnit)
-      //   })
-      // },
       handleAppoint(type) {
         this.listQuery.type = type
         Bus.$emit('queryAppoints', this.listQuery)
       },
-      // getOperations() { // 获取操作指南信息
-      //   this.getAllFiles(this.productId)
-      //   if(!this.productId) return false
-      //   fetchOperation(this.productId).then(res => {
-      //     this.form2 = res.data
-      //     this.form2.normalDTO = res.data.normalDTO || {}
-      //     this.activityData = res.data.activityDTO || []
-      //     if(this.form2.importantStart || this.form2.importantEnd) {
-      //       console.log('keyProduct: ' + this.radio2)
-      //       this.radio2 = 2
-      //     } else {
-      //       this.radio2 = 1
-      //     }
-      //     this.importantDate = [this.form2.importantStart, this.form2.importantEnd]
-      //     this.normalData = this.form2.normalDTO
-      //     this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
-      //     if(!this.normalList) {
-      //       this.normalList = [{
-      //         age: '1'
-      //       }]
-      //     }
-      //     let list = this.normalList1
-      //     this.cmsIndex = list[list.length - 1].age
-      //     if(!this.activityData.length) {
-      //       this.activityData = [{
-      //         activeDate: [],
-      //         performanceCoefficient: ''
-      //       }]
-      //     } else {
-      //       this.activityData.forEach(item => {
-      //         item.activeDate = []
-      //         item.activeDate[0] = item.activityStart
-      //         item.activeDate[1] = item.activityEnd
-      //       })
-      //     }
-      //     // console.log(res)
-      //     // 判断产品预约审核条件是否禁用
-      //     // if(!this.form2.importantEnd) {
-      //     //   this.form2.keyProduct = 1
-      //     // }
-      //     if(this.form2.appointAmountPercent) {
-      //       this.checked1 = true
-      //     }
-      //     if(this.form2.appointNums) {
-      //       this.checked2 = true
-      //     }
-      //     if(this.form2.onceAppointGt) {
-      //       this.checked3 = true
-      //     }
-      //     if(this.form2.onceAppointLt) {
-      //       this.checked4 = true
-      //     }
-      //     if(this.form2.remitAmountsPercent) {
-      //       this.checked5 = true
-      //     }
-      //     // 不同产品状态可编辑项
-      //     if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
-      //       this.operationDisabled = true
-      //     }
-      //   })
-      // },
       batchExport() {
         let type = this.listQuery.type
         let id = this.productId

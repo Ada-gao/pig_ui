@@ -156,6 +156,13 @@ export const constantRouterMap = [
         name: '佣金列表导入',
         meta: { title: '佣金列表导入', icon: '', noCache: true },
         hidden: true
+      },
+      {
+        path: 'importSaleSupportExcel',
+        component: _import('achievement/saleSupport/importExcel'),
+        name: '销售支持列表导入',
+        meta: { title: '销售支持列表导入', icon: '', noCache: true },
+        hidden: true
       }
     ]
   }
