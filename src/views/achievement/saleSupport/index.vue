@@ -156,14 +156,15 @@
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="理财师姓名" prop="userName">
               <el-select class="filter-item"
+                         value-key="name"
                          style="width:100%;"
                          placeholder="请输入理财师姓名"
-                         v-model="form.userCode"
+                         v-model="userInfo"
                          @change="userNameChange">
-                <el-option v-for="item in financialPlannerList"
-                           :value="item.userId"
+                <el-option v-for="(item, index) in financialPlannerList"
+                           :value="item"
                            :label="item.name"
-                           :key="item.userId">
+                           :key="index">
                   <span style="float: left;">{{item.name}}</span>
                 </el-option>
               </el-select>
@@ -179,14 +180,15 @@
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="销售支持姓名" prop="salesName">
               <el-select class="filter-item"
+                         value-key="name"
                          style="width:100%;"
                          placeholder="请输入销售支持姓名"
-                         v-model="form.salesCode"
+                         v-model="salesInfo"
                          @change="salesNameChange">
-                <el-option v-for="item in salesSupportList"
-                           :value="item.userId"
+                <el-option v-for="(item, index) in salesSupportList"
+                           :value="item"
                            :label="item.name"
-                           :key="item.userId">
+                           :key="index">
                   <span style="float: left;">{{item.name}}</span>
                 </el-option>
               </el-select>
@@ -247,8 +249,10 @@
           salesCode: null,
           salesName: null,
           userCode: null,
-          userName: null
+          userName: null,
         },
+        userInfo: null,
+        salesInfo: null,
         textMap: {
           edit: '编辑销售支持',
           create: '新增销售支持'
@@ -317,17 +321,17 @@
     },
     methods: {
       userNameChange(newVal){
-        console.log(newVal)
-        let item = this.financialPlannerList.find((item)=>{
-            return item.userId === newVal;
-        });
+        let item = this.financialPlannerList.find((ite)=>{
+            return ite.empNo === newVal.empNo;
+        })
+        this.form.userCode = item.empNo
         this.form.userName = item.name
       },
       salesNameChange(newVal){
-        console.log(newVal)
-        let item = this.salesSupportList.find((item)=>{
-            return item.userId === newVal;
-        });
+        let item = this.salesSupportList.find((ite)=>{
+            return ite.empNo === newVal.empNo;
+        })
+        this.form.salesCode = item.empNo
         this.form.salesName = item.name
       },
       getUserLists(){
@@ -435,19 +439,24 @@
         if (state === 'edit') {
           this.dialogCreate = true
           getSalesSupport(row.salesSupportId).then(res=>{
-            console.log(res.data)
             this.form = {
               salesSupportId: res.data.salesSupportId,
               appointmentCode: res.data.appointmentCode,
               commissionRate: res.data.commissionRate,
-              salesCode: res.data.salesCode - 0,
+              salesCode: res.data.salesCode,
               salesName: res.data.salesName,
-              userCode: res.data.userCode - 0,
+              userCode: res.data.userCode,
               userName: res.data.userName
-            }
+            },
+            this.userInfo = this.financialPlannerList.find((ite)=>{
+              return ite.empNo === res.data.userCode;
+            })
+            this.salesInfo = this.salesSupportList.find((ite)=>{
+              return ite.empNo === res.data.salesCode;
+            })
           })
         } else if (state === 'del') {
-          console.log('删除！')
+          console.log('删除')
         }
       },
       handleSizeChange(val) {
@@ -464,7 +473,6 @@
       },
       create(formName) {
         const set = this.$refs
-        console.log(this.form)
         set[formName].validate(valid => {
           if (valid) {
             this.dialogCreate = false
@@ -476,7 +484,6 @@
       },
       update(formName){
         const set = this.$refs
-        console.log(this.form)
         set[formName].validate(valid => {
           if (valid) {
             this.dialogCreate = false
