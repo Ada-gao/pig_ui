@@ -178,7 +178,6 @@
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="销售支持姓名" prop="salesName">
-              
               <el-select class="filter-item"
                          style="width:100%;"
                          placeholder="请输入销售支持姓名"
@@ -191,7 +190,6 @@
                   <span style="float: left;">{{item.name}}</span>
                 </el-option>
               </el-select>
-
             </el-form-item>
           </el-col>
 
@@ -442,9 +440,9 @@
               salesSupportId: res.data.salesSupportId,
               appointmentCode: res.data.appointmentCode,
               commissionRate: res.data.commissionRate,
-              salesCode: Number(res.data.salesCode),
+              salesCode: res.data.salesCode - 0,
               salesName: res.data.salesName,
-              userCode: Number(res.data.userCode),
+              userCode: res.data.userCode - 0,
               userName: res.data.userName
             }
           })
