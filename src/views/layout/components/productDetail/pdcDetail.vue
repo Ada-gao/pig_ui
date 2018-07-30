@@ -162,14 +162,14 @@
             <el-input v-model="form.assetTeam" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
+        <!-- <el-col :span="11">
           <el-form-item label="产品归属">
             <el-radio-group v-model="form.isFloat" @change="radioChange" :disabled="detailDisabled">
               <el-radio :label="0" style="display: inline-block">自营</el-radio>
               <el-radio :label="1" style="display: inline-block">代购</el-radio>
             </el-radio-group>
           </el-form-item>
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row :gutter="90">
         <el-col :span="22">
@@ -561,30 +561,30 @@
         }
       },
       create(formName) { // 创建提交
-        this.$emit('productIdByDetail', '')
-        // const set = this.$refs
-        // if(!this.form.isFloat) {
-        //   this.form.annualizedReturn = null
-        //   this.isDisabled = true
-        // }
-        // set[formName].validate(valid => {
-        //   if (valid) {
-        //     addObj(this.form)
-        //       .then(response => {
-        //         if(response.status === 200) {
-        //           this.$notify({
-        //             title: '成功',
-        //             message: '创建成功',
-        //             type: 'success',
-        //             duration: 2000
-        //           })
-        //           this.$emit('productIdByDetail', response.data.productId)
-        //         }
-        //       })
-        //   } else {
-        //     return false
-        //   }
-        // })
+        // this.$emit('productIdByDetail', '')
+        const set = this.$refs
+        if(!this.form.isFloat) {
+          this.form.annualizedReturn = null
+          this.isDisabled = true
+        }
+        set[formName].validate(valid => {
+          if (valid) {
+            addObj(this.form)
+              .then(response => {
+                if(response.status === 200) {
+                  this.$notify({
+                    title: '成功',
+                    message: '创建成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                  this.$emit('productIdByDetail', response.data.productId)
+                }
+              })
+          } else {
+            return false
+          }
+        })
       },
       update(formName) { // 产品详情修改提交
         const set = this.$refs
