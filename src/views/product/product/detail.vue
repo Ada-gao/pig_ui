@@ -124,10 +124,10 @@
       <div class="transc-tab">
         <el-button @click="handleAppoint('0')" class="first_btn" :class="{'search_btn': listQuery.type=='0'}" label="1">预约成功人数</el-button>
         <el-button @click="handleAppoint('1')" class="sec_btn" label="2">打款成功人数</el-button>
-        <a class="filter-item add_btn"
+        <el-button class="filter-item add_btn"
           style="margin-left: 10px; padding: 10px; border-radius: 5px; float: right;"
-          :href="batchExport()" type="primary">
-          <svg-icon icon-class="add"></svg-icon> 批量导出</a>
+          @click="batchExport" type="primary">
+          <svg-icon icon-class="add"></svg-icon> 批量导出</el-button>
       </div>
       <transc-table-component
         :productCollect="true"
@@ -166,7 +166,6 @@
   import { decimals, isNumber } from '@/utils/validate'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
   import Bus from '@/assets/js/bus'
-  // const fileDownload = require('js-file-download')
 
   const twoDecimals = (rule, value, callback) => {
     if (!value) {
@@ -742,36 +741,16 @@
       batchExport() {
         let type = this.listQuery.type
         let id = this.productId
-        return 'http://10.9.70.62:9999/product/products/' + id + '/export/' + type
-        // batchExportProduct(id, type, {responseType: 'arraybuffer'}).then(res => {
-        // this.url =
-        // console.log(res)
-        // let blob = new Blob([res.data], {type: "application/vnd.ms-excel;charset=utf-8"})
-        // let objectUrl = URL.createObjectURL(blob)
-        // window.location.href = objectUrl
-        // let fileName = res.headers['content-disposition'].match(/fushun(\S*)xls/)[0]
-        // fileDownload(res.data, 'test.xls')
-        // console.log(fileDownload(res.data,'fileName'))
-        // })
-      },
-      // test(val) {
-      //   console.log(val)
-      //   if(val === 1) {
-      //     this.importantDate = []
-      //   }
-      //   // this.form2.keyProduct = val
-      // },
-      // changeFileList(val) {
-      //   // console.log(val)
-      //   // this.clientFileList = this.clientFileList.slice(0)
-      //   let obj = {}
-      //   obj = this.clientFileList.find(item => {
-      //     let id = item.productClientFileManageId || item.transactionFileManageId
-      //     return id === val
-      //   })
-      //   this.selectFile = obj
-      //   console.log(this.clientFile)
-      // }
+        batchExportProduct(id, type).then(res => {
+          const objectUrl = URL.createObjectURL(new Blob([res.data]))
+          // let fileName = res.headers['content-disposition'].match(/fushun(\S*)xls/)[0]
+          const fileName = res.headers['content-disposition'].split('=')[1]
+          const a = document.createElement('a')
+          a.download = fileName
+          a.href = objectUrl
+          a.click()
+        })
+      }
     }
   }
 </script>

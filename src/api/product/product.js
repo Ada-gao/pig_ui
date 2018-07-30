@@ -197,7 +197,8 @@ export function getAppointList(productId, type, query) {
 export function batchExportProduct(productId, type) {
   return request({
     url: '/product/products/' + productId + '/export/' + type,
-    method: 'get'
+    method: 'get',
+    responseType: 'blob'
   })
 }
 
