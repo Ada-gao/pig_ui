@@ -162,14 +162,14 @@
             <el-input v-model="form.assetTeam" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
+        <!-- <el-col :span="11">
           <el-form-item label="产品归属">
             <el-radio-group v-model="form.isFloat" @change="radioChange" :disabled="detailDisabled">
               <el-radio :label="0" style="display: inline-block">自营</el-radio>
               <el-radio :label="1" style="display: inline-block">代购</el-radio>
             </el-radio-group>
           </el-form-item>
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row :gutter="90">
         <el-col :span="22">

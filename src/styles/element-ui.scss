@@ -218,7 +218,20 @@ $leave_status: #FF4C4C;
 
 // step
 .el-step__head.is-process,
-.el-step__title.is-process {
+.el-step__title.is-process,
+.el-step__head.is-success,
+.el-step__title.is-success {
   color: #00C1DF;
   border-color: #00C1DF;
 }
+.el-steps--simple {
+  padding: 13px 20%;
+}
+// .el-steps {
+//   .el-step .el-step__main {
+//     margin-left: -20px;
+//   }
+//   .el-step.is-flex .el-step__main {
+//     margin-left: -35px;
+//   }
+// }

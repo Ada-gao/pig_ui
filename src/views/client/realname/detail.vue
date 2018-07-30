@@ -80,7 +80,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="证件类型" prop="idType">
-            <el-input v-model="clientStatus.idType" placeholder="请输入手机号" readonly></el-input>
+            <el-input v-model="clientStatus.idType" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11" v-if="idType">
@@ -289,7 +289,7 @@
         bankcardList: [],
         productList: [],
         realnameStatus: '',
-        idType: '',
+        idType: true,
         isClientType: '',
         failReason: '',
         tip: false,
@@ -336,7 +336,7 @@
           this.clientStatus = response.data
           this.realnameStatus = this.clientStatus.realnameStatus != 0 ? true : false // 认证状态判断
           this.isClientType = this.clientStatus.clientType == 0 ? true : false// 投资者类型判断
-          this.idType = this.clientStatus.idType == 0 ? true : false // 证件类型判断(0: 身份证)
+          // this.idType = this.clientStatus.idType == 0 ? true : false // 证件类型判断(0: 身份证)
 
           this.clientStatus.realnameStatus = transformText(this.certificationStatus, this.clientStatus.realnameStatus)
           this.clientStatus.clientType = transformText(this.clientType, this.clientStatus.clientType)
