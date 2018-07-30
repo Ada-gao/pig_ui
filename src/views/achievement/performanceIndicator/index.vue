@@ -181,9 +181,31 @@
                 :options="departs"
                 :props="defaultProps"
                 :show-all-levels="false"
+                v-if="dialogStatus === 'edit'"
                 change-on-select
                 v-model="form.deptId"
               ></el-cascader>
+              <div v-else>
+                <el-cascader
+                  style="width:95%"
+                  :options="departs"
+                  :show-all-level="false"
+                  change-on-select
+                  placeholder=""
+                  :props="defaultProps1"
+                  v-model="selectedOptions"
+                  @blur="addOption"></el-cascader>
+                <div class="tags">
+                  <el-tag
+                    :key="tag"
+                    v-for="tag in form.deptId"
+                    closable
+                    :disable-transitions="false"
+                    @close="handleClose(tag)">
+                    {{tag}}
+                  </el-tag>
+                </div>
+              </div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -209,6 +231,7 @@
             <el-form-item label="职级" prop="rankId">
               <el-select class="filter-item"
                          placeholder="请选择职级"
+                         :multiple="dialogStatus === 'create'"
                          v-model="form.rankId">
                 <el-option v-for="item in level"
                            :value="item.rankId"
@@ -241,7 +264,7 @@
 </template>
 <script>
   import { mapGetters } from 'vuex'
-  import { parseTime, transformText } from '@/utils'
+  import { parseTime } from '@/utils'
   import {
     getPfList,
     getAllPositon,
@@ -258,8 +281,7 @@
       return {
         deptId: [],
         deptName: [],
-        positionName: [],
-        rankName: [],
+        selectedOptions: [],
         list: null,
         total: null,
         listLoading: true,
@@ -268,11 +290,18 @@
           label: 'name',
           value: 'id'
         },
+        defaultProps1: {
+          children: 'children',
+          label: 'name',
+          value: 'name'
+        },
         listQuery: {
           page: 1,
           limit: 20
         },
-        form: {},
+        form: {
+          deptId: []
+        },
         tempForm: {},
         textMap: {
           edit: '编辑业绩指标',
@@ -312,13 +341,31 @@
       ])
     },
     created() {
-      // this.getAllSearch()
+      this.getAllSearch()
       this.getList()
       this.sys_prd_type_add = this.permissions['sys_prd_type_add']
       this.sys_prd_type_upd = this.permissions['sys_prd_type_upd']
       this.sys_prd_type_del = this.permissions['sys_prd_type_del']
     },
     methods: {
+      cycleList(list) {
+        list.forEach(item => {
+          if (item.children && !item.children.length) {
+            delete item.children
+          }
+          if (item.children && item.children.length) {
+            this.cycleList(item.children)
+          }
+        })
+      },
+      handleClose(value) {
+        console.log(value)
+      },
+      addOption() {
+        // this.selectedOptions = []
+        // this.form.deptId.push(value[value.length - 1])
+        // console.log(this.selectedOptions)
+      },
       tableHeader(h, { column, $index }) {
         return h('span', [
           h('span', column.label),
@@ -346,23 +393,13 @@
             item.start = parseTime(item.start, '{y}-{m}-{d}')
             item.end = parseTime(item.end, '{y}-{m}-{d}')
           })
-          getAllDeparts().then(res => {
-            this.departs = res.data
-            this.list.map((item, index) => {
-              item.deptName = transformText(this.departs, item.deptId)
-            })
-          })
-          getAllPositon().then(res => {
-            this.positions = res.data
-            this.list.map((item, index) => {
-              item.positionName = transformText(this.positions, item.positionId)
-            })
-          })
         })
       },
       getDeparts() { // 获取部门列表
         getAllDeparts().then(res => {
           this.departs = res.data
+          // this.deptName = res.data
+          this.cycleList(this.departs)
         })
       },
       getPosition() { // 获取职位列表
@@ -384,7 +421,7 @@
       handleFilter() { // search
         this.listQuery.page = 1
         if (this.deptId.length) {
-          this.listQuery.deptId = this.deptId[0]
+          this.listQuery.deptId = this.deptId[this.deptId.length - 1]
         }
         this.getList()
       },
@@ -406,11 +443,11 @@
       },
       resetTemp() {
         this.form = {
-          deptId: undefined,
+          deptId: [],
           end: undefined,
           performanceIndicator: undefined,
           positionId: undefined,
-          rankId: undefined,
+          rankId: [],
           start: undefined
         }
       },
@@ -434,6 +471,7 @@
         this.dialogStatus = 'edit'
         editPfItem(id).then(res => {
           this.tempForm = res.data
+          this.form = res.data
           console.log(this.tempForm)
           this.dialogCreate = true
         })
@@ -481,6 +519,7 @@
         console.log(this.form)
         console.log(2222)
         this.dialogCreate = false
+        this.form.deptId = []
         this.$refs[formName].resetFields()
       },
       create(formName) {
@@ -512,8 +551,10 @@
                   message: '创建成功'
                 })
               }
+              this.form.deptId = []
             }).catch(() => {
               this.dialogCreate = false
+              this.form.deptId = []
               this.$notify({
                 title: '失败',
                 message: '创建失败',
@@ -552,5 +593,9 @@
         width: 95%;
       }
     }
+  }
+  .tags {
+    position: absolute;
+    top: 0;
   }
 </style>
