@@ -13,8 +13,8 @@
         <el-radio-button v-if="productStatusNo!==0&productStatusNo!==1&stageType!='0'" label="3">交易信息</el-radio-button>
       </el-radio-group>
     </div>
-    <el-steps v-else :active="activeStep" finish-status="success" simple style="margin-top: 20px">
-        <el-step title="产品详情" icon=""></el-step>
+    <el-steps v-else :active="activeStep" simple finish-status="success">
+        <el-step title="产品详情"></el-step>
         <el-step title="产品操作指南" ></el-step>
       </el-steps>
     <div v-else class="tabs">
@@ -355,7 +355,6 @@
       this.sys_user_del = this.permissions['sys_user_del']
       this.activeStep = this.step - 1
       // this.productStatusNo = this.productStatusNum
-      // console.log(this.productStatusNum)
     },
     mounted() {
       Bus.$on('activeRouter', activeRouter => {
@@ -366,6 +365,10 @@
     watch: {
       activeRouter(curVal, oldVal) {
         console.log(curVal)
+      },
+      step(val) {
+        this.activeStep = val - 1
+        console.log(this.activeStep)
       }
     },
     methods: {
@@ -376,12 +379,14 @@
       listenProId(val) { // 从产品详情接收
         this.productId = val
         this.step = 2
+        this.activeStep = this.step - 1
         this.changeStep(this.step)
       },
       listenDetail(params) { // 从操作指南接收
         this.stageType = params.stageType
         this.formData = params.data
         this.step = 1
+        this.activeStep = this.step - 1
         // this.changeStep(this.step)
       },
       handleDept() {
