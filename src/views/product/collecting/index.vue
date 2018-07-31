@@ -10,7 +10,7 @@
     <product-table-component
       :productList="data"
       :activeUrl="url"
-      @searchProduct="getListQuery">
+      @searchProduct="getListPageQuery">
     </product-table-component>
 
   </div>
@@ -134,10 +134,13 @@
     },
     methods: {
       getListQuery(data) {
-        console.log('data')
-        console.log(data)
         this.listQuery = data
         this.listQuery.productStatus = ['2']
+        this.getList()
+      },
+      getListPageQuery(data) { // 页数改变
+        this.listQuery.page = data.page
+        this.listQuery.limit = data.limit
         this.getList()
       },
       getList() {

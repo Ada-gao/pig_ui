@@ -90,7 +90,7 @@
       return {
         list: null,
         total: null,
-        listLoading: true,
+        listLoading: false,
         listQuery: {
           page: 1,
           limit: 20,
@@ -129,7 +129,7 @@
           this.transcId = ''
           this.listLoading = false
           if(curVal.constructor == Array) {
-            console.log(curVal)
+            // console.log(curVal)
             this.list = curVal
           } else {
             this.list = curVal.records

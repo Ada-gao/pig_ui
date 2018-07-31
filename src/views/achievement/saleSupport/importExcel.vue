@@ -31,7 +31,7 @@
 
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { importPf } from '@/api/achievement'
+  import { commissionListImport } from '@/api/achievement/index'
   import { replaceKey } from '@/utils'
 
   export default {
@@ -43,7 +43,8 @@
         tableHeader: [],
         formData: null,
         dialogVisible: false,
-        downloadUrl: 'static/excel/业绩指标模版.xlsx'
+        downloadUrl: 'static/excel/销售支持模版.xlsx',
+        formContent: []
       }
     },
     methods: {
@@ -53,16 +54,24 @@
         }
       },
       selected(data) {
+        // this.tableHeader = data.header
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
         this.tableData = temp.results
         this.formData = JSON.parse(JSON.stringify(this.tableData))
+        // this.tableData = Object.assign([], data.results)
+        // console.log(this.tableHeader)
+        // console.log(this.tableData)
+        // this.formData = data.formData
+        // this.formData = Object.assign([], data.results)
+        // this.formContent = this.formData
         let kepMap = {
-          '公司': "company",
-          '区域': "regional",
-          '区域副总': "regionalViceManager",
-          '区域总': "regionalManager",
-          '团队经理': "teamManager",
+          '预约编号': "appointmentCode",
+          '理财师姓名': "userName",
+          '理财师编号': "userCode",
+          '销售支持姓名': "salesName",
+          '销售支持编号': "salesCode",
+          '佣金比例': "commissionRate",
         }
         this.formData.forEach( item => {
           replaceKey(item, kepMap)
@@ -72,11 +81,17 @@
         })
       },
       submit() {
-        importPf(this.formData).then(res => {
+        // const config = {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // }
+        commissionListImport(this.formData).then(res => {
           if (!res) {
             console.log('上传失败')
           } else {
             console.log('上传成功')
+            this.dialogVisible = false
           }
         })
       }
