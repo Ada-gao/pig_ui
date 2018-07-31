@@ -5,8 +5,12 @@
                 v-model="listQuery.name">
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button> -->
+      <el-tabs v-model="tabcard" type="card">
+        <el-tab-pane label="产品收益类型" name="first"></el-tab-pane>
+        <el-tab-pane label="产品结构类型" name="second"></el-tab-pane>
+      </el-tabs>
       <el-button v-if="sys_prd_type_add" class="filter-item add_btn" style="margin-bottom: 0;" @click="handleCreate" type="primary" icon="edit">
-        <svg-icon icon-class="add"></svg-icon> 新增产品类型</el-button>
+        <svg-icon icon-class="add"></svg-icon> 新增</el-button>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -18,7 +22,7 @@
         </template> -->
       </el-table-column>
 
-      <el-table-column align="center" label="产品类型名称" prop="name">
+      <el-table-column align="center" :label="tabcard === 'first' ? '产品收益类型名称' : '产品结构类型名称'" prop="name">
         <template slot-scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
@@ -46,9 +50,9 @@
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :model="form" :rules="rules" ref="form" label-width="100px">
+      <el-form :model="form" :rules="rules" ref="form" label-width="150px">
 
-        <el-form-item label="产品类型" prop="name">
+        <el-form-item :label="tabcard === 'first' ? '产品收益类型名称' : '产品结构类型名称'" prop="name">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
 
@@ -81,6 +85,7 @@
     },
     data() {
       return {
+        tabcard: 'first', // tabcardName
         treeDeptData: [],
         checkedKeys: [],
         defaultProps: {
@@ -110,8 +115,8 @@
           1: true
         },
         textMap: {
-          update: '编辑产品类型',
-          create: '新增产品类型'
+          update: '编辑',
+          create: '新增'
         },
         tableKey: 0,
         rules: {

@@ -8,10 +8,6 @@
         <el-radio-button label="2">客户所需提交材料</el-radio-button>
       </el-radio-group>
     </div>
-    <div class="second-tab" v-show="step==='2'">
-      <span class="second-item" @click="changeSecStep('1')" :class="{'query-color': secStep==='1'}">专业投资者</span>
-      <span class="second-item" @click="changeSecStep('2')" :class="{'query-color': secStep==='2'}">普通投资者</span>
-    </div>
     <div style="text-align: right">
       <el-upload
         v-if="step==1"
@@ -182,7 +178,6 @@
         step: 1,
         importUrl: 'zuul/product/productTransactionFileManage/',
         transcId: '',
-        secStep: '1',
         data: {}
       }
     },
@@ -215,9 +210,9 @@
           this.getClientList()
         }
       },
-      changeSecStep(val) {
-        this.secStep = val
-      },
+      // changeSecStep(val) {
+      //   this.secStep = val
+      // },
       handleCreate() { //新增
         this.getTranscList()
         // Bus.$emit('step', this.step)

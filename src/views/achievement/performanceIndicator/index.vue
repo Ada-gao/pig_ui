@@ -191,6 +191,7 @@
                   style="width:95%"
                   :options="departs"
                   :show-all-level="false"
+                  :expand-trigger="'hover'"
                   change-on-select
                   placeholder=""
                   ref="cascader"
@@ -346,6 +347,12 @@
       ...mapGetters([
         'permissions'
       ])
+    },
+    watch: {
+      selectedOptions(val) {
+        console.log('二级菜单')
+        console.log(val)
+      }
     },
     created() {
       this.getAllSearch()
