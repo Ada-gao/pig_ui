@@ -12,6 +12,7 @@
 								:show-all-levels="false"
 								change-on-select
 								v-model="deptname"
+								@focus="blur"
 							></el-cascader>
 						</el-form-item>
           </el-col>
@@ -180,11 +181,17 @@ export default {
 		this.balanced_score_card_export = this.permissions['balanced_score_card_export']
   },
 	methods: {
+		blur() {
+			console.log('1111')
+		},
 		getList() {
 			this.listLoading = true
 			getAllDeparts()
 				.then(response => {
 					this.treeDeptData = response.data
+					console.log(this.treeDeptData, this.treeDeptData.find(item => 
+						item.id === 1
+					))
 			}),
 			getBalancedList(this.listQuery).then(response => {
 				this.list = response.data.records
