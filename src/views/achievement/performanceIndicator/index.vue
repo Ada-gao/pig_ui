@@ -149,6 +149,7 @@
     <el-dialog :title="textMap[dialogStatus]"
                class="perform_dialog"
                @click="cancel('form')"
+               @close="close"
                :visible.sync="dialogCreate">
       <el-form :model="form"
                ref="form"
@@ -182,8 +183,9 @@
                 :props="defaultProps"
                 :show-all-levels="false"
                 v-if="dialogStatus === 'edit'"
+                @blur="blurhandler"
                 change-on-select
-                v-model="form.deptId"
+                v-model="tempDeptId"
               ></el-cascader>
               <div v-else>
                 <el-cascader
@@ -192,16 +194,17 @@
                   :show-all-level="false"
                   change-on-select
                   placeholder=""
+                  @blur="blurhandler"
                   :props="defaultProps1"
                   v-model="selectedOptions"
-                  @blur="addOption"></el-cascader>
+                  @change="addOption"></el-cascader>
                 <div class="tags">
                   <el-tag
                     :key="tag"
-                    v-for="tag in form.deptId"
+                    v-for="(tag, index) in form.deptId"
                     closable
                     :disable-transitions="false"
-                    @close="handleClose(tag)">
+                    @close="handleClose(index)">
                     {{tag}}
                   </el-tag>
                 </div>
@@ -273,15 +276,13 @@
     delPfItem,
     editPfItem,
     addPfItem,
+    putPfItem,
     exportPf
   } from '@/api/achievement'
   export default {
     components: {},
     data() {
       return {
-        deptId: [],
-        deptName: [],
-        selectedOptions: [],
         list: null,
         total: null,
         listLoading: true,
@@ -299,6 +300,9 @@
           page: 1,
           limit: 20
         },
+        deptId: [],
+        selectedOptions: [],
+        tempDeptId: [],
         form: {
           deptId: []
         },
@@ -309,7 +313,6 @@
         },
         dialogStatus: '',
         dialogCreate: false,
-        // dialogEdit: false,
         rules1: {
           start: [
             { required: true, message: '请选择开始时间', trigger: 'blur' }
@@ -332,7 +335,10 @@
         },
         departs: [], // 部门
         positions: [], // 职位
-        level: [] // 职级
+        level: [], // 职级
+        curPrevId: '', // 循环前累计拼接的id
+        result: [],
+        eachIndex: 0
       }
     },
     computed: {
@@ -348,6 +354,9 @@
       this.sys_prd_type_del = this.permissions['sys_prd_type_del']
     },
     methods: {
+      blurhandler() {
+        console.log(3333333)
+      },
       cycleList(list) {
         list.forEach(item => {
           if (item.children && !item.children.length) {
@@ -358,13 +367,26 @@
           }
         })
       },
-      handleClose(value) {
-        console.log(value)
+      cycleListId(list, prevId = []) {
+        list.forEach(item => {
+          if (item.children && item.children.length > 0) {
+            this.curPrevId = [...prevId, item.id]
+            this.cycleListId(item.children, this.curPrevId)
+          }
+          if (item.children && !item.children.length) {
+            this.result[this.eachIndex] = [...prevId, item.id]
+            this.eachIndex++
+          }
+        })
       },
-      addOption() {
-        // this.selectedOptions = []
-        // this.form.deptId.push(value[value.length - 1])
-        // console.log(this.selectedOptions)
+      handleClose(index) {
+        console.log(index)
+        this.form.deptId.splice(index, 1)
+      },
+      addOption(value) {
+        console.log(value)
+        this.selectedOptions = []
+        this.form.deptId.push(value[value.length - 1])
       },
       tableHeader(h, { column, $index }) {
         return h('span', [
@@ -381,7 +403,7 @@
         ])
       },
       theadClick() { // 业绩指标排序事件
-        console.log(11111)
+        // console.log(11111)
       },
       getList() {
         this.listLoading = true
@@ -398,8 +420,9 @@
       getDeparts() { // 获取部门列表
         getAllDeparts().then(res => {
           this.departs = res.data
-          // this.deptName = res.data
           this.cycleList(this.departs)
+          this.cycleListId(this.departs)
+          console.log(this.result)
         })
       },
       getPosition() { // 获取职位列表
@@ -438,6 +461,7 @@
       },
       handleCreate() {
         this.resetTemp()
+        console.log(this.form)
         this.dialogStatus = 'create'
         this.dialogCreate = true
       },
@@ -469,10 +493,15 @@
       },
       handleUpdate(id) {
         this.dialogStatus = 'edit'
+        this.form = {}
+        this.tempDeptId = []
         editPfItem(id).then(res => {
-          this.tempForm = res.data
           this.form = res.data
-          console.log(this.tempForm)
+          this.tempDeptId.push(this.form.deptId)
+          this.handlePosition(this.form.positionId)
+          console.log(this.departs)
+          this.cycleListId(this.departs)
+          console.log(this.result)
           this.dialogCreate = true
         })
       },
@@ -516,11 +545,14 @@
         this.getList()
       },
       cancel(formName) {
-        console.log(this.form)
-        console.log(2222)
         this.dialogCreate = false
         this.form.deptId = []
         this.$refs[formName].resetFields()
+      },
+      close() {
+        if (this.dialogStatus === 'edit') {
+          this.form = {}
+        }
       },
       create(formName) {
         const set = this.$refs
@@ -554,6 +586,52 @@
               this.form.deptId = []
             }).catch(() => {
               this.dialogCreate = false
+              this.form.deptId = []
+              this.$notify({
+                title: '失败',
+                message: '创建失败',
+                type: 'error',
+                duration: 2000
+              })
+            })
+          } else {
+            return false
+          }
+        })
+      },
+      update(formName) {
+        const set = this.$refs
+        console.log(this.form)
+        this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
+        this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
+        if (Number(new Date(this.form.end)) < Number(new Date(this.form.start))) {
+          this.$notify({
+            title: '失败',
+            message: '结束时间要大于开始时间',
+            type: 'error',
+            duration: 2000
+          })
+          return false
+        }
+        this.form.deptId = this.tempDeptId[this.tempDeptId.length - 1]
+        set[formName].validate(valid => {
+          if (valid) {
+            putPfItem(this.form.performanceIndicatorId, this.form).then(res => {
+              if (res.status === 200) {
+                this.dialogCreate = false
+                this.getList()
+                this.$notify({
+                  title: '成功',
+                  type: 'success',
+                  duration: 2000,
+                  message: '创建成功'
+                })
+              }
+              this.form.deptId = []
+              this.$refs[formName].resetFields()
+            }).catch(() => {
+              this.dialogCreate = false
+              this.$refs[formName].resetFields()
               this.form.deptId = []
               this.$notify({
                 title: '失败',

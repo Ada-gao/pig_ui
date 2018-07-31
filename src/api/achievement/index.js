@@ -274,11 +274,13 @@ export function editPfItem(id) {
 /**
  * 修改业绩指标
  * @param id
+ * @param data
  */
-export function putPfItem(id) {
+export function putPfItem(id, data) {
   return request({
     url: `/performance/performanceIndicator/${id}`,
-    method: 'put'
+    method: 'put',
+    data
   })
 }
 /**
