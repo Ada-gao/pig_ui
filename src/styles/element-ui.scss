@@ -73,6 +73,9 @@ $hover_check: #00C1DF;
   .el-radio__input.is-checked+.el-radio__label {
     color: #606266;
   }
+  .el-radio__label {
+    padding-left: 5px;
+  }
   .el-checkbox__inner:hover {
     border-color: $hover_check;
   }

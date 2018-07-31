@@ -5,7 +5,7 @@
       <el-radio-button style="border-radius: 0" label="2">直属变更</el-radio-button>
     </el-radio-group>
     <!-- 新增/编辑 -->
-    <div v-show="state==='edit'&step==='1'">
+    <div v-show="state!=='view'&step==='1'">
       <el-form :model="form" :rules="rules" ref="form" label-width="120px">
         <el-row :gutter="40">
           <el-col :span="10">
@@ -211,7 +211,7 @@
       </div>
     </div>
     <!-- 查看 -->
-    <el-form v-show="state==='view'&step==='1'" :model="form" :rules="rules" ref="form" label-width="120px">
+    <el-form v-show="state==='view'&step==='1'" :model="form" ref="form" label-width="120px">
       <el-row :gutter="20">
           <el-col :span="10">
             <el-form-item label="姓名：" prop="name">
@@ -450,11 +450,6 @@
         userUpd: false,
         userDel: false,
         dialogStatus: '',
-        textMap: {
-          view: '查看员工',
-          update: '编辑员工',
-          create: '新增员工'
-        },
         isDisabled: {
           0: false,
           1: true
@@ -505,7 +500,9 @@
     mounted() {
       this.id = this.$route.params.id
       this.state = this.$route.params.state
-      this.getList()
+      if(this.id) {
+        this.getList()
+      }
     },
     methods: {
       getList() { // 编辑查询（查看）

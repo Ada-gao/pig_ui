@@ -192,6 +192,7 @@
                   style="width:95%"
                   :options="departs"
                   :show-all-level="false"
+                  :expand-trigger="'hover'"
                   change-on-select
                   placeholder=""
                   @blur="blurhandler"
@@ -346,6 +347,12 @@
         'permissions'
       ])
     },
+    watch: {
+      selectedOptions(val) {
+        console.log('二级菜单')
+        console.log(val)
+      }
+    },
     created() {
       this.getAllSearch()
       this.getList()
@@ -386,7 +393,7 @@
       addOption(value) {
         console.log(value)
         this.selectedOptions = []
-        this.form.deptId.push(value[value.length - 1])
+        // this.form.deptId.push(value[value.length - 1])
       },
       tableHeader(h, { column, $index }) {
         return h('span', [
