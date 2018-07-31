@@ -31,10 +31,32 @@ export const constantRouterMap = [
       { path: 'upload', component: _import('admin/user/info'), name: '修改信息', meta: { title: '修改信息', icon: '', noCache: true }}]
   },
   {
+    menuId: 1,
+    path: '/admin',
+    component: Layout,
+    name: '员工管理1',
+    hidden: true,
+    redirect: '/admin/user',
+    // icon: 'table',
+    meta: {
+      title: '员工管理',
+      icon: 'user_mg'
+    },
+    children: [
+      {
+        path: 'user-detail/:id?/:state?',
+        component: _import('admin/user/detail'),
+        name: '员工详情页',
+        meta: { title: '查看员工详情', icon: '', noCache: true },
+        hidden: true
+      }
+    ]
+  },
+  {
     menuId: 19,
     path: '/client',
     component: Layout,
-    name: '客户管理',
+    name: '客户管理1',
     hidden: true,
     redirect: '/client/potential',
     // icon: 'table',
@@ -77,7 +99,7 @@ export const constantRouterMap = [
     menuId: 3,
     path: '/product',
     component: Layout,
-    name: '产品管理',
+    name: '产品管理1',
     hidden: true,
     redirect: '/product/productList',
     // icon: 'table',
@@ -106,7 +128,7 @@ export const constantRouterMap = [
     menuId: 3,
     path: '/transcMag',
     component: Layout,
-    name: '交易管理',
+    name: '交易管理1',
     redirect: '/transcMag/transc',
     hidden: true,
     // icon: 'table',
@@ -128,7 +150,7 @@ export const constantRouterMap = [
     menuId: 282,
     path: '/achievement',
     component: Layout,
-    name: '业绩/佣金管理',
+    name: '业绩/佣金管理1',
     hidden: true,
     redirect: '/achievement/allList',
     meta: {

@@ -10,7 +10,7 @@
       <el-radio-group v-model="step" @change="changeStep" style="margin-bottom: 30px;">
         <el-radio-button label="1">产品详情</el-radio-button>
         <el-radio-button style="border-radius: 0" label="2">产品操作指南</el-radio-button>
-        <el-radio-button v-if="productStatusNo!==0&productStatusNo!==1&stageType!='0'" label="3">交易信息</el-radio-button>
+        <el-radio-button v-show="productStatusNo!==0&productStatusNo!==1&stageType!='0'" label="3">交易信息</el-radio-button>
       </el-radio-group>
     </div>
     <el-steps v-else :active="activeStep" simple finish-status="success">

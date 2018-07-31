@@ -11,19 +11,16 @@
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
-
-      <el-table-column align="center" label="序号" width="50">
-        <template slot-scope="scope">
-          <span>{{scope.row.currencyId}}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column align="center" label="币种名称">
         <template slot-scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-
+      <el-table-column align="center" label="币种汇率">
+        <template slot-scope="scope">
+          <span>{{scope.row.name}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <a v-if="sys_currency_upd" size="small" class="common_btn"
@@ -48,7 +45,10 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :model="form" ref="form" label-width="100px" :rules="rules">
         
-        <el-form-item label="币种" prop="name">
+        <el-form-item label="币种名称" prop="name">
+          <el-input v-model="form.name"></el-input>
+        </el-form-item>
+        <el-form-item label="币种汇率" prop="name">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
 
