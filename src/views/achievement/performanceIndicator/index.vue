@@ -183,7 +183,6 @@
                 :props="defaultProps"
                 :show-all-levels="false"
                 v-if="dialogStatus === 'edit'"
-                @blur="blurhandler"
                 change-on-select
                 v-model="tempDeptId"
               ></el-cascader>
@@ -194,20 +193,22 @@
                   :show-all-level="false"
                   change-on-select
                   placeholder=""
-                  @blur="blurhandler"
+                  ref="cascader"
                   :props="defaultProps1"
                   v-model="selectedOptions"
+                  @focus="handleClick"
                   @change="addOption"></el-cascader>
-                <div class="tags">
-                  <el-tag
-                    :key="tag"
-                    v-for="(tag, index) in form.deptId"
-                    closable
-                    :disable-transitions="false"
-                    @close="handleClose(index)">
-                    {{tag}}
-                  </el-tag>
-                </div>
+                <el-button @click="btnClick">点击展开</el-button>
+                <!--<div class="tags">-->
+                  <!--<el-tag-->
+                    <!--:key="tag"-->
+                    <!--v-for="(tag, index) in form.deptId"-->
+                    <!--closable-->
+                    <!--:disable-transitions="false"-->
+                    <!--@close="handleClose(index)">-->
+                    <!--{{tag}}-->
+                  <!--</el-tag>-->
+                <!--</div>-->
               </div>
             </el-form-item>
           </el-col>
@@ -354,8 +355,11 @@
       this.sys_prd_type_del = this.permissions['sys_prd_type_del']
     },
     methods: {
-      blurhandler() {
-        console.log(3333333)
+      btnClick() {
+        console.log(this.$refs.cascader)
+      },
+      handleClick() {
+        console.log(1)
       },
       cycleList(list) {
         list.forEach(item => {
@@ -385,8 +389,8 @@
       },
       addOption(value) {
         console.log(value)
-        this.selectedOptions = []
-        this.form.deptId.push(value[value.length - 1])
+        // this.selectedOptions = []
+        // this.form.deptId.push(value[value.length - 1])
       },
       tableHeader(h, { column, $index }) {
         return h('span', [
@@ -420,8 +424,8 @@
       getDeparts() { // 获取部门列表
         getAllDeparts().then(res => {
           this.departs = res.data
-          this.cycleList(this.departs)
           this.cycleListId(this.departs)
+          this.cycleList(this.departs)
           console.log(this.result)
         })
       },
@@ -434,6 +438,9 @@
         if (val) {
           getAllRank({ positionId: val }).then(res => {
             this.level = res.data
+            if (this.level.length === 0) {
+              this.form.rankId = undefined
+            }
           })
         }
       },
@@ -479,10 +486,10 @@
         this.$router.push({ path: '/achievement/importExcel' })
       },
       handleExport() {
-        exportPf().then(res => {
-          // const blob = new Blob([res.data], { type: 'blob' })
-          // const objectUrl = URL.createObjectURL(blob)
-          // this.forceDownload(objectUrl, 'test.xlsx')
+        exportPf(this.listQuery).then(res => {
+          const blob = new Blob([res.data], { type: 'blob' })
+          const objectUrl = URL.createObjectURL(blob)
+          this.forceDownload(objectUrl, 'test.xlsx')
         })
       },
       forceDownload(url, name) {
@@ -498,10 +505,8 @@
         editPfItem(id).then(res => {
           this.form = res.data
           this.tempDeptId.push(this.form.deptId)
+          console.log(this.tempDeptId)
           this.handlePosition(this.form.positionId)
-          console.log(this.departs)
-          this.cycleListId(this.departs)
-          console.log(this.result)
           this.dialogCreate = true
         })
       },

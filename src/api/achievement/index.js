@@ -302,7 +302,7 @@ export function importPf(file) {
     method: 'post',
     data: file,
     headers: {
-      'Content-Type': 'multipart/form-data'
+      'Content-Type': 'application/json'
     }
   })
 }
@@ -311,9 +311,9 @@ export function importPf(file) {
  */
 export function exportPf(params) {
   return request({
-    url: '/performance/performanceIndicator/import',
+    url: '/performance/performanceIndicator/export',
     method: 'get',
-    params
-    // responseType: 'blob'
+    params,
+    responseType: 'blob'
   })
 }
