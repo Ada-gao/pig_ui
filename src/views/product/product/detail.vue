@@ -10,11 +10,11 @@
       <el-radio-group v-model="step" @change="changeStep" style="margin-bottom: 30px;">
         <el-radio-button label="1">产品详情</el-radio-button>
         <el-radio-button style="border-radius: 0" label="2">产品操作指南</el-radio-button>
-        <el-radio-button v-if="productStatusNo!==0&productStatusNo!==1&stageType!='0'" label="3">交易信息</el-radio-button>
+        <el-radio-button v-show="productStatusNo!==0&productStatusNo!==1&stageType!='0'" label="3">交易信息</el-radio-button>
       </el-radio-group>
     </div>
-    <el-steps v-else :active="activeStep" finish-status="success" simple style="margin-top: 20px">
-        <el-step title="产品详情" icon=""></el-step>
+    <el-steps v-else :active="activeStep" simple finish-status="success">
+        <el-step title="产品详情"></el-step>
         <el-step title="产品操作指南" ></el-step>
       </el-steps>
     <div v-else class="tabs">
@@ -124,10 +124,10 @@
       <div class="transc-tab">
         <el-button @click="handleAppoint('0')" class="first_btn" :class="{'search_btn': listQuery.type=='0'}" label="1">预约成功人数</el-button>
         <el-button @click="handleAppoint('1')" class="sec_btn" label="2">打款成功人数</el-button>
-        <a class="filter-item add_btn"
+        <el-button class="filter-item add_btn"
           style="margin-left: 10px; padding: 10px; border-radius: 5px; float: right;"
-          :href="batchExport()" type="primary">
-          <svg-icon icon-class="add"></svg-icon> 批量导出</a>
+          @click="batchExport" type="primary">
+          <svg-icon icon-class="add"></svg-icon> 批量导出</el-button>
       </div>
       <transc-table-component
         :productCollect="true"
@@ -166,7 +166,6 @@
   import { decimals, isNumber } from '@/utils/validate'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
   import Bus from '@/assets/js/bus'
-  // const fileDownload = require('js-file-download')
 
   const twoDecimals = (rule, value, callback) => {
     if (!value) {
@@ -355,7 +354,6 @@
       this.sys_user_del = this.permissions['sys_user_del']
       this.activeStep = this.step - 1
       // this.productStatusNo = this.productStatusNum
-      // console.log(this.productStatusNum)
     },
     mounted() {
       Bus.$on('activeRouter', activeRouter => {
@@ -366,6 +364,10 @@
     watch: {
       activeRouter(curVal, oldVal) {
         console.log(curVal)
+      },
+      step(val) {
+        this.activeStep = val - 1
+        console.log(this.activeStep)
       }
     },
     methods: {
@@ -376,12 +378,14 @@
       listenProId(val) { // 从产品详情接收
         this.productId = val
         this.step = 2
+        this.activeStep = this.step - 1
         this.changeStep(this.step)
       },
       listenDetail(params) { // 从操作指南接收
         this.stageType = params.stageType
         this.formData = params.data
         this.step = 1
+        this.activeStep = this.step - 1
         // this.changeStep(this.step)
       },
       handleDept() {
@@ -656,22 +660,6 @@
           }
         })
       },
-      // updateFileName(item, fileType) { // 编辑材料名称
-      //   let params = {
-      //     id: item.productFileId,
-      //     name: item.name,
-      //     fileType: fileType
-      //   }
-      //   putFileObj(params).then(res => {
-      //     this.productFileId = 0
-      //     this.$notify({
-      //       title: '成功',
-      //       message: '材料名称修改成功',
-      //       type: 'success',
-      //       duration: 2000
-      //     })
-      //   })
-      // },
       updateClientFileName(item) { // 编辑上传客户材料名称
         let params = {
           name: item.fileName
@@ -693,45 +681,9 @@
           this.fileList2 = response.data
         })
       },
-      // handleChange3(file, fileList) { // 上传材料，列表展示
-      //   // this.fileList3 = fileList.slice(-3)
-      //   this.uploadData.fileType = 'announcement'
-      //   getFiles(this.uploadData).then(response => {
-      //     this.fileList3 = response.data
-      //   })
-      // },
-      // radioChange(value) {
-      //   if(value === 0) {
-      //     this.isDisabled = true
-      //   } else {
-      //     this.isDisabled = false
-      //   }
-      // },
       importFile(fileType) {
         return uploadFiles(this.productId, fileType)
       },
-      // addClientFile(type) { // 上传客户材料
-      //   let params = {
-      //     limit: 100,
-      //     page: 1
-      //   }
-      //   this.fileType = type
-      //   this.clientFile = ''
-      //   if (type === 'client') {
-      //     getClientFile(params).then(res => {
-      //       this.clientFileList = res.data.records
-      //       this.dialogComVisible = true
-      //     })
-      //   } else {
-      //     getTranscFile(params).then(res => {
-      //       this.clientFileList = res.data.records
-      //       this.dialogComVisible = true
-      //     })
-      //   }
-      // },
-      // changeCurrency(val) {
-      //   this.currencyList = this.currencyList.slice(0)
-      // },
       changeStep(val) { // 切换tab
         this.step = val - 0
         if(this.step === 2) {
@@ -782,122 +734,23 @@
           })
         }
       },
-      // handleCollect(type) { // 募集分期/产品分期
-      //   this.stageType = type // 0 产品分期； 1 募集分期
-      //   // Bus.$emit('stageTypeNo', type)
-      //   // console.log('产品分期' + type)
-      //   getProductStage(this.productId, type).then(res => {
-      //     // console.log(res)
-      //     this.step = 1
-      //     // this.stage = true
-      //     this.formData = res.data
-      //     // console.log(this.stage)
-      //     this.formData.currencyIdNo = this.formData.currencyId
-      //     this.formData.productTypeIdNo = this.formData.productTypeId
-      //     this.formData.investmentHorizonUnitNo = this.formData.investmentHorizonUnit
-      //     this.formData.productTypeId = transformText(this.productTypes, this.formData.productTypeId)
-      //     this.formData.currencyId = transformText(this.currencyList, this.formData.currencyId)
-      //     this.formData.investmentHorizonUnit = transformText(this.investHorizonUnit, this.formData.investmentHorizonUnit)
-      //   })
-      // },
       handleAppoint(type) {
         this.listQuery.type = type
         Bus.$emit('queryAppoints', this.listQuery)
       },
-      // getOperations() { // 获取操作指南信息
-      //   this.getAllFiles(this.productId)
-      //   if(!this.productId) return false
-      //   fetchOperation(this.productId).then(res => {
-      //     this.form2 = res.data
-      //     this.form2.normalDTO = res.data.normalDTO || {}
-      //     this.activityData = res.data.activityDTO || []
-      //     if(this.form2.importantStart || this.form2.importantEnd) {
-      //       console.log('keyProduct: ' + this.radio2)
-      //       this.radio2 = 2
-      //     } else {
-      //       this.radio2 = 1
-      //     }
-      //     this.importantDate = [this.form2.importantStart, this.form2.importantEnd]
-      //     this.normalData = this.form2.normalDTO
-      //     this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
-      //     if(!this.normalList) {
-      //       this.normalList = [{
-      //         age: '1'
-      //       }]
-      //     }
-      //     let list = this.normalList1
-      //     this.cmsIndex = list[list.length - 1].age
-      //     if(!this.activityData.length) {
-      //       this.activityData = [{
-      //         activeDate: [],
-      //         performanceCoefficient: ''
-      //       }]
-      //     } else {
-      //       this.activityData.forEach(item => {
-      //         item.activeDate = []
-      //         item.activeDate[0] = item.activityStart
-      //         item.activeDate[1] = item.activityEnd
-      //       })
-      //     }
-      //     // console.log(res)
-      //     // 判断产品预约审核条件是否禁用
-      //     // if(!this.form2.importantEnd) {
-      //     //   this.form2.keyProduct = 1
-      //     // }
-      //     if(this.form2.appointAmountPercent) {
-      //       this.checked1 = true
-      //     }
-      //     if(this.form2.appointNums) {
-      //       this.checked2 = true
-      //     }
-      //     if(this.form2.onceAppointGt) {
-      //       this.checked3 = true
-      //     }
-      //     if(this.form2.onceAppointLt) {
-      //       this.checked4 = true
-      //     }
-      //     if(this.form2.remitAmountsPercent) {
-      //       this.checked5 = true
-      //     }
-      //     // 不同产品状态可编辑项
-      //     if(this.productStatusNo === 4||this.productStatusNo === 5||this.productStatusNo === 6) {
-      //       this.operationDisabled = true
-      //     }
-      //   })
-      // },
       batchExport() {
         let type = this.listQuery.type
         let id = this.productId
-        return 'http://10.9.70.62:9999/product/products/' + id + '/export/' + type
-        // batchExportProduct(id, type, {responseType: 'arraybuffer'}).then(res => {
-        // this.url =
-        // console.log(res)
-        // let blob = new Blob([res.data], {type: "application/vnd.ms-excel;charset=utf-8"})
-        // let objectUrl = URL.createObjectURL(blob)
-        // window.location.href = objectUrl
-        // let fileName = res.headers['content-disposition'].match(/fushun(\S*)xls/)[0]
-        // fileDownload(res.data, 'test.xls')
-        // console.log(fileDownload(res.data,'fileName'))
-        // })
-      },
-      // test(val) {
-      //   console.log(val)
-      //   if(val === 1) {
-      //     this.importantDate = []
-      //   }
-      //   // this.form2.keyProduct = val
-      // },
-      // changeFileList(val) {
-      //   // console.log(val)
-      //   // this.clientFileList = this.clientFileList.slice(0)
-      //   let obj = {}
-      //   obj = this.clientFileList.find(item => {
-      //     let id = item.productClientFileManageId || item.transactionFileManageId
-      //     return id === val
-      //   })
-      //   this.selectFile = obj
-      //   console.log(this.clientFile)
-      // }
+        batchExportProduct(id, type).then(res => {
+          const objectUrl = URL.createObjectURL(new Blob([res.data]))
+          // let fileName = res.headers['content-disposition'].match(/fushun(\S*)xls/)[0]
+          const fileName = res.headers['content-disposition'].split('=')[1]
+          const a = document.createElement('a')
+          a.download = fileName
+          a.href = objectUrl
+          a.click()
+        })
+      }
     }
   }
 </script>

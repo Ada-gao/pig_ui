@@ -31,7 +31,7 @@
 
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { importPf } from '@/api/achievement'
+  import { commissionListImport } from '@/api/achievement/index'
   import { replaceKey } from '@/utils'
 
   export default {
@@ -43,7 +43,8 @@
         tableHeader: [],
         formData: null,
         dialogVisible: false,
-        downloadUrl: 'static/excel/业绩指标模版.xlsx'
+        downloadUrl: 'static/excel/佣金列表模版.xlsx',
+        formContent: []
       }
     },
     methods: {
@@ -53,61 +54,55 @@
         }
       },
       selected(data) {
+        // this.tableHeader = data.header
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
         this.tableData = temp.results
         this.formData = JSON.parse(JSON.stringify(this.tableData))
-        const kepMap = {
-          '开始时间': 'start',
-          '结束时间': 'end',
-          '部门': 'deptName',
-          '职位': 'positionName',
-          '职级': 'rankName',
-          '业绩指标（万）': 'performanceIndicator'
+        // this.tableData = Object.assign([], data.results)
+        // console.log(this.tableHeader)
+        // console.log(this.tableData)
+        // this.formData = data.formData
+        // this.formData = Object.assign([], data.results)
+        // this.formContent = this.formData
+        let kepMap = {
+          '公司': "company",
+          '区域': "regional",
+          '区域副总': "regionalViceManager",
+          '区域总': "regionalManager",
+          '团队经理': "teamManager",
+          '城市副总': "cityViceManager",
+          '城市总': "cityManager",
+          '姓名': "userName",
+          '工号': "userCode",
+          '月份': "occurrenceDate",
+          '本期实发佣金（元）': "finalCommission",
+          '本期应发佣金（元）': "commission",
+          '职位': "positionName",
+          '职级': "rankName",
+          '订单段': "timeSlot",
+          '部门': "deptName"
         }
-        this.formData.forEach(item => {
+        this.formData.forEach( item => {
           replaceKey(item, kepMap)
+          item.commission = parseInt(item.commission)
+          item.finalCommission = parseInt(item.finalCommission)
+          item.occurrenceDate = new Date(item.occurrenceDate).getTime()
         })
       },
       submit() {
-        importPf(this.formData).then(res => {
-          console.log(res)
-          if (res.status === 200) {
+        // const config = {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // }
+        commissionListImport(this.formData).then(res => {
+          if (!res) {
+            console.log('上传失败')
+          } else {
+            console.log('上传成功')
             this.dialogVisible = false
-            let count = 0
-            res.data.every((item, index) => {
-              if (item.msgList && item.msgList.length > 0) {
-                ++count
-                return true
-              } else {
-                return false
-              }
-            })
-            if (count === res.data.length) {
-              this.$notify({
-                title: '失败',
-                message: '导入失败',
-                type: 'error',
-                duration: 2000
-              })
-            } else {
-              this.$notify({
-                title: '成功',
-                type: 'success',
-                duration: 2000,
-                message: '导入成功'
-              })
-              this.$router.push({ path: '/achievement/perform' })
-            }
           }
-        }).catch(() => {
-          this.dialogVisible = false
-          this.$notify({
-            title: '失败',
-            message: '导入失败',
-            type: 'error',
-            duration: 2000
-          })
         })
       }
     }

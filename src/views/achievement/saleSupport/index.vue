@@ -5,33 +5,33 @@
         <el-row :gutter="20">
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
                 <el-form-item label="订单编号">
-                    <el-input class="filter-item" placeholder="请输入订单编号"></el-input>
+                  <el-input class="filter-item" v-model="appointmentcode" placeholder="请输入订单编号"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
                 <el-form-item label="理财师姓名">
-                    <el-input class="filter-item" placeholder="请输入理财师姓名"></el-input>
+                  <el-input class="filter-item" v-model="username" placeholder="请输入理财师姓名"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
                 <el-form-item label="理财师编号">
-                    <el-input class="filter-item" placeholder="请输入理财师编号"></el-input>
+                  <el-input class="filter-item" v-model="usercode" placeholder="请输入理财师编号"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
                 <el-form-item label="销售支持姓名">
-                    <el-input class="filter-item" placeholder="请输入销售支持姓名号"></el-input>
+                  <el-input class="filter-item" v-model="salesname" placeholder="请输入销售支持姓名"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
                 <el-form-item label="销售支持编号">
-                    <el-input class="filter-item" placeholder="请输入销售支持编号"></el-input>
+                  <el-input class="filter-item" v-model="salescode" placeholder="请输入销售支持编号"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
                 <el-form-item label="佣金比例">
-                    <el-input class="filter-item" placeholder="请输入佣金比例"></el-input>
+                  <el-input class="filter-item" v-model="commissionrate" placeholder="请输入佣金比例"></el-input>
                 </el-form-item>
             </el-col>
         </el-row>
@@ -48,7 +48,10 @@
       </el-form>
     </div>
 
-    <div style="text-align: right;">
+    <div v-if="sales_support_add"  style="text-align: right;">
+      <el-button class="add_btn" @click="handleImport">
+        <svg-icon icon-class="upload"></svg-icon>批量导入
+      </el-button>
       <el-button class="add_btn" @click="handleCreate">
         <svg-icon icon-class="add"></svg-icon>新增销售支持
       </el-button>
@@ -62,22 +65,22 @@
 
       <el-table-column align="center" label="订单编号">
         <template slot-scope="scope">
-          <span>{{scope.row.username}}</span>
+          <span>{{scope.row.appointmentCode}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="理财师姓名">
         <template slot-scope="scope">
-          <span>{{scope.row.deptName}}</span>
+          <span>{{scope.row.userName}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="理财师编号">
         <template slot-scope="scope">
-          <span>{{scope.row.positionId}}</span>
+          <span>{{scope.row.userCode}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="销售支持姓名">
         <template slot-scope="scope">
-          <span>{{scope.row.roleList[0].roleDesc}}</span>
+          <span>{{scope.row.salesName}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center"
@@ -85,7 +88,7 @@
                       :render-header="tableHeader">
         <template slot-scope="scope">
           <span>
-            {{scope.row.roleList[0].roleDesc}}
+            {{scope.row.salesCode}}
           </span>
         </template>
       </el-table-column>
@@ -94,7 +97,7 @@
                   label="佣金比例"
                   :render-header="tableHeader">
           <template slot-scope="scope">
-              <span>{{scope.row.roleList[0].roleDesc}}</span>
+              <span>{{scope.row.commissionRate}}</span>
           </template>
       </el-table-column>
 
@@ -103,13 +106,13 @@
                        fixed="right"
                        width="150">
         <template slot-scope="scope">
-          <a size="small"
+          <a v-if="sales_support_edit" size="small"
              @click="handleUpdate(scope.row, 'edit')"
              class="common_btn">编辑</a>
           <!--<span class="space_line"> | </span>-->
-          <a size="small"
+          <a v-if="sales_support_delete" size="small"
              class="danger_btn"
-             @click="handleUpdate(scope.row, 'del')">删除</a>
+             @click="deletes(scope.row)">删除</a>
         </template>
       </el-table-column>
 
@@ -138,64 +141,66 @@
         <el-row :gutter="20">
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="订单编号" prop="amount">
-              <el-input v-model.number="form.amount"
-                        type="number"
+            <el-form-item label="订单编号" prop="appointmentCode">
+              <el-input v-model="form.appointmentCode"
+                        type="text"
                         placeholder="请输入订单编号"></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="佣金比例" prop="amount">
-              <el-input v-model.number="form.amount"
-                        type="number"
+            <el-form-item label="佣金比例" prop="commissionRate">
+              <el-input v-model.number="form.commissionRate"
+                        type="text"
                         placeholder="请输入佣金比例"></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="理财师姓名" prop="amount">
+            <el-form-item label="理财师姓名" prop="userName">
               <el-select class="filter-item"
+                         value-key="name"
                          style="width:100%;"
                          placeholder="请输入理财师姓名"
-                         v-model="listQuery.positionsId">
-                <el-option v-for="item in positions"
-                           :value="item.positionId"
-                           :label="item.positionName"
-                           :key="item.positionId">
-                  <span style="float: left;">{{item.positionName}}</span>
+                         v-model="userInfo"
+                         @change="userNameChange">
+                <el-option v-for="(item, index) in financialPlannerList"
+                           :value="item"
+                           :label="item.name"
+                           :key="index">
+                  <span style="float: left;">{{item.name}}</span>
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="理财师编号" prop="amount">
-              <el-input v-model="form.parentId" readonly="readonly" placeholder="请输入理财师编号"></el-input>          
+            <el-form-item label="理财师编号" prop="userCode">
+              <el-input v-model="form.userCode" readonly="readonly" placeholder="请输入理财师编号"></el-input>          
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="销售支持姓名" prop="amount">
-              
+            <el-form-item label="销售支持姓名" prop="salesName">
               <el-select class="filter-item"
+                         value-key="name"
                          style="width:100%;"
                          placeholder="请输入销售支持姓名"
-                         v-model="listQuery.positionsId">
-                <el-option v-for="item in positions"
-                           :value="item.positionId"
-                           :label="item.positionName"
-                           :key="item.positionId">
-                  <span style="float: left;">{{item.positionName}}</span>
+                         v-model="salesInfo"
+                         @change="salesNameChange">
+                <el-option v-for="(item, index) in salesSupportList"
+                           :value="item"
+                           :label="item.name"
+                           :key="index">
+                  <span style="float: left;">{{item.name}}</span>
                 </el-option>
               </el-select>
-
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="销售支持编号" prop="amount">
-              <el-input v-model="form.parentId" readonly="readonly" placeholder="请输入销售支持编号"></el-input>
+            <el-form-item label="销售支持编号" prop="salesCode">
+              <el-input v-model="form.salesCode" readonly="readonly" placeholder="请输入销售支持编号"></el-input>
             </el-form-item>
           </el-col>
 
@@ -215,8 +220,20 @@
   import {
     getPerformList,
     getAllPositon,
-    getAllDeparts
+    getAllDeparts,
+
+    getSalesSupportList,
+    getSalesSupport,
+    addSalesSupport,
+    updateSalesSupport,
+    deleteSalesSupport
+
   } from '@/api/achievement'
+  import {
+    getPlannerList, // 查询理财师列表
+    getDirectSupervisorList // 销售支持列表(目前这个方法查询的是所有员工))
+  } from '@/api/user'
+  import { mapGetters } from 'vuex'
   export default {
     components: {},
     data() {
@@ -228,7 +245,17 @@
           page: 1,
           limit: 20
         },
-        form: {},
+        form: {
+          salesSupportId: null,
+          appointmentCode: null,
+          commissionRate: null,
+          salesCode: null,
+          salesName: null,
+          userCode: null,
+          userName: null,
+        },
+        userInfo: null,
+        salesInfo: null,
         textMap: {
           edit: '编辑销售支持',
           create: '新增销售支持'
@@ -237,32 +264,89 @@
         dialogCreate: false,
         // dialogEdit: false,
         rules1: {
-          period: [
-            { required: true, message: '请选择周期', trigger: 'blur' }
+          appointmentCode: [
+            { required: true, message: '请输入订单编号', trigger: 'blur' }
           ],
-          id: [
-            { required: true, message: '请选择部门', trigger: 'blur' }
+          commissionRate: [
+            { required: true, message: '请输入佣金比例', trigger: 'blur' }
           ],
-          positionId: [
-            { required: true, message: '请选择职位', trigger: 'blur' }
+          salesCode: [
+            { required: true, message: '请输入销售支持姓名', trigger: 'blur' }
           ],
-          rank: [
-            { required: true, message: '请选择职级', trigger: 'blur' }
+          salesName: [
+            { required: true, message: '请选择销售支持姓名', trigger: 'blur' }
           ],
-          amount: [
-            { required: true, message: '请输入业绩指标', trigger: 'blur' }
-          ]
+          userCode: [
+            { required: true, message: '请输入理财师编号', trigger: 'blur' }
+          ],
+          userName: [
+            { required: true, message: '请选择理财师姓名', trigger: 'blur' }
+          ],
         },
         departs: [], // 部门
         positions: [], // 职位
-        level: [] // 职级
+        level: [], // 职级
+        appointmentcode: null, // 订单编号
+        username: null, // 理财师姓名
+        usercode: null, // 理财师编号
+        salesname: null, // 销售支持姓名
+        salescode: null, // 销售支持编号
+        commissionrate: null, // 佣金比例
+
+        financialPlannerList: [], // 所有理财师列表
+        salesSupportList: [], // 所有销售支持列表
+      }
+    },
+    	computed: {
+      ...mapGetters([
+        'permissions',
+      ]),
+      queryProps: function(){
+        return {
+          page:this.listQuery.page,
+          limit:this.listQuery.limit,
+          appointmentcode: this.appointmentcode,
+          username: this.username, 
+          usercode: this.usercode, 
+          salesname: this.salesname, 
+          salescode: this.salescode, 
+          commissionrate: this.commissionrate,
+        }
       }
     },
     created() {
       this.getAllSearch()
       this.getList()
+      this.getUserLists()
+      this.sales_support_add = this.permissions['sales_support_add']
+      this.sales_support_edit = this.permissions['sales_support_edit']
+      this.sales_support_delete = this.permissions['sales_support_delete']
     },
     methods: {
+      userNameChange(newVal){
+        let item = this.financialPlannerList.find((ite)=>{
+            return ite.empNo === newVal.empNo;
+        })
+        this.form.userCode = item.empNo
+        this.form.userName = item.name
+      },
+      salesNameChange(newVal){
+        let item = this.salesSupportList.find((ite)=>{
+            return ite.empNo === newVal.empNo;
+        })
+        this.form.salesCode = item.empNo
+        this.form.salesName = item.name
+      },
+      getUserLists(){
+        getPlannerList({status:1}).then(res=>{
+          if(res.status==200){
+            this.financialPlannerList = res.data
+          }
+        })
+        getDirectSupervisorList({status:1}).then(res=>{
+          this.salesSupportList = res.data
+        })
+      },
       tableHeader(h, { column, $index }) {
         return h('span', [
           h('span', column.label),
@@ -282,7 +366,14 @@
       },
       getList() {
         this.listLoading = true
-        getPerformList(this.listQuery).then(res => {
+        getSalesSupportList(this.listQuery).then(res => {
+          this.list = res.data.records
+          this.total = res.data.total
+          this.listLoading = false
+        })
+      },
+      getListByProps() {
+        getSalesSupportList(this.queryProps).then(res => {
           this.list = res.data.records
           this.total = res.data.total
           this.listLoading = false
@@ -310,7 +401,7 @@
       },
       handleFilter() { // search
         this.listQuery.page = 1
-        this.getList()
+        this.getListByProps()
       },
       resetFilter() { // reset
         this.listQuery = {
@@ -318,7 +409,14 @@
           limit: 20,
           positionId: ''
         }
-        this.handleFilter()
+        this.appointmentcode = ''
+        this.username = ''
+        this.usercode = ''
+        this.salesname = ''
+        this.salescode = ''
+        this.commissionrate = ''
+
+        this.getList()
       },
       handleCreate() {
         this.resetTemp()
@@ -326,23 +424,44 @@
         this.dialogCreate = true
       },
       resetTemp() {
-        this.form = {
-          period: [],
-          id: [],
-          positionId: [],
-          rank: [],
-          amount: null
+        this.form= {
+          salesSupportId: null,
+          appointmentCode: null,
+          commissionRate: null,
+          salesCode: null,
+          salesName: null,
+          userCode: null,
+          userName: null
         }
       },
-      handleImport() {},
+      handleImport() {
+        this.$router.push({ path: '/achievement/importSaleSupportExcel' })
+      },
       handleExport() {},
       handleUpdate(row, state) {
+        this.resetTemp()
         this.dialogStatus = 'edit'
-        console.log(row)
         if (state === 'edit') {
           this.dialogCreate = true
+          getSalesSupport(row.salesSupportId).then(res=>{
+            this.form = {
+              salesSupportId: res.data.salesSupportId,
+              appointmentCode: res.data.appointmentCode,
+              commissionRate: res.data.commissionRate,
+              salesCode: res.data.salesCode,
+              salesName: res.data.salesName,
+              userCode: res.data.userCode,
+              userName: res.data.userName
+            },
+            this.userInfo = this.financialPlannerList.find((ite)=>{
+              return ite.empNo === res.data.userCode;
+            })
+            this.salesInfo = this.salesSupportList.find((ite)=>{
+              return ite.empNo === res.data.salesCode;
+            })
+          })
         } else if (state === 'del') {
-          console.log(222)
+          console.log('删除')
         }
       },
       handleSizeChange(val) {
@@ -359,13 +478,43 @@
       },
       create(formName) {
         const set = this.$refs
-        console.log(this.form)
         set[formName].validate(valid => {
           if (valid) {
             this.dialogCreate = false
+            addSalesSupport(this.form).then(res=>{
+              this.resetFilter()
+            })
           }
         })
-      }
+      },
+      update(formName){
+        const set = this.$refs
+        set[formName].validate(valid => {
+          if (valid) {
+            this.dialogCreate = false
+            updateSalesSupport(this.form).then(res=>{
+              this.resetFilter()
+            })
+          }
+        })
+      },
+      deletes(row) {
+        this.$confirm('确认删除该订单 ( ' + row.appointmentCode + ' ) 吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteSalesSupport(row.salesSupportId).then(() => {
+            this.resetFilter()
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        })
+      },
     }
   }
 </script>

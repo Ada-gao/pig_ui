@@ -473,7 +473,7 @@
             { required: true, message: '请输入寄出方式'}
           ],
           auditRemark: [
-            { required: true, message: '请填写原因'}            
+            { required: true, message: '请填写原因'}          
           ]
         },
         clientId: ''
@@ -584,6 +584,8 @@
             }
           })
           // }
+        } else {
+          this.submitCheck()
         }
         // if (!this.result.auditRemark) {
         //   console.log('nonono')
@@ -633,7 +635,6 @@
           } else {
             // params.auditRemark = params.contractMail = null
             putPay(this.form.appointmentId, params).then(response => {
-              console.log(response.code)
               if(response.status == 200) {
                 this.$notify({
                   title: '成功',

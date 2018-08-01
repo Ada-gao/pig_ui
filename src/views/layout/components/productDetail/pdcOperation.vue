@@ -1090,6 +1090,12 @@
       },
       handleProStatus() { // 弹框确定事件
         updProductType(this.productId, this.dto).then(res => {
+          this.$notify({
+            title: '成功',
+            message: '状态操作成功',
+            type: 'success',
+            duration: 2000
+          })
           this.dialogStVisible = false
           this.$router.push({path: this.url})
           Bus.$emit('activeUrl', this.url)
@@ -1160,7 +1166,7 @@
           let params = {
             fileName: this.selectFile.fileName,
             productClientFileManageId: this.selectFile.productClientFileManageId,
-            productId: this.productId || 88
+            productId: this.productId
           }
           addCustFile(params).then(res => {
             // this.clientFile = res.data
@@ -1221,7 +1227,7 @@
       },
       delfiles(item, type) { // 删除材料
         let productFileType = type
-        let id = this.productId || 88
+        let id = this.productId
         delFiles({fileType: type, productFileId: item.productFileId}).then(response => {
           if(response.status === 200) {
             this.$notify({

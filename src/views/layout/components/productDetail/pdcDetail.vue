@@ -1,7 +1,7 @@
 <template>
   <div class="product-detail">
     <el-form :model="form" :rules="rules" ref="form" label-width="110px">
-      <el-row :gutter="90">
+      <el-row :gutter="20">
         <el-col :span="11" v-if="!stage&createStatus==='update'">
           <!-- 如果分期，不显示编号 -->
           <el-form-item label="产品编号" prop="productCode">
@@ -62,11 +62,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
+        <!-- <el-col :span="11">
           <el-form-item label="汇率" prop="currencyId">
             <el-input v-model="form.currencyId" placeholder="" :disabled="detailDisabled"></el-input>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="11">
           <el-form-item label="购买人群" prop="currencyId">
             <el-input v-model="form.currencyId" placeholder="" :disabled="detailDisabled"></el-input>
@@ -76,28 +76,22 @@
           <el-form-item label="产品期限" prop="investmentHorizon">
             <!-- <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" disabled></el-input>
             <el-input v-model="form.investmentHorizonUnit" style="width: 22%;" disabled></el-input> -->
-            <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" :disabled="detailDisabled||stageType=='0'"></el-input>
+            <el-input v-model="form.investmentHorizon" style="width: 75%;" :disabled="detailDisabled||stageType=='0'"></el-input>
             <el-select v-model="form.investmentHorizonUnit" style="width: 23%;" :disabled="detailDisabled||stageType=='0'">
               <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
               </el-option>
             </el-select>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row :gutter="90">
-        <el-col>
+        <el-col :span="11">
           <el-form-item label="收益" prop="isFloat">
             <el-radio-group v-model="form.isFloat" @change="radioChange" :disabled="detailDisabled||stageType=='0'">
               <el-radio :label="0" style="display: inline-block">浮动收益</el-radio>
-              <el-radio :label="1" style="display: inline-block">收益对标基准（%）</el-radio>
+              <el-radio :label="1" style="display: inline-block">收益对标基准(%)</el-radio>
               <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn" :disabled="collectDisabled||stageType=='0'"></el-input>
             </el-radio-group>
           </el-form-item>
         </el-col>
-        <el-col>
-        </el-col>
-      </el-row>
-      <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="募集额度（万）" prop="collectionAmount" style="white-space: nowrap">
             <el-input type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" :disabled="collectDisabled"></el-input>
@@ -159,17 +153,22 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="认购费">
-            <el-input v-model="form.assetTeam" placeholder="请输入" :disabled="detailDisabled"></el-input>
+            <el-radio-group v-model="form.isFloat" @change="radioChange" :disabled="detailDisabled||stageType=='0'">
+              <el-radio :label="0" style="display: inline-block">无认购费</el-radio>
+              <el-radio :label="1" style="display: inline-block">价内认购</el-radio>
+              <el-radio :label="2" style="display: inline-block">价外认购(%)</el-radio>
+              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn" :disabled="collectDisabled||stageType=='0'"></el-input>
+            </el-radio-group>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
+        <!-- <el-col :span="11">
           <el-form-item label="产品归属">
             <el-radio-group v-model="form.isFloat" @change="radioChange" :disabled="detailDisabled">
               <el-radio :label="0" style="display: inline-block">自营</el-radio>
               <el-radio :label="1" style="display: inline-block">代购</el-radio>
             </el-radio-group>
           </el-form-item>
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row :gutter="90">
         <el-col :span="22">
@@ -191,22 +190,16 @@
             <el-input v-model="form.bankName" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="账号">
             <el-input v-model.number="form.cardNo" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="开户银行名称">
             <el-input v-model="form.subBranchName" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="大额支付行号">
             <el-input v-model="form.subBranchName" placeholder="请输入" :disabled="detailDisabled"></el-input>
@@ -561,30 +554,39 @@
         }
       },
       create(formName) { // 创建提交
-        this.$emit('productIdByDetail', '')
-        // const set = this.$refs
-        // if(!this.form.isFloat) {
-        //   this.form.annualizedReturn = null
-        //   this.isDisabled = true
-        // }
-        // set[formName].validate(valid => {
-        //   if (valid) {
-        //     addObj(this.form)
-        //       .then(response => {
-        //         if(response.status === 200) {
-        //           this.$notify({
-        //             title: '成功',
-        //             message: '创建成功',
-        //             type: 'success',
-        //             duration: 2000
-        //           })
-        //           this.$emit('productIdByDetail', response.data.productId)
-        //         }
-        //       })
-        //   } else {
-        //     return false
-        //   }
-        // })
+        // this.$emit('productIdByDetail', '')
+        const set = this.$refs
+        if(!this.form.isFloat) {
+          this.form.annualizedReturn = null
+          this.isDisabled = true
+        }
+        if(this.form.investmentHorizon.indexOf('+')&this.form.investmentHorizonUnit!='1') {
+          this.$notify({
+            title: '提示',
+            message: '产品期限填写有误，请重新输入',
+            type: 'danger',
+            duration: 2000
+          })
+          return false
+        }
+        set[formName].validate(valid => {
+          if (valid) {
+            addObj(this.form)
+              .then(response => {
+                if(response.status === 200) {
+                  this.$notify({
+                    title: '成功',
+                    message: '创建成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                  this.$emit('productIdByDetail', response.data.productId)
+                }
+              })
+          } else {
+            return false
+          }
+        })
       },
       update(formName) { // 产品详情修改提交
         const set = this.$refs
@@ -597,6 +599,15 @@
         this.form.currencyId = this.form.currencyIdNo
         this.form.productTypeId = this.form.productTypeIdNo
         this.form.investmentHorizonUnit = this.form.investmentHorizonUnitNo
+        if(this.form.investmentHorizon.indexOf('+')&this.form.investmentHorizonUnit!='1') {
+          this.$notify({
+            title: '提示',
+            message: '产品期限填写有误，请重新输入',
+            type: 'danger',
+            duration: 2000
+          })
+          return false
+        }
         set[formName].validate(valid => {
           if (valid) {
             if (this.stage) { //分期

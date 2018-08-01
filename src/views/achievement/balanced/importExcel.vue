@@ -31,8 +31,8 @@
 
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { importPf } from '@/api/achievement'
-  import { replaceKey } from '@/utils'
+  import { balancedImport } from '@/api/achievement/index'
+  import { replaceKey } from '@/utils'  
 
   export default {
     name: 'uploadExcel',
@@ -43,7 +43,7 @@
         tableHeader: [],
         formData: null,
         dialogVisible: false,
-        downloadUrl: 'static/excel/业绩指标模版.xlsx'
+        downloadUrl: 'static/excel/平衡计分卡系数模版.xlsx'
       }
     },
     methods: {
@@ -53,61 +53,46 @@
         }
       },
       selected(data) {
+        // this.tableHeader = data.header
+        // this.tableData = data.results
+        // console.log(this.tableHeader)
+        // console.log(this.tableData)
+        // this.formData = data.formData
+        // console.log(this.formData)
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
         this.tableData = temp.results
         this.formData = JSON.parse(JSON.stringify(this.tableData))
-        const kepMap = {
-          '开始时间': 'start',
-          '结束时间': 'end',
-          '部门': 'deptName',
-          '职位': 'positionName',
-          '职级': 'rankName',
-          '业绩指标（万）': 'performanceIndicator'
+        let kepMap = {
+          '姓名': "userName",
+          '工号': "userCode",
+          '平衡计分卡系数': "coefficient",
+          '职位': "positionName",
+          '职级': "rankName",
+          '部门': "deptName",
+          '时间': "time",
         }
-        this.formData.forEach(item => {
+        this.formData.forEach( item => {
           replaceKey(item, kepMap)
+          let timeRange = item.time.split('—')
+          item.start =  new Date(timeRange[0]).getTime()
+          item.end = new Date(timeRange[1]).getTime()
+          delete item.time
         })
       },
       submit() {
-        importPf(this.formData).then(res => {
-          console.log(res)
-          if (res.status === 200) {
+        // const config = {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // }
+        balancedImport(this.formData).then(res => {
+          if (!res) {
+            console.log('上传失败')
+          } else {
+            console.log('上传成功')
             this.dialogVisible = false
-            let count = 0
-            res.data.every((item, index) => {
-              if (item.msgList && item.msgList.length > 0) {
-                ++count
-                return true
-              } else {
-                return false
-              }
-            })
-            if (count === res.data.length) {
-              this.$notify({
-                title: '失败',
-                message: '导入失败',
-                type: 'error',
-                duration: 2000
-              })
-            } else {
-              this.$notify({
-                title: '成功',
-                type: 'success',
-                duration: 2000,
-                message: '导入成功'
-              })
-              this.$router.push({ path: '/achievement/perform' })
-            }
           }
-        }).catch(() => {
-          this.dialogVisible = false
-          this.$notify({
-            title: '失败',
-            message: '导入失败',
-            type: 'error',
-            duration: 2000
-          })
         })
       }
     }

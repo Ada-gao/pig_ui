@@ -31,7 +31,7 @@
 
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { importPf } from '@/api/achievement'
+  import { commissionListImport } from '@/api/achievement/index'
   import { replaceKey } from '@/utils'
 
   export default {
@@ -43,7 +43,8 @@
         tableHeader: [],
         formData: null,
         dialogVisible: false,
-        downloadUrl: 'static/excel/业绩指标模版.xlsx'
+        downloadUrl: 'static/excel/销售支持模版.xlsx',
+        formContent: []
       }
     },
     methods: {
@@ -53,61 +54,45 @@
         }
       },
       selected(data) {
+        // this.tableHeader = data.header
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
         this.tableData = temp.results
         this.formData = JSON.parse(JSON.stringify(this.tableData))
-        const kepMap = {
-          '开始时间': 'start',
-          '结束时间': 'end',
-          '部门': 'deptName',
-          '职位': 'positionName',
-          '职级': 'rankName',
-          '业绩指标（万）': 'performanceIndicator'
+        // this.tableData = Object.assign([], data.results)
+        // console.log(this.tableHeader)
+        // console.log(this.tableData)
+        // this.formData = data.formData
+        // this.formData = Object.assign([], data.results)
+        // this.formContent = this.formData
+        let kepMap = {
+          '预约编号': "appointmentCode",
+          '理财师姓名': "userName",
+          '理财师编号': "userCode",
+          '销售支持姓名': "salesName",
+          '销售支持编号': "salesCode",
+          '佣金比例': "commissionRate",
         }
-        this.formData.forEach(item => {
+        this.formData.forEach( item => {
           replaceKey(item, kepMap)
+          item.commission = parseInt(item.commission)
+          item.finalCommission = parseInt(item.finalCommission)
+          item.occurrenceDate = new Date(item.occurrenceDate).getTime()
         })
       },
       submit() {
-        importPf(this.formData).then(res => {
-          console.log(res)
-          if (res.status === 200) {
+        // const config = {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // }
+        commissionListImport(this.formData).then(res => {
+          if (!res) {
+            console.log('上传失败')
+          } else {
+            console.log('上传成功')
             this.dialogVisible = false
-            let count = 0
-            res.data.every((item, index) => {
-              if (item.msgList && item.msgList.length > 0) {
-                ++count
-                return true
-              } else {
-                return false
-              }
-            })
-            if (count === res.data.length) {
-              this.$notify({
-                title: '失败',
-                message: '导入失败',
-                type: 'error',
-                duration: 2000
-              })
-            } else {
-              this.$notify({
-                title: '成功',
-                type: 'success',
-                duration: 2000,
-                message: '导入成功'
-              })
-              this.$router.push({ path: '/achievement/perform' })
-            }
           }
-        }).catch(() => {
-          this.dialogVisible = false
-          this.$notify({
-            title: '失败',
-            message: '导入失败',
-            type: 'error',
-            duration: 2000
-          })
         })
       }
     }

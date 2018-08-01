@@ -70,6 +70,7 @@ a:hover {
 //app-container全局
 .dialog-footer {
   margin-top: 20px;
+  text-align: center;
 }
 .pagination-container {
   margin-top: 12px;
@@ -184,6 +185,12 @@ input[type="number"]{
   .el-form-item__content {
     display: inline-block;
     width: 59%;
+    margin-left: 0!important;
+  }
+}
+// 业绩指标列表新增指标结束日期样式
+.el-form-item.inline-item {
+  .el-form-item__content {
     margin-left: 0!important;
   }
 }

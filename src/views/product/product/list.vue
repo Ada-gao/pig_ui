@@ -66,7 +66,7 @@
       :productQuery="true"
       :productList="data"
       :activeUrl="url"
-      @searchProduct="getListQuery">
+      @searchProduct="getListPageQuery">
     </product-table-component>
 
     <!-- <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -216,99 +216,6 @@
           // delFlag: undefined,
           deptId: undefined
         },
-        rules: {
-          productName: [
-            {
-              required: true,
-              message: '请输入产品名称',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 20,
-              message: '长度在 3 到 20 个字符',
-              trigger: 'blur'
-            }
-          ],
-          productId: [
-            {
-              required: true,
-              message: '请输入产品编号',
-              trigger: 'blur'
-            }
-          ],
-          productTypeId: [
-            {
-              required: true,
-              message: '请选择产品类型',
-              trigger: 'blur'
-            }
-          ],
-          productRiskLevel: [
-            {
-              required: true,
-              message: '请选择产品风险级别',
-              trigger: 'blur'
-            }
-          ],
-          manager: [
-            {
-              required: true,
-              message: '请输入基金管理人',
-              trigger: 'blur'
-            }
-          ],
-          currencyId: [
-            {
-              required: true,
-              message: '请选择交易币种',
-              trigger: 'blur'
-            }
-          ],
-          collectionAmount: [
-            {
-              required: true,
-              message: '请输入募集额度',
-              trigger: 'blur'
-            }
-          ],
-          minimalAmount: [
-            {
-              required: true,
-              message: '请输入起投金额',
-              trigger: 'blur'
-            }
-          ],
-          minimalAddAmount: [
-            {
-              required: true,
-              message: '请输入追加金额',
-              trigger: 'blur'
-            }
-          ],
-          netValue: [
-            {
-              // required: false,
-              message: '请输入小于100的数字',
-              trigger: 'change',
-              validator: twoDecimals
-            }
-          ],
-          investmentHorizon: [
-            {
-              required: true,
-              message: '请输入产品期限',
-              trigger: 'blur'
-            }
-          ]
-          // isFloat: [
-          //   {
-          //     required: true,
-          //     message: '请选择收益',
-          //     trigger: 'blur'
-          //   }
-          // ],
-        },
         statusOptions: ['0', '1'],
         rolesOptions: [],
         dialogFormVisible: false,
@@ -394,6 +301,11 @@
     methods: {
       getListQuery(data) {
         this.listQuery = data
+        this.getList()
+      },
+      getListPageQuery(data) { // 页数改变
+        this.listQuery.page = data.page
+        this.listQuery.limit = data.limit
         this.getList()
       },
       getList() {
