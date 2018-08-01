@@ -264,44 +264,86 @@
           </el-col>
         </el-row>
       </div>
+      <!-- 佣金业绩统计 -->
+      <div class="split-line" style="margin: 20px 0;"></div>
       <div class="group-item">
-        <h3>非活动时间段</h3>
+        <h3>佣金业绩统计</h3>
         <el-row style="position: relative">
           <el-col :span="11">
-            <el-form-item label="业绩系数" prop="performance">
-              <el-input style="width: 300px"
-                        :disabled="operationDisabled"
-                        v-model="normalData.performanceCoefficient"></el-input>
+            <el-form-item label="折标业绩系数">
+              <el-input></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="11" style="white-space: nowrap"
-                  v-for="item in normalList1" :key="item.age">
-            <el-form-item :label="`佣金系数（第${item.age}年）`">
-              <el-input style="width: 300px"
-                :disabled="operationDisabled"
-                v-model="item.brokerageCoefficient"></el-input>
-            </el-form-item>
-          </el-col>
-          <i class="el-icon-plus"
-            v-if="!operationDisabled"
-            @click="addCommission"
-            style="position: absolute; right: 180px; top: 10px;"></i>
+         
         </el-row>
-        <el-row v-if="addNormList">
-          <el-col :span="11" v-for="item in addNormList" :key="item.idx" style="white-space: nowrap">
-            <el-form-item :label="`佣金系数（第${item.age}年）`">
-              <el-input style="width: 300px"
-                :disabled="operationDisabled"
-                v-model="item.brokerageCoefficient"></el-input>
-            </el-form-item>
+        <el-row>
+          <el-col :span="11"  v-for="(item,index) in productCommission" :key="item.age" style="white-space: nowrap;
+          margin-right:3%;" >
+            <el-row  type="flex" justify="space-between" class="row-bg product-commission">
+              <span>产品佣金系数第{{index+1}}年</span>
+              <span @click="addProductCommission" class="color-0299CC " v-if="index == 0"><i class="el-icon-plus mr5"></i >新增</span>
+              <span @click="deleteProductCommission(index)" class="color-0299CC " v-if="index != 0 && index == productCommission.length-1"><i class="el-icon-delete mr5"></i >删除</span>
+            </el-row>
+              <el-form-item :label="`第${i+1}层级(%)`" v-for="(Citem,i) in item.levelData">
+                <el-input
+                  v-model="Citem.hierarchy" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input>
+                  <i  @click="addProductLevel(i)" v-if="i+1 == item.levelData.length && index == 0" class="el-icon-plus color-0299CC"></i >
+                  <i  @click="deleteProductLevel(i)" v-if="i+1 == item.levelData.length && index == 0" class="el-icon-delete color-0299CC"></i >
+              </el-form-item>
           </el-col>
         </el-row>
       </div>
+       <div class="split-line" style="margin: 20px 0;"></div>
+     <!-- 活动时间段业绩统计 -->
+     <div class="group-item" ref="activityData">
+        <h3>活动时间段业绩统计<span @click="addStatistics" class="color-0299CC add-statistics"><i class="el-icon-plus mr5"></i >新增统计</span></h3>
+        <el-row v-for="(item,index) in activityData" :key="item.idx" :class="{dashed:index!=0}">
+         <el-row>
+          <el-col :span="11" style="margin-right: 3%;">
+            <el-form-item label="活动时间段">
+              <el-date-picker
+              style="width:100%"
+                v-model="item.activeDate"
+                type="daterange"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :default-time="['00:00:00', '23:59:59']">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="折标业绩系数" >
+              <el-input v-model="item.performanceCoefficient" ></el-input>
+            </el-form-item>
+          </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="11"  v-for="(Citem,Cindex) in item.activityTime" :key="Citem.age" style="white-space: nowrap;
+            margin-right:3%;" >
+              <el-row  type="flex" justify="space-between" class="row-bg product-commission">
+                <span>活动时间产品佣金系数第{{Cindex+1}}年</span>
+                <span @click="addactivityTime(index)" class="color-0299CC " v-if="Cindex == 0"><i class="el-icon-plus mr5"></i >新增</span>
+                <span @click="deleteActivityTime(index,Citem)" class="color-0299CC " v-if="Cindex != 0 && Cindex == item.activityTime.length-1"><i class="el-icon-delete mr5"></i >删除</span>
+              </el-row>
+              <el-form-item :label="`第${k+1}层级(%)`" prop="" v-for="(cvalue,k) in Citem.levelData">
+                <el-input
+                  v-model="cvalue.hierarchy" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'   type="number"></el-input>
+                  <i  @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.levelData.length && Cindex == 0" class="el-icon-plus color-0299CC"></i >
+                  <i  @click="deleteActivityTimeLevel(index,Cindex,k)" v-if="k+1 == Citem.levelData.length && Cindex == 0" class="el-icon-delete color-0299CC"></i >
+              </el-form-item>
+
+            </el-col>
+        </el-row>
+        </el-row>
+        </el-row>
+      </div>
+<!-- 
+
       <div class="group-item" style="position: relative">
         <h3>活动时间段</h3>
         <el-row v-for="item in activityData" :key="item.idx">
           <el-col :span="11">
-            <el-form-item label="活动时间">
+            <el-form-item label="活动时间段">
               <el-date-picker
                 style="width: 300px"
                 v-model="item.activeDate"
@@ -314,17 +356,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="业绩系数">
+            <el-form-item label="折标业绩系数">
               <el-input style="width: 300px"
                 :disabled="operationDisabled"
                 v-model="item.performanceCoefficient"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="佣金系数">
-              <el-input style="width: 300px"
-                        :disabled="operationDisabled"
-                        v-model="item.brokerageCoefficient"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -361,7 +396,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-      </div>
+      </div> -->
     </el-form>
 
     <div slot="footer" class="dialog-footer" style="text-align: center;">
@@ -556,7 +591,16 @@
         },
         activityData: [
           {
-            activeDate: ['', '']
+            activeDate: ['', ''],
+            performanceCoefficient:'',
+            activityTime:[{
+                age:1,
+                levelData:[{
+                  coefficient:1,
+                  hierarchy: ''
+                }]
+              }
+            ]
           }
         ],
         activityList: [],
@@ -570,6 +614,14 @@
           age: 1,
           brokerageCoefficient: ''
         }],
+        productCommission:[{
+          age: 1,
+          levelData: [{
+            coefficient:1,
+            hierarchy: ''
+          }]
+        }],
+        activityTime:1,
         cmsIndex: 1,
         radio2: 1,
         checked1: false,
@@ -618,6 +670,7 @@
         // stage: false,
         // stageTypeNo: '',
       }
+     
     },
     // props: ['productId', 'proStatus', 'productInfo'],
     props: {
@@ -662,6 +715,130 @@
       this.url = localStorage.getItem('activeUrl')
     },
     methods: {
+      //新增产品佣金系数
+      addProductCommission(){
+        if(this.productCommission.length >=5) return false;
+        let levelDataArr = []
+        this.productCommission[0].levelData.forEach((item,index)=>{
+            levelDataArr.push({
+              coefficient:index+1,
+              hierarchy: ''
+            })
+        })
+        this.productCommission.push({
+          age:this.productCommission.length+1,
+          levelData:levelDataArr
+        })
+      },
+      //删除产品佣金系数
+      deleteProductCommission(index){
+        if(this.productCommission.length == 1) return false;
+        this.productCommission.splice(index,1)
+      },
+      //佣金业绩统计 - 产品佣金系数 删除
+      deleteProductLevel(index){
+        if(index <=0) return false;
+        this.productCommission.forEach(item=>{
+            item.levelData.splice(index,1)
+        })
+        //this.levelList--;
+      },
+      //佣金业绩统计 - 产品佣金系数 增加
+      addProductLevel(i){
+          this.productCommission.forEach((item,index)=>{
+              item.levelData.push({
+                coefficient:i+2,
+                hierarchy: ''
+              })
+          })
+        //       productCommission:[{
+        //    age: 1,
+        //   levelData: [{
+        //     coefficient:'',
+        //     hierarchy: ''
+        //   }]
+        // }],
+      },
+      //新增统计
+      addStatistics(){
+        this.activityData.push( {
+            activeDate: ['', ''],
+            performanceCoefficient:'',
+            activityTime:[{
+                age:1,
+                levelData:[{
+                  coefficient:1,
+                  hierarchy: ''
+                }]
+              }
+            ]
+          })
+      },
+      //新增活动时间产品佣金系数
+      addactivityTime(index){
+        let objLength = this.activityData[index].activityTime;
+        if(objLength.length>=5) return false;
+        let levelDataArr = [];
+        objLength[0].levelData.forEach((item,index)=>{
+          levelDataArr.push({
+            coefficient:index+1,
+            hierarchy: ''
+          })
+        })
+        objLength.push({
+            age:objLength.length+1,
+            levelData: levelDataArr
+          }
+        )
+      },
+      //删除活动时间产品佣金系数
+      deleteActivityTime(index,cindex){
+        let obj =  this.activityData[index].activityTime
+        if(obj.length <= 1) return false;
+        obj.splice(cindex,1)
+      },
+       //新增活动时间产品佣金系数 - 层级
+      addActivityTimeLevel(index,k){
+        let levelDataArr =[];
+          this.activityData[index].activityTime.forEach(item=>{
+              item.levelData.push({
+                coefficient:k+2,
+                hierarchy: ''
+              })
+            })
+
+        //  this.activityData[index].activityTime.forEach(item=>{
+        //   console.log(item)
+        //   item.levelData.push({
+        //     coefficient:'',
+        //           hierarchy: ''
+        //  })
+        // })
+        //  activityData: [
+        //   {
+        //     activeDate: ['', ''],
+        //     performanceCoefficient:'',
+        //     year:1,
+        //     activityTime:[{
+        //         age:1,
+        //         levelData:[{
+        //           coefficient:'',
+        //           hierarchy: ''
+        //         }]
+        //       }
+        //     ]
+        //   }
+        // ],
+       
+      },
+       //删除活动时间产品佣金系数 - 层级
+      deleteActivityTimeLevel(index,Cindex,k){
+        if(k<= 0) return false;
+        this.activityData[index].activityTime.forEach(item=>{
+          item.levelData.splice(k,1);
+        })
+      },
+
       getOperations() { // 获取操作指南信息
         if(!this.productId) return false
         this.getAllFiles(this.productId)
@@ -688,8 +865,16 @@
           this.cmsIndex = list[list.length - 1].age
           if(!this.activityData.length) {
             this.activityData = [{
-              activeDate: [],
-              performanceCoefficient: ''
+              activeDate: ['',''],
+              performanceCoefficient: '',
+                 activityTime:[{
+                  age:1,
+                  levelData:[{
+                    coefficient:1,
+                    hierarchy: ''
+                  }]
+                }
+              ]
             }]
           } else {
             this.activityData.forEach(item => {
@@ -725,6 +910,12 @@
         })
       },
       updateRouter() { // 操作指南新建或编辑提交
+
+
+        console.log(this.activityData)
+        //console.log(this.productCommission)
+        return false;
+
         this.activityList = this.activityList.concat(this.activityData)
         this.activityList.forEach(item => {
           item.activityEnd = item.activeDate[1]
@@ -1118,6 +1309,29 @@
   }
   .query-color {
     color: $mainColor;
+  }
+  .color-0299CC{
+    color: #0299CC;
+  }
+  .product-commission{
+    margin:0 0 22px 35px;
+  }
+  .ml35{
+    margin-left:35px;
+  }
+  .mr5{
+    margin-right:5px;
+  }
+  .add-statistics{
+    float:right;
+    margin-right: 88px;
+  }
+  .dashed{
+  padding: 30px 0;
+  border-top:1px dotted #C0C0C0;
+  }
+  .el-form-item__error{
+    left: 85px;
   }
 </style>
 
