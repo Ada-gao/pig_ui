@@ -57,27 +57,57 @@
         this.tableHeader = temp.header
         this.tableData = temp.results
         this.formData = JSON.parse(JSON.stringify(this.tableData))
-        let kepMap = {
-          '公司': "company",
-          '区域': "regional",
-          '区域副总': "regionalViceManager",
-          '区域总': "regionalManager",
-          '团队经理': "teamManager",
+        const kepMap = {
+          '开始时间': 'start',
+          '结束时间': 'end',
+          '部门': 'deptName',
+          '职位': 'positionName',
+          '职级': 'rankName',
+          '业绩指标（万）': 'performanceIndicator'
         }
-        this.formData.forEach( item => {
+        this.formData.forEach(item => {
           replaceKey(item, kepMap)
-          item.commission = parseInt(item.commission)
-          item.finalCommission = parseInt(item.finalCommission)
-          item.occurrenceDate = new Date(item.occurrenceDate).getTime()
         })
       },
       submit() {
         importPf(this.formData).then(res => {
-          if (!res) {
-            console.log('上传失败')
-          } else {
-            console.log('上传成功')
+          console.log(res)
+          if (res.status === 200) {
+            this.dialogVisible = false
+            let count = 0
+            res.data.every((item, index) => {
+              if (item.msgList && item.msgList.length > 0) {
+                ++count
+                return true
+              } else {
+                return false
+              }
+            })
+            if (count === res.data.length) {
+              this.$notify({
+                title: '失败',
+                message: '导入失败',
+                type: 'error',
+                duration: 2000
+              })
+            } else {
+              this.$notify({
+                title: '成功',
+                type: 'success',
+                duration: 2000,
+                message: '导入成功'
+              })
+              this.$router.push({ path: '/achievement/perform' })
+            }
           }
+        }).catch(() => {
+          this.dialogVisible = false
+          this.$notify({
+            title: '失败',
+            message: '导入失败',
+            type: 'error',
+            duration: 2000
+          })
         })
       }
     }
