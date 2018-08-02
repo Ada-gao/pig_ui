@@ -405,9 +405,10 @@
       },
       upperIds(list1, list2, id) {
         list1.map(item => {
-          item.map(el => {
+          item.map((el, index) => {
             if (el === id) {
               list2 = JSON.parse(JSON.stringify(item))
+              list2.splice(index + 1, list2.length - 1)
             }
           })
         })
@@ -589,9 +590,7 @@
         this.$refs[formName].resetFields()
       },
       close() {
-        if (this.dialogStatus === 'edit') {
-          this.form = {}
-        }
+        this.form = {}
       },
       create(formName) {
         this.tempForm = {
