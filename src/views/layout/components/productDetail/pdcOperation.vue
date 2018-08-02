@@ -414,8 +414,10 @@
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===0" type="primary" @click="updateProductType(1)">
         <svg-icon icon-class="preheating"></svg-icon> 进入产品预热</el-button>
       <!-- 预热 -->
-      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="dialogCollectVisible=true">
-        <svg-icon icon-class="collecting"></svg-icon> 进入产品募集</el-button>
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1&!form2.collectDate" type="primary">
+        <svg-icon icon-class="collecting"></svg-icon> <span @click="dialogCollectVisible=true">进入产品募集</span></el-button>
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1&form2.collectDate!=null" type="primary">
+        <span @click="changeCollect">修改定时</span> | <span @click="cancelCollect">取消定时</span></el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="backProductType(0)">
         <svg-icon icon-class="return"></svg-icon> 返回在建</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="updateProductDisplay">
@@ -561,7 +563,7 @@
   import productMaterialComponent from 'components/table/material'
   import { putFileObj, delCustFile, fetchOperation, addCustFile, postTranscFile, getCustFile,
     updCustFile, updProductDisplay, updProductPause, getProductStage, addOperationObj, updProductType,
-    updToCollect } from '@/api/product/product'
+    updToCollect, cancelToCollect } from '@/api/product/product'
   import { mapGetters } from 'vuex'
   import { transformText, sortKey } from '@/utils'
   // import { parseTime } from '@/utils'
@@ -867,6 +869,10 @@
         this.getAllFiles(this.productId)
         fetchOperation(this.productId).then(res => {
           this.form2 = res.data
+          // console.log(this.form2.collectDate)
+          // if(this.form2.collectDate) {
+          //   this.collectVal = 2
+          // }
           this.form2.normalDTO = res.data.normalDTO || {}
           this.activityData = res.data.activityDTO || []
           if(this.form2.importantStart || this.form2.importantEnd) {
@@ -933,12 +939,9 @@
         })
       },
       updateRouter() { // 操作指南新建或编辑提交
-
-
         console.log(this.activityData)
         //console.log(this.productCommission)
-        return false;
-
+        return false
         this.activityList = this.activityList.concat(this.activityData)
         this.activityList.forEach(item => {
           item.activityEnd = item.activeDate[1]
@@ -1116,7 +1119,7 @@
           this.collectTime = ''
         }
       },
-      handleToCollect() {
+      handleToCollect() { // 募集定时
         let params = {
           collect: this.collectVal === 1 ? true : false,
           collectDate: this.collectTime = this.collectVal === 1 ? '' : this.collectTime 
@@ -1129,8 +1132,33 @@
             type: 'success',
             duration: 2000
           })
-          this.$router.push({path: this.url})
-          Bus.$emit('activeUrl', this.url)
+          this.getOperations()
+        })
+      },
+      changeCollect() {
+        console.log('修改定时')
+        this.dialogCollectVisible = true
+        this.collectTime = this.form2.collectDate
+        this.collectVal = 2
+      },
+      cancelCollect() { //  募集，取消定时
+        this.$confirm('确定取消定时吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          cancelToCollect(this.productId).then(res => {
+            if(res.status !== 200) return false
+            this.$notify({
+              title: '成功',
+              message: '状态操作成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.getOperations()
+          })
+        }).catch(() => {
+
         })
       },
       handleProStatus() { // 弹框确定事件

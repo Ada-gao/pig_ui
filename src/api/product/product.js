@@ -161,6 +161,16 @@ export function updToCollect(productId, obj) {
 }
 
 /**
+ * 取消募集定时任务
+ */
+export function cancelToCollect(productId) {
+  return request({
+    url: '/product/products/' + productId + '/cancelTask',
+    method: 'put'
+  })
+}
+
+/**
  * 募集/产品分期查询
  */
 export function getProductStage(productId, type) {

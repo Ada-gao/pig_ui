@@ -5,19 +5,22 @@
         <el-col :span="11" v-if="!stage&createStatus==='update'">
           <!-- 如果分期，不显示编号 -->
           <el-form-item label="产品编号" prop="productCode">
-            <el-input v-model="form.productCode" placeholder="请输入产品编号" :disabled="detailDisabled"></el-input>
+            <span>{{form.productCode}}</span>
+            <!-- <el-input v-else v-model="form.productCode" placeholder="请输入产品编号"></el-input> -->
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="产品全称" prop="productName">
-            <el-input v-model="form.productName" placeholder="请输入产品名称" :disabled="detailDisabled"></el-input>
+            <span v-if="detailDisabled">{{form.productName}}</span>
+            <el-input v-else v-model="form.productName" placeholder="请输入产品名称"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品结构类型" prop="productName">
-            <el-select class="filter-item" v-model="form.productMixTypeId" placeholder="请选择" :disabled="detailDisabled">
+            <span v-if="detailDisabled">{{form.productMixTypeId}}</span>
+            <el-select v-else class="filter-item" v-model="form.productMixTypeId" placeholder="请选择">
               <el-option v-for="item in productMixTypes" :key="item.productMixTypeId" :value="item.productMixTypeId" :label="item.name">
                 <span style="float: left">{{ item.name }}</span>
               </el-option>
@@ -26,12 +29,14 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品简称" prop="productShortName">
-            <el-input v-model="form.productShortName" placeholder="请输入产品名称" :disabled="shortNameDisabled"></el-input>
+            <span v-if="shortNameDisabled">{{form.productShortName}}</span>
+            <el-input v-else v-model="form.productShortName" placeholder="请输入产品名称"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品收益类型" prop="productTypeId">
-            <el-select class="filter-item" v-model="form.productTypeId" placeholder="请选择" :disabled="detailDisabled||stageType=='0'">
+            <span v-if="detailDisabled||stageType=='0'">{{form.productTypeId|trunText(productTypes)}}</span>
+            <el-select v-else class="filter-item" v-model="form.productTypeId" placeholder="请选择">
               <el-option v-for="item in productTypes" :key="item.productTypeId" :value="item.productTypeId" :label="item.name">
                 <span style="float: left">{{ item.name }}</span>
               </el-option>
@@ -40,7 +45,8 @@
         </el-col>
         <el-col :span="11" style="white-space: nowrap">
           <el-form-item label="产品风险级别" prop="productRiskLevel">
-            <el-select class="filter-item" v-model="form.productRiskLevel" placeholder="请选择" :disabled="detailDisabled||stageType=='0'">
+            <span v-if="detailDisabled||stageType=='0'">{{form.productRiskLevel|trunText(productRiskLevel)}}</span>
+            <el-select v-else class="filter-item" v-model="form.productRiskLevel" placeholder="请选择">
               <el-option v-for="item in productRiskLevel" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -49,12 +55,14 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="基金管理人" prop="manager">
-            <el-input v-model="form.manager" placeholder="请输入" :disabled="detailDisabled"></el-input>
+            <span v-if="detailDisabled">{{form.manager}}</span>
+            <el-input v-else v-model="form.manager" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="交易币种" prop="currencyId">
-            <el-select class="filter-item" v-model="form.currencyId" placeholder="请选择" @change="changeCurrency" :disabled="detailDisabled||stageType=='0'">
+            <span v-if="detailDisabled||stageType=='0'">{{form.currencyId|trunText(currencyList)}}</span>
+            <el-select v-else class="filter-item" v-model="form.currencyId" placeholder="请选择" @change="changeCurrency">
               <el-option v-for="item in currencyList" :key="item.currencyId" :value="item.currencyId" :label="item.name">
                 <span style="float: left">{{ item.name }}</span>
               </el-option>
@@ -63,7 +71,8 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="购买人群" prop="currencyId">
-            <el-select class="filter-item" v-model="form.buyingCrowds" placeholder="请选择" :disabled="detailDisabled">
+            <span v-if="detailDisabled">{{form.buyingCrowds|trunText(buyingCrowds)}}</span>
+            <el-select v-else class="filter-item" v-model="form.buyingCrowds" placeholder="请选择">
               <el-option v-for="item in buyingCrowds" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -72,8 +81,10 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
-            <el-input v-model="form.investmentHorizon" style="width: 35%;" :disabled="detailDisabled||stageType=='0'"></el-input>
-            <el-select v-model="form.investmentHorizonUnit" style="width: 23%;" :disabled="detailDisabled||stageType=='0'">
+            <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}{{form.investmentHorizonUnit|trunText(investHorizonUnit)}}</span>
+            <el-input v-else v-model="form.investmentHorizon" style="width: 35%;"></el-input>
+            <span v-if="detailDisabled||stageType=='0'"></span>
+            <el-select v-else v-model="form.investmentHorizonUnit" style="width: 23%;">
               <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
               </el-option>
             </el-select>
@@ -82,67 +93,81 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="收益" prop="isFloat">
-            <el-radio-group v-model="form.isFloat" @change="radioChange" :disabled="detailDisabled||stageType=='0'">
+            <span v-if="detailDisabled||stageType=='0'">
+              {{form.isFloat=='0'?'浮动收益':'收益对标基准 ' + form.annualizedReturn + '%'}}
+            </span>
+            <el-radio-group v-else v-model="form.isFloat" @change="radioChange">
               <el-radio :label="0" style="display: inline-block">浮动收益</el-radio>
               <el-radio :label="1" style="display: inline-block">收益对标基准(%)</el-radio>
-              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn" :disabled="collectDisabled||stageType=='0'"></el-input>
+              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn"></el-input>
             </el-radio-group>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="募集额度（万）" prop="collectionAmount" style="white-space: nowrap">
-            <el-input type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入" :disabled="collectDisabled"></el-input>
+            <span v-if="collectDisabled">{{form.collectionAmount}}</span>
+            <el-input v-else type="number" v-model.number="form.collectionAmount" :maxlength="10" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="募集人数" prop="productLp">
-            <el-input v-model.number="form.productLp" placeholder="请输入" :disabled="collectDisabled"></el-input>
+            <span v-if="collectDisabled">{{form.productLp}}</span>
+            <el-input v-else v-model.number="form.productLp" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="起投金额（万）" prop="minimalAmount" style="white-space: nowrap">
-            <el-input type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额" :disabled="detailDisabled"></el-input>
+            <span v-if="detailDisabled">{{form.minimalAmount}}</span>
+            <el-input v-else type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="追加金额（万）" prop="minimalAddAmount" style="white-space: nowrap">
-            <el-input type="number" v-model.number="form.minimalAddAmount" :maxlength="10" :disabled="detailDisabled"></el-input>
+            <span v-if="detailDisabled">{{form.minimalAddAmount}}</span>
+            <el-input v-else type="number" v-model.number="form.minimalAddAmount" :maxlength="10"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="收益分配方式" prop="incomeDistribution" style="white-space: nowrap">
-            <el-input v-model="form.incomeDistribution" :maxlength="10" :disabled="detailDisabled||stageType=='0'"></el-input>
+            <span v-if="detailDisabled||stageType=='0'">{{form.incomeDistribution}}</span>
+            <el-input v-else v-model="form.incomeDistribution" :maxlength="10"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="资产团队">
-            <el-input v-model="form.assetTeam" placeholder="请输入" :disabled="detailDisabled"></el-input>
+            <span v-if="detailDisabled">{{form.assetTeam}}</span>
+            <el-input v-else v-model="form.assetTeam" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="托管银行">
-            <el-input v-model="form.custodianBank" placeholder="请输入" :disabled="detailDisabled"></el-input>
+            <span v-if="detailDisabled">{{form.custodianBank}}</span>
+            <el-input v-else v-model="form.custodianBank" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="渠道打款金额">
-            <el-input v-model="form.channelAmount" placeholder="请输入" :disabled="detailDisabled"></el-input>
+            <span v-if="detailDisabled">{{form.channelAmount}}</span>
+            <el-input v-else v-model="form.channelAmount" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="渠道人数">
-            <el-input v-model="form.channelNumber" placeholder="请输入" :disabled="detailDisabled"></el-input>
+            <span v-if="detailDisabled">{{form.channelNumber}}</span>
+            <el-input v-else v-model="form.channelNumber" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <!-- 产品/募集分期才有 -->
         <!-- <el-col :span="11">
           <el-form-item label="关联产品">
-            <el-input v-model="form.assetTeam" placeholder="请输入" :disabled="detailDisabled"></el-input>
+            <span v-if="detailDisabled">{{form.}}</span>
+            <el-input v-else v-model="form.assetTeam" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col> -->
         <el-col :span="11">
           <el-form-item label="付息方式" prop="interestPayment">
-            <el-select class="filter-item" v-model="form.interestPayment" placeholder="请选择" :disabled="detailDisabled">
+            <span v-if="detailDisabled">{{form.interestPayment}}</span>
+            <el-select v-else class="filter-item" v-model="form.interestPayment" placeholder="请选择">
               <el-option v-for="item in interestPayment" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -151,11 +176,12 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="认购费">
-            <el-radio-group v-model="form.subscribe" @change="subscribeChange" :disabled="detailDisabled">
+            <span v-if="detailDisabled">{{form.subscribe==0?'无认购费':form.subscribe==1?'价内认购':'价外认购 ' + form.subscribeRate + '%'}}</span>
+            <el-radio-group v-else v-model="form.subscribe" @change="subscribeChange">
               <el-radio :label="0" style="display: inline-block">无认购费</el-radio>
               <el-radio :label="1" style="display: inline-block">价内认购</el-radio>
               <el-radio :label="2" style="display: inline-block">价外认购(%)</el-radio>
-              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="subDisabled" required="subDisabled" v-model="form.subscribeRate" :disabled="collectDisabled"></el-input>
+              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="subDisabled" required="subDisabled" v-model="form.subscribeRate"></el-input>
             </el-radio-group>
           </el-form-item>
         </el-col>
@@ -163,10 +189,12 @@
       <el-row :gutter="90">
         <el-col :span="22">
           <el-form-item label="产品公告" prop="announcement">
+            <span v-if="detailDisabled">{{form.announcement}}</span>
             <el-input
+              v-else
               type="textarea"
               :row="2"
-              v-model="form.announcement" :disabled="detailDisabled">
+              v-model="form.announcement">
             </el-input>
           </el-form-item>
         </el-col>
@@ -177,22 +205,26 @@
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="账户名称" prop="accountName">
-            <el-input v-model="form.accountName" placeholder="请输入" :disabled="detailDisabled"></el-input>
+            <span v-if="detailDisabled">{{form.accountName}}</span>
+            <el-input v-else v-model="form.accountName" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="账号" prop="cardNo">
-            <el-input v-model.number="form.cardNo" placeholder="请输入" :disabled="detailDisabled"></el-input>
+            <span v-if="detailDisabled">{{form.cardNo}}</span>
+            <el-input v-else v-model.number="form.cardNo" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="开户银行名称" prop="bankName">
-            <el-input v-model="form.bankName" placeholder="请输入" :disabled="detailDisabled"></el-input>
+            <span v-if="detailDisabled">{{form.bankName}}</span>
+            <el-input v-else v-model="form.bankName" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="大额支付行号" prop="paymentNumber">
-            <el-input v-model="form.paymentNumber" placeholder="请输入" :disabled="detailDisabled"></el-input>
+            <span v-if="detailDisabled">{{form.paymentNumber}}</span>
+            <el-input v-else v-model="form.paymentNumber" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -200,10 +232,12 @@
       <el-row :gutter="90">
         <el-col :span="22">
           <el-form-item label="备注" prop="remark">
+            <span v-if="detailDisabled">{{form.remark}}</span>
             <el-input
+              v-else
               type="textarea"
               :row="2"
-              v-model="form.remark" :disabled="detailDisabled">
+              v-model="form.remark">
             </el-input>
           </el-form-item>
         </el-col>
@@ -270,7 +304,7 @@
   import { fetchProductTypeList, fetchProductMixType } from '@/api/product/productType'
   import { fetchCurrency, getObjList } from '@/api/currency'
   import { mapGetters } from 'vuex'
-  import { transformText, sortKey } from '@/utils'
+  import { transformText, sortKey, transformText1 } from '@/utils'
   import { parseTime } from '@/utils'
   import { decimals, isNumber } from '@/utils/validate'
   import Bus from '@/assets/js/bus'
@@ -398,6 +432,9 @@
       },
       turnNum (num) {
         return Math.round(parseFloat(num) * 100) / 100 + '%'
+      },
+      trunText (val, list) {
+        return transformText1(val, list)
       }
     },
     created() {
@@ -465,10 +502,12 @@
             this.form.currencyIdNo = this.form.currencyId
             this.form.productTypeIdNo = this.form.productTypeId
             this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
-            this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
-            this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
-            this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
+            this.form.productMixTypeIdNo = this.form.productMixTypeId
+            // this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
+            // this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
+            // this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
             this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
+            this.form.productMixTypeId = transformText(this.productMixTypes, this.form.productMixTypeId)
 
             this.detailDisabled = true
             if(this.productStatusNo === 0) {
@@ -553,6 +592,7 @@
         this.form.currencyId = this.form.currencyIdNo
         this.form.productTypeId = this.form.productTypeIdNo
         this.form.investmentHorizonUnit = this.form.investmentHorizonUnitNo
+        this.form.productMixTypeId = this.form.productMixTypeIdNo
         if(this.form.investmentHorizon.indexOf('+') !== -1 & this.form.investmentHorizonUnit!='1') {
           this.$notify({
             title: '提示',
