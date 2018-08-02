@@ -3,61 +3,83 @@
 
     <h3 v-if="type_is_update==1">修改产品</h3>
     <h3 v-else>实名认证审核</h3>
-    <el-form v-if="!nextToUpdate" :model="form" :rules="rules" ref="form" label-width="100px">
+    <el-form v-if="!nextToUpdate" :model="form" :rules="rules" ref="form" label-width="120px">
       <div class="split-line"></div>
       <h5>客户信息</h5>
       <el-row :gutter="20">
-        <el-col :span="11">
-          <el-form-item label="姓名" prop="name">
-            <el-input v-model="form.name" placeholder="" readonly></el-input>
+        <el-col :span="8">
+          <el-form-item label="姓名：" prop="name">
+            <span>{{form.name}}</span>
+            <!-- <el-input v-model="form.name" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="手机号" prop="mobile">
-            <el-input v-model="form.mobile" placeholder="" readonly></el-input>
+        <el-col :span="8">
+          <el-form-item label="手机号：" prop="mobile">
+            <span>{{form.mobile}}</span>
+            <!-- <el-input v-model="form.mobile" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="性别" prop="gender">
-            <el-input v-model="form.gender" placeholder="" readonly></el-input>
-            <!-- <el-select class="filter-item" v-model="form.gender" placeholder="请选择">
-              <el-option v-for="item in genderType" :key="item.value" :value="item.value" :label="item.label">
-                <span style="float: left">{{ item.label }}</span>
-              </el-option>
-            </el-select> -->
+        <el-col :span="8">
+          <el-form-item label="性别：" prop="gender">
+            <span>{{form.gender}}</span>
+            <!-- <el-input v-model="form.gender" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="国籍" prop="nationality">
-            <el-input v-model="form.nationality" placeholder="" readonly></el-input>
+        <el-col :span="8">
+          <el-form-item label="国籍：" prop="nationality">
+            <span>{{form.nationality}}</span>
+            <!-- <el-input v-model="form.nationality" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="常住地区" prop="city">
-            <el-input v-model="form.city" placeholder="" readonly></el-input>
+        <el-col :span="8">
+          <el-form-item label="常住地区：" prop="city">
+            <span>{{form.city}}</span>
+            <!-- <el-input v-model="form.city" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="form.email" placeholder="" readonly></el-input>
+        <el-col :span="8">
+          <el-form-item label="录入时间：" prop="city">
+            <span>{{form.city}}</span>
+            <!-- <el-input v-model="form.city" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="微信" prop="wechat">
-            <el-input v-model="form.wechat" placeholder="" readonly></el-input>
+        <el-col :span="8">
+          <el-form-item label="邮箱：" prop="email">
+            <span>{{form.email}}</span>
+            <!-- <el-input v-model="form.email" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="理财师" prop="userName">
-            <el-input v-model="form.userName" placeholder="" readonly></el-input>
+        <el-col :span="8">
+          <el-form-item label="微信：" prop="wechat">
+            <span>{{form.wechat}}</span>
+            <!-- <el-input v-model="form.wechat" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="部门" prop="deptName">
-            <el-input v-model="form.userDeptName" placeholder="" readonly></el-input>
+        <el-col :span="8">
+          <el-form-item label="客户编号：" prop="clientNo">
+            <span>{{form.clientNo}}</span>
+            <!-- <el-input v-model="form.wechat" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="11">
+        <el-col :span="8">
+          <el-form-item label="理财师：" prop="userName">
+            <span>{{form.userName}}</span>
+            <!-- <el-input v-model="form.userName" placeholder="" readonly></el-input> -->
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="部门：" prop="userDeptName">
+            <span>{{form.userDeptName}}</span>
+            <!-- <el-input v-model="form.userDeptName" placeholder="" readonly></el-input> -->
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="客户来源：" prop="deptName">
+            <span>{{form.name}}</span>
+            <!-- <el-input v-model="form.userDeptName" placeholder="" readonly></el-input> -->
+          </el-form-item>
+        </el-col>
+        <!-- <el-col :span="8">
           <el-form-item label="管理资产规模" prop="assetAmount">
             <el-input v-model="form.assetAmount" placeholder="请输入资产规模" readonly></el-input>
           </el-form-item>
@@ -66,47 +88,60 @@
 
       <div class="split-line"></div>
       
-      <h5>客户状态</h5>
+      <h5>认证和身份信息</h5>
       <el-row :gutter="20">
-        <el-col :span="11">
-          <el-form-item label="实名认证状态" prop="username">
-            <el-input v-model="clientStatus.realnameStatus" placeholder="" readonly></el-input>
+        <el-col :span="8">
+          <el-form-item label="实名认证状态：" prop="username">
+            <span>{{clientStatus.realnameStatus}}</span>
+            <!-- <el-input v-model="clientStatus.realnameStatus" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="投资者身份" prop="clientType">
-            <el-input v-model="clientStatus.clientType" placeholder="" readonly></el-input>
+        <el-col :span="8">
+          <el-form-item label="投资者类型：" prop="clientType">
+            <span>{{clientStatus.clientType}}</span>
+            <!-- <el-input v-model="clientStatus.clientType" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="证件类型" prop="idType">
-            <el-input v-model="clientStatus.idType" placeholder="" readonly></el-input>
+        <el-col :span="8">
+          <el-form-item label="认证时间：" prop="clientType">
+            <span>{{clientStatus.clientType}}</span>
+            <!-- <el-input v-model="clientStatus.clientType" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="idType">
-          <el-form-item label="证件号码" prop="idNo">
-            <el-input v-model="clientStatus.idNo" placeholder="" readonly></el-input>
+        <el-col :span="8">
+          <el-form-item label="证件类型：" prop="idType">
+            <span>{{clientStatus.idType}}</span>
+            <!-- <el-input v-model="clientStatus.idType" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="idType">
-          <el-form-item label="出生日期" prop="date">
-            <el-input v-model="clientStatus.birthday" placeholder="" readonly></el-input>
+        <el-col :span="8" v-if="idType">
+          <el-form-item label="证件号码：" prop="idNo">
+            <span>{{clientStatus.idNo}}</span>
+            <!-- <el-input v-model="clientStatus.idNo" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="idType">
-          <el-form-item label="证件有效期" prop="date">
-            <el-input v-model="clientStatus.idExpiration" placeholder="" readonly></el-input>
+        <el-col :span="8" v-if="idType">
+          <el-form-item label="出生日期：" prop="date">
+            <span>{{clientStatus.birthday}}</span>
+            <!-- <el-input v-model="clientStatus.birthday" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="idType">
-          <el-form-item label="地址" prop="address">
-            <el-input v-model="clientStatus.address" placeholder="" readonly></el-input>
+        <el-col :span="8" v-if="idType">
+          <el-form-item label="地址：" prop="address">
+            <span>{{clientStatus.address}}</span>
+            <!-- <el-input v-model="clientStatus.address" placeholder="" readonly></el-input> -->
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="idType">
+          <el-form-item label="证件有效期：" prop="date">
+            <span>{{clientStatus.idExpiration}}</span>
+            <!-- <el-input v-model="clientStatus.idExpiration" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
         
       </el-row>
       <el-row :span="22" v-if="idType" :gutter="20">
-          <el-form-item label="身份证截图" prop="address">
+          <el-form-item label="证件照片：" prop="address">
             <el-col :span="5">
               <el-card>
                 <img :src="clientStatus.idFrontUrl" alt="" style="max-height: 100px; width: 100%">
@@ -145,7 +180,16 @@
 
       <div class="split-line"></div>
       <el-row style="margin-top: 20px">
-        <el-col :span="22">
+        <el-col :span="8">
+          <el-form-item label="人群划分：">
+            <el-select class="filter-item" v-model="form.buyingCrowds" placeholder="请选择">
+              <el-option v-for="item in buyingCrowds" :key="item.value" :label="item.label" :value="item.value">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <!-- <el-col :span="22">
           <el-form-item label="备注" prop="bankName">
             <el-input
               type="textarea"
@@ -159,7 +203,7 @@
           <el-form-item>
             <span v-show="tip" class="warn_tip">请输入备注</span>
           </el-form-item>
-        </el-col>
+        </el-col> -->
       </el-row>
     </el-form>
 
@@ -305,7 +349,8 @@
         'certificationStatus',
         'clientType',
         'idTypeOptions',
-        'nationality'
+        'nationality',
+        'buyingCrowds'
       ])
     },
     filters: {

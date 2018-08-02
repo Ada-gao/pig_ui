@@ -26,7 +26,8 @@
                 :props="defaultProps"
                 :show-all-levels="false"
                 change-on-select
-                v-model="form.deptIds"
+                v-model="deptIds"
+                @change="changeDept"
               ></el-cascader>
               <!-- <el-input v-model="form.deptName" placeholder="选择部门"
                 @focus="handleDept"
@@ -42,7 +43,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="角色" prop="role">
-              <el-select class="filter-item" v-model="role" placeholder="请选择">
+              <el-select class="filter-item" @focus="getRoleList" v-model="form.role" placeholder="请选择">
                 <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId">
                   <span style="float: left">{{ item.roleDesc }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
@@ -251,7 +252,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="角色：" prop="role">
+            <el-form-item label="角色：">
               {{form.role}}
             </el-form-item>
           </el-col>
@@ -353,7 +354,7 @@
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime, transformText } from '@/utils'
+  import { parseTime, transformText, transformText1 } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -417,8 +418,10 @@
           password: undefined,
           status: undefined,
           deptId: undefined,
-          deptIds: []
+          // deptIds: [],
+          roleList: []
         },
+        deptIds: [],
         rules: {
           name: [
             {required: true, trigger: 'blur', message: '请输入姓名'}
@@ -518,6 +521,11 @@
         'workStatus'
       ])
     },
+    filters: {
+      turnText (val, list) {
+        return transformText1(val, list)
+      }
+    },
     created() {
       // this.handlePosition()
       this.sys_user_add = this.permissions['sys_user_add']
@@ -538,6 +546,8 @@
           .then(response => {
             this.form = response.data
             this.form.role = this.form.roleList[0].roleDesc
+            this.deptIds[0] = this.form.deptId
+            console.log(this.deptIds)
             // this.role = row.roleList[0].roleDesc
             if(this.state === 'view') {
               this.dialogFormView = true
@@ -567,17 +577,14 @@
               this.fileList.length = 1
               // console.log(this.fileList[0])
             }
-            deptRoleList(response.data.deptId)
-              .then(response => {
-                this.rolesOptions = response.data
-              })
+            this.getNodeData(response.data.deptId)
           })
       },
-      getNodeData(data) { // 部门查询角色
+      getNodeData(id) { // 部门查询角色
         // this.dialogDeptVisible = false
-        this.form.deptId = data.id
-        this.form.deptName = data.name
-        deptRoleList(data.id)
+        // this.form.deptId = data.id
+        // this.form.deptName = data.name
+        deptRoleList(id)
           .then(response => {
             this.rolesOptions = response.data
             this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
@@ -600,11 +607,12 @@
       },
       handleDept() { // 部门数据
         fetchDeptTree().then(res => {
-          // console.log(res.data)
           this.treeDeptData = res.data
           this.eachChildren(this.treeDeptData)
-          // this.dialogDeptVisible = true
         })
+      },
+      getRoleList() {
+        this.getNodeData(this.deptIds[0])
       },
       eachChildren(list) {
         list.forEach(item => {
@@ -614,11 +622,11 @@
             this.eachChildren(item.children)
           }
         })
-        console.log(list)
       },
-      changeDept() {
-        this.role = ''
-        this.form.role = ''
+      changeDept(val) {
+        console.log(val)
+        // this.role = ''
+        // this.form.role = ''
       },
       handleCreate() {
         this.resetTemp()

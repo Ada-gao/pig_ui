@@ -55,7 +55,14 @@
         <span class="second-item" @click="changeSecStep('2')" :class="{'query-color': secStep==='2'}">普通投资者</span>
       </div>
       <product-material-component
-        :productList="data"
+        v-show="secStep==='1'"
+        :productList="data1"
+        @del-client-file="deleteClient"
+        @upd-client-file="updateClientFile">
+      </product-material-component>
+      <product-material-component
+        v-show="secStep==='2'"
+        :productList="data2"
         @del-client-file="deleteClient"
         @upd-client-file="updateClientFile">
       </product-material-component>
@@ -64,7 +71,7 @@
         <el-button size="small"
           class="btn-padding add_btn"
           v-if="!operationDisabled"
-          @click="addClientFile('client')">追加材料</el-button>
+          @click="addClientFile('client', secStep)">追加材料</el-button>
       </el-row>
     </div>
     <div class="trade-item">
@@ -687,7 +694,8 @@
         dto: {},
         url: '',
         secStep: '1',
-        data: {},
+        data1: {},
+        data2: {},
         collectVal: 1,
         collectTime: ''
         // form: {},
@@ -1211,10 +1219,11 @@
         // this.getFiles3(productId)
         this.getFiles4(productId)
       },
-      addClientFile(type) { // 上传客户材料
+      addClientFile(type, clientType) { // 上传客户材料
         let params = {
           limit: 100,
-          page: 1
+          page: 1,
+          clientType: clientType
         }
         this.fileType = type
         this.clientFile = ''
@@ -1350,9 +1359,13 @@
         })
       },
       getFiles4(productId) { // 客户所需材料
-        getCustFile(productId).then(response => {
+        getCustFile(productId, {clientType: '1'}).then(response => { // 专业投资者
           // this.clientFiles = response.data || []
-          this.data = response.data
+          this.data1 = response.data
+        })
+        getCustFile(productId, {clientType: '2'}).then(response => { // 普通投资者
+          // this.clientFiles = response.data || []
+          this.data2 = response.data
         })
       }
     }

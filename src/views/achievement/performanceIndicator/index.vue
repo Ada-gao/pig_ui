@@ -412,6 +412,7 @@
             }
           })
         })
+        console.log(list2)
         this.form.deptIds = list2
       },
       addOption() {
