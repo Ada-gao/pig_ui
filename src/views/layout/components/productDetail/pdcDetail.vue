@@ -5,8 +5,8 @@
         <el-col :span="11" v-if="!stage&createStatus==='update'">
           <!-- 如果分期，不显示编号 -->
           <el-form-item label="产品编号" prop="productCode">
-            <span v-if="detailDisabled">{{form.productCode}}</span>
-            <el-input v-else v-model="form.productCode" placeholder="请输入产品编号"></el-input>
+            <span>{{form.productCode}}</span>
+            <!-- <el-input v-else v-model="form.productCode" placeholder="请输入产品编号"></el-input> -->
           </el-form-item>
         </el-col>
       </el-row>
@@ -83,6 +83,7 @@
           <el-form-item label="产品期限" prop="investmentHorizon">
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}{{form.investmentHorizonUnit|trunText(investHorizonUnit)}}</span>
             <el-input v-else v-model="form.investmentHorizon" style="width: 35%;"></el-input>
+            <span v-if="detailDisabled||stageType=='0'"></span>
             <el-select v-else v-model="form.investmentHorizonUnit" style="width: 23%;">
               <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
               </el-option>
