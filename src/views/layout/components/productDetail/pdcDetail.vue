@@ -459,7 +459,7 @@
       this.form = this.formData
       let list = Object.keys(this.formData)
       
-      if(list.length > 1 & !list.productId) {
+      if(list.length > 1 && !list.productId) {
         if(this.stageType === '0') {
           // 产品分期
           this.detailDisabled = false
@@ -550,7 +550,7 @@
           this.form.annualizedReturn = null
           this.isDisabled = true
         }
-        if(this.form.investmentHorizon.indexOf('+') !== -1 & this.form.investmentHorizonUnit!='1') {
+        if(this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit!='1') {
           console.log(this.form.investmentHorizon.indexOf('+'))
           this.$notify({
             title: '提示',
@@ -593,7 +593,7 @@
         this.form.productTypeId = this.form.productTypeIdNo
         this.form.investmentHorizonUnit = this.form.investmentHorizonUnitNo
         this.form.productMixTypeId = this.form.productMixTypeIdNo
-        if(this.form.investmentHorizon.indexOf('+') !== -1 & this.form.investmentHorizonUnit!='1') {
+        if(this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit!='1') {
           this.$notify({
             title: '提示',
             message: '产品期限填写有误，请重新输入',

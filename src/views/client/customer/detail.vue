@@ -263,7 +263,7 @@
 
         if(this.form.nationality == 1) {
           this.form.city = ''
-        } else if(this.form.nationality == 0 & !this.city) {
+        } else if(this.form.nationality == 0 && !this.city) {
           return null
         } else {
           if(this.city.length === 1 || this.city[1] === '市辖区') {

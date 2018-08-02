@@ -83,27 +83,27 @@
             <el-input v-model="form.idType" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus & idType">
+        <el-col :span="11" v-if="realnameStatus && idType">
           <el-form-item label="证件号码" prop="idNo">
             <el-input v-model="form.idNo" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus & idType">
+        <el-col :span="11" v-if="realnameStatus && idType">
           <el-form-item label="出生日期" prop="date">
             <el-input v-model="clientStatus.birthday" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus & idType">
+        <el-col :span="11" v-if="realnameStatus && idType">
           <el-form-item label="证件有效期" prop="date">
             <el-input v-model="clientStatus.idExpiration" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus & idType">
+        <el-col :span="11" v-if="realnameStatus && idType">
           <el-form-item label="地址" prop="address">
             <el-input v-model="form.address" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="isClientType & realnameStatus & idType">
+        <el-col :span="11" v-if="isClientType && realnameStatus && idType">
           <el-form-item label="风险测评" prop="riskLevel">
             <el-input v-model="clientStatus.riskLevel" placeholder="" readonly></el-input>
           </el-form-item>

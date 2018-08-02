@@ -65,7 +65,7 @@
             </el-col>
           </el-row>
 
-          <div class="payInfo" v-if="orderStatus != 2 & statusH">
+          <div class="payInfo" v-if="orderStatus != 2 && statusH">
             <div class="split-line"></div>
             <h5>打款信息</h5>
             <el-row>
@@ -114,7 +114,7 @@
             </el-row>
           </div>
 
-          <div class="bankCard" v-if="orderStatus != 2 & statusH">
+          <div class="bankCard" v-if="orderStatus != 2 && statusH">
             <div class="split-line"></div>
           
             <h5>客户银行卡信息</h5>
@@ -137,7 +137,7 @@
             </el-row>
           </div>
 
-          <div class="payVoucher" v-if="orderStatus != 2 & statusH">
+          <div class="payVoucher" v-if="orderStatus != 2 && statusH">
             <h5>打款凭证</h5>
             <div class="split-line"></div>
             <div class="imgs" v-for="item in remitFiles">
@@ -145,7 +145,7 @@
             </div>
           </div>
 
-          <div class="transFile" v-if="orderStatus != 2 & statusH">
+          <div class="transFile" v-if="orderStatus != 2 && statusH">
             <h5>交易所需材料</h5>
             <div class="split-line"></div>
             <div class="imgs" v-for="item in dealFiles">
@@ -153,7 +153,7 @@
             </div>
           </div>
 
-          <div class="transFile" v-if="orderStatus == 5 & statusH">
+          <div class="transFile" v-if="orderStatus == 5 && statusH">
             <h5>退款申请书</h5>
             <div class="split-line"></div>
             <div class="imgs" v-for="item in dealFiles">
@@ -167,28 +167,28 @@
           </el-dialog>
 
         </el-form>
-        <div v-if="status == '1001' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
+        <div v-if="status == '1001' && orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="add_btn" @click="submitResult('1003')">通 过</el-button>
           <el-button class="common_btn" @click="rejectResult('1002')">不通过</el-button>
         </div>
 
-        <div v-if="(status == '2001' || status == '2002' || status == '2004') & orderStatus != 1" class="dialog-footer" style="text-align: center;">
+        <div v-if="(status == '2001' || status == '2002' || status == '2004') && orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button v-show="status == '2001'" class="search_btn" @click="submitResult('2004')">通 过</el-button>
           <el-button v-show="status == '2001'" class="add_btn" @click="rejectResult('2002')">不通过</el-button>
           <el-button class="add_btn" @click="submitResult('2003')">关闭订单</el-button>
         </div>
 
-        <div v-if="status == '2003' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
+        <div v-if="status == '2003' && orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('1')">需要退款</el-button>
           <el-button class="add_btn" @click="submitResult('0')">无需退款</el-button>
         </div>
 
-        <div v-if="status == '3002' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
+        <div v-if="status == '3002' && orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('3004')">通 过</el-button>
           <el-button class="add_btn" @click="rejectResult('3003')">不通过</el-button>
         </div>
 
-        <div v-if="status == '2' & orderStatus != 1" class="dialog-footer" style="text-align: center;">
+        <div v-if="status == '2' && orderStatus != 1" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('4')">通 过</el-button>
           <el-button class="add_btn" @click="rejectResult('3')">不通过</el-button>
         </div>

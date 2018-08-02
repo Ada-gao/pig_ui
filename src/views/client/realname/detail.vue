@@ -360,7 +360,7 @@
         console.log('产品状态')
       },
       submitResult(result) { // 
-        if(result == 3 & !this.failReason) {
+        if(result == 3 && !this.failReason) {
           this.tip = true
           return
         }
