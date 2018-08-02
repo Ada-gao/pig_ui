@@ -271,34 +271,35 @@
         <el-row style="position: relative">
           <el-col :span="11">
             <el-form-item label="折标业绩系数">
-              <el-input></el-input>
+              <el-input v-model="normalDTO.performanceCoefficient"></el-input>
             </el-form-item>
           </el-col>
          
         </el-row>
         <el-row>
-          <el-col :span="11"  v-for="(item,index) in productCommission" :key="item.age" style="white-space: nowrap;
-          margin-right:3%;" >
+          <el-col :span="11"  v-for="(item,index) in normalDTO.normalBrokerageCoefficients" :key="item.age" style="white-space: nowrap; margin-right:3%;" >
             <el-row  type="flex" justify="space-between" class="row-bg product-commission">
-              <span>产品佣金系数第{{index+1}}年</span>
+              <span>产品佣金系数第{{item.age}}年</span>
               <span @click="addProductCommission" class="color-0299CC " v-if="index == 0"><i class="el-icon-plus mr5"></i >新增</span>
-              <span @click="deleteProductCommission(index)" class="color-0299CC " v-if="index != 0 && index == productCommission.length-1"><i class="el-icon-delete mr5"></i >删除</span>
+              <span @click="deleteProductCommission(index)" class="color-0299CC " v-if="index != 0 && index == normalDTO.normalBrokerageCoefficients.length-1"><i class="el-icon-delete mr5"></i >删除</span>
             </el-row>
-              <el-form-item :label="`第${i+1}层级(%)`" v-for="(Citem,i) in item.levelData">
+              <el-form-item :label="`第${Citem.hierarchy}层级(%)`" v-for="(Citem,i) in item.brokerageCoefficientDTOList">
                 <el-input
-                  v-model="Citem.hierarchy" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input>
-                  <i  @click="addProductLevel(i)" v-if="i+1 == item.levelData.length && index == 0" class="el-icon-plus color-0299CC"></i >
-                  <i  @click="deleteProductLevel(i)" v-if="i+1 == item.levelData.length && index == 0" class="el-icon-delete color-0299CC"></i >
+                  v-model="Citem.coefficient" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input>
+                  <i  @click="addProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0" class="el-icon-plus color-0299CC"></i >
+                  <i  @click="deleteProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
           </el-col>
         </el-row>
       </div>
        <div class="split-line" style="margin: 20px 0;"></div>
      <!-- 活动时间段业绩统计 -->
-     <div class="group-item" ref="activityData">
+     <div class="group-item">
         <h3>活动时间段业绩统计<span @click="addStatistics" class="color-0299CC add-statistics"><i class="el-icon-plus mr5"></i >新增统计</span></h3>
-        <el-row v-for="(item,index) in activityData" :key="item.idx" :class="{dashed:index!=0}">
-         <el-row>
+
+        <el-row v-for="(item,index) in activityData" :key="index" :class="{dashed:index!=0}">
+          <span @click="deleteStatistics(index)" class="color-0299CC delete-fr" v-if="activityData.length == index+1 && index != 0"><i class="el-icon-delete mr5"></i >删除</span>
+         <el-row style="clear: both;">
           <el-col :span="11" style="margin-right: 3%;">
             <el-form-item label="活动时间段">
               <el-date-picker
@@ -318,18 +319,18 @@
           </el-col>
           </el-row>
           <el-row>
-            <el-col :span="11"  v-for="(Citem,Cindex) in item.activityTime" :key="Citem.age" style="white-space: nowrap;
+            <el-col :span="11"  v-for="(Citem,Cindex) in item.activityBrokerageCoefficients" :key="Citem.age" style="white-space: nowrap;
             margin-right:3%;" >
               <el-row  type="flex" justify="space-between" class="row-bg product-commission">
-                <span>活动时间产品佣金系数第{{Cindex+1}}年</span>
+                <span>活动时间产品佣金系数第{{Citem.age}}年</span>
                 <span @click="addactivityTime(index)" class="color-0299CC " v-if="Cindex == 0"><i class="el-icon-plus mr5"></i >新增</span>
-                <span @click="deleteActivityTime(index,Citem)" class="color-0299CC " v-if="Cindex != 0 && Cindex == item.activityTime.length-1"><i class="el-icon-delete mr5"></i >删除</span>
+                <span @click="deleteActivityTime(index,Citem)" class="color-0299CC " v-if="Cindex != 0 && Cindex == item.activityBrokerageCoefficients.length-1"><i class="el-icon-delete mr5"></i >删除</span>
               </el-row>
-              <el-form-item :label="`第${k+1}层级(%)`" prop="" v-for="(cvalue,k) in Citem.levelData">
+              <el-form-item :label="`第${cvalue.hierarchy}层级(%)`" v-for="(cvalue,k) in Citem.brokerageCoefficientDTOList">
                 <el-input
-                  v-model="cvalue.hierarchy" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'   type="number"></el-input>
-                  <i  @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.levelData.length && Cindex == 0" class="el-icon-plus color-0299CC"></i >
-                  <i  @click="deleteActivityTimeLevel(index,Cindex,k)" v-if="k+1 == Citem.levelData.length && Cindex == 0" class="el-icon-delete color-0299CC"></i >
+                  v-model="cvalue.coefficient" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'   type="number"></el-input>
+                  <i  @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0" class="el-icon-plus color-0299CC"></i >
+                  <i  @click="deleteActivityTimeLevel(index,Cindex,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
 
             </el-col>
@@ -593,14 +594,13 @@
           {
             activeDate: ['', ''],
             performanceCoefficient:'',
-            activityTime:[{
-                age:1,
-                levelData:[{
-                  coefficient:1,
-                  hierarchy: ''
-                }]
-              }
-            ]
+            activityBrokerageCoefficients:[{
+              age:1,
+              brokerageCoefficientDTOList:[{
+                hierarchy:1,
+                coefficient: ''
+              }]
+            }]
           }
         ],
         activityList: [],
@@ -614,13 +614,16 @@
           age: 1,
           brokerageCoefficient: ''
         }],
-        productCommission:[{
-          age: 1,
-          levelData: [{
-            coefficient:1,
-            hierarchy: ''
+        normalDTO:{
+          performanceCoefficient:'',
+          normalBrokerageCoefficients:[{
+            age: 1,
+            brokerageCoefficientDTOList: [{
+              hierarchy:1,
+              coefficient: ''
+            }]
           }]
-        }],
+        },
         activityTime:1,
         cmsIndex: 1,
         radio2: 1,
@@ -715,42 +718,119 @@
       this.url = localStorage.getItem('activeUrl')
     },
     methods: {
+      judgeEmpty(){
+        this.$notify({
+          title: '警告',
+          message: '层级不能为空',
+          type: 'warning'
+        });
+      },
+      //筛选佣金业绩统计
+      normalFilter(){
+        let self = true;
+        //if(!!this.normalDTO.performanceCoefficient) return false;
+        this.normalDTO.normalBrokerageCoefficients.forEach(item=>{
+          item.brokerageCoefficientDTOList.forEach(item=>{
+            if(!item.coefficient){
+            this.judgeEmpty();
+              self = false;
+              return false;
+            }
+          })
+        })
+        return self;
+      },
+      //筛选活动时间段业绩统计 新增统计判断
+      activityFilter(filter){
+        let self = true;
+        this.activityData.forEach(item=>{
+          //折标业绩系数
+          if(!item.performanceCoefficient && filter){
+            this.judgeEmpty();
+            self = false;
+            return false;
+          }
+          console.log(item.activeDate)
+          //活动时间段
+          if(!item.activeDate){
+            this.judgeEmpty();
+              self = false;
+              return false;
+          }
+          item.activeDate.forEach(item=>{
+            if(!item && filter){
+              this.judgeEmpty();
+              self = false;
+              return false;
+            }
+          })
+          //活动时间产品佣金系数
+          item.activityBrokerageCoefficients.forEach(item=>{
+            item.brokerageCoefficientDTOList.forEach(item=>{
+             if(!item.coefficient){
+              this.judgeEmpty();
+              self = false;
+              return false;
+              }
+            })
+          })
+        })
+        return self;
+
+        //   activityData: [
+        //   {
+        //     activeDate: ['', ''],
+        //     performanceCoefficient:'',
+        //     activityBrokerageCoefficients:[{
+        //       age:1,
+        //       brokerageCoefficientDTOList:[{
+        //         hierarchy:1,
+        //         coefficient: ''
+        //       }]
+        //     }]
+        //   }
+        // ],
+      },
       //新增产品佣金系数
       addProductCommission(){
-        if(this.productCommission.length >=5) return false;
+        if(!this.normalFilter()) return false; 
+        let objArr = this.normalDTO.normalBrokerageCoefficients;
+        if(objArr.length >=5) return false;
         let levelDataArr = []
-        this.productCommission[0].levelData.forEach((item,index)=>{
+        objArr[0].brokerageCoefficientDTOList.forEach((item,index)=>{
             levelDataArr.push({
-              coefficient:index+1,
-              hierarchy: ''
+              hierarchy:index+1,
+              coefficient: ''
             })
         })
-        this.productCommission.push({
-          age:this.productCommission.length+1,
-          levelData:levelDataArr
+        objArr.push({
+          age:objArr.length+1,
+          brokerageCoefficientDTOList:levelDataArr
         })
       },
       //删除产品佣金系数
       deleteProductCommission(index){
-        if(this.productCommission.length == 1) return false;
-        this.productCommission.splice(index,1)
+        let objArr = this.normalDTO.normalBrokerageCoefficients;
+        if(objArr.length == 1) return false;
+        objArr.splice(index,1)
       },
       //佣金业绩统计 - 产品佣金系数 删除
       deleteProductLevel(index){
         if(index <=0) return false;
-        this.productCommission.forEach(item=>{
-            item.levelData.splice(index,1)
+        this.normalDTO.normalBrokerageCoefficients.forEach(item=>{
+            item.brokerageCoefficientDTOList.splice(index,1)
         })
         //this.levelList--;
       },
       //佣金业绩统计 - 产品佣金系数 增加
       addProductLevel(i){
-          this.productCommission.forEach((item,index)=>{
-              item.levelData.push({
-                coefficient:i+2,
-                hierarchy: ''
-              })
-          })
+        if(!this.normalFilter()) return false; 
+        this.normalDTO.normalBrokerageCoefficients.forEach((item,index)=>{
+            item.brokerageCoefficientDTOList.push({
+              hierarchy:i+2,
+              coefficient: ''
+            })
+        })
         //       productCommission:[{
         //    age: 1,
         //   levelData: [{
@@ -761,59 +841,59 @@
       },
       //新增统计
       addStatistics(){
+        if(!this.activityFilter(true)) return false;
         this.activityData.push( {
             activeDate: ['', ''],
             performanceCoefficient:'',
-            activityTime:[{
+            activityBrokerageCoefficients:[{
                 age:1,
-                levelData:[{
-                  coefficient:1,
-                  hierarchy: ''
+                brokerageCoefficientDTOList:[{
+                  hierarchy:1,
+                  coefficient: ''
                 }]
               }
             ]
           })
       },
+      //删除统计
+      deleteStatistics(index){
+        this.activityData.splice(index,1)
+      },
       //新增活动时间产品佣金系数
       addactivityTime(index){
-        let objLength = this.activityData[index].activityTime;
+        if(!this.activityFilter(false)) return false;
+        let objLength = this.activityData[index].activityBrokerageCoefficients;
         if(objLength.length>=5) return false;
         let levelDataArr = [];
-        objLength[0].levelData.forEach((item,index)=>{
+        objLength[0].brokerageCoefficientDTOList.forEach((item,index)=>{
           levelDataArr.push({
-            coefficient:index+1,
-            hierarchy: ''
+            hierarchy:index+1,
+            coefficient: ''
           })
         })
         objLength.push({
-            age:objLength.length+1,
-            levelData: levelDataArr
-          }
-        )
+          age:objLength.length+1,
+          brokerageCoefficientDTOList: levelDataArr
+        })
+        console.log(objLength)
       },
       //删除活动时间产品佣金系数
       deleteActivityTime(index,cindex){
-        let obj =  this.activityData[index].activityTime
+        let obj =  this.activityData[index].activityBrokerageCoefficients
         if(obj.length <= 1) return false;
         obj.splice(cindex,1)
       },
        //新增活动时间产品佣金系数 - 层级
       addActivityTimeLevel(index,k){
+        if(!this.activityFilter(false)) return false;
         let levelDataArr =[];
-          this.activityData[index].activityTime.forEach(item=>{
-              item.levelData.push({
-                coefficient:k+2,
-                hierarchy: ''
+          this.activityData[index].activityBrokerageCoefficients.forEach(item=>{
+              item.brokerageCoefficientDTOList.push({
+                hierarchy:k+2,
+                coefficient: ''
               })
             })
 
-        //  this.activityData[index].activityTime.forEach(item=>{
-        //   console.log(item)
-        //   item.levelData.push({
-        //     coefficient:'',
-        //           hierarchy: ''
-        //  })
-        // })
         //  activityData: [
         //   {
         //     activeDate: ['', ''],
@@ -834,8 +914,8 @@
        //删除活动时间产品佣金系数 - 层级
       deleteActivityTimeLevel(index,Cindex,k){
         if(k<= 0) return false;
-        this.activityData[index].activityTime.forEach(item=>{
-          item.levelData.splice(k,1);
+        this.activityData[index].activityBrokerageCoefficients.forEach(item=>{
+          item.brokerageCoefficientDTOList.splice(k,1);
         })
       },
 
@@ -867,11 +947,11 @@
             this.activityData = [{
               activeDate: ['',''],
               performanceCoefficient: '',
-                 activityTime:[{
+                 activityBrokerageCoefficients:[{
                   age:1,
-                  levelData:[{
-                    coefficient:1,
-                    hierarchy: ''
+                  brokerageCoefficientDTOList:[{
+                    hierarchy:1,
+                    coefficient: ''
                   }]
                 }
               ]
@@ -910,12 +990,6 @@
         })
       },
       updateRouter() { // 操作指南新建或编辑提交
-
-
-        console.log(this.activityData)
-        //console.log(this.productCommission)
-        return false;
-
         this.activityList = this.activityList.concat(this.activityData)
         this.activityList.forEach(item => {
           item.activityEnd = item.activeDate[1]
@@ -939,12 +1013,27 @@
           this.form2.importantStart = ''
           this.form2.importantEnd = ''
         }
-        this.form2.normalDTO = this.normalData
+        let self = true;;
+        this.normalDTO.normalBrokerageCoefficients.forEach(item=>{
+          item.brokerageCoefficientDTOList.forEach(value=>{
+            if(value.coefficient >=100){
+               this.$notify({
+                  title: '警告',
+                  message: '层级不能大于100',
+                  type: 'warning'
+                });
+               self = false;
+              return false
+            }
+          })
+        })
+        if(!selfreturn) return false;
+        this.form2.normalDTO = this.normalDTO;
         // this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
-        this.form2.activityDTO = this.activityList
-        this.form2.normalDTO.normalBrokerageCoefficients = this.normalList.concat(this.addNormList)
+        this.form2.activityDTO = this.activityData;
+        //this.form2.normalDTO.normalBrokerageCoefficients = this.normalList.concat(this.addNormList)
         // this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
-        this.form2.productId = this.productId
+        this.form2.productId = this.productId;
         // this.form2.keyProduct = this.radio2
         if (!this.operationDisabled && !this.form2.importantStart) {
           this.$notify({
@@ -964,6 +1053,8 @@
           })
           return false
         }
+        console.log(this.form2.normalDTO)
+        console.log(this.form2.activityDTO)
         addOperationObj(this.form2).then(res => {
           this.$notify({
             title: '成功',
@@ -971,6 +1062,7 @@
             type: 'success',
             duration: 2000
           })
+          return false
           // if(this.createStatus = 'create') {}
           this.$router.push({path: '/product/productList'})
           Bus.$emit('activeIndex', '/product/productList')
@@ -1328,10 +1420,14 @@
   }
   .dashed{
   padding: 30px 0;
-  border-top:1px dotted #C0C0C0;
+  border-top:2px dotted #C0C0C0;
   }
   .el-form-item__error{
     left: 85px;
+  }
+  .delete-fr{
+    float:right;
+    margin:10px 90px;
   }
 </style>
 
