@@ -125,7 +125,8 @@
       ...mapGetters([
         'permissions',
         'productStatus',
-        'productRiskLevel'
+        'productRiskLevel',
+        'investHorizonUnit'
       ])
     },
     created() {
@@ -159,6 +160,7 @@
             this.list.forEach(item => {
               item.productTypeId = transformText(this.productTypes, item.productTypeId)
               item.productStatus = transformText(this.productStatus, item.productStatus)
+              item.investmentHorizonUnit = transformText(this.investHorizonUnit, item.investmentHorizonUnit)
             })
           })
         })
@@ -182,7 +184,6 @@
       handleCreate() { //新增
         this.$router.push({path: '/product/productDetail'})
         Bus.$emit('activeIndex', '/product/productList')
-
         // this.resetTemp()
         // this.dialogStatus = 'create'
         // this.dialogFormVisible = true
@@ -191,9 +192,7 @@
       handleUpdate(row) { // 编辑
         this.$router.push({path: '/product/productDetail/' + row.productId})
         Bus.$emit('activeIndex', '/product/productList')
-
         // this.nextToUpdate = false
-      
       },
       resetTemp() {
         this.form = {

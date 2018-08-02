@@ -150,6 +150,17 @@ export function updProductType(productId, obj) {
 }
 
 /**
+ * 预热转募集
+ */
+export function updToCollect(productId, obj) {
+  return request({
+    url: '/product/products/' + productId + '/collecting',
+    method: 'put',
+    data: obj
+  })
+}
+
+/**
  * 募集/产品分期查询
  */
 export function getProductStage(productId, type) {

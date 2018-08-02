@@ -379,7 +379,7 @@
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===0" type="primary" @click="updateProductType(1)">
         <svg-icon icon-class="preheating"></svg-icon> 进入产品预热</el-button>
       <!-- 预热 -->
-      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="updateProductType(2)">
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="dialogCollectVisible=true">
         <svg-icon icon-class="collecting"></svg-icon> 进入产品募集</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="backProductType(0)">
         <svg-icon icon-class="return"></svg-icon> 返回在建</el-button>
@@ -412,7 +412,7 @@
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===5" type="primary" @click="updateProductType(6)">
         <svg-icon icon-class="shutDown"></svg-icon> 进入兑付完成</el-button>
     </div>
-
+    <!-- 新增材料下拉框 -->
     <el-dialog
       title="提示"
       :visible.sync="dialogComVisible"
@@ -435,7 +435,26 @@
         <el-button type="primary" @click="chooseClientFile">确 定</el-button>
       </div>
     </el-dialog>
-
+    <!-- 进入产品募集 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogCollectVisible"
+      width="30%">
+      <el-radio-group v-model="collectVal" @change="radioChange">
+        <el-radio style="display: block" :label="1">立即进入产品募集</el-radio>
+        <el-radio style="margin-left: 0" :label="2">定时进入产品募集</el-radio>
+        <el-date-picker
+          v-model="collectTime"
+          type="datetime"
+          placeholder="选择日期时间">
+        </el-date-picker>
+      </el-radio-group>
+      <div class="dialog-footer text-right">
+        <el-button @click="dialogCollectVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleToCollect">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 转已关账... -->
     <el-dialog
       title="提示"
       :visible.sync="dialogStVisible"
@@ -506,7 +525,8 @@
 <script>
   import productMaterialComponent from 'components/table/material'
   import { putFileObj, delCustFile, fetchOperation, addCustFile, postTranscFile, getCustFile,
-    updCustFile, updProductDisplay, updProductPause, getProductStage, addOperationObj, updProductType } from '@/api/product/product'
+    updCustFile, updProductDisplay, updProductPause, getProductStage, addOperationObj, updProductType,
+    updToCollect } from '@/api/product/product'
   import { mapGetters } from 'vuex'
   import { transformText, sortKey } from '@/utils'
   // import { parseTime } from '@/utils'
@@ -601,6 +621,7 @@
         createStatus: 'create',
         dialogComVisible: false,
         dialogStVisible: false,
+        dialogCollectVisible: false,
         selectFile: null,
         clientFileList: [],
         clientFile: '',
@@ -612,7 +633,9 @@
         dto: {},
         url: '',
         secStep: '1',
-        data: {}
+        data: {},
+        collectVal: 1,
+        collectTime: ''
         // form: {},
         // isDisabled: true,
         // stage: false,
@@ -896,6 +919,28 @@
 
           })
         }
+      },
+      radioChange(val) {
+        if(val === 1) {
+          this.collectTime = ''
+        }
+      },
+      handleToCollect() {
+        let params = {
+          collect: this.collectVal === 1 ? true : false,
+          collectDate: this.collectTime = this.collectVal === 1 ? '' : this.collectTime 
+        }
+        updToCollect(this.productId, params).then(res => {
+          this.dialogCollectVisible = false
+          this.$notify({
+            title: '成功',
+            message: '状态操作成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.$router.push({path: this.url})
+          Bus.$emit('activeUrl', this.url)
+        })
       },
       handleProStatus() { // 弹框确定事件
         updProductType(this.productId, this.dto).then(res => {

@@ -1,11 +1,21 @@
 import request from '@/utils/request'
 
 /**
- * 查询产品类型
+ * 查询产品收益类型
  */
 export function fetchProductTypeList() {
   return request({
     url: '/product/productType/list',
+    method: 'get'
+  })
+}
+
+/**
+ * 查询产品结构类型
+ */
+export function fetchProductMixType() {
+  return request({
+    url: '/product/productMixType/list',
     method: 'get'
   })
 }

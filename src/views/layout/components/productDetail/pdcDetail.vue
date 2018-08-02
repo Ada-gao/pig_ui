@@ -1,7 +1,7 @@
 <template>
   <div class="product-detail">
     <el-form :model="form" :rules="rules" ref="form" label-width="110px">
-      <el-row :gutter="20">
+      <el-row :gutter="90">
         <el-col :span="11" v-if="!stage&createStatus==='update'">
           <!-- 如果分期，不显示编号 -->
           <el-form-item label="产品编号" prop="productCode">
@@ -17,8 +17,8 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品结构类型" prop="productName">
-            <el-select class="filter-item" v-model="form.productTypeId" placeholder="请选择" :disabled="detailDisabled">
-              <el-option v-for="item in productTypes" :key="item.productTypeId" :value="item.productTypeId" :label="item.name">
+            <el-select class="filter-item" v-model="form.productMixTypeId" placeholder="请选择" :disabled="detailDisabled">
+              <el-option v-for="item in productMixTypes" :key="item.productMixTypeId" :value="item.productMixTypeId" :label="item.name">
                 <span style="float: left">{{ item.name }}</span>
               </el-option>
             </el-select>
@@ -54,7 +54,6 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="交易币种" prop="currencyId">
-            <!-- <el-input v-model="form.currencyId" placeholder="" disabled></el-input> -->
             <el-select class="filter-item" v-model="form.currencyId" placeholder="请选择" @change="changeCurrency" :disabled="detailDisabled||stageType=='0'">
               <el-option v-for="item in currencyList" :key="item.currencyId" :value="item.currencyId" :label="item.name">
                 <span style="float: left">{{ item.name }}</span>
@@ -62,25 +61,23 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="11">
-          <el-form-item label="汇率" prop="currencyId">
-            <el-input v-model="form.currencyId" placeholder="" :disabled="detailDisabled"></el-input>
-          </el-form-item>
-        </el-col> -->
         <el-col :span="11">
           <el-form-item label="购买人群" prop="currencyId">
-            <el-input v-model="form.currencyId" placeholder="" :disabled="detailDisabled"></el-input>
+            <el-select class="filter-item" v-model="form.buyingCrowds" placeholder="请选择" :disabled="detailDisabled">
+              <el-option v-for="item in buyingCrowds" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
-            <!-- <el-input type="number" v-model.number="form.investmentHorizon" style="width: 75%;" disabled></el-input>
-            <el-input v-model="form.investmentHorizonUnit" style="width: 22%;" disabled></el-input> -->
-            <el-input v-model="form.investmentHorizon" style="width: 75%;" :disabled="detailDisabled||stageType=='0'"></el-input>
+            <el-input v-model="form.investmentHorizon" style="width: 35%;" :disabled="detailDisabled||stageType=='0'"></el-input>
             <el-select v-model="form.investmentHorizonUnit" style="width: 23%;" :disabled="detailDisabled||stageType=='0'">
               <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
               </el-option>
             </el-select>
+            <span style="width: 40%">产品折后系数：{{investRatio|turnNum}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -114,7 +111,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="收益分配方式" prop="incomeDistribution" style="white-space: nowrap">
-            <el-input type="number" v-model="form.incomeDistribution" :maxlength="10" :disabled="detailDisabled||stageType=='0'"></el-input>
+            <el-input v-model="form.incomeDistribution" :maxlength="10" :disabled="detailDisabled||stageType=='0'"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -124,59 +121,52 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="托管银行">
-            <el-input v-model="form.assetTeam" placeholder="请输入" :disabled="detailDisabled"></el-input>
+            <el-input v-model="form.custodianBank" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="渠道打款金额">
-            <el-input v-model="form.assetTeam" placeholder="请输入" :disabled="detailDisabled"></el-input>
+            <el-input v-model="form.channelAmount" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="渠道人数">
-            <el-input v-model="form.assetTeam" placeholder="请输入" :disabled="detailDisabled"></el-input>
+            <el-input v-model="form.channelNumber" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
+        <!-- 产品/募集分期才有 -->
+        <!-- <el-col :span="11">
           <el-form-item label="关联产品">
             <el-input v-model="form.assetTeam" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="11">
-          <el-form-item label="付息方式" prop="productRiskLevel">
-            <el-select class="filter-item" v-model="form.currencyId" placeholder="请选择" @change="changeCurrency" :disabled="detailDisabled">
-              <el-option v-for="item in currencyList" :key="item.currencyId" :value="item.currencyId" :label="item.name">
-                <span style="float: left">{{ item.name }}</span>
+          <el-form-item label="付息方式" prop="interestPayment">
+            <el-select class="filter-item" v-model="form.interestPayment" placeholder="请选择" :disabled="detailDisabled">
+              <el-option v-for="item in interestPayment" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="认购费">
-            <el-radio-group v-model="form.isFloat" @change="radioChange" :disabled="detailDisabled||stageType=='0'">
+            <el-radio-group v-model="form.subscribe" @change="subscribeChange" :disabled="detailDisabled">
               <el-radio :label="0" style="display: inline-block">无认购费</el-radio>
               <el-radio :label="1" style="display: inline-block">价内认购</el-radio>
               <el-radio :label="2" style="display: inline-block">价外认购(%)</el-radio>
-              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn" :disabled="collectDisabled||stageType=='0'"></el-input>
+              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="subDisabled" required="subDisabled" v-model="form.subscribeRate" :disabled="collectDisabled"></el-input>
             </el-radio-group>
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="11">
-          <el-form-item label="产品归属">
-            <el-radio-group v-model="form.isFloat" @change="radioChange" :disabled="detailDisabled">
-              <el-radio :label="0" style="display: inline-block">自营</el-radio>
-              <el-radio :label="1" style="display: inline-block">代购</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col> -->
       </el-row>
       <el-row :gutter="90">
         <el-col :span="22">
-          <el-form-item label="产品公告" prop="incomeDistribution">
+          <el-form-item label="产品公告" prop="announcement">
             <el-input
               type="textarea"
               :row="2"
-              v-model="form.incomeDistribution" :disabled="detailDisabled">
+              v-model="form.announcement" :disabled="detailDisabled">
             </el-input>
           </el-form-item>
         </el-col>
@@ -186,41 +176,52 @@
 
       <el-row :gutter="90">
         <el-col :span="11">
-          <el-form-item label="账户名称" prop="bankName">
-            <el-input v-model="form.bankName" placeholder="请输入" :disabled="detailDisabled"></el-input>
+          <el-form-item label="账户名称" prop="accountName">
+            <el-input v-model="form.accountName" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="账号">
+          <el-form-item label="账号" prop="cardNo">
             <el-input v-model.number="form.cardNo" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="开户银行名称">
-            <el-input v-model="form.subBranchName" placeholder="请输入" :disabled="detailDisabled"></el-input>
+          <el-form-item label="开户银行名称" prop="bankName">
+            <el-input v-model="form.bankName" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="大额支付行号">
-            <el-input v-model="form.subBranchName" placeholder="请输入" :disabled="detailDisabled"></el-input>
+          <el-form-item label="大额支付行号" prop="paymentNumber">
+            <el-input v-model="form.paymentNumber" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       
       <el-row :gutter="90">
         <el-col :span="22">
-          <el-form-item label="备注" prop="highlight">
+          <el-form-item label="备注" prop="remark">
             <el-input
               type="textarea"
               :row="2"
-              v-model="form.highlight" :disabled="detailDisabled">
+              v-model="form.remark" :disabled="detailDisabled">
             </el-input>
           </el-form-item>
         </el-col>
       </el-row>
-
+      <el-row v-if="createStatus==='create'">
+        <el-col :span="11" :offset="11" style="text-align: right; margin-bottom: 10px">
+          <el-button class="search_btn" @click="dialogPropertyVisible=true">
+            <svg-icon icon-class="add"></svg-icon> 新增属性</el-button>
+        </el-col>
+      </el-row>
       <div class="split-line" style="margin-bottom: 20px;"></div>
-
+      <el-row v-show="userNewAttr">
+        <el-col :span="11" v-for="(item, index) in form.userDefinedAttribute" :key="index">
+          <el-form-item :label="item.label" prop="">
+            <el-input v-model="item.value" placeholder="请输入" :disabled="detailDisabled"></el-input>11
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-row>
         <el-col :span="6">
           <el-form-item label="成立日:">
@@ -239,7 +240,6 @@
         </el-col>
       </el-row>
     </el-form>
-
     <div slot="footer" class="dialog-footer" style="text-align: center;">
       <!-- 创建 -->
       <el-button class="search_btn" v-if="createStatus=='create'" @click="cancel()">取 消</el-button>
@@ -247,15 +247,27 @@
       <!-- 编辑 -->
       <el-button class="search_btn" v-if="createStatus=='update'" @click="cancel()">取 消</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'" type="primary" @click="update('form')">保 存</el-button>
-     
     </div>
+    <el-dialog :visible.sync="dialogPropertyVisible" title="新增属性">
+      <el-form label-width="120px">
+        <el-col>
+          <el-form-item label="属性名称">
+            <el-input v-model="propertyName"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-form>
+      <div class="dialog-footer text-right">
+        <el-button @click="dialogPropertyVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleAddProperty">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import { getObj, getProductStage, addObj, updProductStage, putObj } from '@/api/product/product'
   import transcTableComponent from 'components/table/transcTable'
-  import { fetchProductTypeList } from '@/api/product/productType'
+  import { fetchProductTypeList, fetchProductMixType } from '@/api/product/productType'
   import { fetchCurrency, getObjList } from '@/api/currency'
   import { mapGetters } from 'vuex'
   import { transformText, sortKey } from '@/utils'
@@ -287,8 +299,11 @@
   export default {
     data() {
       return {
-        form: {},
+        form: {
+          userDefinedAttribute: []
+        },
         productTypes: [],
+        productMixTypes: [],
         currencyList: [],
         isDisabled: true,
         stage: false,
@@ -298,142 +313,60 @@
         detailDisabled: false,
         rules: {
           productName: [
-            {
-              required: true,
-              message: '请输入产品名称',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 20,
-              message: '长度在 3 到 20 个字符',
-              trigger: 'blur'
-            }
+            { required: true, message: '请输入产品名称', trigger: 'blur' },
+            { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           isFloat: [
-            {
-              required: true,
-              message: '请选择收益',
-              trigger: 'blue'
-            }
+            { required: true, message: '请选择收益', trigger: 'blue' }
           ],
           bankName: [
-            {
-              required: true,
-              message: '请输入开户银行名称',
-              trigger: 'blur'
-            }
+            { required: true, message: '请输入开户银行名称', trigger: 'blur' }
           ],
           subBranchName: [
-            {
-              required: true,
-              message: '请输入支行名称',
-              trigger: 'blur'
-            }
+            { required: true, message: '请输入支行名称', rigger: 'blur' }
           ],
           cardNo: [
-            {
-              required: true,
-              message: '请输入打款帐号',
-              trigger: 'blur'
-            }
+            { required: true, message: '请输入打款帐号', trigger: 'blur' }
           ],
           productCode: [
-            {
-              required: true,
-              message: '请输入产品名称',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 20,
-              message: '长度在 3 到 20 个字符',
-              trigger: 'blur'
-            }
+            { required: true, message: '请输入产品名称', trigger: 'blur' },
+            { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           productTypeId: [
-            {
-              required: true,
-              message: '请选择产品类型',
-              trigger: 'blur'
-            }
+            { required: true, message: '请选择产品类型', trigger: 'blur' }
           ],
           productRiskLevel: [
-            {
-              required: true,
-              message: '请选择产品风险级别',
-              trigger: 'blur'
-            }
+            { required: true, message: '请选择产品风险级别', trigger: 'blur' }
           ],
           manager: [
-            {
-              required: true,
-              message: '请输入基金管理人',
-              trigger: 'blur'
-            }
+            { required: true, message: '请输入基金管理人', trigger: 'blur' }
           ],
           currencyId: [
-            {
-              required: true,
-              message: '请选择交易币种',
-              trigger: 'blur'
-            }
+            { required: true, message: '请选择交易币种', trigger: 'blur' }
           ],
           collectionAmount: [
-            {
-              required: true,
-              message: '请输入募集额度',
-              trigger: 'change'
-            },
-            {
-              // message: '金额必须为数字值',
-              trigger: 'change',
-              validator: certNumber
-            }
+            {  required: true, message: '请输入募集额度', trigger: 'change'}
+            // {  message: '金额必须为数字值',  trigger: 'change',  validator: certNumber}
           ],
           minimalAmount: [
-            {
-              required: true,
-              message: '请输入起投金额',
-              trigger: 'change'
-            },
-            {
-              message: '金额必须为数字值',
-              trigger: 'change',
-              validator: certNumber
-            }
+            { required: true, message: '请输入起投金额', trigger: 'change'},
+            { message: '金额必须为数字值', trigger: 'change', validator: certNumber}
           ],
           minimalAddAmount: [
-            {
-              required: true,
-              message: '请输入追加金额',
-              trigger: 'change'
-            },
-            {
-              // type: 'number',
-              message: '金额必须为数字值',
-              validator: certNumber
-            }
-          ],
-          netValue: [
-            {
-              // required: false,
-              max: 5,
-              message: '请输入小于100，且小数不能超过两位',
-              trigger: 'change',
-              validator: twoDecimals
-            }
+            { required: true, message: '请输入追加金额', trigger: 'change'}
+            // { type: 'number', message: '金额必须为数字值', validator: certNumber }
           ],
           investmentHorizon: [
-            {
-              required: true,
-              message: '请输入产品期限',
-              trigger: 'blur'
-            }
+            { required: true, message: '请输入产品期限', trigger: 'blur' }
           ]
         },
         createStatus: 'create',
-        backUrl: ''
+        backUrl: '',
+        dialogPropertyVisible: false,
+        propertyName: '',
+        subDisabled: false,
+        ratio: 0,
+        userNewAttr: false
       }
     },
     props: ['productId', 'stageType', 'formData'],
@@ -442,22 +375,40 @@
         'permissions',
         'productStatus',
         'productRiskLevel',
-        'investHorizonUnit'
-      ])
+        'investHorizonUnit',
+        'interestPayment',
+        'buyingCrowds'
+      ]),
+      investRatio() {
+        if(this.form.investmentHorizonUnit === '0') {
+          this.ratio = this.form.investmentHorizon / 12 * 100
+        } else if(this.form.investmentHorizonUnit === '1') {
+          this.ratio = 1 * 100
+        } else if(this.form.investmentHorizonUnit === '2') {
+          this.ratio = this.form.investmentHorizon / 365 * 100
+        }
+        return this.ratio
+      }
     },
     filters: {
       parseTime (time) {
         if(!time) return
         let date = new Date(time)
         return parseTime(date)
+      },
+      turnNum (num) {
+        return Math.round(parseFloat(num) * 100) / 100 + '%'
       }
     },
     created() {
       if(this.productId || this.stage) {
         this.createStatus = 'update'
       }
-      fetchProductTypeList().then(res => { // 获取产品类型
+      fetchProductTypeList().then(res => { // 获取产品收益类型
         this.productTypes = res.data
+        fetchProductMixType().then(res => { // 获取产品结构类型
+          this.productMixTypes = res.data
+        })
         getObjList().then(response => { // 获取币种
           this.currencyList = response.data
           this.form.currencyId = 1
@@ -466,21 +417,6 @@
           }
         })
       })
-    },
-    watch:{
-      // watch 无效，直接在 mounted 里可获取到
-      stageType(curVal, oldVal) {
-        console.log(curVal + ';' + oldVal)
-        if(curVal) {
-          this.stageTypeNo = curVal
-          this.stage = true
-          if(this.stageTypeNo === '0') {
-            this.detailDisabled = false
-          }
-          console.log('maybe something is wrong')
-          this.getCollectList(this.productId, this.stageTypeNo)
-        }
-      }
     },
     mounted() {
       this.form = this.formData
@@ -501,6 +437,14 @@
           getObj(this.productId)
           .then(response => {
             this.form = response.data
+            this.form.userDefinedAttribute = JSON.parse(this.form.userDefinedAttribute)
+            this.form.subscribe = this.form.subscribe - 0
+            if(this.form.userDefinedAttribute == 'null') {
+              this.userNewAttr = false
+            } else if(this.form.userDefinedAttribute instanceof Array) {
+              this.userNewAttr = true
+            }
+            this.ratio = this.form.discountCoefficient
             // this.dialogFormVisible = true
             this.dialogStatus = 'update' // 设置每个产品详情对应显示的提交按钮
             if(this.form.isFloat === 0) {
@@ -553,6 +497,13 @@
           this.isDisabled = false
         }
       },
+      subscribeChange(value) {
+        if(value === 2) {
+          this.subDisabled = true
+        } else {
+          this.subDisabled = false
+        }
+      },
       create(formName) { // 创建提交
         // this.$emit('productIdByDetail', '')
         const set = this.$refs
@@ -560,7 +511,8 @@
           this.form.annualizedReturn = null
           this.isDisabled = true
         }
-        if(this.form.investmentHorizon.indexOf('+')&this.form.investmentHorizonUnit!='1') {
+        if(this.form.investmentHorizon.indexOf('+') !== -1 & this.form.investmentHorizonUnit!='1') {
+          console.log(this.form.investmentHorizon.indexOf('+'))
           this.$notify({
             title: '提示',
             message: '产品期限填写有误，请重新输入',
@@ -571,6 +523,8 @@
         }
         set[formName].validate(valid => {
           if (valid) {
+            this.form.discountCoefficient = this.investRatio
+            this.form.userDefinedAttribute = JSON.stringify(this.form.userDefinedAttribute)
             addObj(this.form)
               .then(response => {
                 if(response.status === 200) {
@@ -599,7 +553,7 @@
         this.form.currencyId = this.form.currencyIdNo
         this.form.productTypeId = this.form.productTypeIdNo
         this.form.investmentHorizonUnit = this.form.investmentHorizonUnitNo
-        if(this.form.investmentHorizon.indexOf('+')&this.form.investmentHorizonUnit!='1') {
+        if(this.form.investmentHorizon.indexOf('+') !== -1 & this.form.investmentHorizonUnit!='1') {
           this.$notify({
             title: '提示',
             message: '产品期限填写有误，请重新输入',
@@ -610,17 +564,16 @@
         }
         set[formName].validate(valid => {
           if (valid) {
+            this.form.discountCoefficient = this.investRatio
+            this.form.userDefinedAttribute = JSON.stringify(this.form.userDefinedAttribute)
             if (this.stage) { //分期
-              
               updProductStage(this.form).then(response => {
                 if(!response.data || response.status !== 200) {
                   return
-                  // this.getList()
                 }
                 this.form = response.data
                 // this.productId = this.form.productId
                 this.$emit('productIdByDetail', response.data.productId)
-                this.step = 2
                 // 此处应该 $emit 发送数据到父组件
                 // this.changeStep(this.step)
                 this.$notify({
@@ -633,15 +586,14 @@
               })
             } else {
               // this.form.productStatus = this.productStatusNo
-              putObj(this.uploadData.productId, this.form).then(res => {
+              putObj(this.productId, this.form).then(() => {
                 this.$notify({
                   title: '成功',
                   message: '保存成功',
                   type: 'success',
                   duration: 2000
                 })
-                this.form = res.data
-                this.step = 2
+                this.$emit('productIdByDetail', this.form.productId)
               })
             }
             let params = {
@@ -662,6 +614,13 @@
         this.$router.push({path: this.backUrl})
         Bus.$emit('activeIndex', this.backUrl)
       },
+      handleAddProperty() { // 新增属性
+        this.form.userDefinedAttribute.push({
+          label: this.propertyName
+        })
+        this.dialogPropertyVisible = false
+        this.propertyName = ''
+      }
     }
   }
 </script>
