@@ -6,6 +6,7 @@
                  style="margin-bottom: 0;"
                  @click="handleCreate"
                  type="primary"
+                 :disabled="list.length >= 6"
                  icon="edit">
         <svg-icon icon-class="add"></svg-icon> 新增</el-button>
     </div>
@@ -89,6 +90,16 @@
   export default {
     name: 'table_user',
     data() {
+      const validatePass = (rule, value, callback) => {
+        if (!value) {
+          callback('请输入试用期业绩标准')
+        }
+        if (Number(value) > 100) {
+          callback(new Error('试用期业绩标准不能大于100%'))
+        } else {
+          callback()
+        }
+      }
       return {
         list: [],
         total: null,
@@ -109,7 +120,7 @@
         tableKey: 0,
         rules: {
           norm: [
-            { required: true, trigger: 'blur', message: '请输入试用期业绩标准' }
+            { required: true, trigger: 'blur', validator: validatePass }
           ]
         }
       }
