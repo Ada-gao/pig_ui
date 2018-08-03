@@ -21,7 +21,7 @@
         </el-table-column>
         <el-table-column
           prop="fileSize"
-          label="大小/k"
+          label="文件大小/k"
           width="180"
           align="center">
         </el-table-column>
@@ -49,13 +49,20 @@
       </el-row>
     </div>
     <div class="trade-item">
-      <h3>上传客户材料</h3>
+      <h3>客户所需提交材料</h3>
       <div class="second-tab">
         <span class="second-item" @click="changeSecStep('1')" :class="{'query-color': secStep==='1'}">专业投资者</span>
-        <span class="second-item" @click="changeSecStep('2')" :class="{'query-color': secStep==='2'}">普通投资者</span>
+        <span class="second-item" @click="changeSecStep('0')" :class="{'query-color': secStep==='0'}">普通投资者</span>
       </div>
       <product-material-component
-        :productList="data"
+        v-show="secStep==='1'"
+        :productList="data1"
+        @del-client-file="deleteClient"
+        @upd-client-file="updateClientFile">
+      </product-material-component>
+      <product-material-component
+        v-show="secStep==='0'"
+        :productList="data2"
         @del-client-file="deleteClient"
         @upd-client-file="updateClientFile">
       </product-material-component>
@@ -64,11 +71,11 @@
         <el-button size="small"
           class="btn-padding add_btn"
           v-if="!operationDisabled"
-          @click="addClientFile('client')">追加材料</el-button>
+          @click="addClientFile('client', secStep)">追加材料</el-button>
       </el-row>
     </div>
     <div class="trade-item">
-      <h3>产品说明所需材料</h3>
+      <h3>产品说明材料</h3>
       <el-table
         :data="fileList2"
         border
@@ -88,7 +95,7 @@
         </el-table-column>
         <el-table-column
           prop="fileSize"
-          label="大小/k"
+          label="文件大小/k"
           width="180"
           align="center">
         </el-table-column>
@@ -123,8 +130,9 @@
         </el-upload>
       </el-row>
     </div>
-    <!-- <div class="trade-item">
-      <h3>产品公告</h3>
+    <div class="trade-item">
+      <!-- 产品公告 -->
+      <h3>投后报告</h3>
       <el-table
         :data="fileList3"
         border
@@ -143,7 +151,7 @@
         </el-table-column>
         <el-table-column
           prop="fileSize"
-          label="大小/k"
+          label="文件大小/k"
           width="180"
           align="center">
         </el-table-column>
@@ -176,7 +184,7 @@
                      class="btn-padding add_btn">追加材料</el-button>
         </el-upload>
       </el-row>
-    </div> -->
+    </div>
     <div class="split-line" style="margin: 20px 0;"></div>
     <el-form :rules="rules2" ref="form2" label-width="120px">
       <div class="group-item">
@@ -603,6 +611,7 @@
       return {
         fileList1: [],
         fileList2: [],
+        fileList3: [],
         // clientFiles: [],
         form2: {
           activityDTO: [],
@@ -687,7 +696,8 @@
         dto: {},
         url: '',
         secStep: '1',
-        data: {},
+        data1: {},
+        data2: {},
         collectVal: 1,
         collectTime: ''
         // form: {},
@@ -1208,10 +1218,10 @@
         if(!productId) return null
         this.getFiles1(productId)
         this.getFiles2(productId)
-        // this.getFiles3(productId)
+        this.getFiles3(productId)
         this.getFiles4(productId)
       },
-      addClientFile(type) { // 上传客户材料
+      addClientFile(type, clientType) { // 查询材料
         let params = {
           limit: 100,
           page: 1
@@ -1219,6 +1229,7 @@
         this.fileType = type
         this.clientFile = ''
         if (type === 'client') {
+          // params.clientType = clientType
           getClientFile(params).then(res => {
             this.clientFileList = res.data.records
             this.dialogComVisible = true
@@ -1233,13 +1244,14 @@
       changeSecStep(val) {
         this.secStep = val
       },
-      chooseClientFile() {
+      chooseClientFile() { // 下拉框选择材料提交
         this.dialogComVisible = false
         if (this.fileType === 'client') {
           let params = {
             fileName: this.selectFile.fileName,
             productClientFileManageId: this.selectFile.productClientFileManageId,
-            productId: this.productId
+            productId: this.productId,
+            clientType: this.secStep
           }
           addCustFile(params).then(res => {
             // this.clientFile = res.data
@@ -1313,23 +1325,28 @@
               this.getFiles1(id)
             } else if(productFileType === 'product') {
               this.getFiles2(id)
-            // } else if(productFileType === 'announcement') {
-            //   this.getFiles3(id)
+            } else if(productFileType === 'announcement') {
+              this.getFiles3(id)
             }
           }
         })
       },
       deleteClient(id) { // 删除上传客户材料
         delCustFile(id).then(res => {
-          if(res.status === 200) {
-            this.getFiles4(88)
-          }
+          // if(res.status === 200) {
+          this.getFiles4(this.productId)
+          // }
         })
       },
       handleChange2(file, fileList) { // 上传材料完成状态，列表展示
         // this.fileList2 = fileList.slice(-3)
         // this.uploadData.fileType = 'product'
         this.getFiles2(this.productId)
+      },
+      handleChange3(file, fileList) { // 上传材料完成状态，列表展示
+        // this.fileList2 = fileList.slice(-3)
+        // this.uploadData.fileType = 'product'
+        this.getFiles3(this.productId)
       },
       getFiles1(productId) {
         let uploadData = { // 交易所需材料
@@ -1349,10 +1366,23 @@
           this.fileList2 = response.data || []
         })
       },
+      getFiles3(productId) {
+        let uploadData = {
+          productId: productId,
+          fileType: 'announcement'
+        }
+        getFiles(uploadData).then(response => {
+          this.fileList3 = response.data || []
+        })
+      },
       getFiles4(productId) { // 客户所需材料
-        getCustFile(productId).then(response => {
+        getCustFile(productId, {clientType: '1'}).then(response => { // 专业投资者
           // this.clientFiles = response.data || []
-          this.data = response.data
+          this.data1 = response.data
+        })
+        getCustFile(productId, {clientType: '0'}).then(response => { // 普通投资者
+          // this.clientFiles = response.data || []
+          this.data2 = response.data
         })
       }
     }

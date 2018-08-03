@@ -98,10 +98,11 @@ export function delCustFile(productClientFileId) {
 /**
  * 查找上传客户材料
  */
-export function getCustFile(productId) {
+export function getCustFile(productId, query) {
   return request({
     url: '/product/products/' + productId + '/clientFile',
-    method: 'get'
+    method: 'get',
+    params: query
   })
 }
 
