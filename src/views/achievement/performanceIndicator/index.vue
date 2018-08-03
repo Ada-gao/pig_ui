@@ -244,7 +244,7 @@
               <el-select class="filter-item"
                          placeholder="请选择职级"
                          :multiple="dialogStatus === 'create'"
-                         v-model="dialogStatus === 'create' ? form.rankIds : form.rankId">
+                         v-model="form.rankIds">
                 <el-option v-for="item in level"
                            :value="item.rankId"
                            :label="item.rankName"
@@ -630,10 +630,14 @@
                   message: '创建成功'
                 })
               }
+              this.selectedOptions = []
               this.form.deptIds = []
+              this.$refs[formName].resetFields()
             }).catch(() => {
               this.dialogCreate = false
               this.form.deptIds = []
+              this.selectedOptions = []
+              this.$refs[formName].resetFields()
               this.$notify({
                 title: '失败',
                 message: '创建失败',
