@@ -185,7 +185,6 @@
                 v-if="dialogStatus === 'edit'"
                 change-on-select
                 v-model="form.deptIds"
-                @change="changeE"
               ></el-cascader>
               <div v-else>
                 <!--<el-cascader-->
@@ -240,11 +239,23 @@
         </el-row>
         <el-row>
           <el-col>
-            <el-form-item label="职级" prop="rankIds">
+            <el-form-item label="职级" prop="rankIds" v-if="dialogStatus === 'create'">
               <el-select class="filter-item"
                          placeholder="请选择职级"
-                         :multiple="dialogStatus === 'create'"
+                         multiple
                          v-model="form.rankIds">
+                <el-option v-for="item in level"
+                           :value="item.rankId"
+                           :label="item.rankName"
+                           :key="item.rankId">
+                  <span style="float: left;">{{item.rankName}}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="职级" prop="rankIds" v-else>
+              <el-select class="filter-item"
+                         placeholder="请选择职级"
+                         v-model="tempRankId">
                 <el-option v-for="item in level"
                            :value="item.rankId"
                            :label="item.rankName"
@@ -348,7 +359,8 @@
         curPrevId: '', // 循环前累计拼接的id
         result: [],
         eachIndex: 0,
-        tempDeptIds: []
+        tempDeptIds: [],
+        tempRankId: null
       }
     },
     computed: {
@@ -364,9 +376,6 @@
       this.sys_prd_type_del = this.permissions['sys_prd_type_del']
     },
     methods: {
-      changeE(value) {
-        console.log(value)
-      },
       cycleList(list) {
         list.forEach(item => {
           if (item.children && !item.children.length) {
@@ -400,7 +409,6 @@
         })
       },
       handleClose(index) {
-        console.log(index)
         this.form.deptIds.splice(index, 1)
       },
       upperIds(list1, list2, id) {
@@ -540,8 +548,8 @@
         editPfItem(id).then(res => {
           this.form = res.data
           this.upperIds(this.result, this.tempDeptIds, this.form.deptId)
-          console.log(this.form.deptIds)
           this.handlePosition(this.form.positionId)
+          this.tempRankId = res.data.rankId
           this.dialogCreate = true
         })
       },
@@ -590,7 +598,7 @@
         this.$refs[formName].resetFields()
       },
       close() {
-        this.form = {}
+        this.resetTemp()
       },
       create(formName) {
         this.tempForm = {
@@ -652,7 +660,7 @@
       },
       update(formName) {
         const set = this.$refs
-        console.log(this.form)
+        // console.log(this.form)
         this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
         this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
         if (Number(new Date(this.form.end)) < Number(new Date(this.form.start))) {
@@ -664,6 +672,7 @@
           })
           return false
         }
+        this.form.rankIds = [this.tempRankId]
         set[formName].validate(valid => {
           if (valid) {
             putPfItem(this.form.performanceIndicatorId, this.form).then(res => {
@@ -677,12 +686,14 @@
                   message: '创建成功'
                 })
               }
-              this.form.deptIds = []
+              this.resetTemp()
+              this.tempRankId = null
               this.$refs[formName].resetFields()
             }).catch(() => {
               this.dialogCreate = false
+              this.resetTemp()
+              this.tempRankId = null
               this.$refs[formName].resetFields()
-              this.form.deptIds = []
               this.$notify({
                 title: '失败',
                 message: '创建失败',
