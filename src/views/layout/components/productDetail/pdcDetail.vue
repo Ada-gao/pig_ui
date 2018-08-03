@@ -35,7 +35,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品收益类型" prop="productTypeId">
-            <span v-if="detailDisabled||stageType=='0'">{{form.productTypeId|trunText(productTypes)}}</span>
+            <span v-if="detailDisabled||stageType=='0'">{{form.productTypeId|turnText(productTypes)}}</span>
             <el-select v-else class="filter-item" v-model="form.productTypeId" placeholder="请选择">
               <el-option v-for="item in productTypes" :key="item.productTypeId" :value="item.productTypeId" :label="item.name">
                 <span style="float: left">{{ item.name }}</span>
@@ -45,7 +45,7 @@
         </el-col>
         <el-col :span="11" style="white-space: nowrap">
           <el-form-item label="产品风险级别" prop="productRiskLevel">
-            <span v-if="detailDisabled||stageType=='0'">{{form.productRiskLevel|trunText(productRiskLevel)}}</span>
+            <span v-if="detailDisabled||stageType=='0'">{{form.productRiskLevel|turnText(productRiskLevel)}}</span>
             <el-select v-else class="filter-item" v-model="form.productRiskLevel" placeholder="请选择">
               <el-option v-for="item in productRiskLevel" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -61,7 +61,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="交易币种" prop="currencyId">
-            <span v-if="detailDisabled||stageType=='0'">{{form.currencyId|trunText(currencyList)}}</span>
+            <span v-if="detailDisabled||stageType=='0'">{{form.currencyId|turnText(currencyList)}}</span>
             <el-select v-else class="filter-item" v-model="form.currencyId" placeholder="请选择" @change="changeCurrency">
               <el-option v-for="item in currencyList" :key="item.currencyId" :value="item.currencyId" :label="item.name">
                 <span style="float: left">{{ item.name }}</span>
@@ -71,7 +71,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="购买人群" prop="currencyId">
-            <span v-if="detailDisabled">{{form.buyingCrowds|trunText(buyingCrowds)}}</span>
+            <span v-if="detailDisabled">{{form.buyingCrowds|turnText(buyingCrowds)}}</span>
             <el-select v-else class="filter-item" v-model="form.buyingCrowds" placeholder="请选择">
               <el-option v-for="item in buyingCrowds" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -81,7 +81,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
-            <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}{{form.investmentHorizonUnit|trunText(investHorizonUnit)}}</span>
+            <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
             <el-input v-else v-model="form.investmentHorizon" style="width: 35%;"></el-input>
             <span v-if="detailDisabled||stageType=='0'"></span>
             <el-select v-else v-model="form.investmentHorizonUnit" style="width: 23%;">
@@ -433,7 +433,7 @@
       turnNum (num) {
         return Math.round(parseFloat(num) * 100) / 100 + '%'
       },
-      trunText (val, list) {
+      turnText (val, list) {
         return transformText1(val, list)
       }
     },

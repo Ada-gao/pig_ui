@@ -75,22 +75,7 @@
           if (res.status === 200) {
             this.dialogVisible = false
             let count = 0
-            res.data.every((item, index) => {
-              if (item.msgList && item.msgList.length > 0) {
-                ++count
-                return true
-              } else {
-                return false
-              }
-            })
-            if (count === res.data.length) {
-              this.$notify({
-                title: '失败',
-                message: '导入失败',
-                type: 'error',
-                duration: 2000
-              })
-            } else {
+            if (res.data.length === 0) {
               this.$notify({
                 title: '成功',
                 type: 'success',
@@ -98,6 +83,31 @@
                 message: '导入成功'
               })
               this.$router.push({ path: '/achievement/perform' })
+            } else {
+              res.data.every((item, index) => {
+                if (item.msgList && item.msgList.length > 0) {
+                  ++count
+                  return true
+                } else {
+                  return false
+                }
+              })
+              if (count === res.data.length) {
+                this.$notify({
+                  title: '失败',
+                  message: '导入失败',
+                  type: 'error',
+                  duration: 2000
+                })
+              } else {
+                this.$notify({
+                  title: '成功',
+                  type: 'success',
+                  duration: 2000,
+                  message: '导入成功'
+                })
+                this.$router.push({ path: '/achievement/perform' })
+              }
             }
           }
         }).catch(() => {
