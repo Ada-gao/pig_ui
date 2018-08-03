@@ -22,8 +22,15 @@
         </i>条
       </span>
     </div>
-    <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
+    <el-table v-if="errorList.length === 0" :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
       <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item'>
+      </el-table-column>
+    </el-table>
+    <el-table v-if="errorList.length !== 0" :data="errorList" border highlight-current-row style="width: 100%;margin-top:20px;">
+      
+      <el-table-column prop="errorNo" label="行数">
+      </el-table-column>
+      <el-table-column prop="errorMegs" :formatter="cellMegs" label="错误项">
       </el-table-column>
     </el-table>
   </div>
@@ -44,10 +51,28 @@
         formData: null,
         dialogVisible: false,
         downloadUrl: 'static/excel/佣金列表模版.xlsx',
-        formContent: []
+        formContent: [],
+        errorList: [],
+        errorMsg: [],
+        errLength: 0
       }
     },
     methods: {
+      cellMegs(row, column, cellValue, index) {
+        this.errLength = 0
+        this.errLength = cellValue.length
+        this.errorMsg = [...cellValue]
+        console.log(row)
+        console.log(column)
+        console.log(cellValue)
+        console.log(index)
+        // row.errorMegs.map(item => {
+        //   // console.log(item.errorItem + '(' + item.errorReason + ')')
+        //   this.errorMsg.push(item.errorItem + '(' + item.errorReason + ')')
+        //   this.errorMsg.join('|')
+        //   // console.log(this.errorMsg)
+        // })
+      },
       showDialog() {
         if (this.tableData.length > 0) {
           this.dialogVisible = true
@@ -58,6 +83,7 @@
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
         this.tableData = temp.results
+        // console.log(this.tableData)
         this.formData = JSON.parse(JSON.stringify(this.tableData))
         // this.tableData = Object.assign([], data.results)
         // console.log(this.tableHeader)
@@ -81,10 +107,12 @@
           '职位': "positionName",
           '职级': "rankName",
           '订单段': "timeSlot",
-          '部门': "deptName"
+          '部门': "deptName",
+          '行数': "lineNo"
         }
         this.formData.forEach( item => {
           replaceKey(item, kepMap)
+          item.lineNo = parseInt(item.lineNo)
           item.commission = parseInt(item.commission)
           item.finalCommission = parseInt(item.finalCommission)
           item.occurrenceDate = new Date(item.occurrenceDate).getTime()
@@ -97,12 +125,22 @@
         //   }
         // }
         commissionListImport(this.formData).then(res => {
-          if (!res) {
-            console.log('上传失败')
-          } else {
+          // console.log(res.data)
+          if (res.data.length === 0) {
             console.log('上传成功')
             this.dialogVisible = false
+          } else {
+            console.log('上传失败')
+            this.errorList = res.data
+            this.dialogVisible = false            
           }
+          // console.log(this.errorList)
+          // if (!res) {
+          //   console.log('上传失败')
+          // } else {
+          //   console.log('上传成功')
+          //   this.dialogVisible = false
+          // }
         })
       }
     }
