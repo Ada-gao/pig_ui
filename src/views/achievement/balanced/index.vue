@@ -189,9 +189,6 @@ export default {
 			getAllDeparts()
 				.then(response => {
 					this.treeDeptData = response.data
-					console.log(this.treeDeptData, this.treeDeptData.find(item => 
-						item.id === 1
-					))
 			}),
 			getBalancedList(this.listQuery).then(response => {
 				this.list = response.data.records
