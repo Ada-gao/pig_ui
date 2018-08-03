@@ -26,7 +26,7 @@
             </span>
             <!-- <a class="forget-psd" @click="pwdStep=2">忘记密码</a> -->
           </el-form-item>
-              
+
           <input name="randomStr" type="hidden" v-model="loginForm.randomStr"/>
           <el-form-item prop="code">
             <el-col :span="2">
@@ -48,6 +48,7 @@
               登录
             </el-button>
           </el-form-item>
+          <div class="forget_pw" @click="">忘记密码</div>
         </el-tab-pane>
         <el-tab-pane label="短信登录" name="second">
           <el-form-item prop="mobile">
@@ -103,7 +104,7 @@
             </span>
             <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="账号"/>
           </el-form-item>
-    
+
           <input name="randomStr" type="hidden" v-model="loginForm.randomStr"/>
           <el-form-item>
             <el-col :span="2">
@@ -451,5 +452,13 @@
     display: inline-block;
     vertical-align: -webkit-baseline-middle;
     color: $light_gray;
+  }
+  .forget_pw {
+    margin-bottom: 5px;
+    text-align: right;
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    color: #707070;
+    cursor: pointer;
   }
 </style>
