@@ -57,7 +57,7 @@
           </el-input>
           </el-form-item>
         </el-col>
-        <el-col :sm="10" :lg="7" v-show="isSpread & searchAppointmentCode">
+        <el-col :sm="10" :lg="7" v-show="isSpread && searchAppointmentCode">
           <el-form-item label="预约编号">
             <el-input
             placeholder="请输入预约编号"
@@ -80,7 +80,7 @@
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchTranscStatus">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread && searchTranscStatus">
           <el-form-item label="订单状态">
             <el-radio-group v-model="transcStep" @change="changeTransc">
               <el-radio-button v-for="item in transcStatus" :label="item.value" :key="item.value">{{item.label}}</el-radio-button>
@@ -90,7 +90,7 @@
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchAppoint & (transcStep == 10 || status == 10)">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread && searchAppoint && (transcStep == 10 || status == 10)">
           <el-form-item label="预约状态">
              <el-checkbox-group v-model="listQuery.status">
               <el-checkbox-button v-for="item in appointStatus" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
@@ -100,7 +100,7 @@
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchPayment & (transcStep == 20 || status == 20)">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread && searchPayment && (transcStep == 20 || status == 20)">
           <el-form-item label="打款状态">
              <el-checkbox-group v-model="listQuery.status">
               <el-checkbox-button v-for="item in paymentStatus" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
@@ -110,7 +110,7 @@
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchContract & (transcStep == 30 || status == 30)">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread && searchContract && (transcStep == 30 || status == 30)">
           <el-form-item label="合同状态">
              <el-checkbox-group v-model="listQuery.status">
               <el-checkbox-button v-for="item in contractStatus" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
@@ -120,7 +120,7 @@
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread & searchRefund">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread && searchRefund">
           <el-form-item label="退款状态">
             <el-checkbox-group v-model="listQuery.refundStatus">
             <el-checkbox-button v-for="status in refundStatus" :label="status.value" :key="status.value">{{status.label}}</el-checkbox-button>

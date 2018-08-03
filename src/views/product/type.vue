@@ -68,7 +68,14 @@
 </template>
 
 <script>
-  import { fetchProductTypeList, addObj, putObj, getObj } from '@/api/product/productType'
+  import {
+    getProductTypeList,
+    addObj,
+    putObj,
+    getProductMixList,
+    getProductMixById,
+    postProductMix,
+    getObj } from '@/api/product/productType'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
@@ -121,7 +128,7 @@
         tableKey: 0,
         rules: {
           name: [
-            {required: true, trigger: 'blur, change', message: '请输入产品类型'}
+            { required: true, trigger: 'blur', message: '请输入产品类型' }
           ]
         }
       }
@@ -141,6 +148,11 @@
         return statusMap[status]
       }
     },
+    watch: {
+      'tabcard': function(n, o) {
+        this.getList()
+      }
+    },
     created() {
       this.getList()
       this.sys_prd_type_add = this.permissions['sys_prd_type_add']
@@ -152,24 +164,32 @@
         this.listLoading = true
         // this.listQuery.orderByField = '`user`.create_time'
         // this.listQuery.isAsc = false
-        fetchProductTypeList().then(response => {
-          this.list = response.data
-          // this.total = response.data.total
-          this.listLoading = false
-        })
+        if (this.tabcard === 'first') {
+          getProductTypeList().then(response => {
+            this.list = response.data.records
+            this.total = response.data.total
+            this.listLoading = false
+          })
+        } else if (this.tabcard === 'second') {
+          getProductMixList().then(response => {
+            this.list = response.data.records
+            this.total = response.data.total
+            this.listLoading = false
+          })
+        }
       },
       // getNodeData(data) {
       //   this.dialogDeptVisible = false
       //   this.form.deptId = data.id
       //   this.form.deptName = data.name
       // },
-      handleDept() {
-        fetchDeptTree()
-          .then(response => {
-            this.treeDeptData = response.data
-            this.dialogDeptVisible = true
-          })
-      },
+      // handleDept() {
+      //   fetchDeptTree()
+      //     .then(response => {
+      //       this.treeDeptData = response.data
+      //       this.dialogDeptVisible = true
+      //     })
+      // },
       handleFilter() {
         this.listQuery.page = 1
         this.getList()
@@ -188,19 +208,39 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {
-        getObj(row.productTypeId)
-          .then(response => {
-            this.form = response.data
+        if (this.tabcard === 'first') {
+          getObj(row.productTypeId)
+            .then(response => {
+              this.form = response.data
+              this.dialogFormVisible = true
+              this.dialogStatus = 'update'
+            })
+        } else if (this.tabcard === 'second') {
+          getProductMixById(row.productMixTypeId).then(res => {
+            this.form = res.data
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
           })
+        }
       },
       create(formName) {
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
-            addObj(this.form)
-              .then(() => {
+            if (this.tabcard === 'first') {
+              addObj(this.form)
+                .then(() => {
+                  this.dialogFormVisible = false
+                  this.getList()
+                  this.$notify({
+                    title: '成功',
+                    message: '创建成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                })
+            } else if (this.tabcard === 'second') {
+              postProductMix(this.form).then(res => {
                 this.dialogFormVisible = false
                 this.getList()
                 this.$notify({
@@ -210,6 +250,7 @@
                   duration: 2000
                 })
               })
+            }
           } else {
             return false
           }
@@ -224,16 +265,29 @@
         set[formName].validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
-            putObj(this.form).then(() => {
-              this.dialogFormVisible = false
-              this.getList()
-              this.$notify({
-                title: '成功',
-                message: '修改成功',
-                type: 'success',
-                duration: 2000
+            if (this.tabcard === 'first') {
+              putObj(this.form).then(() => {
+                this.dialogFormVisible = false
+                this.getList()
+                this.$notify({
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
+                  duration: 2000
+                })
               })
-            })
+            } else if (this.tabcard === 'second') {
+              postProductMix(this.form).then(res => {
+                this.dialogFormVisible = false
+                this.getList()
+                this.$notify({
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
+                  duration: 2000
+                })
+              })
+            }
           } else {
             return false
           }
@@ -266,7 +320,7 @@
       resetTemp() {
         this.form = {
           id: undefined,
-          name: '',
+          name: ''
         }
       }
     }

@@ -239,11 +239,11 @@
        
       },
       submitResult(result) {
-        if(this.investorType === 0 & !this.riskLevel) {
+        if(this.investorType === 0 && !this.riskLevel) {
           this.selectMsg = true
           return
         }
-        if(result == 3 & !this.failReason) {
+        if(result == 3 && !this.failReason) {
           this.tip = true
           return
         }

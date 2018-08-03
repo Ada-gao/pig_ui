@@ -64,3 +64,46 @@ export function putObj(obj) {
     }
   })
 }
+
+/**
+ * 获取产品收益类型
+ */
+export function getProductTypeList() {
+  return request({
+    url: '/product/productType/',
+    method: 'get'
+  })
+}
+
+/**
+ * 查询产品结构类型
+ */
+export function getProductMixList() {
+  return request({
+    url: '/product/productMixType',
+    method: 'get'
+  })
+}
+
+/**
+ * 根据id获取对应的产品结构信息
+ * @param id
+ */
+export function getProductMixById(id) {
+  return request({
+    url: '/product/productMixType/' + id,
+    method: 'get'
+  })
+}
+
+/**
+ * 新增或修改产品结构类型
+ * @param data
+ */
+export function postProductMix(data) {
+  return request({
+    url: '/product/productMixType',
+    method: 'post',
+    data
+  })
+}

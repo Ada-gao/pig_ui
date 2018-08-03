@@ -19,6 +19,23 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
+            <el-form-item label="部门" prop="deptId">
+              <el-cascader
+                style="width: 100%"
+                :options="treeDeptData"
+                :props="defaultProps"
+                :show-all-levels="false"
+                change-on-select
+                v-model="form.deptIds"
+              ></el-cascader>
+              <!-- <el-input v-model="form.deptName" placeholder="选择部门"
+                @focus="handleDept"
+                @change="changeDept"
+                ></el-input>
+              <input type="hidden" v-model="form.deptId"/> -->
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
             <el-form-item label="工号" prop="empNo">
               <el-input v-model="form.empNo" placeholder="请输入工号" :readonly="isReadonly"></el-input>
             </el-form-item>
@@ -62,9 +79,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="试用期到期日" prop="idType">
+            <el-form-item label="试用期到期日" prop="probationExpirationDate">
               <el-date-picker
-                v-model="form.employeeDate"
+                v-model="form.probationExpirationDate"
                 type="date"
                 placeholder="选择日期"
                 :readonly="isReadonly">
@@ -77,9 +94,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="转正时间" prop="idType">
+            <el-form-item label="转正时间" prop="officialDate">
               <el-date-picker
-                v-model="form.employeeDate"
+                v-model="form.officialDate"
                 type="date"
                 placeholder="选择日期"
                 :readonly="isReadonly">
@@ -92,7 +109,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="状态">
+            <el-form-item label="状态" prop="status">
               <el-select class="filter-item" v-model="form.status" placeholder="请选择">
                 <el-option v-for="item in workStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
               </el-select>
@@ -104,8 +121,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="离职原因" prop="email">
-              <el-input v-model="form.email"></el-input>
+            <el-form-item label="离职原因" prop="dimissionReason">
+              <el-input v-model="form.dimissionReason"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -137,10 +154,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="是否营销岗" prop="marriageStatus">
-              <el-radio-group v-model="form.isFloat">
-                <el-radio :label="0" style="display: inline-block">是</el-radio>
-                <el-radio :label="1" style="display: inline-block">否</el-radio>
+            <el-form-item label="是否营销岗" prop="isMarketing">
+              <el-radio-group v-model="form.isMarketing">
+                <el-radio :label="1" style="display: inline-block">是</el-radio>
+                <el-radio :label="0" style="display: inline-block">否</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -221,6 +238,11 @@
           <el-col :span="10">
             <el-form-item label="用户名：" prop="username">
               {{form.username}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="部门：" prop="deptName">
+              {{form.deptName}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -383,7 +405,8 @@
         checkedKeys: [],
         defaultProps: {
           children: 'children',
-          label: 'name'
+          label: 'name',
+          value: 'id'
         },
         list: null,
         listLoading: true,
@@ -393,7 +416,8 @@
           username: undefined,
           password: undefined,
           status: undefined,
-          deptId: undefined
+          deptId: undefined,
+          deptIds: []
         },
         rules: {
           name: [
@@ -405,9 +429,6 @@
           ],
           empNo: [
             {required: true, trigger: 'blur', message: '请输入工号'}
-          ],
-          employeeDate: [
-            {required: true, trigger: 'blur', message: '请选择入职日期'}
           ],
           gender: [
             {required: true, trigger: 'blur', message: '请选择性别'}
@@ -438,13 +459,19 @@
           ],
           mobile: [
             {required: true, trigger: 'change', validator: validMobile}
-          ]
+          ],
+          isMarketing: [
+            {required: true, trigger: 'change', message: '请选择是否是营销岗'}
+          ],
+          status: [
+            {required: true, trigger: 'change', message: '请选择状态'}
+          ],
         },
         statusOptions: ['0', '1', '2'],
         positionsOptions: [],
         rolesOptions: [],
         dialogFormVisible: false,
-        dialogDeptVisible: false,
+        // dialogDeptVisible: false,
         dialogFormView: false,
         userAdd: false,
         userUpd: false,
@@ -503,13 +530,14 @@
       if(this.id) {
         this.getList()
       }
+      this.handleDept()
     },
     methods: {
       getList() { // 编辑查询（查看）
         getObj(this.id)
           .then(response => {
             this.form = response.data
-            // this.form.role = row.roleList[0].roleId
+            this.form.role = this.form.roleList[0].roleDesc
             // this.role = row.roleList[0].roleDesc
             if(this.state === 'view') {
               this.dialogFormView = true
@@ -545,8 +573,8 @@
               })
           })
       },
-      getNodeData(data) { // 部门查询
-        this.dialogDeptVisible = false
+      getNodeData(data) { // 部门查询角色
+        // this.dialogDeptVisible = false
         this.form.deptId = data.id
         this.form.deptName = data.name
         deptRoleList(data.id)
@@ -570,12 +598,23 @@
           this.positionsOptions = res.data
         })
       },
-      handleDept() {
-        fetchDeptTree()
-          .then(response => {
-            this.treeDeptData = response.data
-            this.dialogDeptVisible = true
-          })
+      handleDept() { // 部门数据
+        fetchDeptTree().then(res => {
+          // console.log(res.data)
+          this.treeDeptData = res.data
+          this.eachChildren(this.treeDeptData)
+          // this.dialogDeptVisible = true
+        })
+      },
+      eachChildren(list) {
+        list.forEach(item => {
+          if(item.children && !item.children.length) {
+            delete item.children
+          } else if(item.children && item.children.length) {
+            this.eachChildren(item.children)
+          }
+        })
+        console.log(list)
       },
       changeDept() {
         this.role = ''

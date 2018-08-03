@@ -122,7 +122,7 @@
 
       <el-table-column align="center" label="操作" v-if="!transcStatus">
         <template slot-scope="scope">
-          <a v-if="sys_product_upd & scope.row.status != 3001" size="small" class="common_btn"
+          <a v-if="sys_product_upd && scope.row.status != 3001" size="small" class="common_btn"
                      @click="handleUpdate(scope.row)">查 看
           </a>
           <a v-if="scope.row.status == 3001" size="small" class="common_btn"
