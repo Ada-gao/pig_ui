@@ -38,8 +38,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="录入时间：" prop="city">
-            <span>{{form.city}}</span>
+          <el-form-item label="录入时间：" prop="createTime">
+            <span>{{form.createTime}}</span>
             <!-- <el-input v-model="form.city" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
@@ -74,9 +74,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="客户来源：" prop="deptName">
-            <span>{{form.name}}</span>
-            <!-- <el-input v-model="form.userDeptName" placeholder="" readonly></el-input> -->
+          <el-form-item label="客户来源：" prop="clientFrom">
+            <span>{{form.clientFrom|turnText(clientFrom)}}</span>
+            <!-- <el-input v-model="form.userDeptName" placeholder="" readonly></el-input> clientFrom-->
           </el-form-item>
         </el-col>
         <!-- <el-col :span="8">
@@ -182,7 +182,7 @@
       <el-row style="margin-top: 20px">
         <el-col :span="8">
           <el-form-item label="人群划分：">
-            <el-select class="filter-item" v-model="form.buyingCrowds" placeholder="请选择">
+            <el-select class="filter-item" v-model="form.crowds" placeholder="请选择">
               <el-option v-for="item in buyingCrowds" :key="item.value" :label="item.label" :value="item.value">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -227,7 +227,7 @@
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
-  import { transformText } from '@/utils'
+  import { transformText, transformText1 } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -350,7 +350,8 @@
         'clientType',
         'idTypeOptions',
         'nationality',
-        'buyingCrowds'
+        'buyingCrowds',
+        'clientFrom'
       ])
     },
     filters: {
@@ -361,6 +362,9 @@
           9: '异常'
         }
         return statusMap[status]
+      },
+      turnText (val, list) {
+        return transformText1(val, list)
       }
     },
     created() {
@@ -413,7 +417,8 @@
         let params = {
           // failId: this.form.clientId,
           failReason: this.failReason,
-          result: result
+          result: result,
+          crowds: this.form.crowds
         }
         putObj(this.form.clientId, params).then(response => {
           console.log(response.code)
