@@ -68,6 +68,7 @@
         }
       }
       var validatePass2 = (rule, value, callback) => {
+        console.log(value)
         if (value === '') {
           callback(new Error('请再次输入密码'))
         } else if (value !== this.ruleForm2.newpassword) {
