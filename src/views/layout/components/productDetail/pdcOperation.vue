@@ -271,7 +271,8 @@
         <el-row style="position: relative">
           <el-col :span="11">
             <el-form-item label="折标业绩系数">
-              <el-input v-model="normalDTO.performanceCoefficient"></el-input>
+              <span class="el-input" v-if="operationDisabled">{{normalDTO.performanceCoefficient}}</span>
+              <el-input v-model="normalDTO.performanceCoefficient" v-else></el-input>
             </el-form-item>
           </el-col>
          
@@ -280,12 +281,12 @@
           <el-col :span="11"  v-for="(item,index) in normalDTO.normalBrokerageCoefficients" :key="item.age" style="white-space: nowrap; margin-right:3%;" >
             <el-row  type="flex" justify="space-between" class="row-bg product-commission">
               <span>产品佣金系数第{{item.age}}年</span>
-              <span @click="addProductCommission" class="color-0299CC " v-if="index == 0"><i class="el-icon-plus mr5"></i >新增</span>
+              <span @click="addProductCommission" class="color-0299CC border-0299CC" v-if="index == 0"><i class="el-icon-plus mr5"></i >新增</span>
               <span @click="deleteProductCommission(index)" class="color-0299CC " v-if="index != 0 && index == normalDTO.normalBrokerageCoefficients.length-1"><i class="el-icon-delete mr5"></i >删除</span>
             </el-row>
-              <el-form-item :label="`第${Citem.hierarchy}层级(%)`" v-for="(Citem,i) in item.brokerageCoefficientDTOList">
-                <el-input
-                  v-model="Citem.coefficient" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input>
+              <el-form-item :label="`第${Citem.hierarchy}层级(%)`" v-for="(Citem,i) in item.brokerageCoefficientDTOList" :key="i">
+                <span class="el-input" v-if="operationDisabled">{{Citem.coefficient}}</span>
+                <el-input  v-else v-model="Citem.coefficient" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input>
                   <i  @click="addProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0" class="el-icon-plus color-0299CC"></i >
                   <i  @click="deleteProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
@@ -295,7 +296,7 @@
        <div class="split-line" style="margin: 20px 0;"></div>
      <!-- 活动时间段业绩统计 -->
      <div class="group-item">
-        <h3>活动时间段业绩统计<span @click="addStatistics" class="color-0299CC add-statistics"><i class="el-icon-plus mr5"></i >新增统计</span></h3>
+        <h3>活动时间段业绩统计<span @click="addStatistics" class="color-0299CC add-statistics border-0299CC"><i class="el-icon-plus mr5"></i >新增统计</span></h3>
 
         <el-row v-for="(item,index) in activityData" :key="index" :class="{dashed:index!=0}">
           <span @click="deleteStatistics(index)" class="color-0299CC delete-fr" v-if="activityData.length == index+1 && index != 0"><i class="el-icon-delete mr5"></i >删除</span>
@@ -305,6 +306,7 @@
               <el-date-picker
               style="width:100%"
                 v-model="item.activeDate"
+                :disabled="operationDisabled"
                 type="daterange"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
@@ -314,7 +316,8 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="折标业绩系数" >
-              <el-input v-model="item.performanceCoefficient" ></el-input>
+              <span class="el-input" v-if="operationDisabled">{{item.performanceCoefficient}}</span>
+              <el-input v-model="item.performanceCoefficient" v-else type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input>
             </el-form-item>
           </el-col>
           </el-row>
@@ -323,12 +326,13 @@
             margin-right:3%;" >
               <el-row  type="flex" justify="space-between" class="row-bg product-commission">
                 <span>活动时间产品佣金系数第{{Citem.age}}年</span>
-                <span @click="addactivityTime(index)" class="color-0299CC " v-if="Cindex == 0"><i class="el-icon-plus mr5"></i >新增</span>
+                <span @click="addactivityTime(index)" class="color-0299CC border-0299CC" v-if="Cindex == 0"><i class="el-icon-plus mr5"></i >新增</span>
                 <span @click="deleteActivityTime(index,Citem)" class="color-0299CC " v-if="Cindex != 0 && Cindex == item.activityBrokerageCoefficients.length-1"><i class="el-icon-delete mr5"></i >删除</span>
               </el-row>
-              <el-form-item :label="`第${cvalue.hierarchy}层级(%)`" v-for="(cvalue,k) in Citem.brokerageCoefficientDTOList">
+              <el-form-item :label="`第${cvalue.hierarchy}层级(%)`" v-for="(cvalue,k) in Citem.brokerageCoefficientDTOList" :key="k">
+                <span class="el-input" v-if="operationDisabled">{{cvalue.coefficient}}</span>
                 <el-input
-                  v-model="cvalue.coefficient" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'   type="number"></el-input>
+                  v-model="cvalue.coefficient" v-else onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'   type="number"></el-input>
                   <i  @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0" class="el-icon-plus color-0299CC"></i >
                   <i  @click="deleteActivityTimeLevel(index,Cindex,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
@@ -726,9 +730,9 @@
         });
       },
       //筛选佣金业绩统计
-      normalFilter(){
+      normalFilter(filter){
         let self = true;
-        //if(!!this.normalDTO.performanceCoefficient) return false;
+        if(!this.normalDTO.performanceCoefficient && filter) return false;
         this.normalDTO.normalBrokerageCoefficients.forEach(item=>{
           item.brokerageCoefficientDTOList.forEach(item=>{
             if(!item.coefficient){
@@ -793,7 +797,7 @@
       },
       //新增产品佣金系数
       addProductCommission(){
-        if(!this.normalFilter()) return false; 
+        if(!this.normalFilter(false)) return false; 
         let objArr = this.normalDTO.normalBrokerageCoefficients;
         if(objArr.length >=5) return false;
         let levelDataArr = []
@@ -824,7 +828,7 @@
       },
       //佣金业绩统计 - 产品佣金系数 增加
       addProductLevel(i){
-        if(!this.normalFilter()) return false; 
+        if(!this.normalFilter(false)) return false; 
         this.normalDTO.normalBrokerageCoefficients.forEach((item,index)=>{
             item.brokerageCoefficientDTOList.push({
               hierarchy:i+2,
@@ -923,9 +927,10 @@
         if(!this.productId) return false
         this.getAllFiles(this.productId)
         fetchOperation(this.productId).then(res => {
-          this.form2 = res.data
-          this.form2.normalDTO = res.data.normalDTO || {}
-          this.activityData = res.data.activityDTO || []
+          this.form2 = res.data;
+          this.normalDTO =this.form2.normalDTO = res.data.normalDTO || this.normalDTO;
+          this.activityData = res.data.activityDTO || this.activityData;
+         
           if(this.form2.importantStart || this.form2.importantEnd) {
             this.radio2 = 2
           } else {
@@ -1013,21 +1018,57 @@
           this.form2.importantStart = ''
           this.form2.importantEnd = ''
         }
-        let self = true;;
-        this.normalDTO.normalBrokerageCoefficients.forEach(item=>{
-          item.brokerageCoefficientDTOList.forEach(value=>{
-            if(value.coefficient >=100){
-               this.$notify({
-                  title: '警告',
-                  message: '层级不能大于100',
-                  type: 'warning'
-                });
-               self = false;
-              return false
+        console.log(this.productStatusNo)
+        if(this.productStatusNo == 2){
+         if(!this.activityFilter(true)) return false;
+         if(!this.normalFilter(true)) return false; 
+        }
+        if(this.normalDTO.performanceCoefficient>=100){
+          this.$notify({
+            title: '失败',
+            message: '输折标业绩系数应小于100',
+            type: 'error',
+            duration: 2000
+          })
+          return false;
+        }
+         this.normalDTO.normalBrokerageCoefficients.forEach(item=>{
+          item.brokerageCoefficientDTOList.forEach(item=>{
+            if(item.coefficient>=100){
+                this.$notify({
+                  title: '失败',
+                  message: '层级应小于100',
+                  type: 'error',
+                  duration: 2000
+                })
+                return false;
             }
           })
-        })
-        if(!selfreturn) return false;
+         })
+         this.activityData.forEach(item=>{
+          if(item.performanceCoefficient>=100){
+            this.$notify({
+              title: '失败',
+              message: '折标业绩系数应小于100',
+              type: 'error',
+              duration: 2000
+            })
+            return false;
+          }
+          item.activityBrokerageCoefficients.forEach(item=>{
+            item.brokerageCoefficientDTOList.forEach(item=>{
+              if(item.coefficient>=100){
+                this.$notify({
+                  title: '失败',
+                  message: '输入层级应小于100',
+                  type: 'error',
+                  duration: 2000
+                })
+                return false;
+              }
+            })
+          })
+         })
         this.form2.normalDTO = this.normalDTO;
         // this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
         this.form2.activityDTO = this.activityData;
@@ -1035,6 +1076,7 @@
         // this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
         this.form2.productId = this.productId;
         // this.form2.keyProduct = this.radio2
+        
         if (!this.operationDisabled && !this.form2.importantStart) {
           this.$notify({
             title: '失败',
@@ -1053,8 +1095,6 @@
           })
           return false
         }
-        console.log(this.form2.normalDTO)
-        console.log(this.form2.activityDTO)
         addOperationObj(this.form2).then(res => {
           this.$notify({
             title: '成功',
@@ -1152,6 +1192,11 @@
           })
       },
       updateProductType(status) { // 产品状态转化
+        //进入 预热或者进入募集中需要验证层级不能为空
+        if(status == 1 || status == 2){
+           if(!this.activityFilter(true)) return false;
+          if(!this.normalFilter(true)) return false; 
+        }
         this.dto.status = status
         this.productStatusText = transformText(this.productStatus, this.productStatusNo)
         this.msgText = transformText(this.productStatus, status)
@@ -1404,6 +1449,10 @@
   }
   .color-0299CC{
     color: #0299CC;
+  }
+  .border-0299CC{
+    border: 1px solid #0299CC;
+    padding:5px 10px;
   }
   .product-commission{
     margin:0 0 22px 35px;
