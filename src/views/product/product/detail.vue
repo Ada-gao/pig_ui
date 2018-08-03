@@ -371,7 +371,7 @@
       }
     },
     methods: {
-      listenProStatus(msg) { // 从产品详情接收--修改：接收字段增加
+      listenProStatus(msg) { // 从产品详情接收(产品状态转换所需字段)
         this.productStatusNo = msg.productStatusNo
         this.productInfo = msg
       },

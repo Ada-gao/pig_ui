@@ -278,7 +278,36 @@ export function transformText(source, k) {
               val.currencyId ||
               val.rankId ||
               val.id ||
-              val.positionId
+              val.positionId ||
+              val.productMixTypeId
+    obj[key] = val.label ||
+               val.positionName ||
+               val.name ||
+               val.failAuditReason ||
+               val.deptName ||
+               val.rankName ||
+               val.positionName
+  })
+  k = obj[k]
+  return k
+}
+
+export function transformText1(k, source) {
+  if (!source && typeof source !== 'object') {
+    return '无'
+    throw new Error('error arguments', 'shallowClone')
+  }
+  let obj = {}
+  source.forEach((val, idx) => {
+    let key = val.value ||
+              val.positionId ||
+              val.productTypeId ||
+              val.auditFailReasonId ||
+              val.currencyId ||
+              val.rankId ||
+              val.id ||
+              val.positionId ||
+              val.productMixTypeId
     obj[key] = val.label ||
                val.positionName ||
                val.name ||

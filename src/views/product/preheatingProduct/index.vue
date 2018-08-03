@@ -141,7 +141,8 @@
       ...mapGetters([
         'permissions',
         'productStatus',
-        'productRiskLevel'
+        'productRiskLevel',
+        'investHorizonUnit'
       ])
     },
     created() {
@@ -177,6 +178,7 @@
             this.list.forEach(item => {
               item.productTypeId = transformText(this.productTypes, item.productTypeId)
               item.productStatus = transformText(this.productStatus, item.productStatus)
+              item.investmentHorizonUnit = transformText(this.investHorizonUnit, item.investmentHorizonUnit)
             })
           })
         })

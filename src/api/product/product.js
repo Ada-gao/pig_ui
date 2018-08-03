@@ -98,10 +98,11 @@ export function delCustFile(productClientFileId) {
 /**
  * 查找上传客户材料
  */
-export function getCustFile(productId) {
+export function getCustFile(productId, query) {
   return request({
     url: '/product/products/' + productId + '/clientFile',
-    method: 'get'
+    method: 'get',
+    params: query
   })
 }
 
@@ -146,6 +147,27 @@ export function updProductType(productId, obj) {
     url: '/product/products/' + productId + '/status',
     method: 'put',
     data: obj
+  })
+}
+
+/**
+ * 预热转募集
+ */
+export function updToCollect(productId, obj) {
+  return request({
+    url: '/product/products/' + productId + '/collecting',
+    method: 'put',
+    data: obj
+  })
+}
+
+/**
+ * 取消募集定时任务
+ */
+export function cancelToCollect(productId) {
+  return request({
+    url: '/product/products/' + productId + '/cancelTask',
+    method: 'put'
   })
 }
 

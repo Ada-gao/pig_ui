@@ -58,13 +58,13 @@
           </el-col>
         </el-row>
         <el-row style="text-align: center;">
-          <el-button class="search_btn" @click="resetFilter">
-            <svg-icon icon-class="reset"></svg-icon>
-            重置
-          </el-button>
           <el-button class="search_btn" @click="handleFilter">
             <svg-icon icon-class="search"></svg-icon>
             查询
+          </el-button>
+          <el-button class="search_btn" @click="resetFilter">
+            <svg-icon icon-class="reset"></svg-icon>
+            重置
           </el-button>
         </el-row>
       </el-form>
@@ -176,7 +176,7 @@
         </el-row>
         <el-row>
           <el-col>
-            <el-form-item label="部门" prop="deptId">
+            <el-form-item label="部门" prop="deptIds">
               <el-cascader
                 style="width: 95%"
                 :options="departs"
@@ -184,32 +184,39 @@
                 :show-all-levels="false"
                 v-if="dialogStatus === 'edit'"
                 change-on-select
-                v-model="tempDeptId"
+                v-model="form.deptIds"
+                @change="changeE"
               ></el-cascader>
               <div v-else>
+                <!--<el-cascader-->
+                  <!--style="width:95%"-->
+                  <!--:options="departs"-->
+                  <!--:show-all-level="false"-->
+                  <!--change-on-select-->
+                  <!--placeholder=""-->
+                  <!--ref="cascader"-->
+                  <!--:props="defaultProps"-->
+                  <!--v-model="selectedOptions"-->
+                  <!--@change="addOption"></el-cascader>-->
                 <el-cascader
-                  style="width:95%"
+                  style="width: 82%"
                   :options="departs"
-                  :show-all-level="false"
-                  :expand-trigger="'hover'"
+                  :props="defaultProps"
+                  :show-all-levels="false"
                   change-on-select
-                  placeholder=""
-                  ref="cascader"
-                  :props="defaultProps1"
                   v-model="selectedOptions"
-                  @focus="handleClick"
-                  @change="addOption"></el-cascader>
-                <el-button @click="btnClick">点击展开</el-button>
-                <!--<div class="tags">-->
-                  <!--<el-tag-->
-                    <!--:key="tag"-->
-                    <!--v-for="(tag, index) in form.deptId"-->
-                    <!--closable-->
-                    <!--:disable-transitions="false"-->
-                    <!--@close="handleClose(index)">-->
-                    <!--{{tag}}-->
-                  <!--</el-tag>-->
-                <!--</div>-->
+                ></el-cascader>
+                <el-button @click="addOption">添加</el-button>
+                <div class="tags" style="width: 95%">
+                  <el-tag
+                    :key="tag.id"
+                    v-for="(tag, index) in form.deptIds"
+                    closable
+                    :disable-transitions="false"
+                    @close="handleClose(index)">
+                    {{tag.name}}
+                  </el-tag>
+                </div>
               </div>
             </el-form-item>
           </el-col>
@@ -233,11 +240,11 @@
         </el-row>
         <el-row>
           <el-col>
-            <el-form-item label="职级" prop="rankId">
+            <el-form-item label="职级" prop="rankIds">
               <el-select class="filter-item"
                          placeholder="请选择职级"
                          :multiple="dialogStatus === 'create'"
-                         v-model="form.rankId">
+                         v-model="dialogStatus === 'create' ? form.rankIds : form.rankId">
                 <el-option v-for="item in level"
                            :value="item.rankId"
                            :label="item.rankName"
@@ -306,7 +313,7 @@
         selectedOptions: [],
         tempDeptId: [],
         form: {
-          deptId: []
+          deptIds: []
         },
         tempForm: {},
         textMap: {
@@ -322,13 +329,13 @@
           end: [
             { required: true, message: '请选择结束时间', trigger: 'blur' }
           ],
-          deptId: [
+          deptIds: [
             { required: true, message: '请选择部门', trigger: 'blur' }
           ],
           positionId: [
             { required: true, message: '请选择职位', trigger: 'blur' }
           ],
-          rankId: [
+          rankIds: [
             { required: true, message: '请选择职级', trigger: 'blur' }
           ],
           performanceIndicator: [
@@ -340,19 +347,14 @@
         level: [], // 职级
         curPrevId: '', // 循环前累计拼接的id
         result: [],
-        eachIndex: 0
+        eachIndex: 0,
+        tempDeptIds: []
       }
     },
     computed: {
       ...mapGetters([
         'permissions'
       ])
-    },
-    watch: {
-      selectedOptions(val) {
-        console.log('二级菜单')
-        console.log(val)
-      }
     },
     created() {
       this.getAllSearch()
@@ -362,11 +364,8 @@
       this.sys_prd_type_del = this.permissions['sys_prd_type_del']
     },
     methods: {
-      btnClick() {
-        console.log(this.$refs.cascader)
-      },
-      handleClick() {
-        console.log(1)
+      changeE(value) {
+        console.log(value)
       },
       cycleList(list) {
         list.forEach(item => {
@@ -390,14 +389,45 @@
           }
         })
       },
+      transferName(list, id) {
+        list.forEach(item => {
+          if (id === item.id) {
+            this.name = item.name
+            this.tempObj = item
+          } else if (item.children && item.children.length > 0) {
+            this.transferName(item.children, id)
+          }
+        })
+      },
       handleClose(index) {
         console.log(index)
-        this.form.deptId.splice(index, 1)
+        this.form.deptIds.splice(index, 1)
       },
-      addOption(value) {
-        console.log(value)
-        // this.selectedOptions = []
-        // this.form.deptId.push(value[value.length - 1])
+      upperIds(list1, list2, id) {
+        list1.map(item => {
+          item.map((el, index) => {
+            if (el === id) {
+              list2 = JSON.parse(JSON.stringify(item))
+              list2.splice(index + 1, list2.length - 1)
+            }
+          })
+        })
+        console.log(list2)
+        this.form.deptIds = list2
+      },
+      addOption() {
+        if (this.selectedOptions) {
+          this.transferName(this.departs, this.selectedOptions[this.selectedOptions.length - 1])
+          const flag = this.form.deptIds.find(ele => ele.id === this.selectedOptions[this.selectedOptions.length - 1])
+          if (!flag) {
+            this.form.deptIds.push(
+              {
+                name: this.name,
+                id: this.selectedOptions[this.selectedOptions.length - 1]
+              }
+            )
+          }
+        }
       },
       tableHeader(h, { column, $index }) {
         return h('span', [
@@ -433,7 +463,6 @@
           this.departs = res.data
           this.cycleListId(this.departs)
           this.cycleList(this.departs)
-          console.log(this.result)
         })
       },
       getPosition() { // 获取职位列表
@@ -475,17 +504,17 @@
       },
       handleCreate() {
         this.resetTemp()
-        console.log(this.form)
+        // console.log(this.form)
         this.dialogStatus = 'create'
         this.dialogCreate = true
       },
       resetTemp() {
         this.form = {
-          deptId: [],
+          deptIds: [],
           end: undefined,
           performanceIndicator: undefined,
           positionId: undefined,
-          rankId: [],
+          rankIds: [],
           start: undefined
         }
       },
@@ -508,11 +537,11 @@
       handleUpdate(id) {
         this.dialogStatus = 'edit'
         this.form = {}
-        this.tempDeptId = []
+        // this.tempDeptId = []
         editPfItem(id).then(res => {
           this.form = res.data
-          this.tempDeptId.push(this.form.deptId)
-          console.log(this.tempDeptId)
+          this.upperIds(this.result, this.tempDeptIds, this.form.deptId)
+          console.log(this.form.deptIds)
           this.handlePosition(this.form.positionId)
           this.dialogCreate = true
         })
@@ -558,15 +587,16 @@
       },
       cancel(formName) {
         this.dialogCreate = false
-        this.form.deptId = []
+        this.form.deptIds = []
         this.$refs[formName].resetFields()
       },
       close() {
-        if (this.dialogStatus === 'edit') {
-          this.form = {}
-        }
+        this.form = {}
       },
       create(formName) {
+        this.tempForm = {
+          deptIds: []
+        }
         const set = this.$refs
         this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
         this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
@@ -579,12 +609,18 @@
           })
           return false
         }
-        const temp = JSON.parse(JSON.stringify(this.form))
-        temp.deptId = temp.deptId[0]
-        console.log(temp)
+        for (let k in this.form) {
+          if (k === 'deptIds') {
+            this.form[k].map(ele => {
+              this.tempForm[k].push(ele.id)
+            })
+          } else {
+            this.tempForm[k] = this.form[k]
+          }
+        }
         set[formName].validate(valid => {
           if (valid) {
-            addPfItem(temp).then(res => {
+            addPfItem(this.tempForm).then(res => {
               if (res.status === 200) {
                 this.dialogCreate = false
                 this.getList()
@@ -595,10 +631,10 @@
                   message: '创建成功'
                 })
               }
-              this.form.deptId = []
+              this.form.deptIds = []
             }).catch(() => {
               this.dialogCreate = false
-              this.form.deptId = []
+              this.form.deptIds = []
               this.$notify({
                 title: '失败',
                 message: '创建失败',
@@ -625,7 +661,6 @@
           })
           return false
         }
-        this.form.deptId = this.tempDeptId[this.tempDeptId.length - 1]
         set[formName].validate(valid => {
           if (valid) {
             putPfItem(this.form.performanceIndicatorId, this.form).then(res => {
@@ -639,12 +674,12 @@
                   message: '创建成功'
                 })
               }
-              this.form.deptId = []
+              this.form.deptIds = []
               this.$refs[formName].resetFields()
             }).catch(() => {
               this.dialogCreate = false
               this.$refs[formName].resetFields()
-              this.form.deptId = []
+              this.form.deptIds = []
               this.$notify({
                 title: '失败',
                 message: '创建失败',
@@ -685,7 +720,11 @@
     }
   }
   .tags {
-    position: absolute;
-    top: 0;
+    min-height: 40px;
+    border: 1px solid #dcdfe6;
+    border-radius: 10px;
+    margin-top: 10px;
+    /*position: absolute;*/
+    /*top: 0;*/
   }
 </style>

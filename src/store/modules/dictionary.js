@@ -26,7 +26,9 @@ const dictionary = {
     transcStatus: [],
     refundStatus: [],
     expressType: [],
-    investHorizonUnit: []
+    investHorizonUnit: [],
+    interestPayment: [],
+    buyingCrowds: []
   },
 
   mutations: {
@@ -104,6 +106,12 @@ const dictionary = {
     },
     SET_INVESTMENT_HORIZON_UNIT: (state, investHorizonUnit) => {
       state.investHorizonUnit = investHorizonUnit
+    },
+    SET_INTEREST_PAYMENT: (state, interestPayment) => {
+      state.interestPayment = interestPayment
+    },
+    SET_BUYING_CROWDS: (state, buyingCrowds) => {
+      state.buyingCrowds = buyingCrowds
     }
   },
 
@@ -139,6 +147,8 @@ const dictionary = {
           let refundStatusList = []
           let expressTypeList = []
           let investHorizonUnitList = []
+          let interestPaymentList = []
+          let buyingCrowdsList = []
           
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -206,6 +216,12 @@ const dictionary = {
 
             } else if(data[i].type === 'investment_horizon_unit') {
               investHorizonUnitList.push(data[i])
+
+            } else if(data[i].type === 'interest_payment') {
+              interestPaymentList.push(data[i])
+
+            } else if(data[i].type === 'buying_crowds') {
+              buyingCrowdsList.push(data[i])
             }
           }
 
@@ -244,6 +260,8 @@ const dictionary = {
           commit('SET_REFUND_STATUS', refundStatusList)
           commit('SET_EXPRESS_TYPE', expressTypeList)
           commit('SET_INVESTMENT_HORIZON_UNIT', investHorizonUnitList)
+          commit('SET_INTEREST_PAYMENT', interestPaymentList)
+          commit('SET_BUYING_CROWDS', buyingCrowdsList)
           resolve()
         }).catch(error => {
           reject(error)

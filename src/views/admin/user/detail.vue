@@ -19,13 +19,31 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
+            <el-form-item label="部门" prop="deptId">
+              <el-cascader
+                style="width: 100%"
+                :options="treeDeptData"
+                :props="defaultProps"
+                :show-all-levels="false"
+                change-on-select
+                v-model="deptIds"
+                @change="changeDept"
+              ></el-cascader>
+              <!-- <el-input v-model="form.deptName" placeholder="选择部门"
+                @focus="handleDept"
+                @change="changeDept"
+                ></el-input>
+              <input type="hidden" v-model="form.deptId"/> -->
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
             <el-form-item label="工号" prop="empNo">
               <el-input v-model="form.empNo" placeholder="请输入工号" :readonly="isReadonly"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="角色" prop="role">
-              <el-select class="filter-item" v-model="role" placeholder="请选择">
+              <el-select class="filter-item" @focus="getRoleList" v-model="form.role" placeholder="请选择">
                 <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId">
                   <span style="float: left">{{ item.roleDesc }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
@@ -62,9 +80,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="试用期到期日" prop="idType">
+            <el-form-item label="试用期到期日" prop="probationExpirationDate">
               <el-date-picker
-                v-model="form.employeeDate"
+                v-model="form.probationExpirationDate"
                 type="date"
                 placeholder="选择日期"
                 :readonly="isReadonly">
@@ -77,9 +95,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="转正时间" prop="idType">
+            <el-form-item label="转正时间" prop="officialDate">
               <el-date-picker
-                v-model="form.employeeDate"
+                v-model="form.officialDate"
                 type="date"
                 placeholder="选择日期"
                 :readonly="isReadonly">
@@ -92,7 +110,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="状态">
+            <el-form-item label="状态" prop="status">
               <el-select class="filter-item" v-model="form.status" placeholder="请选择">
                 <el-option v-for="item in workStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
               </el-select>
@@ -104,8 +122,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="离职原因" prop="email">
-              <el-input v-model="form.email"></el-input>
+            <el-form-item label="离职原因" prop="dimissionReason">
+              <el-input v-model="form.dimissionReason"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -137,10 +155,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="是否营销岗" prop="marriageStatus">
-              <el-radio-group v-model="form.isFloat">
-                <el-radio :label="0" style="display: inline-block">是</el-radio>
-                <el-radio :label="1" style="display: inline-block">否</el-radio>
+            <el-form-item label="是否营销岗" prop="isMarketing">
+              <el-radio-group v-model="form.isMarketing">
+                <el-radio :label="1" style="display: inline-block">是</el-radio>
+                <el-radio :label="0" style="display: inline-block">否</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -224,12 +242,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
+            <el-form-item label="部门：" prop="deptName">
+              {{form.deptName}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
             <el-form-item label="工号：" prop="empNo">
               {{form.empNo}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="角色：" prop="role">
+            <el-form-item label="角色：">
               {{form.role}}
             </el-form-item>
           </el-col>
@@ -331,7 +354,7 @@
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime, transformText } from '@/utils'
+  import { parseTime, transformText, transformText1 } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -383,7 +406,8 @@
         checkedKeys: [],
         defaultProps: {
           children: 'children',
-          label: 'name'
+          label: 'name',
+          value: 'id'
         },
         list: null,
         listLoading: true,
@@ -393,8 +417,11 @@
           username: undefined,
           password: undefined,
           status: undefined,
-          deptId: undefined
+          deptId: undefined,
+          // deptIds: [],
+          roleList: []
         },
+        deptIds: [],
         rules: {
           name: [
             {required: true, trigger: 'blur', message: '请输入姓名'}
@@ -405,9 +432,6 @@
           ],
           empNo: [
             {required: true, trigger: 'blur', message: '请输入工号'}
-          ],
-          employeeDate: [
-            {required: true, trigger: 'blur', message: '请选择入职日期'}
           ],
           gender: [
             {required: true, trigger: 'blur', message: '请选择性别'}
@@ -438,13 +462,19 @@
           ],
           mobile: [
             {required: true, trigger: 'change', validator: validMobile}
-          ]
+          ],
+          isMarketing: [
+            {required: true, trigger: 'change', message: '请选择是否是营销岗'}
+          ],
+          status: [
+            {required: true, trigger: 'change', message: '请选择状态'}
+          ],
         },
         statusOptions: ['0', '1', '2'],
         positionsOptions: [],
         rolesOptions: [],
         dialogFormVisible: false,
-        dialogDeptVisible: false,
+        // dialogDeptVisible: false,
         dialogFormView: false,
         userAdd: false,
         userUpd: false,
@@ -491,6 +521,11 @@
         'workStatus'
       ])
     },
+    filters: {
+      turnText (val, list) {
+        return transformText1(val, list)
+      }
+    },
     created() {
       // this.handlePosition()
       this.sys_user_add = this.permissions['sys_user_add']
@@ -503,13 +538,16 @@
       if(this.id) {
         this.getList()
       }
+      this.handleDept()
     },
     methods: {
       getList() { // 编辑查询（查看）
         getObj(this.id)
           .then(response => {
             this.form = response.data
-            // this.form.role = row.roleList[0].roleId
+            this.form.role = this.form.roleList[0].roleDesc
+            this.deptIds[0] = this.form.deptId
+            console.log(this.deptIds)
             // this.role = row.roleList[0].roleDesc
             if(this.state === 'view') {
               this.dialogFormView = true
@@ -539,17 +577,14 @@
               this.fileList.length = 1
               // console.log(this.fileList[0])
             }
-            deptRoleList(response.data.deptId)
-              .then(response => {
-                this.rolesOptions = response.data
-              })
+            this.getNodeData(response.data.deptId)
           })
       },
-      getNodeData(data) { // 部门查询
-        this.dialogDeptVisible = false
-        this.form.deptId = data.id
-        this.form.deptName = data.name
-        deptRoleList(data.id)
+      getNodeData(id) { // 部门查询角色
+        // this.dialogDeptVisible = false
+        // this.form.deptId = data.id
+        // this.form.deptName = data.name
+        deptRoleList(id)
           .then(response => {
             this.rolesOptions = response.data
             this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
@@ -570,16 +605,28 @@
           this.positionsOptions = res.data
         })
       },
-      handleDept() {
-        fetchDeptTree()
-          .then(response => {
-            this.treeDeptData = response.data
-            this.dialogDeptVisible = true
-          })
+      handleDept() { // 部门数据
+        fetchDeptTree().then(res => {
+          this.treeDeptData = res.data
+          this.eachChildren(this.treeDeptData)
+        })
       },
-      changeDept() {
-        this.role = ''
-        this.form.role = ''
+      getRoleList() {
+        this.getNodeData(this.deptIds[0])
+      },
+      eachChildren(list) {
+        list.forEach(item => {
+          if(item.children && !item.children.length) {
+            delete item.children
+          } else if(item.children && item.children.length) {
+            this.eachChildren(item.children)
+          }
+        })
+      },
+      changeDept(val) {
+        console.log(val)
+        // this.role = ''
+        // this.form.role = ''
       },
       handleCreate() {
         this.resetTemp()

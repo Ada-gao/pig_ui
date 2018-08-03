@@ -65,7 +65,7 @@
       </el-row>
 
       <div class="split-line"></div>
-      
+
       <h5>客户状态</h5>
       <el-row :gutter="20">
         <el-col :span="11">
@@ -83,27 +83,27 @@
             <el-input v-model="form.idType" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus & idType">
+        <el-col :span="11" v-if="realnameStatus && idType">
           <el-form-item label="证件号码" prop="idNo">
             <el-input v-model="form.idNo" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus & idType">
+        <el-col :span="11" v-if="realnameStatus && idType">
           <el-form-item label="出生日期" prop="date">
             <el-input v-model="clientStatus.birthday" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus & idType">
+        <el-col :span="11" v-if="realnameStatus && idType">
           <el-form-item label="证件有效期" prop="date">
             <el-input v-model="clientStatus.idExpiration" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus & idType">
+        <el-col :span="11" v-if="realnameStatus && idType">
           <el-form-item label="地址" prop="address">
             <el-input v-model="form.address" placeholder="" readonly></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="isClientType & realnameStatus & idType">
+        <el-col :span="11" v-if="isClientType && realnameStatus && idType">
           <el-form-item label="风险测评" prop="riskLevel">
             <el-input v-model="clientStatus.riskLevel" placeholder="" readonly></el-input>
           </el-form-item>
@@ -111,10 +111,10 @@
       </el-row>
 
       <div class="split-line"></div>
-      
+
       <h5 v-if="realnameStatus">客户银行卡信息</h5>
       <el-table :data="bankcardList" element-loading-text="给我一点时间" border fit
-        highlight-current-row style="width: 100%" 
+        highlight-current-row style="width: 100%"
         v-if="realnameStatus">
         <el-table-column align="center" label="开户银行">
           <template slot-scope="scope">
@@ -134,7 +134,7 @@
       </el-table>
 
       <div class="split-line"></div>
-      
+
       <h5 v-if="form.clientClass">客户已购买产品</h5>
       <el-table :data="productList" element-loading-text="给我一点时间" border fit
         highlight-current-row style="width: 100%" v-if="form.clientClass">
@@ -163,7 +163,7 @@
             <span>{{scope.row.amount}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="年化收益率">
+        <el-table-column align="center" label="收益对标基准">
           <template slot-scope="scope">
             <span>{{scope.row.remark}}</span>
           </template>
@@ -171,7 +171,7 @@
       </el-table>
 
       <div class="split-line"></div>
-      
+
       <h5>客户备注</h5>
       <el-table :data="remarkList" element-loading-text="给我一点时间" border fit
         highlight-current-row style="width: 100%">
@@ -183,7 +183,7 @@
       </el-table>
 
       <div class="split-line"></div>
-      
+
       <h5>客户理财师变动列表</h5>
       <el-table :data="plannerList" element-loading-text="给我一点时间" border fit
         highlight-current-row style="width: 100%">
@@ -212,7 +212,7 @@
 </template>
 
 <script>
-  import { 
+  import {
     fetchList, getObj, addObj, delObj, getClientStatus, getClientRemark, getClientPlanner, getClientBankcard, getClientProducts
   } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
@@ -313,7 +313,7 @@
     methods: {
       getList() {
         let id = this.$route.params.id
-        
+
         getObj(id).then(response => {
           this.form = response.data
 
@@ -344,7 +344,7 @@
         getClientPlanner(id).then(response => {
           this.plannerList = response.data
         })
-       
+
         getClientProducts(id).then(response => {
           this.productList = response.data
         })

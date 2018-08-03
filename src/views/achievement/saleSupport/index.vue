@@ -36,13 +36,13 @@
             </el-col>
         </el-row>
         <el-row style="text-align: center;">
-          <el-button class="search_btn" @click="resetFilter">
-            <svg-icon icon-class="reset"></svg-icon>
-            重置
-          </el-button>
           <el-button class="search_btn" @click="handleFilter">
             <svg-icon icon-class="search"></svg-icon>
             查询
+          </el-button>
+          <el-button class="search_btn" @click="resetFilter">
+            <svg-icon icon-class="reset"></svg-icon>
+            重置
           </el-button>
         </el-row>
       </el-form>
@@ -127,7 +127,7 @@
                      :total="total">
       </el-pagination>
     </div>
-    
+
     <!--新建和编辑业绩指标-->
     <el-dialog :title="textMap[dialogStatus]"
                class="perform_dialog"
@@ -176,7 +176,7 @@
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="理财师编号" prop="userCode">
-              <el-input v-model="form.userCode" readonly="readonly" placeholder="请输入理财师编号"></el-input>          
+              <el-input v-model="form.userCode" readonly="readonly" placeholder="请输入理财师编号"></el-input>
             </el-form-item>
           </el-col>
 
@@ -306,10 +306,10 @@
           page:this.listQuery.page,
           limit:this.listQuery.limit,
           appointmentcode: this.appointmentcode,
-          username: this.username, 
-          usercode: this.usercode, 
-          salesname: this.salesname, 
-          salescode: this.salescode, 
+          username: this.username,
+          usercode: this.usercode,
+          salesname: this.salesname,
+          salescode: this.salescode,
           commissionrate: this.commissionrate,
         }
       }

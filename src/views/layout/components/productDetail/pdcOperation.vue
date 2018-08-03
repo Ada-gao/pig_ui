@@ -21,7 +21,7 @@
         </el-table-column>
         <el-table-column
           prop="fileSize"
-          label="大小/k"
+          label="文件大小/k"
           width="180"
           align="center">
         </el-table-column>
@@ -49,13 +49,20 @@
       </el-row>
     </div>
     <div class="trade-item">
-      <h3>上传客户材料</h3>
+      <h3>客户所需提交材料</h3>
       <div class="second-tab">
         <span class="second-item" @click="changeSecStep('1')" :class="{'query-color': secStep==='1'}">专业投资者</span>
-        <span class="second-item" @click="changeSecStep('2')" :class="{'query-color': secStep==='2'}">普通投资者</span>
+        <span class="second-item" @click="changeSecStep('0')" :class="{'query-color': secStep==='0'}">普通投资者</span>
       </div>
       <product-material-component
-        :productList="data"
+        v-show="secStep==='1'"
+        :productList="data1"
+        @del-client-file="deleteClient"
+        @upd-client-file="updateClientFile">
+      </product-material-component>
+      <product-material-component
+        v-show="secStep==='0'"
+        :productList="data2"
         @del-client-file="deleteClient"
         @upd-client-file="updateClientFile">
       </product-material-component>
@@ -64,11 +71,11 @@
         <el-button size="small"
           class="btn-padding add_btn"
           v-if="!operationDisabled"
-          @click="addClientFile('client')">追加材料</el-button>
+          @click="addClientFile('client', secStep)">追加材料</el-button>
       </el-row>
     </div>
     <div class="trade-item">
-      <h3>产品说明所需材料</h3>
+      <h3>产品说明材料</h3>
       <el-table
         :data="fileList2"
         border
@@ -88,7 +95,7 @@
         </el-table-column>
         <el-table-column
           prop="fileSize"
-          label="大小/k"
+          label="文件大小/k"
           width="180"
           align="center">
         </el-table-column>
@@ -123,8 +130,9 @@
         </el-upload>
       </el-row>
     </div>
-    <!-- <div class="trade-item">
-      <h3>产品公告</h3>
+    <div class="trade-item">
+      <!-- 产品公告 -->
+      <h3>投后报告</h3>
       <el-table
         :data="fileList3"
         border
@@ -143,7 +151,7 @@
         </el-table-column>
         <el-table-column
           prop="fileSize"
-          label="大小/k"
+          label="文件大小/k"
           width="180"
           align="center">
         </el-table-column>
@@ -176,7 +184,7 @@
                      class="btn-padding add_btn">追加材料</el-button>
         </el-upload>
       </el-row>
-    </div> -->
+    </div>
     <div class="split-line" style="margin: 20px 0;"></div>
     <el-form :rules="rules2" ref="form2" label-width="120px">
       <div class="group-item">
@@ -419,8 +427,10 @@
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===0" type="primary" @click="updateProductType(1)">
         <svg-icon icon-class="preheating"></svg-icon> 进入产品预热</el-button>
       <!-- 预热 -->
-      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="updateProductType(2)">
-        <svg-icon icon-class="collecting"></svg-icon> 进入产品募集</el-button>
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1&!form2.collectDate" type="primary">
+        <svg-icon icon-class="collecting"></svg-icon> <span @click="dialogCollectVisible=true">进入产品募集</span></el-button>
+      <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1&form2.collectDate!=null" type="primary">
+        <span @click="changeCollect">修改定时</span> | <span @click="cancelCollect">取消定时</span></el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="backProductType(0)">
         <svg-icon icon-class="return"></svg-icon> 返回在建</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="updateProductDisplay">
@@ -452,7 +462,7 @@
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===5" type="primary" @click="updateProductType(6)">
         <svg-icon icon-class="shutDown"></svg-icon> 进入兑付完成</el-button>
     </div>
-
+    <!-- 新增材料下拉框 -->
     <el-dialog
       title="提示"
       :visible.sync="dialogComVisible"
@@ -475,7 +485,26 @@
         <el-button type="primary" @click="chooseClientFile">确 定</el-button>
       </div>
     </el-dialog>
-
+    <!-- 进入产品募集 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogCollectVisible"
+      width="30%">
+      <el-radio-group v-model="collectVal" @change="radioChange">
+        <el-radio style="display: block" :label="1">立即进入产品募集</el-radio>
+        <el-radio style="margin-left: 0" :label="2">定时进入产品募集</el-radio>
+        <el-date-picker
+          v-model="collectTime"
+          type="datetime"
+          placeholder="选择日期时间">
+        </el-date-picker>
+      </el-radio-group>
+      <div class="dialog-footer text-right">
+        <el-button @click="dialogCollectVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleToCollect">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 转已关账... -->
     <el-dialog
       title="提示"
       :visible.sync="dialogStVisible"
@@ -546,7 +575,8 @@
 <script>
   import productMaterialComponent from 'components/table/material'
   import { putFileObj, delCustFile, fetchOperation, addCustFile, postTranscFile, getCustFile,
-    updCustFile, updProductDisplay, updProductPause, getProductStage, addOperationObj, updProductType } from '@/api/product/product'
+    updCustFile, updProductDisplay, updProductPause, getProductStage, addOperationObj, updProductType,
+    updToCollect, cancelToCollect } from '@/api/product/product'
   import { mapGetters } from 'vuex'
   import { transformText, sortKey } from '@/utils'
   // import { parseTime } from '@/utils'
@@ -586,6 +616,7 @@
       return {
         fileList1: [],
         fileList2: [],
+        fileList3: [],
         // clientFiles: [],
         form2: {
           activityDTO: [],
@@ -660,6 +691,7 @@
         createStatus: 'create',
         dialogComVisible: false,
         dialogStVisible: false,
+        dialogCollectVisible: false,
         selectFile: null,
         clientFileList: [],
         clientFile: '',
@@ -671,7 +703,10 @@
         dto: {},
         url: '',
         secStep: '1',
-        data: {}
+        data1: {},
+        data2: {},
+        collectVal: 1,
+        collectTime: ''
         // form: {},
         // isDisabled: true,
         // stage: false,
@@ -927,10 +962,17 @@
         if(!this.productId) return false
         this.getAllFiles(this.productId)
         fetchOperation(this.productId).then(res => {
+
           this.form2 = res.data;
           this.normalDTO =this.form2.normalDTO = res.data.normalDTO || this.normalDTO;
           this.activityData = res.data.activityDTO || this.activityData;
          
+
+          // console.log(this.form2.collectDate)
+          // if(this.form2.collectDate) {
+          //   this.collectVal = 2
+          // }
+
           if(this.form2.importantStart || this.form2.importantEnd) {
             this.radio2 = 2
           } else {
@@ -1225,6 +1267,53 @@
           })
         }
       },
+      radioChange(val) {
+        if(val === 1) {
+          this.collectTime = ''
+        }
+      },
+      handleToCollect() { // 募集定时
+        let params = {
+          collect: this.collectVal === 1 ? true : false,
+          collectDate: this.collectTime = this.collectVal === 1 ? '' : this.collectTime 
+        }
+        updToCollect(this.productId, params).then(res => {
+          this.dialogCollectVisible = false
+          this.$notify({
+            title: '成功',
+            message: '状态操作成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getOperations()
+        })
+      },
+      changeCollect() {
+        console.log('修改定时')
+        this.dialogCollectVisible = true
+        this.collectTime = this.form2.collectDate
+        this.collectVal = 2
+      },
+      cancelCollect() { //  募集，取消定时
+        this.$confirm('确定取消定时吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          cancelToCollect(this.productId).then(res => {
+            if(res.status !== 200) return false
+            this.$notify({
+              title: '成功',
+              message: '状态操作成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.getOperations()
+          })
+        }).catch(() => {
+
+        })
+      },
       handleProStatus() { // 弹框确定事件
         updProductType(this.productId, this.dto).then(res => {
           this.$notify({
@@ -1272,10 +1361,10 @@
         if(!productId) return null
         this.getFiles1(productId)
         this.getFiles2(productId)
-        // this.getFiles3(productId)
+        this.getFiles3(productId)
         this.getFiles4(productId)
       },
-      addClientFile(type) { // 上传客户材料
+      addClientFile(type, clientType) { // 查询材料
         let params = {
           limit: 100,
           page: 1
@@ -1283,6 +1372,7 @@
         this.fileType = type
         this.clientFile = ''
         if (type === 'client') {
+          // params.clientType = clientType
           getClientFile(params).then(res => {
             this.clientFileList = res.data.records
             this.dialogComVisible = true
@@ -1297,13 +1387,14 @@
       changeSecStep(val) {
         this.secStep = val
       },
-      chooseClientFile() {
+      chooseClientFile() { // 下拉框选择材料提交
         this.dialogComVisible = false
         if (this.fileType === 'client') {
           let params = {
             fileName: this.selectFile.fileName,
             productClientFileManageId: this.selectFile.productClientFileManageId,
-            productId: this.productId
+            productId: this.productId,
+            clientType: this.secStep
           }
           addCustFile(params).then(res => {
             // this.clientFile = res.data
@@ -1377,23 +1468,28 @@
               this.getFiles1(id)
             } else if(productFileType === 'product') {
               this.getFiles2(id)
-            // } else if(productFileType === 'announcement') {
-            //   this.getFiles3(id)
+            } else if(productFileType === 'announcement') {
+              this.getFiles3(id)
             }
           }
         })
       },
       deleteClient(id) { // 删除上传客户材料
         delCustFile(id).then(res => {
-          if(res.status === 200) {
-            this.getFiles4(88)
-          }
+          // if(res.status === 200) {
+          this.getFiles4(this.productId)
+          // }
         })
       },
       handleChange2(file, fileList) { // 上传材料完成状态，列表展示
         // this.fileList2 = fileList.slice(-3)
         // this.uploadData.fileType = 'product'
         this.getFiles2(this.productId)
+      },
+      handleChange3(file, fileList) { // 上传材料完成状态，列表展示
+        // this.fileList2 = fileList.slice(-3)
+        // this.uploadData.fileType = 'product'
+        this.getFiles3(this.productId)
       },
       getFiles1(productId) {
         let uploadData = { // 交易所需材料
@@ -1413,10 +1509,23 @@
           this.fileList2 = response.data || []
         })
       },
+      getFiles3(productId) {
+        let uploadData = {
+          productId: productId,
+          fileType: 'announcement'
+        }
+        getFiles(uploadData).then(response => {
+          this.fileList3 = response.data || []
+        })
+      },
       getFiles4(productId) { // 客户所需材料
-        getCustFile(productId).then(response => {
+        getCustFile(productId, {clientType: '1'}).then(response => { // 专业投资者
           // this.clientFiles = response.data || []
-          this.data = response.data
+          this.data1 = response.data
+        })
+        getCustFile(productId, {clientType: '0'}).then(response => { // 普通投资者
+          // this.clientFiles = response.data || []
+          this.data2 = response.data
         })
       }
     }
