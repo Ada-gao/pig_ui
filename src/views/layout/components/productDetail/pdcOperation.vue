@@ -278,26 +278,33 @@
         <h3>佣金业绩统计</h3>
         <el-row style="position: relative">
           <el-col :span="11">
-            <el-form-item label="折标业绩系数">
+          <el-form :model="normalDTO" ref="normalDTO" :rules="rules2" class="demo-ruleForm">
+            <el-form-item label="折标业绩系数" prop="performanceCoefficient" label-width="120px" >
               <span class="el-input" v-if="operationDisabled">{{normalDTO.performanceCoefficient}}</span>
-              <el-input v-model="normalDTO.performanceCoefficient" v-else></el-input>
+              <el-input  v-model="normalDTO.performanceCoefficient" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )' v-else></el-input>
             </el-form-item>
+             </el-form>
           </el-col>
          
         </el-row>
         <el-row>
-          <el-col :span="11"  v-for="(item,index) in normalDTO.normalBrokerageCoefficients" :key="item.age" style="white-space: nowrap; margin-right:3%;" >
+          <el-col :span="11"  v-for="(item,index) in normalDTO.normalBrokerageCoefficients" :key="item.age" style="white-space: nowrap; margin-right:3%; min-height:114px;" >
             <el-row  type="flex" justify="space-between" class="row-bg product-commission">
-              <span>产品佣金系数第{{item.age}}年</span>
+              <span style="line-height:30px;">产品佣金系数第{{item.age}}年</span>
               <span @click="addProductCommission" class="color-0299CC border-0299CC" v-if="index == 0"><i class="el-icon-plus mr5"></i >新增</span>
               <span @click="deleteProductCommission(index)" class="color-0299CC " v-if="index != 0 && index == normalDTO.normalBrokerageCoefficients.length-1"><i class="el-icon-delete mr5"></i >删除</span>
             </el-row>
-              <el-form-item :label="`第${Citem.hierarchy}层级(%)`" v-for="(Citem,i) in item.brokerageCoefficientDTOList" :key="i">
+            
+             <el-form :model="Citem" ref="Citem" :rules="rules2" class="demo-ruleForm"  v-for="(Citem,i) in item.brokerageCoefficientDTOList" :key="i" label-width="120px">
+              <el-form-item :label="`第${Citem.hierarchy}层级(%)`" prop="coefficient">
                 <span class="el-input" v-if="operationDisabled">{{Citem.coefficient}}</span>
                 <el-input  v-else v-model="Citem.coefficient" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input>
                   <i  @click="addProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0" class="el-icon-plus color-0299CC"></i >
                   <i  @click="deleteProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
+               </el-form>
+               
+              
           </el-col>
         </el-row>
       </div>
@@ -323,27 +330,31 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="折标业绩系数" >
+          <el-form :model="item" ref="item" :rules="rules2" class="demo-ruleForm" label-width="120px">
+            <el-form-item label="折标业绩系数" prop="performanceCoefficient">
               <span class="el-input" v-if="operationDisabled">{{item.performanceCoefficient}}</span>
               <el-input v-model="item.performanceCoefficient" v-else type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input>
             </el-form-item>
+            </el-form>
           </el-col>
           </el-row>
           <el-row>
             <el-col :span="11"  v-for="(Citem,Cindex) in item.activityBrokerageCoefficients" :key="Citem.age" style="white-space: nowrap;
             margin-right:3%;" >
               <el-row  type="flex" justify="space-between" class="row-bg product-commission">
-                <span>活动时间产品佣金系数第{{Citem.age}}年</span>
+                <span style="line-height:30px;">活动时间产品佣金系数第{{Citem.age}}年</span>
                 <span @click="addactivityTime(index)" class="color-0299CC border-0299CC" v-if="Cindex == 0"><i class="el-icon-plus mr5"></i >新增</span>
                 <span @click="deleteActivityTime(index,Citem)" class="color-0299CC " v-if="Cindex != 0 && Cindex == item.activityBrokerageCoefficients.length-1"><i class="el-icon-delete mr5"></i >删除</span>
               </el-row>
-              <el-form-item :label="`第${cvalue.hierarchy}层级(%)`" v-for="(cvalue,k) in Citem.brokerageCoefficientDTOList" :key="k">
+                <el-form :model="cvalue" ref="cvalue" :rules="rules2" class="demo-ruleForm" v-for="(cvalue,k) in Citem.brokerageCoefficientDTOList" :key="k" label-width="120px">
+              <el-form-item :label="`第${cvalue.hierarchy}层级(%)`" prop="coefficient">
                 <span class="el-input" v-if="operationDisabled">{{cvalue.coefficient}}</span>
                 <el-input
                   v-model="cvalue.coefficient" v-else onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'   type="number"></el-input>
                   <i  @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0" class="el-icon-plus color-0299CC"></i >
                   <i  @click="deleteActivityTimeLevel(index,Cindex,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
+              </el-form>
 
             </el-col>
         </el-row>
@@ -613,6 +624,12 @@
       productMaterialComponent
     },
     data() {
+      let checkAge = (rule, value, callback) => {
+        if (value>100) {
+          return callback(new Error('输入内容不能大于等于100'));
+        }
+     
+      };
       return {
         fileList1: [],
         fileList2: [],
@@ -677,6 +694,12 @@
           ],
           visiblePeople: [
             { required: true, trigger: 'change'}
+          ],
+          performanceCoefficient:[
+            { validator: checkAge, trigger: 'blur' }
+          ],
+          coefficient:[
+            { validator: checkAge, trigger: 'blur' }
           ]
         },
         keyProRules: {
@@ -1060,7 +1083,6 @@
           this.form2.importantStart = ''
           this.form2.importantEnd = ''
         }
-        console.log(this.productStatusNo)
         if(this.productStatusNo == 2){
          if(!this.activityFilter(true)) return false;
          if(!this.normalFilter(true)) return false; 
@@ -1118,7 +1140,7 @@
         // this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
         this.form2.productId = this.productId;
         // this.form2.keyProduct = this.radio2
-        
+
         if (!this.operationDisabled && !this.form2.importantStart) {
           this.$notify({
             title: '失败',
