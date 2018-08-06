@@ -27,7 +27,6 @@
       </el-table-column>
     </el-table>
     <el-table v-if="errorList.length !== 0" :data="errorList" :span-method="objectSpanMethod" border highlight-current-row style="width: 100%;margin-top:20px;">
-
       <el-table-column prop="errorNo" label="行数">
       </el-table-column>
       <el-table-column label="错误项">
@@ -54,7 +53,6 @@
         formData: null,
         dialogVisible: false,
         downloadUrl: 'static/excel/佣金列表模版.xlsx',
-        formContent: [],
         errorList: [],
       }
     },

@@ -136,6 +136,16 @@ import { getAllPositon, getAllDeparts, getBalancedList, getBalancedId, editBalan
 import { parseTime, transformText } from '@/utils'
 export default {
 	data () {
+		const validatePass = (rule, value, callback) => {
+			if (!value) {
+				callback('请输入平衡计分卡系数')
+			}
+			if (Number(value) > 1) {
+				callback(new Error('平衡计分卡系数不能大于1'))
+			} else {
+				callback()
+			}
+		}
 		return	{
 			list: null,
 			total: null,
@@ -159,7 +169,7 @@ export default {
 			},
 			rules: {
 				coefficient: [
-					{ required: true, message: '请输入平衡计分卡系数' }
+					{ required: true, trigger: 'blur', validator: validatePass }
 				]
 			}
 		}

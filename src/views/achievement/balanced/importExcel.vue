@@ -22,8 +22,17 @@
         </i>条
       </span>
     </div>
-    <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
+    <el-table v-if="errorList.length === 0" :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
       <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item'>
+      </el-table-column>
+    </el-table>
+    <el-table v-if="errorList.length !== 0" :data="errorList" :span-method="objectSpanMethod" border highlight-current-row style="width: 100%;margin-top:20px;">
+      <el-table-column prop="errorNo" label="行数">
+      </el-table-column>
+      <el-table-column label="错误项">
+        <template slot-scope="prop">
+          {{prop.row.errorItem}}<span style="color: #D0021B">（{{prop.row.errorReason}}）</span>
+        </template>
       </el-table-column>
     </el-table>
   </div>
@@ -43,10 +52,26 @@
         tableHeader: [],
         formData: null,
         dialogVisible: false,
-        downloadUrl: 'static/excel/平衡计分卡系数模版.xlsx'
+        downloadUrl: 'static/excel/平衡计分卡系数模版.xlsx',
+        errorList: [],
       }
     },
     methods: {
+       objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+        if (columnIndex === 0) {
+          if (rowIndex % 2 === 0) {
+            return {
+              rowspan: 2,
+              colspan: 1
+            }
+          } else {
+            return {
+              rowspan: 0,
+              colspan: 0
+            }
+          }
+        }
+      },
       showDialog() {
         if (this.tableData.length > 0) {
           this.dialogVisible = true
@@ -71,9 +96,11 @@
           '职级': "rankName",
           '部门': "deptName",
           '时间': "time",
+          '行数': "lineNo"
         }
         this.formData.forEach( item => {
           replaceKey(item, kepMap)
+          item.lineNo = parseInt(item.lineNo)
           let timeRange = item.time.split('—')
           item.start =  new Date(timeRange[0]).getTime()
           item.end = new Date(timeRange[1]).getTime()
@@ -87,12 +114,22 @@
         //   }
         // }
         balancedImport(this.formData).then(res => {
-          if (!res) {
-            console.log('上传失败')
-          } else {
+          if (res.data.length === 0) {
             console.log('上传成功')
+            this.errorList = res.data
             this.dialogVisible = false
+          } else {
+            console.log('上传失败')
+            this.errorList = res.data
+            this.errorList = this.transferError(this.errorList)
+            this.dialogVisible = false            
           }
+          // if (!res) {
+          //   console.log('上传失败')
+          // } else {
+          //   console.log('上传成功')
+          //   this.dialogVisible = false
+          // }
         })
       }
     }
