@@ -27,11 +27,11 @@
       </el-table-column>
     </el-table>
     <el-table v-if="errorList.length !== 0" :data="errorList" :span-method="objectSpanMethod" border highlight-current-row style="width: 100%;margin-top:20px;">
-      
+
       <el-table-column prop="errorNo" label="行数">
       </el-table-column>
       <el-table-column label="错误项">
-        <template scope="prop">
+        <template slot-scope="prop">
           {{prop.row.errorItem}}<span style="color: #D0021B">（{{prop.row.errorReason}}）</span>
         </template>
       </el-table-column>
@@ -124,7 +124,7 @@
           '职级': "rankName",
           '订单段': "timeSlot",
           '部门': "deptName",
-          '行数': "lineNo"
+          '行号': "lineNo"
         }
         this.formData.forEach( item => {
           replaceKey(item, kepMap)
@@ -150,7 +150,7 @@
             console.log('上传失败')
             this.errorList = res.data
             this.errorList = this.transferError(this.errorList)
-            this.dialogVisible = false            
+            this.dialogVisible = false
           }
           // console.log(this.errorList)
           // if (!res) {
