@@ -95,18 +95,11 @@
         return tempArr
       },
       selected(data) {
-        // this.tableHeader = data.header
+        this.errorList = []
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
         this.tableData = temp.results
-        // console.log(this.tableData)
         this.formData = JSON.parse(JSON.stringify(this.tableData))
-        // this.tableData = Object.assign([], data.results)
-        // console.log(this.tableHeader)
-        // console.log(this.tableData)
-        // this.formData = data.formData
-        // this.formData = Object.assign([], data.results)
-        // this.formContent = this.formData
         let kepMap = {
           '公司': "company",
           '区域': "regional",
@@ -135,30 +128,18 @@
         })
       },
       submit() {
-        // const config = {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
-        // }
         commissionListImport(this.formData).then(res => {
-          // console.log(res.data)
           if (res.data.length === 0) {
             console.log('上传成功')
             this.errorList = res.data
             this.dialogVisible = false
+            this.$router.push({ path: '/achievement/commissionList' })
           } else {
             console.log('上传失败')
             this.errorList = res.data
             this.errorList = this.transferError(this.errorList)
             this.dialogVisible = false
           }
-          // console.log(this.errorList)
-          // if (!res) {
-          //   console.log('上传失败')
-          // } else {
-          //   console.log('上传成功')
-          //   this.dialogVisible = false
-          // }
         })
       }
     }

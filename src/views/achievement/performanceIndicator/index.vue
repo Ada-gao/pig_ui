@@ -318,7 +318,9 @@
         },
         listQuery: {
           page: 1,
-          limit: 20
+          limit: 20,
+          orderByField: 'create_time',
+          isAsc: false
         },
         deptId: [],
         selectedOptions: [],
@@ -505,7 +507,9 @@
           limit: 20,
           positionId: undefined,
           rankId: undefined,
-          deptId: undefined
+          deptId: undefined,
+          orderByField: 'create_time',
+          isAsc: false
         }
         this.deptId = []
         this.handleFilter()
@@ -684,7 +688,7 @@
                   title: '成功',
                   type: 'success',
                   duration: 2000,
-                  message: '创建成功'
+                  message: '修改成功'
                 })
               }
               this.resetTemp()
@@ -697,7 +701,7 @@
               this.$refs[formName].resetFields()
               this.$notify({
                 title: '失败',
-                message: '创建失败',
+                message: '修改失败',
                 type: 'error',
                 duration: 2000
               })

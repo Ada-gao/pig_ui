@@ -22,28 +22,8 @@
         </i>条
       </span>
     </div>
-    <el-table :data="tableData"
-              border
-              v-if="errorList.length === 0"
-              highlight-current-row
-              style="width: 100%;margin-top:20px;">
-      <el-table-column v-for='item of tableHeader'
-                       :prop="item"
-                       :label="item"
-                       :key='item'>
-      </el-table-column>
-    </el-table>
-    <el-table v-else
-              :data="errorList"
-              highlight-current-row
-              style="width: 100%;margin-top:20px;"
-              border
-              :span-method="objectSpanMethod">
-      <el-table-column prop="errorNo" label="行数"></el-table-column>
-      <el-table-column label="错误项">
-        <template slot-scope="prop">
-          {{prop.row.errorItem}}<span style="color: #d0021b;">（{{prop.row.errorReason}}）</span>
-        </template>
+    <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
+      <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item'>
       </el-table-column>
     </el-table>
   </div>
@@ -63,7 +43,6 @@
         tableHeader: [],
         formData: null,
         dialogVisible: false,
-        errorList: [],
         downloadUrl: 'static/excel/业绩指标模版.xlsx'
       }
     },
@@ -74,7 +53,6 @@
         }
       },
       selected(data) {
-        this.errorList = []
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
         this.tableData = temp.results
@@ -85,49 +63,18 @@
           '部门': 'deptName',
           '职位': 'positionName',
           '职级': 'rankName',
-          '业绩指标（万）': 'performanceIndicator',
-          '行号': 'lineNo'
+          '业绩指标（万）': 'performanceIndicator'
         }
         this.formData.forEach(item => {
           replaceKey(item, kepMap)
         })
-      },
-      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-        if (columnIndex === 0) {
-          if (rowIndex % 2 === 0) {
-            return {
-              rowspan: 2,
-              colspan: 1
-            }
-          } else {
-            return {
-              rowspan: 0,
-              colspan: 0
-            }
-          }
-        }
-      },
-      transferError(data) {
-        const tempArr = []
-        data.map((ele, index) => {
-          ele.errorMegs.map((item, idx) => {
-            tempArr.push(
-              {
-                errorNo: ele.errorNo,
-                errorItem: item.errorItem,
-                errorReason: item.errorReason
-              }
-            )
-          })
-        })
-        return tempArr
       },
       submit() {
         importPf(this.formData).then(res => {
           console.log(res)
           if (res.status === 200) {
             this.dialogVisible = false
-            // let count = 0
+            let count = 0
             if (res.data.length === 0) {
               this.$notify({
                 title: '成功',
@@ -137,32 +84,30 @@
               })
               this.$router.push({ path: '/achievement/perform' })
             } else {
-              this.errorList = this.transferError(res.data)
-              this.dialogVisible = false
-              // res.data.every((item, index) => {
-              //   if (item.msgList && item.msgList.length > 0) {
-              //     ++count
-              //     return true
-              //   } else {
-              //     return false
-              //   }
-              // })
-              // if (count === res.data.length) {
-              //   this.$notify({
-              //     title: '失败',
-              //     message: '导入失败',
-              //     type: 'error',
-              //     duration: 2000
-              //   })
-              // } else {
-              //   this.$notify({
-              //     title: '成功',
-              //     type: 'success',
-              //     duration: 2000,
-              //     message: '导入成功'
-              //   })
-              //   this.$router.push({ path: '/achievement/perform' })
-              // }
+              res.data.every((item, index) => {
+                if (item.msgList && item.msgList.length > 0) {
+                  ++count
+                  return true
+                } else {
+                  return false
+                }
+              })
+              if (count === res.data.length) {
+                this.$notify({
+                  title: '失败',
+                  message: '导入失败',
+                  type: 'error',
+                  duration: 2000
+                })
+              } else {
+                this.$notify({
+                  title: '成功',
+                  type: 'success',
+                  duration: 2000,
+                  message: '导入成功'
+                })
+                this.$router.push({ path: '/achievement/perform' })
+              }
             }
           }
         }).catch(() => {
