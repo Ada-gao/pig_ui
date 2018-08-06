@@ -122,7 +122,7 @@
           '职级': "rankName",
           '订单段': "timeSlot",
           '部门': "deptName",
-          '行数': "lineNo"
+          '行号': "lineNo"
         }
         this.formData.forEach( item => {
           replaceKey(item, kepMap)
@@ -148,7 +148,7 @@
             console.log('上传失败')
             this.errorList = res.data
             this.errorList = this.transferError(this.errorList)
-            this.dialogVisible = false            
+            this.dialogVisible = false
           }
           // console.log(this.errorList)
           // if (!res) {
