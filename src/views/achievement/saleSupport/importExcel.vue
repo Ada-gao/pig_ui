@@ -22,8 +22,28 @@
         </i>条
       </span>
     </div>
-    <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
-      <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item'>
+    <el-table :data="tableData"
+              border
+              v-if="errorList.length === 0"
+              highlight-current-row
+              style="width: 100%;margin-top:20px;">
+      <el-table-column v-for='item of tableHeader'
+                       :prop="item"
+                       :label="item"
+                       :key='item'>
+      </el-table-column>
+    </el-table>
+    <el-table v-else
+              :data="errorList"
+              highlight-current-row
+              style="width: 100%;margin-top:20px;"
+              border
+              :span-method="objectSpanMethod">
+      <el-table-column prop="errorNo" label="行数"></el-table-column>
+      <el-table-column label="错误项">
+        <template slot-scope="prop">
+          {{prop.row.errorItem}}<span style="color: #d0021b;">（{{prop.row.errorReason}}）</span>
+        </template>
       </el-table-column>
     </el-table>
   </div>
@@ -31,7 +51,7 @@
 
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { commissionListImport } from '@/api/achievement/index'
+  import { salesSupportListImport } from '@/api/achievement/index'
   import { replaceKey } from '@/utils'
 
   export default {
@@ -44,7 +64,7 @@
         formData: null,
         dialogVisible: false,
         downloadUrl: 'static/excel/销售支持模版.xlsx',
-        formContent: []
+        errorList: []
       }
     },
     methods: {
@@ -54,17 +74,11 @@
         }
       },
       selected(data) {
-        // this.tableHeader = data.header
+        this.errorList = []
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
         this.tableData = temp.results
         this.formData = JSON.parse(JSON.stringify(this.tableData))
-        // this.tableData = Object.assign([], data.results)
-        // console.log(this.tableHeader)
-        // console.log(this.tableData)
-        // this.formData = data.formData
-        // this.formData = Object.assign([], data.results)
-        // this.formContent = this.formData
         let kepMap = {
           '预约编号': "appointmentCode",
           '理财师姓名': "userName",
@@ -72,27 +86,67 @@
           '销售支持姓名': "salesName",
           '销售支持编号': "salesCode",
           '佣金比例': "commissionRate",
+          '行号': 'lineNo'
         }
-        this.formData.forEach( item => {
+        this.formData.forEach(item => {
           replaceKey(item, kepMap)
-          item.commission = parseInt(item.commission)
-          item.finalCommission = parseInt(item.finalCommission)
-          item.occurrenceDate = new Date(item.occurrenceDate).getTime()
         })
       },
-      submit() {
-        // const config = {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
-        // }
-        commissionListImport(this.formData).then(res => {
-          if (!res) {
-            console.log('上传失败')
+      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+        if (columnIndex === 0) {
+          if (rowIndex % 2 === 0) {
+            return {
+              rowspan: 2,
+              colspan: 1
+            }
           } else {
-            console.log('上传成功')
-            this.dialogVisible = false
+            return {
+              rowspan: 0,
+              colspan: 0
+            }
           }
+        }
+      },
+      transferError(data) {
+        const tempArr = []
+        data.map((ele, index) => {
+          ele.errorMegs.map((item, idx) => {
+            tempArr.push(
+              {
+                errorNo: ele.errorNo,
+                errorItem: item.errorItem,
+                errorReason: item.errorReason
+              }
+            )
+          })
+        })
+        return tempArr
+      },
+      submit() {
+        salesSupportListImport(this.formData).then(res => {
+          if (res.status === 200) {
+            this.dialogVisible = false
+            if (res.data.length === 0) {
+              this.$notify({
+                title: '成功',
+                type: 'success',
+                duration: 2000,
+                message: '导入成功'
+              })
+              this.$router.push({ path: '/achievement/saleSupport' })
+            } else {
+              this.errorList = this.transferError(res.data)
+              this.dialogVisible = false
+            }
+          }
+        }).catch(() => {
+          this.dialogVisible = false
+          this.$notify({
+            title: '失败',
+            message: '导入失败',
+            type: 'error',
+            duration: 2000
+          })
         })
       }
     }

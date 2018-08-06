@@ -675,6 +675,7 @@
             type: 'error',
             duration: 2000
           })
+          this.dialogCreate = false
           return false
         }
         this.form.rankIds = [this.tempRankId]

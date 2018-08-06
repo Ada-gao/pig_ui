@@ -91,6 +91,7 @@
         this.formData.forEach(item => {
           replaceKey(item, kepMap)
         })
+        document.getElementById('excel-upload-input').value = null
       },
       objectSpanMethod({ row, column, rowIndex, columnIndex }) {
         if (columnIndex === 0) {
@@ -124,10 +125,8 @@
       },
       submit() {
         importPf(this.formData).then(res => {
-          console.log(res)
           if (res.status === 200) {
             this.dialogVisible = false
-            // let count = 0
             if (res.data.length === 0) {
               this.$notify({
                 title: '成功',
@@ -139,30 +138,6 @@
             } else {
               this.errorList = this.transferError(res.data)
               this.dialogVisible = false
-              // res.data.every((item, index) => {
-              //   if (item.msgList && item.msgList.length > 0) {
-              //     ++count
-              //     return true
-              //   } else {
-              //     return false
-              //   }
-              // })
-              // if (count === res.data.length) {
-              //   this.$notify({
-              //     title: '失败',
-              //     message: '导入失败',
-              //     type: 'error',
-              //     duration: 2000
-              //   })
-              // } else {
-              //   this.$notify({
-              //     title: '成功',
-              //     type: 'success',
-              //     duration: 2000,
-              //     message: '导入成功'
-              //   })
-              //   this.$router.push({ path: '/achievement/perform' })
-              // }
             }
           }
         }).catch(() => {

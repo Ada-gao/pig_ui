@@ -41,7 +41,7 @@
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import { balancedImport } from '@/api/achievement/index'
-  import { replaceKey } from '@/utils'  
+  import { replaceKey } from '@/utils'
 
   export default {
     name: 'uploadExcel',
@@ -57,7 +57,7 @@
       }
     },
     methods: {
-       objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
         if (columnIndex === 0) {
           if (rowIndex % 2 === 0) {
             return {
@@ -78,12 +78,7 @@
         }
       },
       selected(data) {
-        // this.tableHeader = data.header
-        // this.tableData = data.results
-        // console.log(this.tableHeader)
-        // console.log(this.tableData)
-        // this.formData = data.formData
-        // console.log(this.formData)
+        this.errorList = []
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
         this.tableData = temp.results
@@ -98,38 +93,28 @@
           '时间': "time",
           '行数': "lineNo"
         }
-        this.formData.forEach( item => {
+        this.formData.forEach(item => {
           replaceKey(item, kepMap)
           item.lineNo = parseInt(item.lineNo)
-          let timeRange = item.time.split('—')
-          item.start =  new Date(timeRange[0]).getTime()
+          const timeRange = item.time.split('—')
+          item.start = new Date(timeRange[0]).getTime()
           item.end = new Date(timeRange[1]).getTime()
           delete item.time
         })
       },
       submit() {
-        // const config = {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
-        // }
         balancedImport(this.formData).then(res => {
           if (res.data.length === 0) {
             console.log('上传成功')
             this.errorList = res.data
             this.dialogVisible = false
+            this.$router.push({ path: '/achievement/balanced' })
           } else {
             console.log('上传失败')
             this.errorList = res.data
             this.errorList = this.transferError(this.errorList)
-            this.dialogVisible = false            
+            this.dialogVisible = false
           }
-          // if (!res) {
-          //   console.log('上传失败')
-          // } else {
-          //   console.log('上传成功')
-          //   this.dialogVisible = false
-          // }
         })
       }
     }
