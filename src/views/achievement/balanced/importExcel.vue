@@ -54,21 +54,18 @@
         dialogVisible: false,
         downloadUrl: 'static/excel/平衡计分卡系数模版.xlsx',
         errorList: [],
+        spanArr: [],
+        pos: null
       }
     },
     methods: {
       objectSpanMethod({ row, column, rowIndex, columnIndex }) {
         if (columnIndex === 0) {
-          if (rowIndex % 2 === 0) {
-            return {
-              rowspan: 2,
-              colspan: 1
-            }
-          } else {
-            return {
-              rowspan: 0,
-              colspan: 0
-            }
+          const _row = this.spanArr[rowIndex]
+          const _col = _row > 0 ? 1 : 0
+          return {
+            rowspan: _row,
+            colspan: _col
           }
         }
       },
@@ -91,7 +88,7 @@
           '职级': "rankName",
           '部门': "deptName",
           '时间': "time",
-          '行数': "lineNo"
+          '行号': "lineNo"
         }
         this.formData.forEach(item => {
           replaceKey(item, kepMap)
@@ -101,6 +98,39 @@
           item.end = new Date(timeRange[1]).getTime()
           delete item.time
         })
+        document.getElementById('excel-upload-input').value = null
+      },
+      getSpanArr(data) {
+        for (let i = 0; i < data.length; i++) {
+          if (i === 0) {
+            this.spanArr.push(1)
+            this.pos = 0
+          } else {
+            // 判断当前元素与上一个元素是否相同
+            if (data[i].errorNo === data[i - 1].errorNo) {
+              this.spanArr[this.pos] += 1
+              this.spanArr.push(0)
+            } else {
+              this.spanArr.push(1)
+              this.pos = i
+            }
+          }
+        }
+      },
+      transferError(data) {
+        const tempArr = []
+        data.map((ele, index) => {
+          ele.errorMegs.map((item, idx) => {
+            tempArr.push(
+              {
+                errorNo: ele.errorNo,
+                errorItem: item.errorItem,
+                errorReason: item.errorReason
+              }
+            )
+          })
+        })
+        return tempArr
       },
       submit() {
         balancedImport(this.formData).then(res => {
@@ -112,7 +142,8 @@
           } else {
             console.log('上传失败')
             this.errorList = res.data
-            this.errorList = this.transferError(this.errorList)
+            this.errorList = this.transferError(res.data)
+            this.getSpanArr(this.errorList)
             this.dialogVisible = false
           }
         })

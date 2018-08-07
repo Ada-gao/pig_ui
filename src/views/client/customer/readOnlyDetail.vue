@@ -163,6 +163,11 @@
             <span>{{scope.row.amount}}</span>
           </template>
         </el-table-column>
+        <el-table-column align="center" label="起息日">
+          <template slot-scope="scope">
+            <span>{{scope.row.valueDate}}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="收益对标基准">
           <template slot-scope="scope">
             <span>{{scope.row.remark}}</span>
@@ -218,7 +223,7 @@
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
-  import { transformText } from '@/utils'
+  import { transformText, parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -347,6 +352,9 @@
 
         getClientProducts(id).then(response => {
           this.productList = response.data
+          this.productList.map(ele => {
+            ele.valueDate = ele.valueDate ? parseTime(ele.valueDate, '{y}-{m}-{d}') : ''
+          })
         })
       },
       handleDept() {

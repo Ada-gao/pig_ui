@@ -24,7 +24,7 @@
                       autoComplete="on"
                       placeholder="请输入手机号或邮箱"/>
           </el-form-item>
-          <el-form-item>
+          <el-form-item prop="smsCode">
             <el-col :span="12">
               <el-input name="smsCode"
                         type="text"
@@ -44,20 +44,20 @@
                        class="btn_light"
                        style="width:100%;"
                        :loading="loading"
-                       @click.native.prevent="handleNext">
+                       @click.native.prevent="handleNext('loginForm1')">
               下一步
             </el-button>
           </el-form-item>
         </div>
 
         <div class="step" v-else-if="activeStep === 1">
-          <el-form-item>
+          <el-form-item prop="newPW">
             <el-input type="text"
                       autoComplete="on"
                       placeholder="请输入新密码"
                       v-model="loginForm1.newPW"></el-input>
           </el-form-item>
-          <el-form-item>
+          <el-form-item prop="newPW1">
             <el-input type="text"
                       autoComplete="on"
                       placeholder="请确认新密码"
@@ -68,7 +68,7 @@
                        class="btn_light"
                        style="width:100%;"
                        :loading="loading"
-                       @click.native.prevent="handleConfirm">
+                       @click.native.prevent="handleConfirm('loginForm1')">
               确定
             </el-button>
           </el-form-item>
@@ -84,7 +84,7 @@
                        class="btn_light"
                        style="width:100%;"
                        :loading="loading"
-                       @click.native="pwdStep = 1">
+                       @click.native="handleReturn">
               返回登录页
             </el-button>
           </el-form-item>
@@ -269,10 +269,11 @@
 <script>
   // import { isvalidUsername } from '@/utils/validate'
   import request from '@/utils/request'
-  import ElRow from "element-ui/packages/row/src/row";
+  import ElRow from 'element-ui/packages/row/src/row'
+  // import { sendVcode } from '@/api/login'
 
   export default {
-    components: {ElRow},
+    components: { ElRow },
     name: 'login',
     data() {
       const validatePass = (rule, value, callback) => {
@@ -297,7 +298,36 @@
           smsCode: ''
         },
         loginForm1: {},
-        loginRules1: {},
+        loginRules1: {
+          mobile: [
+            {
+              required: true,
+              message: '请输入手机号',
+              trigger: 'blur'
+            }
+          ],
+          smsCode: [
+            {
+              required: true,
+              message: '请输入验证码',
+              trigger: 'change, blur'
+            }
+          ],
+          newPW: [
+            {
+              required: true,
+              message: '请输入密码',
+              trigger: 'blur'
+            }
+          ],
+          newPW1: [
+            {
+              required: true,
+              message: '请确认密码',
+              trigger: 'blur'
+            }
+          ],
+        },
         loginRules: {
           username: [{required: true, message: '请输入用户名或手机号', trigger: 'blur'}],
           password: [{required: true, trigger: 'blur', validator: validatePass}],
@@ -337,11 +367,71 @@
           }
         })
       },
-      handleNext() {
-        this.activeStep = 1
+      resetTemp() {
+        this.loginForm1 = {
+          mobile: undefined,
+          smsCode: undefined,
+          newPW: undefined,
+          newPW1: undefined
+        }
       },
-      handleConfirm() {
-        this.activeStep = 2
+      handleReturn() {
+        this.resetTemp()
+        this.timeFlag = false
+        this.time = 60
+        this.pwdStep = 1
+      },
+      handleNext(formName) {
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            request({
+              url: '/admin/password/verify',
+              method: 'post',
+              params: {
+                number: this.loginForm1.mobile,
+                code: this.loginForm1.smsCode
+              },
+              data: {
+                number: this.loginForm1.mobile,
+                code: this.loginForm1.smsCode
+              }
+            }).then(res => {
+              if (res.status === 200) {
+                this.activeStep = 1
+              } else {
+                this.$message.error(res.data.msg)
+              }
+            }).catch(() => {
+            })
+          }
+        })
+      },
+      handleConfirm(formName) {
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            request({
+              url: '/admin/password/reset',
+              method: 'post',
+              params: {
+                number: this.loginForm1.mobile,
+                password: this.loginForm1.newPW,
+                confirmPassword: this.loginForm1.newPW1
+              },
+              data: {
+                number: this.loginForm1.mobile,
+                password: this.loginForm1.newPW,
+                confirmPassword: this.loginForm1.newPW1
+              }
+            }).then(res => {
+              if (res.status === 200) {
+                this.activeStep = 2
+              } else {
+                this.$message.error(res.data.msg)
+              }
+            }).catch(() => {
+            })
+          }
+        })
       },
       handleForget() {
         this.pwdStep = 2
@@ -369,26 +459,52 @@
         })
       },
       getMobileCode1: function () {
+        const pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
         if (!this.loginForm1.mobile) {
           this.$message.error('请输入手机号码')
-        } else if (!(/^1[34578]\d{9}$/.test(this.loginForm1.mobile))) {
-          this.$message.error('手机号格式不正确')
+        } else if (this.loginForm1.mobile.split('.').length > 1) {
+          if (!pattern.test(this.loginForm1.mobile)) {
+            this.$message.error('邮箱格式不正确')
+          } else {
+            console.log(this.loginForm1.mobile)
+            request({
+              url: '/admin/password/code',
+              params: {
+                number: this.loginForm1.mobile
+              },
+              method: 'get'
+            }).then(response => {
+              // console.log(response)
+              if (response.data.data) {
+                this.timer()
+                this.$message.success('验证码发送成功')
+              } else {
+                this.$message.error(response.data.msg)
+              }
+            })
+          }
+          // this.$message.error('手机号格式不正确')
         } else {
-          request({
-            url: '/admin/password/code',
-            query: {
-              mobile: this.loginForm1.mobile
-            },
-            method: 'get'
-          }).then(response => {
-            // console.log(response)
-            if (response.data.data) {
-              this.timer()
-              this.$message.success('验证码发送成功')
-            } else {
-              this.$message.error(response.data.msg)
-            }
-          })
+          if (!(/^1[34578]\d{9}$/.test(this.loginForm1.mobile))) {
+            this.$message.error('手机号格式不正确')
+          } else {
+            console.log(this.loginForm1.mobile)
+            request({
+              url: '/admin/password/code',
+              params: {
+                number: this.loginForm1.mobile
+              },
+              method: 'get'
+            }).then(response => {
+              // console.log(response)
+              if (response.data.data) {
+                this.timer()
+                this.$message.success('验证码发送成功')
+              } else {
+                this.$message.error(response.data.msg)
+              }
+            })
+          }
         }
       },
       getMobileCode: function () {
@@ -418,6 +534,7 @@
           setTimeout(this.timer, 1000)
         } else {
           this.timeFlag = false
+          this.time = 60
         }
       }
     },
@@ -435,8 +552,8 @@
       var params = this.$route.query
       var access_token = params.access_token
       var refresh_token = params.refresh_token
-      console.log(access_token)
-      console.log(refresh_token)
+      // console.log(access_token)
+      // console.log(refresh_token)
       if (access_token !== undefined && refresh_token !== undefined) {
         console.log('执行到1')
         this.$store.dispatch('SocialLogin', params).then(() => {
