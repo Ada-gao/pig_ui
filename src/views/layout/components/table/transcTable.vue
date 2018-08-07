@@ -78,6 +78,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" label="起息日">
+        <template slot-scope="scope">
+          <span>{{scope.row.valueDate}}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" label="理财师姓名">
         <template slot-scope="scope">
         <span>{{scope.row.userName}}</span>
@@ -89,13 +95,13 @@
           <span>{{scope.row.userDeptName}}</span>
         </template>
       </el-table-column>
-      
+
       <el-table-column align="center" label="打款状态" v-if="payStatusCol">
         <template slot-scope="scope">
           <span>{{scope.row.statusText}}</span>
         </template>
       </el-table-column>
-      
+
       <el-table-column align="center" label="退款状态" v-if="refundCol">
         <template slot-scope="scope">
           <span>{{scope.row.refundStatusText}}</span>
@@ -370,6 +376,7 @@
             this.listLoading = false
             this.list.forEach(item => {
               item.statusText = transformText(this.appointmentStatus, item.status)
+              item.valueDate = item.valueDate ? parseTime(item.valueDate, '{y}-{m}-{d}') : ''
             })
           })
         // }

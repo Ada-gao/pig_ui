@@ -239,6 +239,7 @@ export const asyncRouterMap = [
       { menuId: 23, path: 'allocated', component: _import('client/allocated/index'), name: '待分配客户', meta: { title: '待分配客户', icon: 'allocated' }},
       { menuId: 24, path: 'certFile', component: _import('client/certFile/index'), name: '认证资料管理', meta: { title: '认证资料管理', icon: 'certFile' }},
       { menuId: 25, path: 'customerLabel', component: _import('client/customerLabel/index'), name: '客户标签设置', meta: { title: '客户标签设置', icon: 'certFile' }},
+      { menuId: 25, path: 'customerBatch', component: _import('client/batch/index'), name: '已购买产品导入', meta: { title: '已购买产品导入', icon: 'certFile' }},
       // { menuId: 22, path: 'detail/:id', component: _import('client/customer/detail'), name: '客户详情', meta: { title: '客户详情', icon: 'user' }},
     ]
   },
@@ -265,7 +266,7 @@ export const asyncRouterMap = [
       { menuId: 48, path: 'cashing', component: _import('product/cashing/index'), name: '兑付中列表', meta: { title: '兑付中列表', icon: 'shutDown' }},
       { menuId: 48, path: 'payCompletion', component: _import('product/payCompletion/index'), name: '兑付完成列表', meta: { title: '兑付完成列表', icon: 'shutDown' }},
       { menuId: 48, path: 'material', component: _import('product/materialManagement/index'), name: '材料管理', meta: { title: '材料管理', icon: 'file' }},
-      // { menuId: 48, path: 'batch', component: _import('product/batch/index'), name: '批量导入', meta: { title: '批量导入', icon: 'product' }},
+      { menuId: 48, path: 'productBatch', component: _import('product/batch/index'), name: '批量导入', meta: { title: '批量导入', icon: 'product' }},
       { menuId: 49, path: 'productType', component: _import('product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'productType' }},
     ]
   },
