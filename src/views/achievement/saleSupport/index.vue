@@ -181,6 +181,7 @@
                          style="width:100%;"
                          placeholder="请输入理财师姓名"
                          v-model="form.userName"
+                         filterable
                          @change="userNameChange">
                 <el-option v-for="(item, index) in financialPlannerList"
                            :value="item"
@@ -202,6 +203,7 @@
             <el-form-item label="销售支持姓名" prop="salesName">
               <el-select class="filter-item"
                          value-key="name"
+                         filterable
                          style="width:100%;"
                          placeholder="请输入销售支持姓名"
                          v-model="form.salesName"

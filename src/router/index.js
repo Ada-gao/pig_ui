@@ -152,7 +152,7 @@ export const constantRouterMap = [
     component: Layout,
     name: '业绩/佣金管理1',
     hidden: true,
-    redirect: '/achievement/allList',
+    redirect: '/achievement/perform',
     meta: {
       title: '业绩/佣金管理',
       icon: 'product_mg'
