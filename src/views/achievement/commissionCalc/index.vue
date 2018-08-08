@@ -81,6 +81,7 @@
             required: true, message: '请选择时间', trigger: 'blur'
           }">
           <el-date-picker
+            style="width:390px"
             v-model="form1.date"
             type="daterange"
             range-separator="至"

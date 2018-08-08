@@ -591,7 +591,7 @@
         this.form.productStatus = this.productStatusNo
         this.form.currencyId = this.form.currencyIdNo
         this.form.productTypeId = this.form.productTypeIdNo
-        this.form.investmentHorizonUnit = this.form.investmentHorizonUnitNo
+        // this.form.investmentHorizonUnit = this.form.investmentHorizonUnitNo
         this.form.productMixTypeId = this.form.productMixTypeIdNo
         if(this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit!='1') {
           this.$notify({

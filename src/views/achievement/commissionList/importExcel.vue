@@ -27,11 +27,10 @@
       </el-table-column>
     </el-table>
     <el-table v-if="errorList.length !== 0" :data="errorList" :span-method="objectSpanMethod" border highlight-current-row style="width: 100%;margin-top:20px;">
-      
       <el-table-column prop="errorNo" label="行数">
       </el-table-column>
       <el-table-column label="错误项">
-        <template scope="prop">
+        <template slot-scope="prop">
           {{prop.row.errorItem}}<span style="color: #D0021B">（{{prop.row.errorReason}}）</span>
         </template>
       </el-table-column>
@@ -54,23 +53,36 @@
         formData: null,
         dialogVisible: false,
         downloadUrl: 'static/excel/佣金列表模版.xlsx',
-        formContent: [],
         errorList: [],
+        spanArr: [],
+        pos: null
       }
     },
     methods: {
+      getSpanArr(data) {
+        for (let i = 0; i < data.length; i++) {
+          if (i === 0) {
+            this.spanArr.push(1)
+            this.pos = 0
+          } else {
+            // 判断当前元素与上一个元素是否相同
+            if (data[i].errorNo === data[i - 1].errorNo) {
+              this.spanArr[this.pos] += 1
+              this.spanArr.push(0)
+            } else {
+              this.spanArr.push(1)
+              this.pos = i
+            }
+          }
+        }
+      },
       objectSpanMethod({ row, column, rowIndex, columnIndex }) {
         if (columnIndex === 0) {
-          if (rowIndex % 2 === 0) {
-            return {
-              rowspan: 2,
-              colspan: 1
-            }
-          } else {
-            return {
-              rowspan: 0,
-              colspan: 0
-            }
+          const _row = this.spanArr[rowIndex]
+          const _col = _row > 0 ? 1 : 0
+          return {
+            rowspan: _row,
+            colspan: _col
           }
         }
       },
@@ -95,18 +107,11 @@
         return tempArr
       },
       selected(data) {
-        // this.tableHeader = data.header
+        this.errorList = []
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
         this.tableData = temp.results
-        // console.log(this.tableData)
         this.formData = JSON.parse(JSON.stringify(this.tableData))
-        // this.tableData = Object.assign([], data.results)
-        // console.log(this.tableHeader)
-        // console.log(this.tableData)
-        // this.formData = data.formData
-        // this.formData = Object.assign([], data.results)
-        // this.formContent = this.formData
         let kepMap = {
           '公司': "company",
           '区域': "regional",
@@ -124,7 +129,7 @@
           '职级': "rankName",
           '订单段': "timeSlot",
           '部门': "deptName",
-          '行数': "lineNo"
+          '行号': "lineNo"
         }
         this.formData.forEach( item => {
           replaceKey(item, kepMap)
@@ -133,32 +138,22 @@
           item.finalCommission = parseInt(item.finalCommission)
           item.occurrenceDate = new Date(item.occurrenceDate).getTime()
         })
+        document.getElementById('excel-upload-input').value = null
       },
       submit() {
-        // const config = {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
-        // }
         commissionListImport(this.formData).then(res => {
-          // console.log(res.data)
           if (res.data.length === 0) {
             console.log('上传成功')
             this.errorList = res.data
             this.dialogVisible = false
+            this.$router.push({ path: '/achievement/commissionList' })
           } else {
             console.log('上传失败')
             this.errorList = res.data
-            this.errorList = this.transferError(this.errorList)
-            this.dialogVisible = false            
+            this.errorList = this.transferError(res.data)
+            this.getSpanArr(this.errorList)
+            this.dialogVisible = false
           }
-          // console.log(this.errorList)
-          // if (!res) {
-          //   console.log('上传失败')
-          // } else {
-          //   console.log('上传成功')
-          //   this.dialogVisible = false
-          // }
         })
       }
     }

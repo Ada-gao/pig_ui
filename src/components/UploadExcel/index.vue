@@ -1,6 +1,11 @@
 <template>
   <div>
-    <input id="excel-upload-input" type="file" accept=".xlsx, .xls" class="c-hide" @change="handkeFileChange">
+    <input id="excel-upload-input"
+           type="file"
+           accept=".xlsx, .xls"
+           class="c-hide"
+           ref="iptfile"
+           @change="handkeFileChange">
     <div id="drop" class="el-upload-dragger" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em @click="handleUpload">点击导入</em></div>
@@ -65,9 +70,9 @@ export default {
       document.getElementById('excel-upload-input').click()
     },
     handkeFileChange(e) {
+      // this.$refs.iptfile.value = null
       const files = e.target.files
       const itemFile = files[0] // only use files[0]
-
       let formData = new FormData()
       formData.append('file', itemFile)
 
@@ -87,7 +92,9 @@ export default {
         const results = XLSX.utils.sheet_to_json(worksheet)
         this.generateDate({ header, results, formData })
       }
-      reader.readAsArrayBuffer(itemFile)
+      if (itemFile) {
+        reader.readAsArrayBuffer(itemFile)
+      }
     },
     fixdata(data) {
       let o = ''

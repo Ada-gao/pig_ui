@@ -42,7 +42,9 @@
         let url = item.redirect
         this.$router.push({path: url})
         Bus.$emit('activeIndex', url)
-        // console.log(url)
+        if (!url) {
+          this.$router.push({ path: '/dashboard' })
+        }
       }
     }
   }

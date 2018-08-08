@@ -222,11 +222,22 @@ export default {
 		this.getList()
   },
 	methods: {
+		cycleList(list) {
+			list.forEach(item => {
+				if (item.children && !item.children.length) {
+					delete item.children
+				}
+				if (item.children && item.children.length) {
+					this.cycleList(item.children)
+				}
+			})
+		},
 		getList() {
 			this.listLoading = true
 			getAllDeparts()
 				.then(response => {
 					this.treeDeptData = response.data
+					this.cycleList(this.treeDeptData)
 			}),
 			getCommissionList(this.listQuery).then(response => {
 				this.list = response.data.records
