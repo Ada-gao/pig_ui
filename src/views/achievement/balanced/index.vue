@@ -116,12 +116,10 @@
       </el-pagination>
     </div>
 		<el-dialog title="编辑平衡积分卡系数" :visible.sync="dialogEditVisible">
-      <el-form :model="form" ref="form" label-width="120px" :rules="rules">
-        
-        <el-form-item label="平衡计分卡系数" prop="coefficient">
+      <el-form :model="form" ref="form" label-width="170px" :rules="rules">
+        <el-form-item label="平衡计分卡系数（%）" prop="coefficient">
           <el-input v-model="form.coefficient"></el-input>
         </el-form-item>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button class="search_btn" @click="cancel('form')">取 消</el-button>
@@ -140,11 +138,11 @@ export default {
 			if (!value) {
 				callback('请输入平衡计分卡系数')
 			}
-			if (Number(value) > 1) {
-				callback(new Error('平衡计分卡系数不能大于1'))
-			} else {
-				callback()
-			}
+			// if (Number(value) > 1) {
+			// 	callback(new Error('平衡计分卡系数不能大于1'))
+			// } else {
+			// 	callback()
+			// }
 		}
 		return	{
 			list: null,
