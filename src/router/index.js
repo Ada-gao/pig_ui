@@ -239,7 +239,8 @@ export const asyncRouterMap = [
       { menuId: 23, path: 'allocated', component: _import('client/allocated/index'), name: '待分配客户', meta: { title: '待分配客户', icon: 'allocated' }},
       { menuId: 24, path: 'certFile', component: _import('client/certFile/index'), name: '认证资料管理', meta: { title: '认证资料管理', icon: 'certFile' }},
       { menuId: 25, path: 'customerLabel', component: _import('client/customerLabel/index'), name: '客户标签设置', meta: { title: '客户标签设置', icon: 'certFile' }},
-      { menuId: 25, path: 'customerBatch', component: _import('client/batch/index'), name: '已购买产品导入', meta: { title: '已购买产品导入', icon: 'certFile' }},
+      { menuId: 25, path: 'customerBatch', component: _import('client/batch/index'), name: '客户导入', meta: { title: '客户导入', icon: 'certFile' }},
+      { menuId: 25, path: 'customerBuyPdBatch', component: _import('client/pdbatch/index'), name: '已购买导入', meta: { title: '已购买导入', icon: 'certFile' }},
       // { menuId: 22, path: 'detail/:id', component: _import('client/customer/detail'), name: '客户详情', meta: { title: '客户详情', icon: 'user' }},
     ]
   },
@@ -297,17 +298,17 @@ export const asyncRouterMap = [
     component: Layout,
     name: '业绩/佣金管理',
     hidden: false,
-    redirect: '/achievement/allList',
+    redirect: '/achievement/perform',
     // icon: 'table',
     meta: {
       title: '业绩/佣金管理',
       icon: 'product_mg'
     },
     children: [
+      { menuId: 314, path: 'perform', component: _import('achievement/performanceIndicator/index'), name: '业绩指标列表', meta: { title: '业绩指标列表', icon: 'product' }},
       { menuId: 287, path: 'balanced', component: _import('achievement/balanced/index'), name: '平衡计分卡', meta: { title: '平衡计分卡', icon: 'product' }},
       { menuId: 48, path: 'commissionList', component: _import('achievement/commissionList/index'), name: '佣金列表', meta: { title: '佣金列表', icon: 'product' }},
       { menuId: 48, path: 'commCalc', component: _import('achievement/commissionCalc/index'), name: '佣金计算模版', meta: { title: '佣金计算模版', icon: 'product' }},
-      { menuId: 314, path: 'perform', component: _import('achievement/performanceIndicator/index'), name: '业绩指标列表', meta: { title: '业绩指标列表', icon: 'product' }},
       { menuId: 283, path: 'probation', component: _import('achievement/performanceIndicator/probation'), name: '试用期业绩标准', meta: { title: '试用期业绩标准', icon: 'product' }},
       { menuId: 291, path: 'saleSupport', component: _import('achievement/saleSupport/index'), name: '销售支持', meta: { title: '销售支持', icon: 'product' }},
     ]

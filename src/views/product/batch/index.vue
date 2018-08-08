@@ -51,7 +51,7 @@
 
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { importPf } from '@/api/achievement'
+  import { importPd } from '@/api/product/fileManage'
   import { replaceKey } from '@/utils'
 
   export default {
@@ -66,7 +66,7 @@
         errorList: [],
         spanArr: [],
         pos: null,
-        downloadUrl: 'static/excel/业绩指标模版.xlsx'
+        downloadUrl: 'static/excel/产品导入模版.xlsx'
       }
     },
     methods: {
@@ -82,12 +82,45 @@
         this.tableData = temp.results
         this.formData = JSON.parse(JSON.stringify(this.tableData))
         const kepMap = {
-          '开始时间': 'start',
-          '结束时间': 'end',
-          '部门': 'deptName',
-          '职位': 'positionName',
-          '职级': 'rankName',
-          '业绩指标（万）': 'performanceIndicator',
+          '产品编号': 'productCode',
+          '产品全称': 'productName',
+          '产品简称': 'productShortName',
+          '产品状态': 'productStatusName',
+          '产品结构类型': 'productMixType',
+          '产品收益类型': 'productType',
+          '产品风险级别': 'productRiskLevel',
+          '基金管理人': 'manager',
+          '交易币种': 'currency',
+          '购买人群': 'buyingCrowdsName',
+          '产品期限': 'investmentHorizon',
+          '期限单位': 'investmentHorizonUnitName',
+          '收益率类型': 'isFloat',
+          '收益对标基准（%）': 'annualizedReturn',
+          '募集额度（万）': 'collectionAmount',
+          '募集人数': 'productLp',
+          '起投金额（万）': 'minimalAmount',
+          '追加金额（万）': 'minimalAddAmount',
+          '收益分配方式': 'incomeDistribution',
+          '资产团队': 'assetTeam',
+          '托管银行': 'custodianBank',
+          '关联产品': 'relevanceName',
+          '关联类型': 'relevanceType',
+          '渠道人数': 'channelNumber',
+          '渠道打款金额（万）': 'channelAmount',
+          '付息方式': 'interestPaymentName',
+          '认购费': 'subscribeName',
+          '价外认购（%）': 'subscribeRate',
+          '产品公告': 'announcement',
+          '账户名称': 'accountName',
+          '账号': 'cardNo',
+          '开户银行名称': 'bankName',
+          '大额支付行号': 'paymentNumber',
+          '成立日期': 'establishmentDate',
+          '起息日期': 'valueDate',
+          '关账日期': 'closeDate',
+          '重点产品起始时间': 'importantStart',
+          '重点产品结束时间': 'importantEnd',
+          '预约时效（小时）': 'timeliness',
           '行号': 'lineNo'
         }
         this.formData.forEach(item => {
@@ -139,7 +172,7 @@
         return tempArr
       },
       submit() {
-        importPf(this.formData).then(res => {
+        importPd(this.formData).then(res => {
           if (res.status === 200) {
             this.dialogVisible = false
             if (res.data.length === 0) {
@@ -149,7 +182,7 @@
                 duration: 2000,
                 message: '导入成功'
               })
-              this.$router.push({ path: '/achievement/perform' })
+              // this.$router.push({ path: '/achievement/perform' })
             } else {
               this.errorList = this.transferError(res.data)
               this.getSpanArr(this.errorList)
