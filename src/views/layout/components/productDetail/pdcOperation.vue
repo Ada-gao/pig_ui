@@ -290,8 +290,10 @@
         <el-row>
           <el-col :span="11"  v-for="(item,index) in normalDTO.normalBrokerageCoefficients" :key="item.age" style="white-space: nowrap; margin-right:3%; min-height:114px;" >
             <el-row  type="flex" justify="space-between" class="row-bg product-commission">
-              <span style="line-height:30px;">产品佣金系数第{{item.age}}年</span>
-              <span @click="addProductCommission" class="color-0299CC border-0299CC" v-if="index == 0"><i class="el-icon-plus mr5"></i >新增</span>
+              <span style="line-height:41px;">产品佣金系数第{{item.age}}年</span>
+             <!--  <span @click="addProductCommission" class="color-0299CC border-0299CC" v-if="index == 0"><i class="el-icon-plus mr5"></i >新增</span> -->
+              <el-button class="search_btn" @click="addProductCommission" v-if="index == 0">
+                <svg-icon icon-class="add"></svg-icon>新增</el-button>
               <span @click="deleteProductCommission(index)" class="color-0299CC " v-if="index != 0 && index == normalDTO.normalBrokerageCoefficients.length-1"><i class="el-icon-delete mr5"></i >删除</span>
             </el-row>
             
@@ -299,7 +301,7 @@
               <el-form-item :label="`第${Citem.hierarchy}层级(%)`" prop="coefficient">
                 <span class="el-input" v-if="operationDisabled">{{Citem.coefficient}}</span>
                 <el-input  v-else v-model="Citem.coefficient" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input>
-                  <i  @click="addProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0" class="el-icon-plus color-0299CC"></i >
+                    <svg-icon icon-class="add" @click="addProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0" class="color-0299CC"></svg-icon>
                   <i  @click="deleteProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
                </el-form>
@@ -311,8 +313,9 @@
        <div class="split-line" style="margin: 20px 0;"></div>
      <!-- 活动时间段业绩统计 -->
      <div class="group-item">
-        <h3>活动时间段业绩统计<span @click="addStatistics" class="color-0299CC add-statistics border-0299CC"><i class="el-icon-plus mr5"></i >新增统计</span></h3>
-
+        <h3 class="activity-title">活动时间段业绩统计 <el-button class="search_btn add-statistics"  @click="addStatistics">
+                <svg-icon icon-class="add"></svg-icon>新增统计</el-button></h3>
+  
         <el-row v-for="(item,index) in activityData" :key="index" :class="{dashed:index!=0}">
           <span @click="deleteStatistics(index)" class="color-0299CC delete-fr" v-if="activityData.length == index+1 && index != 0"><i class="el-icon-delete mr5"></i >删除</span>
          <el-row style="clear: both;">
@@ -342,8 +345,9 @@
             <el-col :span="11"  v-for="(Citem,Cindex) in item.activityBrokerageCoefficients" :key="Citem.age" style="white-space: nowrap;
             margin-right:3%;" >
               <el-row  type="flex" justify="space-between" class="row-bg product-commission">
-                <span style="line-height:30px;">活动时间产品佣金系数第{{Citem.age}}年</span>
-                <span @click="addactivityTime(index)" class="color-0299CC border-0299CC" v-if="Cindex == 0"><i class="el-icon-plus mr5"></i >新增</span>
+                <span style="line-height:41px;">活动时间产品佣金系数第{{Citem.age}}年</span>
+                 <el-button class="search_btn" @click="addactivityTime(index)" v-if="Cindex == 0">
+                <svg-icon icon-class="add"></svg-icon>新增</el-button>
                 <span @click="deleteActivityTime(index,Citem)" class="color-0299CC " v-if="Cindex != 0 && Cindex == item.activityBrokerageCoefficients.length-1"><i class="el-icon-delete mr5"></i >删除</span>
               </el-row>
                 <el-form :model="cvalue" ref="cvalue" :rules="rules2" class="demo-ruleForm" v-for="(cvalue,k) in Citem.brokerageCoefficientDTOList" :key="k" label-width="120px">
@@ -351,7 +355,7 @@
                 <span class="el-input" v-if="operationDisabled">{{cvalue.coefficient}}</span>
                 <el-input
                   v-model="cvalue.coefficient" v-else onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'   type="number"></el-input>
-                  <i  @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0" class="el-icon-plus color-0299CC"></i >
+                  <svg-icon icon-class="add"  @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0" class="color-0299CC"></svg-icon>
                   <i  @click="deleteActivityTimeLevel(index,Cindex,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
               </el-form>
@@ -1595,7 +1599,6 @@
     margin-right:5px;
   }
   .add-statistics{
-    float:right;
     margin-right: 88px;
   }
   .dashed{
@@ -1608,6 +1611,11 @@
   .delete-fr{
     float:right;
     margin:10px 90px;
+  }
+  .activity-title{
+    display: flex;
+     justify-content:space-between;
+      line-height: 40px;
   }
 </style>
 
