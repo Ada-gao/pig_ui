@@ -187,8 +187,33 @@ export const constantRouterMap = [
         hidden: true
       }
     ]
+  },
+  { 
+    menuId: 4,
+    path: '/setting',
+    component: Layout,
+    name: '设置管理1',
+    redirect: '/setting/currency',
+    hidden: true,
+    // icon: 'table',
+    meta: {
+      title: '设置管理',
+      icon: 'setting'
+    },
+    children:[
+      {
+        path: 'currency/detail/:name/:id',
+        component: _import('admin/setting/detail'),
+        name: '币种详情',
+        meta: { title: '币种详情', icon: '', noCache: true },
+        hidden: true
+      }
+    ]
   }
 ]
+
+
+
 
 export default new Router({
   // mode: 'history', // 后端支持可开
