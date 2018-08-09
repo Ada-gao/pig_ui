@@ -101,12 +101,23 @@
           if (valid) {
             this.dialogFormVisible = false
             putComplaintMb('COMPLAINTS_HOTLINE', this.form).then(res => {
+              if (res.status === 200) {
+                this.dialogFormVisible = false
+                this.getList()
+                this.$notify({
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
+                  duration: 2000
+                })
+              }
+            }).catch(() => {
               this.dialogFormVisible = false
               this.getList()
               this.$notify({
-                title: '成功',
-                message: '修改成功',
-                type: 'success',
+                title: '失败',
+                message: '修改失败',
+                type: 'error',
                 duration: 2000
               })
             })

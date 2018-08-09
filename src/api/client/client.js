@@ -75,10 +75,11 @@ export function addObj(obj) {
 /**
  * 查询客户详情
  */
-export function getObj(clientId) {
+export function getObj(clientId, type) {
   return request({
     url: '/client/client/' + clientId,
     method: 'get',
+    params: type
   })
 }
 
