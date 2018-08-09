@@ -298,8 +298,8 @@
         console.log(data)
       },
       handleDelete(row) {
-        delObj(row.roleId)
-          .then(response => {
+        delObj(row.roleId).then(response => {
+          if (response.status === 200) {
             this.dialogFormVisible = false
             this.getList()
             this.$notify({
@@ -308,7 +308,8 @@
               type: 'success',
               duration: 2000
             })
-          })
+          }
+        })
       },
       create(formName) {
         const set = this.$refs

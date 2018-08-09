@@ -184,6 +184,15 @@ input[type="number"]{
     cursor: pointer;
   }
 }
+.swiper-dialog {
+  .el-dialog__body {
+    padding-bottom: 30px;
+    .el-carousel__container {
+      max-height: 400px;
+      min-height: 400px;
+    }
+  }
+}
 .nopb {
   .el-dialog__body {
     padding-bottom: 0;
