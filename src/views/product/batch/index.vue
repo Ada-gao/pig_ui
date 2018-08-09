@@ -76,6 +76,8 @@
         }
       },
       selected(data) {
+        this.spanArr = []
+        this.pos = null
         this.errorList = []
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
@@ -94,7 +96,7 @@
           '购买人群': 'buyingCrowdsName',
           '产品期限': 'investmentHorizon',
           '期限单位': 'investmentHorizonUnitName',
-          '收益率类型': 'isFloat',
+          '收益率类型': 'isFloatName',
           '收益对标基准（%）': 'annualizedReturn',
           '募集额度（万）': 'collectionAmount',
           '募集人数': 'productLp',
@@ -112,7 +114,7 @@
           '价外认购（%）': 'subscribeRate',
           '产品公告': 'announcement',
           '账户名称': 'accountName',
-          '账号': 'cardNo',
+          '帐号': 'cardNo',
           '开户银行名称': 'bankName',
           '大额支付行号': 'paymentNumber',
           '成立日期': 'establishmentDate',

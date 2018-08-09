@@ -6,12 +6,14 @@
 					<el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="时间">
               <el-date-picker
+								style="width: 47.7%"
                 v-model="entryDateS"
                 type="month"
                 start-placeholder="选择时间"
                 end-placeholder="选择时间">
               </el-date-picker> - 
 							<el-date-picker
+								style="width: 47.7%"
                 v-model="entryDateE"
                 type="month"
                 start-placeholder="选择时间"
@@ -330,7 +332,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .el-date-editor.el-input{
-	width: 143px;
+	// width: 143px;
+	// box-sizing: border-box
 }
 .error{
 	position: absolute;

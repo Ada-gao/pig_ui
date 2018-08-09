@@ -9,7 +9,7 @@
                 highlight-current-row
                 style="width:100%"
                 :data="list">
-        <el-table-column label="投诉电话" align="center">
+        <el-table-column label="冷静期时间（小时）" align="center">
           <template slot-scope="scope">
             <span>{{scope.row.value}}</span>
           </template>
@@ -26,10 +26,10 @@
         </el-table-column>
       </el-table>
 
-      <el-dialog title="编辑投诉电话" :visible.sync="dialogFormVisible">
+      <el-dialog title="编辑" :visible.sync="dialogFormVisible">
         <el-form :model="form" :rules="rules" ref="form" label-width="150px">
 
-          <el-form-item label="投诉电话" prop="value">
+          <el-form-item label="冷静期时间" prop="value">
             <el-input v-model="form.value"></el-input>
           </el-form-item>
 
@@ -59,7 +59,7 @@
             {
               required: true,
               trigger: 'blur',
-              message: '请输入投诉电话'
+              message: '请输入冷静期时间'
             }
           ]
         }
@@ -78,7 +78,7 @@
       getList() {
         this.listLoading = true
         this.list = null
-        getComplaintMb('COMPLAINTS_HOTLINE').then(res => {
+        getComplaintMb('COOLING_OFF_PERIOD ').then(res => {
           if (res.status === 200) {
             this.listLoading = false
             this.list = [res.data]
@@ -100,7 +100,7 @@
         set[formName].validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
-            putComplaintMb('COMPLAINTS_HOTLINE', this.form).then(res => {
+            putComplaintMb('COOLING_OFF_PERIOD', this.form).then(res => {
               if (res.status === 200) {
                 this.dialogFormVisible = false
                 this.getList()

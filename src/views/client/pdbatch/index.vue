@@ -22,8 +22,28 @@
         </i>条
       </span>
     </div>
-    <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
-      <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item'>
+    <el-table :data="tableData"
+              border
+              v-if="errorList.length === 0"
+              highlight-current-row
+              style="width: 100%;margin-top:20px;">
+      <el-table-column v-for='item of tableHeader'
+                       :prop="item"
+                       :label="item"
+                       :key='item'>
+      </el-table-column>
+    </el-table>
+    <el-table v-else
+              :data="errorList"
+              highlight-current-row
+              style="width: 100%;margin-top:20px;"
+              border
+              :span-method="objectSpanMethod">
+      <el-table-column prop="errorNo" label="行数"></el-table-column>
+      <el-table-column label="错误项">
+        <template slot-scope="prop">
+          {{prop.row.errorItem}}<span style="color: #d0021b;">（{{prop.row.errorReason}}）</span>
+        </template>
       </el-table-column>
     </el-table>
   </div>
@@ -31,7 +51,7 @@
 
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { importPf } from '@/api/achievement'
+  import { importClientPd } from '@/api/client/client'
   import { replaceKey } from '@/utils'
 
   export default {
@@ -43,7 +63,10 @@
         tableHeader: [],
         formData: null,
         dialogVisible: false,
-        downloadUrl: 'static/excel/业绩指标模版.xlsx'
+        errorList: [],
+        spanArr: [],
+        pos: null,
+        downloadUrl: 'static/excel/客户已购买产品模版.xlsx'
       }
     },
     methods: {
@@ -53,28 +76,77 @@
         }
       },
       selected(data) {
+        this.spanArr = []
+        this.pos = null
+        this.errorList = []
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
         this.tableData = temp.results
         this.formData = JSON.parse(JSON.stringify(this.tableData))
         const kepMap = {
-          '开始时间': 'start',
-          '结束时间': 'end',
-          '部门': 'deptName',
-          '职位': 'positionName',
-          '职级': 'rankName',
-          '业绩指标（万）': 'performanceIndicator'
+          '行号': 'lineNo',
+          '客户姓名': 'clientName',
+          '客户编号': 'clientNo',
+          '绑定理财师姓名': 'name',
+          '绑定理财师编号': 'empNo',
+          '理财师部门': 'deptName',
+          '打款时间': 'tradeDate',
+          '打款金额（万）': 'amount',
+          '产品名称': 'productName',
+          '产品编号': 'productCode'
         }
         this.formData.forEach(item => {
           replaceKey(item, kepMap)
         })
+        document.getElementById('excel-upload-input').value = null
+      },
+      getSpanArr(data) {
+        for (let i = 0; i < data.length; i++) {
+          if (i === 0) {
+            this.spanArr.push(1)
+            this.pos = 0
+          } else {
+            // 判断当前元素与上一个元素是否相同
+            if (data[i].errorNo === data[i - 1].errorNo) {
+              this.spanArr[this.pos] += 1
+              this.spanArr.push(0)
+            } else {
+              this.spanArr.push(1)
+              this.pos = i
+            }
+          }
+        }
+      },
+
+      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+        if (columnIndex === 0) {
+          const _row = this.spanArr[rowIndex]
+          const _col = _row > 0 ? 1 : 0
+          return {
+            rowspan: _row,
+            colspan: _col
+          }
+        }
+      },
+      transferError(data) {
+        const tempArr = []
+        data.map((ele, index) => {
+          ele.errorMegs.map((item, idx) => {
+            tempArr.push(
+              {
+                errorNo: ele.errorNo,
+                errorItem: item.errorItem,
+                errorReason: item.errorReason
+              }
+            )
+          })
+        })
+        return tempArr
       },
       submit() {
-        importPf(this.formData).then(res => {
-          console.log(res)
+        importClientPd(this.formData).then(res => {
           if (res.status === 200) {
             this.dialogVisible = false
-            let count = 0
             if (res.data.length === 0) {
               this.$notify({
                 title: '成功',
@@ -82,32 +154,11 @@
                 duration: 2000,
                 message: '导入成功'
               })
-              this.$router.push({ path: '/achievement/perform' })
+              // this.$router.push({ path: '/achievement/perform' })
             } else {
-              res.data.every((item, index) => {
-                if (item.msgList && item.msgList.length > 0) {
-                  ++count
-                  return true
-                } else {
-                  return false
-                }
-              })
-              if (count === res.data.length) {
-                this.$notify({
-                  title: '失败',
-                  message: '导入失败',
-                  type: 'error',
-                  duration: 2000
-                })
-              } else {
-                this.$notify({
-                  title: '成功',
-                  type: 'success',
-                  duration: 2000,
-                  message: '导入成功'
-                })
-                this.$router.push({ path: '/achievement/perform' })
-              }
+              this.errorList = this.transferError(res.data)
+              this.getSpanArr(this.errorList)
+              this.dialogVisible = false
             }
           }
         }).catch(() => {

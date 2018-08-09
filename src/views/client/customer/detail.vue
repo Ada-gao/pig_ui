@@ -56,7 +56,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="微信" prop="wechat">
-            <el-input v-model="form.wechat" placeholder="" :readonly="isReadonly"></el-input>
+            <el-input v-model="form.wechat" placeholder="" :readonly="isReadonly || clientFromC"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -188,7 +188,8 @@
         isReadonly: false,
         backClientClass: 0, // 0:潜客，1:客户
         gender: '',
-        nationalityNum: ''
+        nationalityNum: '',
+        clientFromC: null // 判断客户来源是否从c端
       }
     },
     computed: {
@@ -221,9 +222,14 @@
       getList() {
         let id = this.$route.params.id
         let type = 2
-        
+
         getObj(id, type).then(response => {
           this.form = response.data
+          if (this.form.clientFrom === '2') {
+            this.clientFromC = true
+          } else {
+            this.clientFromC = false
+          }
           // this.city = response.data.city
           this.backClientClass = this.form.clientClass
 
@@ -245,7 +251,7 @@
           // this.form.certificationType = transformText(this.certificationType, this.form.certificationType)
           // this.form.idType = transformText(this.idTypeOptions, this.form.idType)
           this.form.nationality = transformText(this.nationality, this.form.nationality)
-          
+
         })
       },
       handleDept() {
