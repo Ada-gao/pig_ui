@@ -144,17 +144,21 @@
       },
       submit() {
         commissionListImport(this.formData).then(res => {
-          if (res.data.length === 0) {
-            console.log('上传成功')
-            this.errorList = res.data
+          if (res.status === 200) {
             this.dialogVisible = false
-            this.$router.push({ path: '/achievement/commissionList' })
-          } else {
-            console.log('上传失败')
-            this.errorList = res.data
-            this.errorList = this.transferError(res.data)
-            this.getSpanArr(this.errorList)
-            this.dialogVisible = false
+            if (res.data.length === 0) {
+              this.$notify({
+                title: '成功',
+                type: 'success',
+                duration: 2000,
+                message: '导入成功'
+              })
+              this.$router.push({ path: '/achievement/commissionList' })
+            } else {
+              this.errorList = this.transferError(res.data)
+              this.getSpanArr(this.errorList)
+              this.dialogVisible = false
+            }
           }
         })
       }
