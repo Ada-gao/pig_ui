@@ -89,16 +89,18 @@
           '职位': "positionName",
           '职级': "rankName",
           '部门': "deptName",
-          '时间': "time",
+          // '时间': "time",
+          '开始时间': "start",
+          '结束时间': "end",
           '行号': "lineNo"
         }
         this.formData.forEach(item => {
           replaceKey(item, kepMap)
           item.lineNo = parseInt(item.lineNo)
-          const timeRange = item.time.split('—')
-          item.start = new Date(timeRange[0]).getTime()
-          item.end = new Date(timeRange[1]).getTime()
-          delete item.time
+          // const timeRange = item.time.split('—')
+          item.start = new Date(item.start).getTime()
+          item.end = new Date(item.end).getTime()
+          // delete item.time
         })
         document.getElementById('excel-upload-input').value = null
       },

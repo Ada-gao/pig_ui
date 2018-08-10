@@ -4,7 +4,7 @@
 			<el-form label-position="right" label-width="80px">
         <el-row :gutter="20">
 					<el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="时间">
+            <el-form-item label="月份">
               <el-date-picker
 								style="width: 47.7%"
                 v-model="entryDateS"
@@ -19,7 +19,7 @@
                 start-placeholder="选择时间"
                 end-placeholder="选择时间">
               </el-date-picker>
-							<span class="error" v-if="errorTip">{{errorMes}}</span>							
+							<span class="error" v-if="errorTip">{{errorMes}}</span>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
