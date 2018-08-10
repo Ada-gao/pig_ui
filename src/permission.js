@@ -32,7 +32,7 @@ router.beforeEach((to, from, next) => { // 开启Progress
           //   limit: 60,
           //   isAsc: false
           // }
-          store.dispatch('FetchList') // 获取字典信息
+          // store.dispatch('FetchList') // 获取字典信息
         }).catch((e) => {
           store.dispatch('FedLogOut').then(() => {
             Message.error('验证失败,请重新登录')
