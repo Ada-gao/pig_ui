@@ -188,7 +188,7 @@ export const constantRouterMap = [
       }
     ]
   },
-  { 
+  {
     menuId: 4,
     path: '/setting',
     component: Layout,
@@ -327,15 +327,15 @@ export const asyncRouterMap = [
     // icon: 'table',
     meta: {
       title: '业绩/佣金管理',
-      icon: 'product_mg'
+      icon: 'pf'
     },
     children: [
-      { menuId: 314, path: 'perform', component: _import('achievement/performanceIndicator/index'), name: '业绩指标列表', meta: { title: '业绩指标列表', icon: 'product' }},
-      { menuId: 287, path: 'balanced', component: _import('achievement/balanced/index'), name: '平衡计分卡', meta: { title: '平衡计分卡', icon: 'product' }},
-      { menuId: 48, path: 'commissionList', component: _import('achievement/commissionList/index'), name: '佣金列表', meta: { title: '佣金列表', icon: 'product' }},
-      { menuId: 48, path: 'commCalc', component: _import('achievement/commissionCalc/index'), name: '佣金计算模版', meta: { title: '佣金计算模版', icon: 'product' }},
-      { menuId: 283, path: 'probation', component: _import('achievement/performanceIndicator/probation'), name: '试用期业绩标准', meta: { title: '试用期业绩标准', icon: 'product' }},
-      { menuId: 291, path: 'saleSupport', component: _import('achievement/saleSupport/index'), name: '销售支持', meta: { title: '销售支持', icon: 'product' }},
+      { menuId: 314, path: 'perform', component: _import('achievement/performanceIndicator/index'), name: '业绩指标列表', meta: { title: '业绩指标列表', icon: 'pfIndi' }},
+      { menuId: 287, path: 'balanced', component: _import('achievement/balanced/index'), name: '平衡计分卡', meta: { title: '平衡计分卡', icon: 'pfBn' }},
+      { menuId: 48, path: 'commissionList', component: _import('achievement/commissionList/index'), name: '佣金列表', meta: { title: '佣金列表', icon: 'pfCm' }},
+      { menuId: 48, path: 'commCalc', component: _import('achievement/commissionCalc/index'), name: '佣金计算模版', meta: { title: '佣金计算模版', icon: 'pfCmcalc' }},
+      { menuId: 283, path: 'probation', component: _import('achievement/performanceIndicator/probation'), name: '试用期业绩标准', meta: { title: '试用期业绩标准', icon: 'pfBn' }},
+      { menuId: 291, path: 'saleSupport', component: _import('achievement/saleSupport/index'), name: '销售支持', meta: { title: '销售支持', icon: 'pfSale' }}
     ]
   },
   {

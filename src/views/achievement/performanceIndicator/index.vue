@@ -77,10 +77,10 @@
         <svg-icon icon-class="add"></svg-icon>新增指标
       </el-button>
       <el-button class="search_btn" @click="handleImport">
-        <svg-icon icon-class="upload"></svg-icon>批量导入
+        <svg-icon icon-class="import"></svg-icon>批量导入
       </el-button>
       <el-button class="search_btn" @click="handleExport">
-        <svg-icon icon-class="upload"></svg-icon>批量导出
+        <svg-icon icon-class="export"></svg-icon>批量导出
       </el-button>
     </div>
     <el-table :data="list"
