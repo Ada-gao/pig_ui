@@ -72,13 +72,13 @@
           <el-form-item label="资产规模区间">
             <el-input
               style="width: 48%; margin-right: 2%"
-              placeholder="请输入开始数字"
+              placeholder="请输入"
               prefix-icon="el-icon-search"
               v-model="listQuery.amountStart">
             </el-input>-
             <el-input
               style="width: 48%"
-              placeholder="请输入结束数字"
+              placeholder="请输入"
               prefix-icon="el-icon-search"
               v-model="listQuery.amountEnd">
             </el-input>

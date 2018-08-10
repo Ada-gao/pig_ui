@@ -234,6 +234,7 @@
         <el-carousel-item v-for="(item, index) in idcardImgs"
                           :key="item">
           <img :src="item" alt="" style="max-height: 400px">
+          <el-button type="primary" style="display: block;margin:10px auto 0">顺时针翻转90度</el-button>
         </el-carousel-item>
       </el-carousel>
     </el-dialog>
