@@ -458,7 +458,7 @@
       },
       getList() {
         this.listLoading = true
-        console.log(this.listQuery)
+        // console.log(this.listQuery)
         getPfList(this.listQuery).then(res => {
           this.list = res.data.records
           this.total = res.data.total || 0

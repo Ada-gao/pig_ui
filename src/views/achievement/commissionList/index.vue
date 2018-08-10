@@ -264,24 +264,25 @@ export default {
 			})
 		},
 		handleFilter() {
-			if (new Date(this.entryDateS).getTime() > new Date(this.entryDateE).getTime()) {
-				this.errorTip = true
-				this.errorMes = '结束时间不能小于开始时间'
-				 setTimeout(() => {
-					this.errorTip = false
-				}, 5000)
+			if ( (this.entryDateS === '' && this.entryDateE === '') || (this.entryDateS === null && this.entryDateE === null) || (this.entryDateS === '' && this.entryDateE === null) || (this.entryDateS === null && this.entryDateE === '') ) {
 				return
-			} else if ( this.entryDateS === undefined || this.entryDateE === undefined) {
+			} else if ( this.entryDateS === '' || this.entryDateE === '' || this.entryDateS === null || this.entryDateE === null ) {
 				this.errorTip = true
 				this.errorMes = '时间不能为空'
 				 setTimeout(() => {
 					this.errorTip = false
-				}, 5000)
+				}, 3000)
 				return
-			} else if (this.entryDateS && this.entryDateE) {
+			} else if (new Date(this.entryDateS).getTime() > new Date(this.entryDateE).getTime()) {
+				this.errorTip = true
+				this.errorMes = '结束时间不能小于开始时间'
+				 setTimeout(() => {
+					this.errorTip = false
+				}, 3000)
+				return
+			}  else if (this.entryDateS && this.entryDateE) {
 				this.listQuery.date = [parseTime(this.entryDateS, '{y}-{m}'), parseTime(this.entryDateE, '{y}-{m}')]
 			}
-			console.log(this.listQuery.date)
 			this.listQuery.page = 1
 			if(this.deptName.length) {
 				this.listQuery.deptName = this.deptName[this.deptName.length - 1]

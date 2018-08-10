@@ -138,6 +138,14 @@ $btn: #0299CC;
   color: #fff;
   outline: none;
 }
+.el-button.is-disabled,
+.el-button.is-disabled:hover,
+.el-button.is-disabled:active,
+.el-button.is-disabled:focus {
+  background-color: #eff2f7;
+  color: #c0ccda;
+  border: none;
+}
 .search_btn,
 .search_btn:focus,
 .search_btn:hover {
