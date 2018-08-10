@@ -265,7 +265,7 @@ export default {
 		},
 		handleFilter() {
 			if ( (this.entryDateS === '' && this.entryDateE === '') || (this.entryDateS === null && this.entryDateE === null) || (this.entryDateS === '' && this.entryDateE === null) || (this.entryDateS === null && this.entryDateE === '') ) {
-				return
+				// return
 			} else if ( this.entryDateS === '' || this.entryDateE === '' || this.entryDateS === null || this.entryDateE === null ) {
 				this.errorTip = true
 				this.errorMes = '时间不能为空'
@@ -338,6 +338,7 @@ export default {
 }
 .error{
 	position: absolute;
+	left: 0;
 	top: 50px;
 	line-height: 0;
 	color: #f56c6c;
