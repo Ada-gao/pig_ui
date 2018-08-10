@@ -343,7 +343,8 @@
             { required: true, message: '请选择结束时间', trigger: 'blur' }
           ],
           deptIds: [
-            { required: true, message: '请选择部门', trigger: 'blur' }
+            // message: '请选择部门',
+            { required: true, trigger: 'blur', message: '请选择部门' }
           ],
           positionId: [
             { required: true, message: '请选择职位', trigger: 'blur' }
@@ -436,6 +437,11 @@
                 id: this.selectedOptions[this.selectedOptions.length - 1]
               }
             )
+            this.$refs.form.validate(valid => {
+              if (valid) {
+                // console.log('ssss')
+              }
+            })
           }
         }
       },
