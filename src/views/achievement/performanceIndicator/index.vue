@@ -46,7 +46,7 @@
             <el-form-item label="职级">
               <el-select class="filter-item"
                          placeholder="请选择职级"
-                         v-model="listQuery.rankId">
+                         v-model="rankId">
                 <el-option v-for="item in level"
                            :value="item.rankId"
                            :label="item.rankName"
@@ -304,6 +304,7 @@
     components: {},
     data() {
       return {
+        rankId: null,
         list: null,
         total: null,
         listLoading: true,
@@ -465,6 +466,7 @@
       },
       getList() {
         this.listLoading = true
+        this.listQuery.rankId = this.rankId
         // console.log(this.listQuery)
         getPfList(this.listQuery).then(res => {
           this.list = res.data.records
@@ -489,6 +491,8 @@
         })
       },
       handlePosition(val) {
+        this.rankId = null
+        this.form.rankIds = []
         if (val) {
           getAllRank({ positionId: val }).then(res => {
             this.level = res.data
@@ -510,6 +514,7 @@
         this.getList()
       },
       resetFilter() { // reset
+        this.rankId = null
         this.listQuery = {
           page: 1,
           limit: 20,
