@@ -4,11 +4,11 @@
       <el-form label-position="right" label-width="96px">
         <el-row :gutter="20">
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-                <el-form-item label="订单编号">
+                <el-form-item label="预约编号">
                   <el-input class="filter-item"
                             v-model="listQuery.appointmentcode"
                             clearable
-                            placeholder="请输入订单编号"></el-input>
+                            placeholder="请输入预约编号"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
@@ -81,7 +81,7 @@
               style="width: 100%"
               v-loading="listLoading">
 
-      <el-table-column align="center" label="订单编号">
+      <el-table-column align="center" label="预约编号">
         <template slot-scope="scope">
           <span>{{scope.row.appointmentCode}}</span>
         </template>
@@ -159,10 +159,10 @@
         <el-row :gutter="20">
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="订单编号" prop="appointmentCode">
+            <el-form-item label="预约编号" prop="appointmentCode">
               <el-input v-model="form.appointmentCode"
                         type="text"
-                        placeholder="请输入订单编号"></el-input>
+                        placeholder="请输入预约编号"></el-input>
             </el-form-item>
           </el-col>
 

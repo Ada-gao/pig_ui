@@ -154,6 +154,7 @@
       <el-form :model="form"
                ref="form"
                :rules="rules1"
+               :validate-on-rule-change="true"
                label-width="100px">
         <el-row>
           <el-col class="inline-col">
@@ -346,13 +347,13 @@
             { required: true, message: '请选择部门', trigger: 'blur' }
           ],
           positionId: [
-            { required: true, message: '请选择职位', trigger: 'blur' }
+            { required: true, message: '请选择职位', trigger: 'blur, change' }
           ],
           rankIds: [
-            { required: true, message: '请选择职级', trigger: 'blur' }
+            { required: true, message: '请选择职级', trigger: 'blur, change' }
           ],
           performanceIndicator: [
-            { required: true, message: '请输入业绩指标', trigger: 'blur' }
+            { required: true, message: '请输入业绩指标', trigger: 'blur, change' }
           ]
         },
         departs: [], // 部门
@@ -422,7 +423,7 @@
             }
           })
         })
-        console.log(list2)
+        // console.log(list2)
         this.form.deptIds = list2
       },
       addOption() {
@@ -458,7 +459,7 @@
       },
       getList() {
         this.listLoading = true
-        console.log(this.listQuery)
+        // console.log(this.listQuery)
         getPfList(this.listQuery).then(res => {
           this.list = res.data.records
           this.total = res.data.total || 0
@@ -517,7 +518,6 @@
       },
       handleCreate() {
         this.resetTemp()
-        // console.log(this.form)
         this.dialogStatus = 'create'
         this.dialogCreate = true
       },
@@ -601,18 +601,25 @@
       cancel(formName) {
         this.dialogCreate = false
         this.form.deptIds = []
+        this.tempRankId = ''
+        this.selectedOptions = []
         this.$refs[formName].resetFields()
       },
       close() {
         this.resetTemp()
+        this.$refs['form'].resetFields()
       },
       create(formName) {
         this.tempForm = {
           deptIds: []
         }
         const set = this.$refs
-        this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
-        this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
+        if (this.form.start && this.form.start.toString().split('-').length !== 3) {
+          this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
+        }
+        if (this.form.end && this.form.end.toString().split('-').length !== 3) {
+          this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
+        }
         if (Number(new Date(this.form.end)) < Number(new Date(this.form.start))) {
           this.$notify({
             title: '失败',
@@ -667,8 +674,12 @@
       update(formName) {
         const set = this.$refs
         // console.log(this.form)
-        this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
-        this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
+        if (this.form.start && this.form.start.toString().split('-').length !== 3) {
+          this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
+        }
+        if (this.form.end && this.form.end.toString().split('-').length !== 3) {
+          this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
+        }
         if (Number(new Date(this.form.end)) < Number(new Date(this.form.start))) {
           this.$notify({
             title: '失败',

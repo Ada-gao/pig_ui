@@ -30,7 +30,7 @@
         <el-form :model="form" :rules="rules" ref="form" label-width="150px">
 
           <el-form-item label="冷静期时间" prop="value">
-            <el-input v-model="form.value"></el-input>
+            <el-input v-model="form.value" style="width:90%"></el-input>小时
           </el-form-item>
 
         </el-form>
