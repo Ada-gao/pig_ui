@@ -152,7 +152,7 @@ export const constantRouterMap = [
     component: Layout,
     name: '业绩/佣金管理1',
     hidden: true,
-    redirect: '/achievement/allList',
+    redirect: '/achievement/perform',
     meta: {
       title: '业绩/佣金管理',
       icon: 'product_mg'
@@ -187,8 +187,33 @@ export const constantRouterMap = [
         hidden: true
       }
     ]
+  },
+  { 
+    menuId: 4,
+    path: '/setting',
+    component: Layout,
+    name: '设置管理1',
+    redirect: '/setting/currency',
+    hidden: true,
+    // icon: 'table',
+    meta: {
+      title: '设置管理',
+      icon: 'setting'
+    },
+    children:[
+      {
+        path: 'currency/detail/:name/:id',
+        component: _import('admin/setting/detail'),
+        name: '币种详情',
+        meta: { title: '币种详情', icon: '', noCache: true },
+        hidden: true
+      }
+    ]
   }
 ]
+
+
+
 
 export default new Router({
   // mode: 'history', // 后端支持可开
@@ -327,6 +352,8 @@ export const asyncRouterMap = [
     },
     children: [
       { menuId: 38, path: 'currency', component: _import('admin/setting/currency'), name: '币种管理', meta: { title: '币种管理', icon: 'currency' }},
+      { menuId: 349, path: 'asset', component: _import('admin/asset/index'), name: '资产规模设置', meta: { title: '资产规模设置', icon: 'currency' }},
+      { menuId: 332, path: 'cooling', component: _import('admin/cooling/index'), name: '冷静期时间', meta: { title: '冷静期时间', icon: 'currency' }},
       { menuId: 9, path: 'dict', component: _import('admin/dict/index'), name: '字典管理', meta: { title: '字典管理', icon: 'dict' }},
       { menuId: 8, path: 'log', component: _import('admin/log/index'), name: '日志管理', meta: { title: '日志管理', icon: 'log' }},
       { menuId: 330, path: 'complaint', component: _import('admin/complaint/index'), name: '投诉电话', meta: { title: '投诉电话', icon: 'log' }},

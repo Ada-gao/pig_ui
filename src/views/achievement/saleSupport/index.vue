@@ -181,6 +181,7 @@
                          style="width:100%;"
                          placeholder="请输入理财师姓名"
                          v-model="form.userName"
+                         filterable
                          @change="userNameChange">
                 <el-option v-for="(item, index) in financialPlannerList"
                            :value="item"
@@ -202,6 +203,7 @@
             <el-form-item label="销售支持姓名" prop="salesName">
               <el-select class="filter-item"
                          value-key="name"
+                         filterable
                          style="width:100%;"
                          placeholder="请输入销售支持姓名"
                          v-model="form.salesName"
@@ -244,8 +246,8 @@
 
   } from '@/api/achievement'
   import {
-    getPlannerList, // 查询理财师列表
-    getDirectSupervisorList // 销售支持列表(目前这个方法查询的是所有员工))
+    getPlannerList // 查询理财师列表
+    // getDirectSupervisorList // 销售支持列表(目前这个方法查询的是所有员工))
   } from '@/api/user'
   import { mapGetters } from 'vuex'
   export default {
@@ -335,12 +337,22 @@
       getUserLists() {
         getPlannerList({ status: 0 }).then(res => {
           if (res.status === 200) {
-            this.financialPlannerList = res.data
+            this.financialPlannerList = JSON.parse(JSON.stringify(res.data))
+            this.financialPlannerList.map(item => {
+              item.deptName ? (item.name = item.name + '(' + item.deptName + ')') : item.name
+            })
+            this.salesSupportList = JSON.parse(JSON.stringify(res.data))
+            this.salesSupportList.map(item => {
+              item.deptName ? (item.name = item.name + '(' + item.deptName + ')') : item.name
+            })
           }
         })
-        getDirectSupervisorList().then(res => {
-          this.salesSupportList = res.data
-        })
+        // getDirectSupervisorList().then(res => {
+        //   this.salesSupportList = res.data
+        //   this.salesSupportList.map(item => {
+        //     item.deptName ? (item.name = item.name + '(' + item.deptName + ')') : item.name
+        //   })
+        // })
       },
       tableHeader(h, { column, $index }) {
         return h('span', [

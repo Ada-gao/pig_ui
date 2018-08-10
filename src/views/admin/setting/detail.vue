@@ -1,22 +1,9 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-    <el-form label-width="80px">
-      <el-form-item label="搜索">
-        <el-col :span="6">
-          <el-input @keyup.enter.native="handleFilter()"  class="filter-item" placeholder="请输入币种"
-                    v-model="listQuery.name">
-          </el-input>
-        </el-col>
-        <el-col class="line" :span="0.8">&nbsp</el-col>
-        <el-button class="filter-item search_btn" v-waves icon="search" @click="handleFilter"><svg-icon icon-class="search"></svg-icon>查询</el-button>
-
+	 <div class="filter-container">
         <el-button v-if="sys_currency_add" class="filter-item add_btn" style="margin-left: 10px; float: right" @click="handleCreate" type="primary" icon="edit">
-          <svg-icon icon-class="add"></svg-icon> 新增币种</el-button>
-        </el-form-item>
-      </el-form>
+          <svg-icon icon-class="add"></svg-icon> 新增汇率</el-button> 
     </div>
-
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
       <el-table-column align="center" label="币种名称">
@@ -24,39 +11,35 @@
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作">
+      <el-table-column align="center" label="汇率时间">
         <template slot-scope="scope">
-         <a size="small" class="common_btn"
-                     @click="handleView(scope.row)">查看
-          </a>
-          <span v-if="!scope.row.used" class='vertical-line'></span>
-          <a v-if="!scope.row.used" size="small" class="common_btn"
-                     @click="handleUpdate(scope.row)">编辑
-          </a>
-          <a v-if="!scope.row.used" size="small" class="danger_btn"
-                     @click="deletes(scope.row)">删除
-          </a>
+          <span>{{scope.row.time | time }}</span>
+        </template>
+      </el-table-column>
+            <el-table-column align="center" label="汇率（对人民币）">
+        <template slot-scope="scope">
+          <span>{{scope.row.exchangeRate}}</span>
         </template>
       </el-table-column>
 
     </el-table>
 
-
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :model="form" ref="form" label-width="100px" :rules="rules">
-        
         <el-form-item label="币种名称" prop="name">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.name" :disabled="true"></el-input>
         </el-form-item>
-       <!--  <el-form-item label="币种汇率" prop="name">
-          <el-input v-model="form.name"></el-input>
-        </el-form-item> -->
+        <el-form-item label="汇率时间" prop="time">
+          <el-date-picker type="date" placeholder="选择日期" v-model="form.time" style="width: 100%;"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="汇率" prop="exchangeRate">
+          <el-input v-model.number="form.exchangeRate" onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
+        </el-form-item>
 
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button class="search_btn" @click="cancel('form')">取 消</el-button>
-        <el-button class="add_btn" v-if="dialogStatus=='create'" @click="create('form')">确 定</el-button>
-        <el-button class="add_btn" v-else @click="update('form')">修 改</el-button>
+        <el-button class="add_btn" @click="create('form')">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -64,7 +47,7 @@
 </template>
 
 <script>
-  import { fetchCurrency, getObj, addObj, putObj, delObj ,getObjList} from '@/api/currency'
+  import {getExchangeRateRnformation,addExchangeRate} from '@/api/currency'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
@@ -90,11 +73,13 @@
         list: null,
         total: null,
         listLoading: true,
-        listQuery: {},
-        form: {
-          name: undefined,
-          currencyId: undefined
+        listQuery: {
+          page: 1,
+          limit: 20
         },
+        form: {
+        },
+        name:'',
         statusOptions: ['0', '1'],
         dialogFormVisible: false,
         dialogDeptVisible: false,
@@ -114,6 +99,13 @@
         rules: {
           name: [
            { required: true, message: '请输入币种名称' }
+          ],
+           time: [
+           { required: true, message: '请输入汇率时间' }
+          ],
+           exchangeRate: [
+           { required: true, message: '请输入汇率' },
+           { type: 'number', message: '年龄必须为数字值'}
           ]
         }
       }
@@ -131,10 +123,17 @@
           9: '锁定'
         }
         return statusMap[status]
+      },
+      time(time){
+      	let date = new Date(time);
+		let Y = date.getFullYear() + '-';
+		let M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+		let D = date.getDate() + ' ';
+		return Y+M+D;
       }
     },
     created() {
-      this.getList()
+      this.getList();
       this.sys_currency_add = this.permissions['sys_currency_add']
       this.sys_currency_upd = this.permissions['sys_currency_upd']
       this.sys_currency_del = this.permissions['sys_currency_del']
@@ -142,12 +141,9 @@
     methods: {
       getList() {
         this.listLoading = true;
-        getObjList(this.listQuery).then(response => {
-          if(response.status == 200){
-            this.list = response.data;
-            this.listLoading = false;
-          }
-         
+        getExchangeRateRnformation(this.$route.params.id).then(response => {
+          this.list = response.data;
+          this.listLoading = false;
         })
       },
       // getNodeData(data) {
@@ -163,6 +159,7 @@
           })
       },
       handleFilter() {
+        this.listQuery.page = 1
         this.getList()
       },
       handleSizeChange(val) {
@@ -174,15 +171,13 @@
         this.getList()
       },
       handleCreate() {
-        this.resetTemp()
-        this.dialogStatus = 'create'
-        this.dialogFormVisible = true
+      	console.log(this.$route.params.name)
+      	this.form.name = this.$route.params.name;
+      	this.form.currencyId = this.$route.params.id;
+        //this.resetTemp()
+        this.dialogStatus = 'create';
+        this.dialogFormVisible = true;
       },
-      // 查看
-      handleView(row){
-        this.$router.push({path: `/setting/currency/detail/${row.name}/${row.currencyId}`})
-      },
-      //编辑
       handleUpdate(row) {
         getObj(row.currencyId)
           .then(response => {
@@ -195,11 +190,7 @@
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
-            let self = this.list.some(item=>{
-               return item.name == this.form.name
-            })
-           if(self) return false;
-            addObj(this.form)
+            addExchangeRate(this.form)
               .then(() => {
                 this.dialogFormVisible = false
                 this.getList()
@@ -219,55 +210,15 @@
         this.dialogFormVisible = false
         this.$refs[formName].resetFields()
       },
-      update(formName) {
-        const set = this.$refs
-        set[formName].validate(valid => {
-          if (valid) {
-            this.dialogFormVisible = false
-            putObj(this.form).then(() => {
-              this.dialogFormVisible = false
-              this.getList()
-              this.$notify({
-                title: '成功',
-                message: '修改成功',
-                type: 'success',
-                duration: 2000
-              })
-            })
-          } else {
-            return false
-          }
-        })
-      },
-      deletes(row) {
-        this.$confirm('此操作将永久删除该用户(用户名:' + row.name + '), 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          delObj(row.currencyId).then(() => {
-            this.getList()
-            this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
-              duration: 2000
-            })
-          }).cache(() => {
-            this.$notify({
-              title: '失败',
-              message: '删除失败',
-              type: 'error',
-              duration: 2000
-            })
-          })
-        })
-      },
+   
       resetTemp() {
         this.form = {
-          id: undefined,
-          name: '',
+          exchangeRate: '',
+          time: '',
         }
+      },
+      conversionTime(timestamp){
+      	
       }
     }
   }

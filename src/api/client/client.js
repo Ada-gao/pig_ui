@@ -75,10 +75,11 @@ export function addObj(obj) {
 /**
  * 查询客户详情
  */
-export function getObj(clientId) {
+export function getObj(clientId, type) {
   return request({
     url: '/client/client/' + clientId,
     method: 'get',
+    params: type
   })
 }
 
@@ -108,3 +109,17 @@ export function putObj(clientId, obj) {
   })
 }
 
+/**
+ * 客户已购买产品批量导入
+ * @param file
+ */
+export function importClientPd(file) {
+  return request({
+    url: '/client/import',
+    method: 'post',
+    data: file,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}

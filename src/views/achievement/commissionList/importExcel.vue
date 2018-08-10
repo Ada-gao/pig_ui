@@ -107,6 +107,8 @@
         return tempArr
       },
       selected(data) {
+        this.spanArr = []
+        this.pos = null
         this.errorList = []
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
