@@ -137,6 +137,8 @@ export default {
 		const validatePass = (rule, value, callback) => {
 			if (!value) {
 				callback('请输入平衡计分卡系数')
+			} else {
+				callback()
 			}
 			// if (Number(value) > 1) {
 			// 	callback(new Error('平衡计分卡系数不能大于1'))
@@ -288,7 +290,6 @@ export default {
 		},
 		update(formName) {
 				const set = this.$refs
-				console.log(this.form)
         set[formName].validate(valid => {
           if (valid) {
 						this.form.coefficient -= 0
