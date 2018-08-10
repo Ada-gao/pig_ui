@@ -158,14 +158,6 @@
               this.dialogVisible = false
             }
           }
-        }).catch(() => {
-          this.dialogVisible = false
-          this.$notify({
-            title: '失败',
-            message: '导入失败',
-            type: 'error',
-            duration: 2000
-          })
         })
       }
     }
