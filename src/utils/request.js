@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '../store'
-import { getToken, removeToken } from '@/utils/auth'
+import { getToken } from '@/utils/auth'
 import interceptorsMsg from '@/api/interceptor'
 import router from '../router'
 
