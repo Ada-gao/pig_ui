@@ -270,7 +270,7 @@ export function transformText(source, k) {
     throw new Error('error arguments', 'shallowClone')
   }
   let obj = {}
-  source.forEach((val, idx) => {
+  source.forEach((val) => {
     let key = val.value ||
               val.positionId ||
               val.productTypeId ||
@@ -298,7 +298,7 @@ export function transformText1(k, source) {
     throw new Error('error arguments', 'shallowClone')
   }
   let obj = {}
-  source.forEach((val, idx) => {
+  source.forEach((val) => {
     let key = val.value ||
               val.positionId ||
               val.productTypeId ||
@@ -341,4 +341,19 @@ export function replaceKey (target, change) {
     delete target[key]
   }
   return target
+}
+/**
+ * 删除对象中的空数组
+ * @param target
+ * @param change
+ * @returns {*}
+ */
+export function eachChildren (list) {
+  list.forEach(item => {
+    if(item.children && !item.children.length) {
+      delete item.children
+    } else if(item.children && item.children.length) {
+      eachChildren(item.children)
+    }
+  })
 }
