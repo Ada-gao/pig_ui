@@ -198,7 +198,14 @@
             let self = this.list.some(item=>{
                return item.name == this.form.name
             })
-           if(self) return false;
+           if(self){
+             this.$notify({
+                title: '警告',
+                message: '币种名称已存在',
+                type: 'warning'
+              });
+             return false;
+           } 
             addObj(this.form)
               .then(() => {
                 this.dialogFormVisible = false

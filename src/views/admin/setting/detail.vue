@@ -93,7 +93,7 @@
         },
         textMap: {
           update: '编辑币种',
-          create: '新增币种'
+          create: '新增汇率'
         },
         tableKey: 0,
         rules: {
@@ -171,7 +171,6 @@
         this.getList()
       },
       handleCreate() {
-      	console.log(this.$route.params.name)
       	this.form.name = this.$route.params.name;
       	this.form.currencyId = this.$route.params.id;
         //this.resetTemp()
