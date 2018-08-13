@@ -421,7 +421,6 @@
           crowds: this.form.crowds
         }
         putObj(this.form.clientId, params).then(response => {
-          console.log(response.code)
           if(response.status == 200) {
             this.$notify({
               title: '成功',
