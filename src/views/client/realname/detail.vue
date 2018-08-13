@@ -87,7 +87,7 @@
       </el-row>
 
       <div class="split-line"></div>
-      
+
       <h5>认证和身份信息</h5>
       <el-row :gutter="20">
         <el-col :span="8">
@@ -138,28 +138,35 @@
             <!-- <el-input v-model="clientStatus.idExpiration" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
-        
+
       </el-row>
       <el-row :span="22" v-if="idType" :gutter="20">
           <el-form-item label="证件照片：" prop="address">
-            <el-col :span="5">
-              <el-card>
-                <img :src="clientStatus.idFrontUrl" alt="" style="max-height: 100px; width: 100%">
-              </el-card>
+            <el-col :span="4">
+              <!--<el-card>-->
+                <img :src="clientStatus.idFrontUrl"
+                     ref="cardImg"
+                     alt=""
+                     @click="previewImg1"
+                     style="height: 100px; width: 160px">
+              <!--</el-card>-->
             </el-col>
-            <el-col :span="5">
-              <el-card>
-                <img :src="clientStatus.idBackUrl" alt="" style="max-height: 100px; width: 100%">
-              </el-card>
+            <el-col :span="4">
+              <!--<el-card>-->
+                <img :src="clientStatus.idBackUrl"
+                     alt=""
+                     @click="previewImg1"
+                     style="height: 100px; width: 160px">
+              <!--</el-card>-->
             </el-col>
           </el-form-item>
         </el-row>
 
       <div class="split-line"></div>
-      
+
       <h5>客户银行卡信息</h5>
       <el-table :data="bankcardList" element-loading-text="给我一点时间" border fit
-        highlight-current-row style="width: 100%" 
+        highlight-current-row style="width: 100%"
         v-if="realnameStatus">
         <el-table-column align="center" label="开户银行">
           <template slot-scope="scope">
@@ -173,7 +180,7 @@
         </el-table-column>
         <el-table-column align="center" label="银行卡图片">
           <template slot-scope="scope">
-            <img :src="scope.row.cardFrontUrl" alt="" style="width: 50px;" @click="previewImg(iscope.row.cardFrontUrl)">
+            <img :src="scope.row.cardFrontUrl" alt="" style="width: 50px;" @click="previewImg(scope.row.cardFrontUrl)">
           </template>
         </el-table-column>
       </el-table>
@@ -218,11 +225,25 @@
       <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
 
+    <el-dialog :visible.sync="dialogImgVisible1" class="swiper-dialog">
+      <!--<img width="100%" :src="dialogImageUrl" alt="">-->
+      <el-carousel arrow="always"
+                   indicator-position="none"
+                   style="width:100%;text-align:center"
+                   :autoplay="false">
+        <el-carousel-item v-for="(item, index) in idcardImgs"
+                          :key="item">
+          <img :src="item" alt="" style="max-height: 400px">
+          <el-button type="primary" style="display: block;margin:10px auto 0">顺时针翻转90度</el-button>
+        </el-carousel-item>
+      </el-carousel>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-  import { fetchList, getObj, getClientStatus, getClientBankcard, putObj } from '@/api/client/realname'
+  import { getObj, getClientStatus, getClientBankcard, putObj } from '@/api/client/realname'
   // import { getClientStatus, getClientBankcard } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
@@ -338,7 +359,10 @@
         failReason: '',
         tip: false,
         dialogImgVisible: false,
-        dialogImageUrl: ''
+        dialogImgVisible1: false,
+        dialogImageUrl: '',
+        idcardImgs: [],
+        bankcardImgs: []
       }
     },
     computed: {
@@ -363,7 +387,7 @@
         }
         return statusMap[status]
       },
-      turnText (val, list) {
+      turnText(val, list) {
         return transformText1(val, list)
       }
     },
@@ -374,15 +398,18 @@
       this.sys_user_del = this.permissions['sys_user_del']
       this.type_is_update = this.$route.path.substr(-1)
     },
+    mounted() {
+      // this.imgWidth = this.$refs.cardImg.width
+    },
     methods: {
       getList() {
-        let id = this.$route.params.id
-        let obj = {
-          clientId: id,
-          type: 1
-        }
+        const id = this.$route.params.id
         getClientStatus(id, '1').then(response => {
-          this.clientStatus = response.data
+          this.clientStatus = JSON.parse(JSON.stringify(response.data))
+          this.clientStatus.idFrontUrl += '!160x100'
+          this.clientStatus.idBackUrl += '!160x100'
+          this.idcardImgs.push(response.data.idFrontUrl, response.data.idBackUrl)
+          console.log(this.idcardImgs)
           this.realnameStatus = this.clientStatus.realnameStatus != 0 ? true : false // 认证状态判断
           this.isClientType = this.clientStatus.clientType == 0 ? true : false// 投资者类型判断
           // this.idType = this.clientStatus.idType == 0 ? true : false // 证件类型判断(0: 身份证)
@@ -394,21 +421,24 @@
 
         getObj(id, '1').then(response => {
           this.form = response.data
-
           this.form.gender = transformText(this.genderType, this.form.gender)
           this.form.nationality = transformText(this.nationality, this.form.nationality)
           if(this.realnameStatus) {
             getClientBankcard(id, '1').then(response => {
-              this.bankcardList = response.data || []
+              if (response.status === 200) {
+                this.bankcardList = response.data
+              }
+            }).catch(() => {
+              this.bankcardList = []
             })
           }
         })
-        
+
       },
       handleDept() {
         console.log('产品状态')
       },
-      submitResult(result) { // 
+      submitResult(result) { //
         if(result == 3 && !this.failReason) {
           this.tip = true
           return
@@ -490,6 +520,9 @@
       previewImg(url) {
         this.dialogImgVisible = true
         this.dialogImageUrl = url
+      },
+      previewImg1() {
+        this.dialogImgVisible1 = true
       }
     }
     // mounted() {

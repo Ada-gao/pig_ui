@@ -4,14 +4,14 @@
 			<el-form label-position="right" label-width="80px">
         <el-row :gutter="20">
 					<el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="时间">
+            <el-form-item label="月份">
               <el-date-picker
 								style="width: 47.7%"
                 v-model="entryDateS"
                 type="month"
                 start-placeholder="选择时间"
                 end-placeholder="选择时间">
-              </el-date-picker> - 
+              </el-date-picker> -
 							<el-date-picker
 								style="width: 47.7%"
                 v-model="entryDateE"
@@ -19,7 +19,7 @@
                 start-placeholder="选择时间"
                 end-placeholder="选择时间">
               </el-date-picker>
-							<span class="error" v-if="errorTip">{{errorMes}}</span>							
+							<span class="error" v-if="errorTip">{{errorMes}}</span>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
@@ -68,12 +68,12 @@
         <svg-icon icon-class="upload"></svg-icon>批量导出
       </el-button>
     </div>
-		<el-table :key='tableKey' 
-							:data="list" 
-							v-loading="listLoading" 
-							element-loading-text="给我一点时间" 
+		<el-table :key='tableKey'
+							:data="list"
+							v-loading="listLoading"
+							element-loading-text="给我一点时间"
 							border fit
-              highlight-current-row 
+              highlight-current-row
 							style="width: 100%">
 			<el-table-column align="center" label="月份">
 				<template slot-scope="scope">
@@ -264,24 +264,25 @@ export default {
 			})
 		},
 		handleFilter() {
-			if (new Date(this.entryDateS).getTime() > new Date(this.entryDateE).getTime()) {
-				this.errorTip = true
-				this.errorMes = '结束时间不能小于开始时间'
-				 setTimeout(() => {
-					this.errorTip = false
-				}, 5000)
-				return
-			} else if ( this.entryDateS === undefined || this.entryDateE === undefined) {
+			if ( (this.entryDateS === '' && this.entryDateE === '') || (this.entryDateS === null && this.entryDateE === null) || (this.entryDateS === '' && this.entryDateE === null) || (this.entryDateS === null && this.entryDateE === '') ) {
+				// return
+			} else if ( this.entryDateS === '' || this.entryDateE === '' || this.entryDateS === null || this.entryDateE === null ) {
 				this.errorTip = true
 				this.errorMes = '时间不能为空'
 				 setTimeout(() => {
 					this.errorTip = false
-				}, 5000)
+				}, 3000)
 				return
-			} else if (this.entryDateS && this.entryDateE) {
+			} else if (new Date(this.entryDateS).getTime() > new Date(this.entryDateE).getTime()) {
+				this.errorTip = true
+				this.errorMes = '结束时间不能小于开始时间'
+				 setTimeout(() => {
+					this.errorTip = false
+				}, 3000)
+				return
+			}  else if (this.entryDateS && this.entryDateE) {
 				this.listQuery.date = [parseTime(this.entryDateS, '{y}-{m}'), parseTime(this.entryDateE, '{y}-{m}')]
 			}
-			console.log(this.listQuery.date)
 			this.listQuery.page = 1
 			if(this.deptName.length) {
 				this.listQuery.deptName = this.deptName[this.deptName.length - 1]
@@ -299,7 +300,7 @@ export default {
 			},
 			this.entryDateE = '',
 			this.entryDateS = ''
-			this.deptName = []	
+			this.deptName = []
 			// this.handleFilter()
 			this.getList()
 		},
@@ -307,10 +308,11 @@ export default {
 			this.$router.push({ path: '/achievement/importListExcel' })
 		},
 		handleExport() {
-			commissionListExport(this.listQuery).then(response => {
-				let blob = new Blob([response.data], {type: "blob"})
-				let objectUrl = URL.createObjectURL(blob)
-				this.forceDownload(objectUrl, 'test.xlsx')
+			commissionListExport(this.listQuery).then(res => {
+        const fileName = decodeURI(res.headers['content-disposition'].split('=')[1]) // 导出时要decodeURI
+        const blob = new Blob([res.data], { type: 'blob' })
+        const objectUrl = URL.createObjectURL(blob)
+        this.forceDownload(objectUrl, fileName)
 			})
 		},
 		forceDownload (url, name) {
@@ -337,6 +339,7 @@ export default {
 }
 .error{
 	position: absolute;
+	left: 0;
 	top: 50px;
 	line-height: 0;
 	color: #f56c6c;

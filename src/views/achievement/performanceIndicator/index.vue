@@ -46,7 +46,7 @@
             <el-form-item label="职级">
               <el-select class="filter-item"
                          placeholder="请选择职级"
-                         v-model="listQuery.rankId">
+                         v-model="rankId">
                 <el-option v-for="item in level"
                            :value="item.rankId"
                            :label="item.rankName"
@@ -77,10 +77,10 @@
         <svg-icon icon-class="add"></svg-icon>新增指标
       </el-button>
       <el-button class="search_btn" @click="handleImport">
-        <svg-icon icon-class="upload"></svg-icon>批量导入
+        <svg-icon icon-class="import"></svg-icon>批量导入
       </el-button>
       <el-button class="search_btn" @click="handleExport">
-        <svg-icon icon-class="upload"></svg-icon>批量导出
+        <svg-icon icon-class="export"></svg-icon>批量导出
       </el-button>
     </div>
     <el-table :data="list"
@@ -154,6 +154,7 @@
       <el-form :model="form"
                ref="form"
                :rules="rules1"
+               :validate-on-rule-change="true"
                label-width="100px">
         <el-row>
           <el-col class="inline-col">
@@ -303,6 +304,7 @@
     components: {},
     data() {
       return {
+        rankId: null,
         list: null,
         total: null,
         listLoading: true,
@@ -343,16 +345,17 @@
             { required: true, message: '请选择结束时间', trigger: 'blur' }
           ],
           deptIds: [
-            { required: true, message: '请选择部门', trigger: 'blur' }
+            // message: '请选择部门',
+            { required: true, trigger: 'blur', message: '请选择部门' }
           ],
           positionId: [
-            { required: true, message: '请选择职位', trigger: 'blur' }
+            { required: true, message: '请选择职位', trigger: 'blur, change' }
           ],
           rankIds: [
-            { required: true, message: '请选择职级', trigger: 'blur' }
+            { required: true, message: '请选择职级', trigger: 'blur, change' }
           ],
           performanceIndicator: [
-            { required: true, message: '请输入业绩指标', trigger: 'blur' }
+            { required: true, message: '请输入业绩指标', trigger: 'blur, change' }
           ]
         },
         departs: [], // 部门
@@ -422,7 +425,7 @@
             }
           })
         })
-        console.log(list2)
+        // console.log(list2)
         this.form.deptIds = list2
       },
       addOption() {
@@ -436,6 +439,11 @@
                 id: this.selectedOptions[this.selectedOptions.length - 1]
               }
             )
+            this.$refs.form.validate(valid => {
+              if (valid) {
+                // console.log('ssss')
+              }
+            })
           }
         }
       },
@@ -458,7 +466,8 @@
       },
       getList() {
         this.listLoading = true
-        console.log(this.listQuery)
+        this.listQuery.rankId = this.rankId
+        // console.log(this.listQuery)
         getPfList(this.listQuery).then(res => {
           this.list = res.data.records
           this.total = res.data.total || 0
@@ -482,6 +491,8 @@
         })
       },
       handlePosition(val) {
+        this.rankId = null
+        this.form.rankIds = []
         if (val) {
           getAllRank({ positionId: val }).then(res => {
             this.level = res.data
@@ -503,6 +514,7 @@
         this.getList()
       },
       resetFilter() { // reset
+        this.rankId = null
         this.listQuery = {
           page: 1,
           limit: 20,
@@ -517,7 +529,6 @@
       },
       handleCreate() {
         this.resetTemp()
-        // console.log(this.form)
         this.dialogStatus = 'create'
         this.dialogCreate = true
       },
@@ -536,9 +547,13 @@
       },
       handleExport() {
         exportPf(this.listQuery).then(res => {
-          const blob = new Blob([res.data], { type: 'blob' })
-          const objectUrl = URL.createObjectURL(blob)
-          this.forceDownload(objectUrl, 'test.xlsx')
+          if (res.status === 200) {
+            console.log(res)
+            const fileName = decodeURI(res.headers['content-disposition'].split('=')[1]) // 导出时要decodeURI
+            const blob = new Blob([res.data], { type: 'blob' })
+            const objectUrl = URL.createObjectURL(blob)
+            this.forceDownload(objectUrl, fileName)
+          }
         })
       },
       forceDownload(url, name) {
@@ -601,18 +616,25 @@
       cancel(formName) {
         this.dialogCreate = false
         this.form.deptIds = []
+        this.tempRankId = ''
+        this.selectedOptions = []
         this.$refs[formName].resetFields()
       },
       close() {
         this.resetTemp()
+        this.$refs['form'].resetFields()
       },
       create(formName) {
         this.tempForm = {
           deptIds: []
         }
         const set = this.$refs
-        this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
-        this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
+        if (this.form.start && this.form.start.toString().split('-').length !== 3) {
+          this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
+        }
+        if (this.form.end && this.form.end.toString().split('-').length !== 3) {
+          this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
+        }
         if (Number(new Date(this.form.end)) < Number(new Date(this.form.start))) {
           this.$notify({
             title: '失败',
@@ -667,8 +689,12 @@
       update(formName) {
         const set = this.$refs
         // console.log(this.form)
-        this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
-        this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
+        if (this.form.start && this.form.start.toString().split('-').length !== 3) {
+          this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
+        }
+        if (this.form.end && this.form.end.toString().split('-').length !== 3) {
+          this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
+        }
         if (Number(new Date(this.form.end)) < Number(new Date(this.form.start))) {
           this.$notify({
             title: '失败',

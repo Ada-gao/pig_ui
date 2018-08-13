@@ -89,7 +89,7 @@
 
       <el-table-column align="center" label="角色">
         <template slot-scope="scope">
-          <span>{{scope.row.roleList[0].roleDesc}}</span>
+          <span>{{scope.row.roleDesc}}</span>
         </template>
       </el-table-column>
 
@@ -285,6 +285,10 @@
         // this.handlePosition()
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
+          console.log(this.list)
+          this.list.map(item => {
+            item.roleDesc = item.roleList.length > 0 ? item.roleList[0].roleDesc : ''
+          })
           this.total = response.data.total
           this.listLoading = false
           getAllPositon().then(res => {
