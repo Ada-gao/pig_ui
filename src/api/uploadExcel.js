@@ -10,3 +10,15 @@ export function uploadExcel(file) {
     data: file
   })
 }
+/*模板导入 josn类型 
+ */
+export function uploadExcelJson(file) {
+  return request({
+    url: '/admin/user/uploadExcel',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: file
+  })
+}
