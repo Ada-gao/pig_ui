@@ -357,7 +357,7 @@
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime, transformText, transformText1 } from '@/utils'
+  import { parseTime, transformText, transformText1, eachChildren } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -594,20 +594,11 @@
       handleDept() { // 部门数据
         fetchDeptTree().then(res => {
           this.treeDeptData = res.data
-          this.eachChildren(this.treeDeptData)
+          eachChildren(this.treeDeptData)
         })
       },
       handleChageRole(val) {
         this.rolesOptions = this.rolesOptions.slice(0)
-      },
-      eachChildren(list) { // 过滤children的空数组
-        list.forEach(item => {
-          if(item.children && !item.children.length) {
-            delete item.children
-          } else if(item.children && item.children.length) {
-            this.eachChildren(item.children)
-          }
-        })
       },
       changeDept(val) {
         this.form.role = ''
