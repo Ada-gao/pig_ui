@@ -40,6 +40,7 @@ const getters = {
   investHorizonUnit: state => state.dictionary.investHorizonUnit,
   interestPayment: state => state.dictionary.interestPayment,
   buyingCrowds: state => state.dictionary.buyingCrowds,
-  dimissionReason: state => state.dictionary.dimissionReason
+  dimissionReason: state => state.dictionary.dimissionReason,
+  lockStatus: state => state.dictionary.lockStatus
 }
 export default getters

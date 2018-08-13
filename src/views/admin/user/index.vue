@@ -6,7 +6,7 @@
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
-      <el-form label-position="right" label-width="80px">
+      <el-form label-position="right" label-width="100px">
         <el-row :gutter="20">
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="搜索">
@@ -35,6 +35,15 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+            <el-form-item label="客户锁定状态">
+              <el-select class="filter-item" v-model="listQuery.lock" placeholder="请选择">
+                <el-option v-for="item in lockStatus" :key="item.value" :value="item.value" :label="item.label">
+                  <span style="float: left">{{ item.label }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col> -->
         <!-- </el-row> -->
         <!-- <el-row :gutter="10"> -->
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
@@ -108,6 +117,12 @@
           <el-tag v-if="scope.row.statusNum == 0" class="normal">{{scope.row.status|turnText(workStatus)}}</el-tag>
           <el-tag v-if="scope.row.statusNum == 1" class="leave">{{scope.row.status|turnText(workStatus)}}</el-tag>
           <el-tag v-if="scope.row.statusNum == 2" class="unusual">{{scope.row.status|turnText(workStatus)}}</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="账户锁定状态" show-overflow-tooltip>
+        <template slot-scope="scope">
+        <span>{{scope.row.lock|turnText(lockStatus)}}</span>
         </template>
       </el-table-column>
 
@@ -252,7 +267,8 @@
     computed: {
       ...mapGetters([
         'permissions',
-        'workStatus'
+        'workStatus',
+        'lockStatus'
       ])
     },
     created() {
