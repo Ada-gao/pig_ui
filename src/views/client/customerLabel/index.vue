@@ -22,9 +22,12 @@
       <el-table-column align="center" prop="labelDescription" label="标签解释" ></el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" class="common_btn" @click="editAum(scope.row.clientLabelId,'newAddClient')">编辑</el-button>
-            <span class="space_line"> | </span>
-            <el-button type="text" class="red" @click="deletes(scope.row.clientLabelId)">删除</el-button>
+              <a size="small" class="common_btn"
+                 @click="editAum(scope.row.clientLabelId,'newAddClient')">编辑
+              </a>
+              <a size="small" class="danger_btn"
+                @click="deletes(scope.row.clientLabelId)">删除
+              </a>
           </template>
         </el-table-column>
 
@@ -62,8 +65,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="cancel('newAddClient')">取 消</el-button>
-          <el-button type="primary" @click="clientDetermine('newAddClient')">确 定</el-button>
+          <el-button  class="search_btn" @click="cancel('newAddClient')">取 消</el-button>
+          <el-button  class="add_btn" @click="clientDetermine('newAddClient')">确 定</el-button>
         </div>
     </el-dialog>
     <!-- 新增aum对话框 -->
@@ -89,10 +92,10 @@
             <el-input  v-model="newAddParamet.labelName"  placeholder="请输入会员等级" style="width:71%;" auto-complete="off" ></el-input>
           </el-form-item>
         </el-form>
-        <div slot="footer" class="dialog-footer" style="text-align: center">
-          <el-button @click="cancel('newAddParamet')">取 消</el-button>
-          <el-button type="primary" @click="aumDetermine('newAddParamet')">确 定</el-button>
-        </div>
+         <div slot="footer" class="dialog-footer">
+        <el-button class="search_btn" @click="cancel('newAddParamet')">取 消</el-button>
+        <el-button class="add_btn" @click="aumDetermine('newAddParamet')">确 定</el-button>
+      </div>
     </el-dialog>
 
     <el-dialog

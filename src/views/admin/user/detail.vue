@@ -196,7 +196,7 @@
               </el-select>
             </el-form-item>
           </el-col> -->
-          
+
           <el-col :span="10">
             <el-form-item label="简历" prop="resumeUrl">
               <!-- <el-input v-model="form.role"></el-input> -->
@@ -544,6 +544,7 @@
         this.getList()
       }
       this.handleDept()
+      console.log(this.id, this.state)
     },
     methods: {
       getList() { // 编辑查询（查看）

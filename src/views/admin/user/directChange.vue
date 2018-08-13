@@ -46,11 +46,11 @@
       </el-pagination>
     </div>
     <!-- 直属变更编辑/新增 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="66%">
       <el-form :model="form" :rules="rules" ref="form" label-width="120px">
         <el-row>
           <el-col :span="11">
-            <el-form-item label="所在城市"  placeholder="请选择职位" >
+            <el-form-item label="所在城市"  placeholder="请选择职位" required>
             <el-col :span="11">
               <el-form-item  prop="city"  >
                 <el-cascader
@@ -80,8 +80,8 @@
               </el-select> -->
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item label="物理职场">
+          <el-col :span="11" :offset="1">
+            <el-form-item label="物理职场" required>
             <el-col :span="11">
             <el-form-item prop="workplace">
               <el-input v-model="form.workplace" placeholder="请输入物理职场" @change="changeWatch('workplaceChangeDate')"></el-input>
@@ -101,7 +101,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="直属上级">
+            <el-form-item label="直属上级" required>
              <el-col :span="11">
               <el-form-item prop="directSupervisorName">
               <el-select class="filter-item" v-model="form.directSupervisorName" placeholder="请选择直属上级" @change="changeWatch('supervisorChangeDate')">
@@ -123,8 +123,8 @@
               </el-col>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item label="合伙人">
+          <el-col :span="11" :offset="1">
+            <el-form-item label="合伙人" required>
              <el-col :span="11">
              <el-form-item prop="partnerName">
               <el-select class="filter-item" v-model="form.partnerName" placeholder="请选择合伙人" @change="changeWatch('partnerChangeDate')">
@@ -147,7 +147,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="区域总">
+            <el-form-item label="区域总" required>
              <el-col :span="11">
               <el-form-item prop="regionalManagerName">
               <el-select class="filter-item" v-model="form.regionalManagerName" placeholder="请选择区域总" @change="changeWatch('regionalManagerChangeDate')">
@@ -169,8 +169,8 @@
               </el-col>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item label="区域副总">
+          <el-col :span="11" :offset="1">
+            <el-form-item label="区域副总" required>
              <el-col :span="11">
              <el-form-item prop="regionalViceManagerName">
               <el-select class="filter-item" v-model="form.regionalViceManagerName" placeholder="请选择区域副总" @change="changeWatch('regionalViceManagerChangeDate')">
@@ -193,7 +193,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="城市总">
+            <el-form-item label="城市总" required>
              <el-col :span="11">
              <el-form-item prop="cityManagerName">
               <el-select class="filter-item" v-model="form.cityManagerName" placeholder="请选择城市总" @change="changeWatch('cityManagerChangeDate')">
@@ -215,8 +215,8 @@
               </el-col>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item label="城市副总">
+          <el-col :span="11" :offset="1">
+            <el-form-item label="城市副总" required>
              <el-col :span="11">
             <el-form-item prop="cityViceManagerName">
               <el-select class="filter-item" v-model="form.cityViceManagerName" placeholder="请选择城市副总" @change="changeWatch('cityViceManagerChangeDate')">
@@ -239,7 +239,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="团队经理">
+            <el-form-item label="团队经理" required>
              <el-col :span="11">
             <el-form-item prop="teamManagerName">
               <el-select class="filter-item" v-model="form.teamManagerName" placeholder="请选择团队经理" @change="changeWatch('teamManagerChangeDate')">
@@ -261,52 +261,9 @@
               </el-col>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item label="公司">
-             <el-col :span="11">
-             <el-form-item prop="companyName">
-              <el-select class="filter-item" v-model="form.companyName" placeholder="请选择公司" @change="changeWatch('companyChangeDate')">
-                <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId">
-                </el-option>
-              </el-select>
-              </el-form-item>
-                 </el-col>
-              <el-col class="line" :span="2">&nbsp;</el-col>
-               <el-col :span="11">
-                 <el-form-item prop="companyChangeDate">
-              <el-date-picker
-              :disabled = "disabledChange.companyChangeDate"
-                v-model="form.companyChangeDate"
-                type="date"
-                placeholder="选择日期">
-              </el-date-picker>
-              </el-form-item>
-              </el-col>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="区域">
-             <el-col :span="11">
-             <el-form-item prop="regional">
-              <el-input v-model="form.regional" placeholder="请选择区域" @change="changeWatch('regionalChangeDate')"></el-input>
-              </el-form-item>
-              </el-col>
-              <el-col class="line" :span="2">&nbsp;</el-col>
-               <el-col :span="11">
-                 <el-form-item prop="regionalChangeDate">
-              <el-date-picker
-              :disabled = "disabledChange.regionalChangeDate"
-                v-model="form.regionalChangeDate"
-                type="date"
-                placeholder="选择日期">
-              </el-date-picker>
-              </el-form-item>
-              </el-col>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="部门">
-             <el-col :span="11">
+          <el-col :span="24">
+            <el-form-item label="部门" required>
+             <el-col :span="18">
              <el-form-item prop="deptName">
               <el-select class="filter-item" v-model="form.deptName" placeholder="请选择部门" @change="changeWatch('deptChangeDate')">
                 <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId">
@@ -315,8 +272,8 @@
               </el-select>
                </el-form-item>
               </el-col>
-              <el-col class="line" :span="2">&nbsp;</el-col>
-               <el-col :span="11">
+              <el-col class="line" :span="0.8" style="width:3%">&nbsp;</el-col>
+               <el-col :span="0.4" style="width:17.4%">
                  <el-form-item prop="deptChangeDate">
               <el-date-picker
               :disabled = "disabledChange.deptChangeDate"
@@ -328,8 +285,8 @@
               </el-col>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item label="职位">
+          <el-col :span="11" >
+            <el-form-item label="职位" required>
              <el-col :span="11">
              <el-form-item prop="positionName">
               <el-select class="filter-item" v-model="form.positionName" placeholder="请选择职位" @change="changeWatch('positionChangeDate',$event)">
@@ -351,8 +308,8 @@
               </el-col>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item label="职级">
+          <el-col :span="11" :offset="1">
+            <el-form-item label="职级" required>
              <el-col :span="11">
              <el-form-item prop="rankName">
               <el-select class="filter-item" v-model="form.rankName" placeholder="请选择职级" @change="changeWatch('rankChangeDate')">
