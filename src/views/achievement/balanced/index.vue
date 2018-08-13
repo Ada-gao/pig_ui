@@ -50,12 +50,12 @@
         <svg-icon icon-class="upload"></svg-icon>批量导出
       </el-button>
     </div>
-		<el-table :key='tableKey' 
-							:data="list" 
-							v-loading="listLoading" 
-							element-loading-text="给我一点时间" 
+		<el-table :key='tableKey'
+							:data="list"
+							v-loading="listLoading"
+							element-loading-text="给我一点时间"
 							border fit
-              highlight-current-row 
+              highlight-current-row
 							style="width: 100%">
       <el-table-column align="center" label="时间"  width="190">
 				<template slot-scope="scope">
@@ -259,9 +259,10 @@ export default {
 		},
 		handleExport() {
 			balancedExport(this.listQuery).then(response => {
-				let blob = new Blob([response.data], {type: "blob"})
-				let objectUrl = URL.createObjectURL(blob)
-				this.forceDownload(objectUrl, 'test.xlsx')
+        const fileName = decodeURI(res.headers['content-disposition'].split('=')[1]) // 导出时要decodeURI
+        const blob = new Blob([res.data], { type: 'blob' })
+        const objectUrl = URL.createObjectURL(blob)
+        this.forceDownload(objectUrl, fileName)
 			})
 		},
 		forceDownload (url, name) {

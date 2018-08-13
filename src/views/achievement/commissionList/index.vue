@@ -11,7 +11,7 @@
                 type="month"
                 start-placeholder="选择时间"
                 end-placeholder="选择时间">
-              </el-date-picker> - 
+              </el-date-picker> -
 							<el-date-picker
 								style="width: 47.7%"
                 v-model="entryDateE"
@@ -68,12 +68,12 @@
         <svg-icon icon-class="upload"></svg-icon>批量导出
       </el-button>
     </div>
-		<el-table :key='tableKey' 
-							:data="list" 
-							v-loading="listLoading" 
-							element-loading-text="给我一点时间" 
+		<el-table :key='tableKey'
+							:data="list"
+							v-loading="listLoading"
+							element-loading-text="给我一点时间"
 							border fit
-              highlight-current-row 
+              highlight-current-row
 							style="width: 100%">
 			<el-table-column align="center" label="月份">
 				<template slot-scope="scope">
@@ -300,7 +300,7 @@ export default {
 			},
 			this.entryDateE = '',
 			this.entryDateS = ''
-			this.deptName = []	
+			this.deptName = []
 			// this.handleFilter()
 			this.getList()
 		},
@@ -309,9 +309,10 @@ export default {
 		},
 		handleExport() {
 			commissionListExport(this.listQuery).then(response => {
-				let blob = new Blob([response.data], {type: "blob"})
-				let objectUrl = URL.createObjectURL(blob)
-				this.forceDownload(objectUrl, 'test.xlsx')
+        const fileName = decodeURI(res.headers['content-disposition'].split('=')[1]) // 导出时要decodeURI
+        const blob = new Blob([res.data], { type: 'blob' })
+        const objectUrl = URL.createObjectURL(blob)
+        this.forceDownload(objectUrl, fileName)
 			})
 		},
 		forceDownload (url, name) {

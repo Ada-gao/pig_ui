@@ -462,6 +462,8 @@
       },
       create(formName) {
         const set = this.$refs
+        this.form.salesName = this.form.salesName.split('(')[0]
+        this.form.userName = this.form.userName.split('(')[0]
         console.log(this.form)
         set[formName].validate(valid => {
           if (valid) {
@@ -496,6 +498,8 @@
       },
       update(formName) {
         const set = this.$refs
+        this.form.salesName = this.form.salesName.split('(')[0]
+        this.form.userName = this.form.userName.split('(')[0]
         set[formName].validate(valid => {
           if (valid) {
             this.dialogCreate = false

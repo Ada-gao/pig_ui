@@ -547,9 +547,13 @@
       },
       handleExport() {
         exportPf(this.listQuery).then(res => {
-          const blob = new Blob([res.data], { type: 'blob' })
-          const objectUrl = URL.createObjectURL(blob)
-          this.forceDownload(objectUrl, 'test.xlsx')
+          if (res.status === 200) {
+            console.log(res)
+            const fileName = decodeURI(res.headers['content-disposition'].split('=')[1]) // 导出时要decodeURI
+            const blob = new Blob([res.data], { type: 'blob' })
+            const objectUrl = URL.createObjectURL(blob)
+            this.forceDownload(objectUrl, fileName)
+          }
         })
       },
       forceDownload(url, name) {
