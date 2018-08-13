@@ -308,7 +308,7 @@ export default {
 			this.$router.push({ path: '/achievement/importListExcel' })
 		},
 		handleExport() {
-			commissionListExport(this.listQuery).then(response => {
+			commissionListExport(this.listQuery).then(res => {
         const fileName = decodeURI(res.headers['content-disposition'].split('=')[1]) // 导出时要decodeURI
         const blob = new Blob([res.data], { type: 'blob' })
         const objectUrl = URL.createObjectURL(blob)
