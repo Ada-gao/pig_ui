@@ -39,6 +39,7 @@ const getters = {
   expressType: state => state.dictionary.expressType,
   investHorizonUnit: state => state.dictionary.investHorizonUnit,
   interestPayment: state => state.dictionary.interestPayment,
-  buyingCrowds: state => state.dictionary.buyingCrowds
+  buyingCrowds: state => state.dictionary.buyingCrowds,
+  dimissionReason: state => state.dictionary.dimissionReason
 }
 export default getters

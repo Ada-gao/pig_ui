@@ -43,7 +43,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="角色" prop="role">
-              <el-select class="filter-item" @focus="getRoleList" v-model="form.role" placeholder="请选择">
+              <el-select class="filter-item" v-model="form.role" @change="handleChageRole" placeholder="请选择">
                 <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId">
                   <span style="float: left">{{ item.roleDesc }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
@@ -123,7 +123,12 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="离职原因" prop="dimissionReason">
-              <el-input v-model="form.dimissionReason"></el-input>
+              <!-- <el-input v-model="form.dimissionReason"></el-input> -->
+              <el-select class="filter-item" v-model="form.dimissionReason" placeholder="请选择" :readonly="isReadonly">
+                <el-option v-for="item in dimissionReason" :key="item.value" :value="item.value" :label="item.label">
+                  <span style="float: left">{{ item.label }}</span>
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -136,7 +141,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="离职时间" prop="idType">
+            <el-form-item label="离职时间" prop="employeeDate">
               <el-date-picker
                 v-model="form.employeeDate"
                 type="date"
@@ -194,7 +199,6 @@
 
           <el-col :span="10">
             <el-form-item label="简历" prop="resumeUrl">
-              <!-- <el-input v-model="form.role"></el-input> -->
               <el-upload
                 class="upload-demo"
                 action="/zuul/admin/user/upload"
@@ -253,27 +257,27 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="角色：">
-              {{form.role}}
+              {{form.role|turnText(rolesOptions)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="性别：" prop="gender">
-              {{form.gender}}
+              {{form.gender|turnText(genderType)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="入职日期：" prop="date">
-              {{form.employeeDate}}
+              {{form.employeeDate|parseTime('{y}-{m}-{d}')}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="证件类型：" prop="idType">
-              {{form.education}}
+              {{form.idType|turnText(idTypeOptions)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="试用期到期日：" prop="idType">
-              {{form.education}}
+            <el-form-item label="试用期到期日：" prop="probationExpirationDate">
+              {{form.probationExpirationDate|parseTime('{y}-{m}-{d}')}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -282,8 +286,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="转正时间：" prop="idNo">
-              {{form.education}}
+            <el-form-item label="转正时间：" prop="officialDate">
+              {{form.officialDate|parseTime('{y}-{m}-{d}')}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -292,8 +296,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="状态：" prop="mobile">
-              {{form.education}}
+            <el-form-item label="状态：" prop="status">
+              {{form.status|turnText(workStatus)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -302,28 +306,28 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="离职原因：" prop="mobile">
-              {{form.education}}
+            <el-form-item label="离职原因：" prop="dimissionReason">
+              {{form.dimissionReason|turnText(dimissionReason)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="学历：" prop="education">
-              {{form.education}}
+              {{form.education|turnText(educationType)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="离职时间：" prop="deptName">
-              {{form.education}}
+            <el-form-item label="离职时间：" prop="employeeDate">
+              {{form.employeeDate|parseTime('{y}-{m}-{d}')}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="婚姻状况：" prop="marriageStatus">
-              {{form.marriageStatus}}
+              {{form.marriageStatus|turnText(marriageStatusOptions)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="是否营销岗：" prop="marriageStatus">
-              <el-radio-group v-model="form.isFloat" disabled>
+              <el-radio-group v-model="form.isMarketing" disabled>
                 <el-radio :label="0" style="display: inline-block">是</el-radio>
                 <el-radio :label="1" style="display: inline-block">否</el-radio>
               </el-radio-group>
@@ -388,13 +392,6 @@
       ElOption,
       ElRadioGroup,
       DirectChange
-    },
-    filters: {
-      parseTime (time) {
-        if(!time) return
-        let date = new Date(time)
-        return parseTime(date)
-      }
     },
     name: 'table_user',
     directives: {
@@ -473,9 +470,9 @@
         statusOptions: ['0', '1', '2'],
         positionsOptions: [],
         rolesOptions: [],
-        dialogFormVisible: false,
+        // dialogFormVisible: false,
         // dialogDeptVisible: false,
-        dialogFormView: false,
+        // dialogFormView: false,
         userAdd: false,
         userUpd: false,
         userDel: false,
@@ -518,12 +515,18 @@
         'genderType',
         'idTypeOptions',
         'marriageStatusOptions',
-        'workStatus'
+        'workStatus',
+        'dimissionReason'
       ])
     },
     filters: {
       turnText (val, list) {
         return transformText1(val, list)
+      },
+      parseTime (time) {
+        if(!time) return
+        let date = new Date(time)
+        return parseTime(date)
       }
     },
     created() {
@@ -531,6 +534,7 @@
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
+      this.handleCreate()
     },
     mounted() {
       this.id = this.$route.params.id
@@ -539,31 +543,26 @@
         this.getList()
       }
       this.handleDept()
-      console.log(this.id, this.state)
+      // console.log(this.id, this.state)
     },
     methods: {
       getList() { // 编辑查询（查看）
         getObj(this.id)
           .then(response => {
             this.form = response.data
-            this.form.role = this.form.roleList[0].roleDesc
+            this.form.isMarketing = this.form.isMarketing - 0
+            this.form.role = this.form.roleList[0].roleId
             this.deptIds[0] = this.form.deptId
-            console.log(this.deptIds)
             // this.role = row.roleList[0].roleDesc
             if(this.state === 'view') {
-              this.dialogFormView = true
-              this.dialogFormVisible = false
+              // this.dialogFormView = true
+              // this.dialogFormVisible = false
               this.dialogStatus = 'view'
               this.isReadonly = true
-              this.form.gender = transformText(this.genderType, this.form.gender)
-              this.form.education = transformText(this.educationType, this.form.education)
-              this.form.idType = transformText(this.idTypeOptions, this.form.idType)
               this.form.positionId = transformText(this.positionsOptions, this.form.positionId)
-              this.form.marriageStatus = transformText(this.marriageStatusOptions, this.form.marriageStatus)
-              this.form.employeeDate = parseTime(this.form.employeeDate, '{y}-{m}-{d}')
             } else {
-              this.dialogFormView = false
-              this.dialogFormVisible = true
+              // this.dialogFormView = false
+              // this.dialogFormVisible = true
               this.dialogStatus = 'update'
               this.form.directSupervisorId = this.form.directSupervisorId
             }
@@ -588,7 +587,7 @@
         deptRoleList(id)
           .then(response => {
             this.rolesOptions = response.data
-            this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
+            this.form.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
           })
       },
       getDirectSupervisorList() { // 直属上级查询
@@ -612,10 +611,13 @@
           this.eachChildren(this.treeDeptData)
         })
       },
-      getRoleList() {
-        this.getNodeData(this.deptIds[0])
+      // getRoleList() {
+      //   this.getNodeData(this.deptIds[0])
+      // },
+      handleChageRole(val) {
+        this.rolesOptions = this.rolesOptions.slice(0)
       },
-      eachChildren(list) {
+      eachChildren(list) { // 过滤children的空数组
         list.forEach(item => {
           if(item.children && !item.children.length) {
             delete item.children
@@ -625,19 +627,20 @@
         })
       },
       changeDept(val) {
-        console.log(val)
+        this.form.role = ''
+        this.getNodeData(val[val.length - 1])
         // this.role = ''
-        // this.form.role = ''
       },
       handleCreate() {
         this.resetTemp()
         this.dialogStatus = 'create'
-        this.dialogFormVisible = true
+        // this.dialogFormVisible = true
         this.PYCode = getPYData() // 获取拼音数据
       },
       create(formName) {
         const set = this.$refs
-        this.form.role = this.role
+        // this.form.role = this.role
+        this.form.deptId = this.deptIds[this.deptIds.length - 1]
         // this.form.positionId = this.form.positionName
         // this.form.idType = this.IDType
         // this.form.marriageStatus = this.maritalStatus
@@ -646,7 +649,7 @@
             addObj(this.form)
               .then((res) => {
                 if (res.status === 200) {
-                  this.dialogFormVisible = false
+                  // this.dialogFormVisible = false
                   // this.getList()
                   this.$notify({
                     title: '成功',
@@ -654,6 +657,7 @@
                     type: 'success',
                     duration: 2000
                   })
+                  this.step = '2'
                 }
               })
           } else {
@@ -662,17 +666,18 @@
         })
       },
       cancel(formName) {
-        console.log(this.$refs[formName])
-        this.dialogFormVisible = false
+        // this.dialogFormVisible = false
         this.$refs[formName].resetFields()
       },
       update(formName) { // 编辑提交
         const set = this.$refs
         // this.form.role = this.role
+        if(isNaN(this.form.role - 0)) {
+          this.form.role = this.form.roleList[0].roleId
+        }
         set[formName].validate(valid => {
           if (valid) {
             // this.form.positionId = this.form.positionName
-            console.log(this.fileList)
             if(this.fileList.length) {
               this.form.resumeName = this.fileList[0].name
               // this.form.resumeName = this.fileList[0].response.fileName
@@ -683,7 +688,7 @@
               this.fileList = []
             }
             putObj(this.form).then(() => {
-              this.dialogFormVisible = false
+              // this.dialogFormVisible = false
               // this.getList()
               this.$notify({
                 title: '成功',
@@ -691,6 +696,7 @@
                 type: 'success',
                 duration: 2000
               })
+              this.step = '2'
             })
           } else {
             return false
@@ -707,7 +713,7 @@
       },
       handleRemove(file, fileList) {
         this.fileList = []
-        console.log(file, fileList)
+        // console.log(file, fileList)
       },
       handlePreview(file) {
         // console.log(file)
@@ -717,8 +723,8 @@
       },
       handleSuccess(files, fileList) {
         this.fileList.push(fileList)
-        // console.log(files)
-        console.log(this.fileList)
+        this.form.resumeName = fileList.response.fileName
+        this.form.resumeUrl = fileList.response.fileUrl
       },
       beforeUpload(file) {
         const isFile = file.type === 'application/pdf'
@@ -733,7 +739,6 @@
       },
       handleChange(val) {
         this.form.positionId = val
-        console.log(val)
       },
       covertPY(l1) { // 汉字转拼音
         let l2 = l1.length

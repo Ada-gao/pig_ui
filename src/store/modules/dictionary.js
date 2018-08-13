@@ -28,7 +28,8 @@ const dictionary = {
     expressType: [],
     investHorizonUnit: [],
     interestPayment: [],
-    buyingCrowds: []
+    buyingCrowds: [],
+    dimissionReason: []
   },
 
   mutations: {
@@ -112,6 +113,9 @@ const dictionary = {
     },
     SET_BUYING_CROWDS: (state, buyingCrowds) => {
       state.buyingCrowds = buyingCrowds
+    },
+    SET_DIMISSION_REASON: (state, dimissionReason) => {
+      state.dimissionReason = dimissionReason
     }
   },
 
@@ -149,6 +153,7 @@ const dictionary = {
           let investHorizonUnitList = []
           let interestPaymentList = []
           let buyingCrowdsList = []
+          let dimissionReasonList = []
           
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -222,6 +227,9 @@ const dictionary = {
 
             } else if(data[i].type === 'buying_crowds') {
               buyingCrowdsList.push(data[i])
+
+            } else if(data[i].type === 'dimission_reason') {
+              dimissionReasonList.push(data[i])
             }
           }
 
@@ -262,6 +270,7 @@ const dictionary = {
           commit('SET_INVESTMENT_HORIZON_UNIT', investHorizonUnitList)
           commit('SET_INTEREST_PAYMENT', interestPaymentList)
           commit('SET_BUYING_CROWDS', buyingCrowdsList)
+          commit('SET_DIMISSION_REASON', dimissionReasonList)
           resolve()
         }).catch(error => {
           reject(error)
