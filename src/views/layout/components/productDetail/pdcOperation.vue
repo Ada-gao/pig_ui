@@ -57,12 +57,14 @@
       <product-material-component
         v-show="secStep==='1'"
         :productList="data1"
+        :operationEdit="!operationDisabled"
         @del-client-file="deleteClient"
         @upd-client-file="updateClientFile">
       </product-material-component>
       <product-material-component
         v-show="secStep==='0'"
         :productList="data2"
+        :operationEdit="!operationDisabled"
         @del-client-file="deleteClient"
         @upd-client-file="updateClientFile">
       </product-material-component>
@@ -163,7 +165,8 @@
         <el-table-column
           prop=""
           label="操作"
-          align="center">
+          align="center"
+          v-if="!operationDisabled">
           <template slot-scope="scope">
             <a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>
             <a class="danger_btn" size="small" @click="delfiles(scope.row, 'announcement')">删除</a>
