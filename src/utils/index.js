@@ -307,14 +307,16 @@ export function transformText1(k, source) {
               val.rankId ||
               val.id ||
               val.positionId ||
-              val.productMixTypeId
+              val.productMixTypeId ||
+              val.roleId
     obj[key] = val.label ||
                val.positionName ||
                val.name ||
                val.failAuditReason ||
                val.deptName ||
                val.rankName ||
-               val.positionName
+               val.positionName ||
+               val.roleDesc
   })
   k = obj[k]
   return k

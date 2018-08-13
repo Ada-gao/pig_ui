@@ -43,7 +43,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="角色" prop="role">
-              <el-select class="filter-item" @focus="getRoleList" v-model="form.role" placeholder="请选择">
+              <el-select class="filter-item" v-model="form.role" @change="handleChageRole" placeholder="请选择">
                 <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId">
                   <span style="float: left">{{ item.roleDesc }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roleCode }}</span>
@@ -199,7 +199,6 @@
 
           <el-col :span="10">
             <el-form-item label="简历" prop="resumeUrl">
-              <!-- <el-input v-model="form.role"></el-input> -->
               <el-upload
                 class="upload-demo"
                 action="/zuul/admin/user/upload"
@@ -258,7 +257,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="角色：">
-              {{form.role}}
+              {{form.role|turnText(rolesOptions)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -323,7 +322,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="婚姻状况：" prop="marriageStatus">
-              {{form.marriageStatus}}
+              {{form.marriageStatus|turnText(marriageStatusOptions)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -544,7 +543,7 @@
         this.getList()
       }
       this.handleDept()
-      console.log(this.id, this.state)
+      // console.log(this.id, this.state)
     },
     methods: {
       getList() { // 编辑查询（查看）
@@ -552,21 +551,15 @@
           .then(response => {
             this.form = response.data
             this.form.isMarketing = this.form.isMarketing - 0
-            this.form.role = this.form.roleList[0].roleDesc
+            this.form.role = this.form.roleList[0].roleId
             this.deptIds[0] = this.form.deptId
-            console.log(this.deptIds)
             // this.role = row.roleList[0].roleDesc
             if(this.state === 'view') {
               // this.dialogFormView = true
               // this.dialogFormVisible = false
               this.dialogStatus = 'view'
               this.isReadonly = true
-              // this.form.gender = transformText(this.genderType, this.form.gender)
-              // this.form.education = transformText(this.educationType, this.form.education)
-              // this.form.idType = transformText(this.idTypeOptions, this.form.idType)
               this.form.positionId = transformText(this.positionsOptions, this.form.positionId)
-              this.form.marriageStatus = transformText(this.marriageStatusOptions, this.form.marriageStatus)
-              // this.form.employeeDate = parseTime(this.form.employeeDate, '{y}-{m}-{d}')
             } else {
               // this.dialogFormView = false
               // this.dialogFormVisible = true
@@ -594,7 +587,7 @@
         deptRoleList(id)
           .then(response => {
             this.rolesOptions = response.data
-            this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
+            this.form.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
           })
       },
       getDirectSupervisorList() { // 直属上级查询
@@ -618,10 +611,13 @@
           this.eachChildren(this.treeDeptData)
         })
       },
-      getRoleList() {
-        this.getNodeData(this.deptIds[0])
+      // getRoleList() {
+      //   this.getNodeData(this.deptIds[0])
+      // },
+      handleChageRole(val) {
+        this.rolesOptions = this.rolesOptions.slice(0)
       },
-      eachChildren(list) {
+      eachChildren(list) { // 过滤children的空数组
         list.forEach(item => {
           if(item.children && !item.children.length) {
             delete item.children
@@ -643,7 +639,7 @@
       },
       create(formName) {
         const set = this.$refs
-        this.form.role = this.role
+        // this.form.role = this.role
         this.form.deptId = this.deptIds[this.deptIds.length - 1]
         // this.form.positionId = this.form.positionName
         // this.form.idType = this.IDType
@@ -670,17 +666,18 @@
         })
       },
       cancel(formName) {
-        console.log(this.$refs[formName])
         // this.dialogFormVisible = false
         this.$refs[formName].resetFields()
       },
       update(formName) { // 编辑提交
         const set = this.$refs
         // this.form.role = this.role
+        if(isNaN(this.form.role - 0)) {
+          this.form.role = this.form.roleList[0].roleId
+        }
         set[formName].validate(valid => {
           if (valid) {
             // this.form.positionId = this.form.positionName
-            console.log(this.fileList)
             if(this.fileList.length) {
               this.form.resumeName = this.fileList[0].name
               // this.form.resumeName = this.fileList[0].response.fileName
@@ -699,6 +696,7 @@
                 type: 'success',
                 duration: 2000
               })
+              this.step = '2'
             })
           } else {
             return false
@@ -715,7 +713,7 @@
       },
       handleRemove(file, fileList) {
         this.fileList = []
-        console.log(file, fileList)
+        // console.log(file, fileList)
       },
       handlePreview(file) {
         // console.log(file)
@@ -725,8 +723,6 @@
       },
       handleSuccess(files, fileList) {
         this.fileList.push(fileList)
-        // console.log(files)
-        console.log(fileList)
         this.form.resumeName = fileList.response.fileName
         this.form.resumeUrl = fileList.response.fileUrl
       },
@@ -743,7 +739,6 @@
       },
       handleChange(val) {
         this.form.positionId = val
-        console.log(val)
       },
       covertPY(l1) { // 汉字转拼音
         let l2 = l1.length
@@ -762,7 +757,6 @@
          while (I1.indexOf('--') > 0) {
              I1 = I1.replace('--', '-')
          }
-         console.log(I1)
          return I1
       },
       arraySearch(l1, l2) { // 搜索对象
@@ -775,7 +769,6 @@
         return false
       },
       getPYCode(val) {
-        console.log(val)
         this.form.username = this.covertPY(val)
       }
     }
