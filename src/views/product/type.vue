@@ -1,25 +1,32 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container" style="text-align: right">
+    <el-row  class="filter-container row-bg" type="flex" justify="space-between">
       <!-- <el-input ="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名"
                 v-model="listQuery.name">
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button> -->
-      <el-tabs v-model="tabcard" type="card">
+     <!--  <el-tabs v-model="tabcard" type="card">
         <el-tab-pane label="产品收益类型" name="first"></el-tab-pane>
         <el-tab-pane label="产品结构类型" name="second"></el-tab-pane>
-      </el-tabs>
-      <el-button v-if="sys_prd_type_add" class="filter-item add_btn" style="margin-bottom: 0;" @click="handleCreate" type="primary" icon="edit">
+      </el-tabs> -->
+     
+      <el-radio-group v-model="tabcard">
+        <el-radio-button label="first">产品收益类型</el-radio-button>
+        <el-radio-button label="second">产品结构类型</el-radio-button>
+      </el-radio-group>
+    
+      <el-button v-if="sys_prd_type_add" class="filter-item add_btn" style="margin-bottom: 0;text-align: right" @click="handleCreate" type="primary" icon="edit">
         <svg-icon icon-class="add"></svg-icon> 新增</el-button>
-    </div>
+    </el-row>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
-      <el-table-column align="center" label="序号" type="index" width="50">
-        <!-- <template slot-scope="scope">
-          <span>{{scope.row.productTypeId}}</span>
-        </template> -->
+      <el-table-column align="center" label="序号" >
+        <template slot-scope="scope">
+          <span v-if="tabcard === 'first'">{{scope.row.productTypeId}}</span>
+          <span v-else>{{scope.row.productMixTypeId}}</span>
+        </template>
       </el-table-column>
 
       <el-table-column align="center" :label="tabcard === 'first' ? '产品收益类型名称' : '产品结构类型名称'" prop="name">
