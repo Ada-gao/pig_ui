@@ -230,11 +230,17 @@
       <el-carousel arrow="always"
                    indicator-position="none"
                    style="width:100%;text-align:center"
+                   @change="carouselChange"
                    :autoplay="false">
         <el-carousel-item v-for="(item, index) in idcardImgs"
                           :key="item">
-          <img :src="item" alt="" style="max-height: 400px">
-          <el-button type="primary" style="display: block;margin:10px auto 0">顺时针翻转90度</el-button>
+          <img :src="item"
+               alt=""
+               :class="'rotate_' + rotateCnt * 90 + '_' + index"
+               style="max-height: 400px">
+          <el-button type="primary"
+                     @click="handleRotate(index)"
+                     style="display: block;margin:10px auto 0">顺时针翻转90度</el-button>
         </el-carousel-item>
       </el-carousel>
     </el-dialog>
@@ -362,7 +368,8 @@
         dialogImgVisible1: false,
         dialogImageUrl: '',
         idcardImgs: [],
-        bankcardImgs: []
+        bankcardImgs: [],
+        rotateCnt: 0 // 旋转图片的次数
       }
     },
     computed: {
@@ -522,6 +529,12 @@
       },
       previewImg1() {
         this.dialogImgVisible1 = true
+      },
+      carouselChange(value) {
+        this.rotateCnt = 0
+      },
+      handleRotate(index) {
+        this.rotateCnt === 3 ? this.rotateCnt = 0 : ++this.rotateCnt
       }
     }
     // mounted() {
@@ -541,6 +554,62 @@
   .btn-padding {
     @include padding;
   }
+}
+.rotate_0_0 {
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+  .rotate_90_0 {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+  }
+.rotate_180_0 {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+.rotate_270_0 {
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  transform: rotate(270deg);
+}
+.rotate_0_1 {
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+.rotate_90_1 {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+.rotate_180_1 {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+.rotate_270_1 {
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  transform: rotate(270deg);
 }
 </style>
 

@@ -44,10 +44,10 @@
     </div>
 		<div style="text-align: right;">
       <el-button v-if="balanced_score_card_import" class="add_btn" @click="handleImport">
-        <svg-icon icon-class="upload"></svg-icon>批量导入
+        <svg-icon icon-class="import" style="margin-right: 5px;"></svg-icon>批量导入
       </el-button>
       <el-button v-if="balanced_score_card_export" class="add_btn" @click="handleExport">
-        <svg-icon icon-class="upload"></svg-icon>批量导出
+        <svg-icon icon-class="export" style="margin-right: 5px;"></svg-icon>批量导出
       </el-button>
     </div>
 		<el-table :key='tableKey'
@@ -260,6 +260,8 @@ export default {
 		handleExport() {
 			balancedExport(this.listQuery).then(res => {
         const fileName = decodeURI(res.headers['content-disposition'].split('=')[1]) // 导出时要decodeURI
+        console.log(res)
+        console.log(fileName)
         const blob = new Blob([res.data], { type: 'blob' })
         const objectUrl = URL.createObjectURL(blob)
         this.forceDownload(objectUrl, fileName)
