@@ -69,7 +69,7 @@ a:hover {
 
 //app-container全局
 .dialog-footer {
-  margin-top: 20px;
+  margin: 20px 0;
   text-align: center;
 }
 .pagination-container {
@@ -176,9 +176,9 @@ input::-webkit-inner-spin-button {
 input[type="number"]{
   -moz-appearance: textfield;
 }
-.el-dialog__body {
-  padding-bottom: 0;
-}
+// .el-dialog__body {
+//   padding-bottom: 0;
+// }
 .el-dialog__footer {
   padding-bottom: 40px;
 }

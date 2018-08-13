@@ -510,7 +510,7 @@
       width="30%">
       <el-radio-group v-model="collectVal" @change="radioChange">
         <el-radio style="display: block" :label="1">立即进入产品募集</el-radio>
-        <el-radio style="margin-left: 0" :label="2">定时进入产品募集</el-radio>
+        <el-radio style="margin-left: 0; margin-right: 10px;" :label="2">定时进入产品募集</el-radio>
         <el-date-picker
           v-model="collectTime"
           type="datetime"
