@@ -4,34 +4,52 @@
       <el-form label-position="right" label-width="96px">
         <el-row :gutter="20">
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-                <el-form-item label="订单编号">
-                  <el-input class="filter-item" v-model="appointmentcode" placeholder="请输入订单编号"></el-input>
+                <el-form-item label="预约编号">
+                  <el-input class="filter-item"
+                            v-model="listQuery.appointmentcode"
+                            clearable
+                            placeholder="请输入预约编号"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
                 <el-form-item label="理财师姓名">
-                  <el-input class="filter-item" v-model="username" placeholder="请输入理财师姓名"></el-input>
+                  <el-input class="filter-item"
+                            clearable
+                            v-model="listQuery.username"
+                            placeholder="请输入理财师姓名"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
                 <el-form-item label="理财师编号">
-                  <el-input class="filter-item" v-model="usercode" placeholder="请输入理财师编号"></el-input>
+                  <el-input class="filter-item"
+                            clearable
+                            v-model="listQuery.usercode"
+                            placeholder="请输入理财师编号"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
                 <el-form-item label="销售支持姓名">
-                  <el-input class="filter-item" v-model="salesname" placeholder="请输入销售支持姓名"></el-input>
+                  <el-input class="filter-item"
+                            clearable
+                            v-model="listQuery.salesname"
+                            placeholder="请输入销售支持姓名"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
                 <el-form-item label="销售支持编号">
-                  <el-input class="filter-item" v-model="salescode" placeholder="请输入销售支持编号"></el-input>
+                  <el-input class="filter-item"
+                            clearable
+                            v-model="listQuery.salescode"
+                            placeholder="请输入销售支持编号"></el-input>
                 </el-form-item>
             </el-col>
 
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
                 <el-form-item label="佣金比例">
-                  <el-input class="filter-item" v-model="commissionrate" placeholder="请输入佣金比例"></el-input>
+                  <el-input class="filter-item"
+                            clearable
+                            v-model="listQuery.commissionrate"
+                            placeholder="请输入佣金比例"></el-input>
                 </el-form-item>
             </el-col>
         </el-row>
@@ -49,11 +67,11 @@
     </div>
 
     <div v-if="sales_support_add"  style="text-align: right;">
-      <el-button class="add_btn" @click="handleImport">
-        <svg-icon icon-class="upload"></svg-icon>批量导入
-      </el-button>
       <el-button class="add_btn" @click="handleCreate">
         <svg-icon icon-class="add"></svg-icon>新增销售支持
+      </el-button>
+      <el-button class="search_btn" @click="handleImport">
+        <svg-icon icon-class="upload"></svg-icon>批量导入
       </el-button>
     </div>
     <el-table :data="list"
@@ -63,7 +81,7 @@
               style="width: 100%"
               v-loading="listLoading">
 
-      <el-table-column align="center" label="订单编号">
+      <el-table-column align="center" label="预约编号">
         <template slot-scope="scope">
           <span>{{scope.row.appointmentCode}}</span>
         </template>
@@ -141,10 +159,10 @@
         <el-row :gutter="20">
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="订单编号" prop="appointmentCode">
+            <el-form-item label="预约编号" prop="appointmentCode">
               <el-input v-model="form.appointmentCode"
                         type="text"
-                        placeholder="请输入订单编号"></el-input>
+                        placeholder="请输入预约编号"></el-input>
             </el-form-item>
           </el-col>
 
@@ -162,7 +180,8 @@
                          value-key="name"
                          style="width:100%;"
                          placeholder="请输入理财师姓名"
-                         v-model="userInfo"
+                         v-model="form.userName"
+                         filterable
                          @change="userNameChange">
                 <el-option v-for="(item, index) in financialPlannerList"
                            :value="item"
@@ -184,9 +203,10 @@
             <el-form-item label="销售支持姓名" prop="salesName">
               <el-select class="filter-item"
                          value-key="name"
+                         filterable
                          style="width:100%;"
                          placeholder="请输入销售支持姓名"
-                         v-model="salesInfo"
+                         v-model="form.salesName"
                          @change="salesNameChange">
                 <el-option v-for="(item, index) in salesSupportList"
                            :value="item"
@@ -218,10 +238,6 @@
 </template>
 <script>
   import {
-    getPerformList,
-    getAllPositon,
-    getAllDeparts,
-
     getSalesSupportList,
     getSalesSupport,
     addSalesSupport,
@@ -230,30 +246,34 @@
 
   } from '@/api/achievement'
   import {
-    getPlannerList, // 查询理财师列表
-    getDirectSupervisorList // 销售支持列表(目前这个方法查询的是所有员工))
+    getPlannerList // 查询理财师列表
+    // getDirectSupervisorList // 销售支持列表(目前这个方法查询的是所有员工))
   } from '@/api/user'
   import { mapGetters } from 'vuex'
   export default {
     components: {},
     data() {
+      const validDateRate = (rule, value, cb) => {
+        if (!value) {
+          cb('请输入佣金比例')
+        }
+        if (Number(value) > 1) {
+          cb(new Error('佣金比例不能大于1'))
+        } else {
+          cb()
+        }
+      }
       return {
         list: null,
         total: null,
         listLoading: true,
         listQuery: {
           page: 1,
-          limit: 20
+          limit: 20,
+          orderByField: 'create_time',
+          isAsc: false
         },
-        form: {
-          salesSupportId: null,
-          appointmentCode: null,
-          commissionRate: null,
-          salesCode: null,
-          salesName: null,
-          userCode: null,
-          userName: null,
-        },
+        form: {},
         userInfo: null,
         salesInfo: null,
         textMap: {
@@ -268,7 +288,7 @@
             { required: true, message: '请输入订单编号', trigger: 'blur' }
           ],
           commissionRate: [
-            { required: true, message: '请输入佣金比例', trigger: 'blur' }
+            { required: true, validator: validDateRate, trigger: 'blur' }
           ],
           salesCode: [
             { required: true, message: '请输入销售支持姓名', trigger: 'blur' }
@@ -281,41 +301,18 @@
           ],
           userName: [
             { required: true, message: '请选择理财师姓名', trigger: 'blur' }
-          ],
+          ]
         },
-        departs: [], // 部门
-        positions: [], // 职位
-        level: [], // 职级
-        appointmentcode: null, // 订单编号
-        username: null, // 理财师姓名
-        usercode: null, // 理财师编号
-        salesname: null, // 销售支持姓名
-        salescode: null, // 销售支持编号
-        commissionrate: null, // 佣金比例
-
         financialPlannerList: [], // 所有理财师列表
-        salesSupportList: [], // 所有销售支持列表
+        salesSupportList: [] // 所有销售支持列表
       }
     },
-    	computed: {
+    computed: {
       ...mapGetters([
-        'permissions',
-      ]),
-      queryProps: function(){
-        return {
-          page:this.listQuery.page,
-          limit:this.listQuery.limit,
-          appointmentcode: this.appointmentcode,
-          username: this.username,
-          usercode: this.usercode,
-          salesname: this.salesname,
-          salescode: this.salescode,
-          commissionrate: this.commissionrate,
-        }
-      }
+        'permissions'
+      ])
     },
     created() {
-      this.getAllSearch()
       this.getList()
       this.getUserLists()
       this.sales_support_add = this.permissions['sales_support_add']
@@ -323,29 +320,39 @@
       this.sales_support_delete = this.permissions['sales_support_delete']
     },
     methods: {
-      userNameChange(newVal){
-        let item = this.financialPlannerList.find((ite)=>{
-            return ite.empNo === newVal.empNo;
+      userNameChange(newVal) {
+        const item = this.financialPlannerList.find((ite) => {
+          return ite.empNo === newVal.empNo
         })
         this.form.userCode = item.empNo
         this.form.userName = item.name
       },
-      salesNameChange(newVal){
-        let item = this.salesSupportList.find((ite)=>{
-            return ite.empNo === newVal.empNo;
+      salesNameChange(newVal) {
+        const item = this.salesSupportList.find((ite) => {
+          return ite.empNo === newVal.empNo
         })
         this.form.salesCode = item.empNo
         this.form.salesName = item.name
       },
-      getUserLists(){
-        getPlannerList({status:1}).then(res=>{
-          if(res.status==200){
-            this.financialPlannerList = res.data
+      getUserLists() {
+        getPlannerList({ status: 0 }).then(res => {
+          if (res.status === 200) {
+            this.financialPlannerList = JSON.parse(JSON.stringify(res.data))
+            this.financialPlannerList.map(item => {
+              item.deptName ? (item.name = item.name + '(' + item.deptName + ')') : item.name
+            })
+            this.salesSupportList = JSON.parse(JSON.stringify(res.data))
+            this.salesSupportList.map(item => {
+              item.deptName ? (item.name = item.name + '(' + item.deptName + ')') : item.name
+            })
           }
         })
-        getDirectSupervisorList({status:1}).then(res=>{
-          this.salesSupportList = res.data
-        })
+        // getDirectSupervisorList().then(res => {
+        //   this.salesSupportList = res.data
+        //   this.salesSupportList.map(item => {
+        //     item.deptName ? (item.name = item.name + '(' + item.deptName + ')') : item.name
+        //   })
+        // })
       },
       tableHeader(h, { column, $index }) {
         return h('span', [
@@ -362,7 +369,7 @@
         ])
       },
       theadClick() { // 业绩指标排序事件
-        console.log(11111)
+        // console.log(11111)
       },
       getList() {
         this.listLoading = true
@@ -372,66 +379,43 @@
           this.listLoading = false
         })
       },
-      getListByProps() {
-        getSalesSupportList(this.queryProps).then(res => {
-          this.list = res.data.records
-          this.total = res.data.total
-          this.listLoading = false
-        })
-      },
-      getDeparts() { // 获取部门列表
-        getAllDeparts().then(res => {
-          this.departs = res.data
-        })
-      },
-      getPosition() { // 获取职位列表
-        getAllPositon().then(res => {
-          this.positions = res.data
-        })
-      },
-      getLevels() { // 获取职级列表
-        getAllPositon().then(res => {
-          this.level = res.data
-        })
-      },
-      getAllSearch() {
-        this.getDeparts()
-        this.getPosition()
-        this.getLevels()
-      },
       handleFilter() { // search
         this.listQuery.page = 1
-        this.getListByProps()
+        // 查询时某一项value值为空时，删除对应的key
+        for (let k in this.listQuery) {
+          if (!this.listQuery[k]) {
+            delete this.listQuery[k]
+          }
+        }
+        this.getList()
       },
       resetFilter() { // reset
         this.listQuery = {
           page: 1,
           limit: 20,
-          positionId: ''
+          appointmentcode: undefined,
+          username: undefined,
+          usercode: undefined,
+          salesname: undefined,
+          salescode: undefined,
+          commissionrate: undefined,
+          orderByField: 'create_time',
+          isAsc: false
         }
-        this.appointmentcode = ''
-        this.username = ''
-        this.usercode = ''
-        this.salesname = ''
-        this.salescode = ''
-        this.commissionrate = ''
-
         this.getList()
       },
       handleCreate() {
-        this.resetTemp()
         this.dialogStatus = 'create'
         this.dialogCreate = true
       },
       resetTemp() {
-        this.form= {
-          salesSupportId: null,
-          appointmentCode: null,
-          commissionRate: null,
-          salesCode: null,
-          salesName: null,
-          userCode: null,
-          userName: null
+        this.form = {
+          appointmentCode: undefined,
+          commissionRate: undefined,
+          salesCode: undefined,
+          salesName: undefined,
+          userCode: undefined,
+          userName: undefined
         }
       },
       handleImport() {
@@ -443,7 +427,7 @@
         this.dialogStatus = 'edit'
         if (state === 'edit') {
           this.dialogCreate = true
-          getSalesSupport(row.salesSupportId).then(res=>{
+          getSalesSupport(row.salesSupportId).then(res => {
             this.form = {
               salesSupportId: res.data.salesSupportId,
               appointmentCode: res.data.appointmentCode,
@@ -452,12 +436,12 @@
               salesName: res.data.salesName,
               userCode: res.data.userCode,
               userName: res.data.userName
-            },
-            this.userInfo = this.financialPlannerList.find((ite)=>{
-              return ite.empNo === res.data.userCode;
+            }
+            this.userInfo = this.financialPlannerList.find((ite) => {
+              return ite.empNo === res.data.userCode
             })
-            this.salesInfo = this.salesSupportList.find((ite)=>{
-              return ite.empNo === res.data.salesCode;
+            this.salesInfo = this.salesSupportList.find((ite) => {
+              return ite.empNo === res.data.salesCode
             })
           })
         } else if (state === 'del') {
@@ -478,23 +462,69 @@
       },
       create(formName) {
         const set = this.$refs
+        console.log(this.form)
         set[formName].validate(valid => {
           if (valid) {
-            this.dialogCreate = false
-            addSalesSupport(this.form).then(res=>{
-              this.resetFilter()
+            addSalesSupport(this.form).then(res => {
+              if (res.status === 200) {
+                this.dialogCreate = false
+                this.getList()
+                this.$notify({
+                  title: '成功',
+                  type: 'success',
+                  duration: 2000,
+                  message: '创建成功'
+                })
+              }
+              this.resetTemp()
+              this.$refs[formName].resetFields()
+            }).catch(() => {
+              this.dialogCreate = false
+              this.resetTemp()
+              this.$refs[formName].resetFields()
+              this.$notify({
+                title: '失败',
+                message: '创建失败',
+                type: 'error',
+                duration: 2000
+              })
             })
+          } else {
+            return false
           }
         })
       },
-      update(formName){
+      update(formName) {
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
             this.dialogCreate = false
-            updateSalesSupport(this.form).then(res=>{
-              this.resetFilter()
+            updateSalesSupport(this.form).then(res => {
+              if (res.status === 200) {
+                this.dialogCreate = false
+                this.getList()
+                this.$notify({
+                  title: '成功',
+                  type: 'success',
+                  duration: 2000,
+                  message: '修改成功'
+                })
+              }
+              this.resetTemp()
+              this.$refs[formName].resetFields()
+            }).catch(() => {
+              this.dialogCreate = false
+              this.resetTemp()
+              this.$refs[formName].resetFields()
+              this.$notify({
+                title: '失败',
+                message: '修改失败',
+                type: 'error',
+                duration: 2000
+              })
             })
+          } else {
+            return false
           }
         })
       },
@@ -504,17 +534,31 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          deleteSalesSupport(row.salesSupportId).then(() => {
-            this.resetFilter()
+          deleteSalesSupport(row.salesSupportId).then(res => {
+            if (res.status === 200) {
+              this.getList()
+              this.$notify({
+                title: '成功',
+                message: '删除成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
+          }).catch(() => {
             this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
+              title: '失败',
+              message: '删除失败',
+              type: 'error',
               duration: 2000
             })
           })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
         })
-      },
+      }
     }
   }
 </script>

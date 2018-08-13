@@ -21,7 +21,7 @@
       <el-table-column align="center" label="字段" prop="fieldsKey" show-overflow-tooltip>
         <template slot-scope="scope">
           <span v-for="(item, index) in scope.row.fields">{{item.fieldsName}}<i v-show="index!=scope.row.fields.length-1">、</i></span>
-          
+
         </template>
       </el-table-column>
 
@@ -81,6 +81,7 @@
             required: true, message: '请选择时间', trigger: 'blur'
           }">
           <el-date-picker
+            style="width:390px"
             v-model="form1.date"
             type="daterange"
             range-separator="至"
@@ -93,7 +94,7 @@
           <span>{{form1.templateName}}</span>
         </el-form-item>
       </el-form>
-      
+
       <div slot="footer" class="dialog-footer">
         <el-button class="search_btn" @click="dialogTempVisible=false">取 消</el-button>
         <el-button class="add_btn" @click="handleExportTemp()">确 定</el-button>
@@ -113,7 +114,7 @@
 
   export default {
     components: {
-      MyTransfer 
+      MyTransfer
     },
     name: 'table_user',
     directives: {
@@ -245,10 +246,11 @@
             const date = this.form1.date
             date[0] = parseTime(date[0], '{y}-{m}-{d}')
             date[1] = parseTime(date[1], '{y}-{m}-{d}')
+            console.log(this.$refs.form1)
             exportTemplate(this.form1.templateId, {
               date: date
             }).then(res => {
-              let fileName = res.headers['content-disposition'].split('=')[1]
+              let fileName = decodeURI(res.headers['content-disposition'].split('=')[1]) // 导出时要decodeURI
               let objectUrl = URL.createObjectURL(new Blob([res.data]))
               this.forceDownload(objectUrl, fileName)
               this.dialogTempVisible = false

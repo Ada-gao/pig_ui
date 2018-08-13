@@ -1,12 +1,20 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入币种"
-                v-model="listQuery.name">
-      </el-input>
-      <el-button class="filter-item search_btn" v-waves icon="search" @click="handleFilter"><svg-icon icon-class="search"></svg-icon> 搜索</el-button>
-      <el-button v-if="sys_currency_add" class="filter-item add_btn" style="margin-left: 10px; float: right" @click="handleCreate" type="primary" icon="edit">
-        <svg-icon icon-class="add"></svg-icon> 新增币种</el-button>
+    <el-form label-width="80px">
+      <el-form-item label="搜索">
+        <el-col :span="6">
+          <el-input @keyup.enter.native="handleFilter()"  class="filter-item" placeholder="请输入币种"
+                    v-model="listQuery.name">
+          </el-input>
+        </el-col>
+        <el-col class="line" :span="0.8">&nbsp</el-col>
+        <el-button class="filter-item search_btn" v-waves icon="search" @click="handleFilter"><svg-icon icon-class="search"></svg-icon>查询</el-button>
+
+        <el-button v-if="sys_currency_add" class="filter-item add_btn" style="margin-left: 10px; float: right" @click="handleCreate" type="primary" icon="edit">
+          <svg-icon icon-class="add"></svg-icon> 新增币种</el-button>
+        </el-form-item>
+      </el-form>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -16,17 +24,16 @@
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="币种汇率">
-        <template slot-scope="scope">
-          <span>{{scope.row.name}}</span>
-        </template>
-      </el-table-column>
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <a v-if="sys_currency_upd" size="small" class="common_btn"
+         <a size="small" class="common_btn"
+                     @click="handleView(scope.row)">查看
+          </a>
+          <span v-if="!scope.row.used" class='vertical-line'></span>
+          <a v-if="!scope.row.used" size="small" class="common_btn"
                      @click="handleUpdate(scope.row)">编辑
           </a>
-          <a v-if="sys_currency_del" size="small" class="danger_btn"
+          <a v-if="!scope.row.used" size="small" class="danger_btn"
                      @click="deletes(scope.row)">删除
           </a>
         </template>
@@ -34,13 +41,6 @@
 
     </el-table>
 
-    <div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                     :current-page.sync="listQuery.page"
-                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
-                     layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
-    </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :model="form" ref="form" label-width="100px" :rules="rules">
@@ -48,9 +48,9 @@
         <el-form-item label="币种名称" prop="name">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="币种汇率" prop="name">
+       <!--  <el-form-item label="币种汇率" prop="name">
           <el-input v-model="form.name"></el-input>
-        </el-form-item>
+        </el-form-item> -->
 
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -64,7 +64,7 @@
 </template>
 
 <script>
-  import { fetchCurrency, getObj, addObj, putObj, delObj } from '@/api/currency'
+  import { fetchCurrency, getObj, addObj, putObj, delObj ,getObjList} from '@/api/currency'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
@@ -90,10 +90,7 @@
         list: null,
         total: null,
         listLoading: true,
-        listQuery: {
-          page: 1,
-          limit: 20
-        },
+        listQuery: {},
         form: {
           name: undefined,
           currencyId: undefined
@@ -144,13 +141,13 @@
     },
     methods: {
       getList() {
-        this.listLoading = true
-        // this.listQuery.orderByField = '`user`.create_time'
-        // this.listQuery.isAsc = false
-        fetchCurrency(this.listQuery).then(response => {
-          this.list = response.data.records
-          this.total = response.data.total
-          this.listLoading = false
+        this.listLoading = true;
+        getObjList(this.listQuery).then(response => {
+          if(response.status == 200){
+            this.list = response.data;
+            this.listLoading = false;
+          }
+         
         })
       },
       // getNodeData(data) {
@@ -166,7 +163,6 @@
           })
       },
       handleFilter() {
-        this.listQuery.page = 1
         this.getList()
       },
       handleSizeChange(val) {
@@ -182,6 +178,11 @@
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
       },
+      // 查看
+      handleView(row){
+        this.$router.push({path: `/setting/currency/detail/${row.name}/${row.currencyId}`})
+      },
+      //编辑
       handleUpdate(row) {
         getObj(row.currencyId)
           .then(response => {
@@ -194,6 +195,10 @@
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
+            let self = this.list.some(item=>{
+               return item.name == this.form.name
+            })
+           if(self) return false;
             addObj(this.form)
               .then(() => {
                 this.dialogFormVisible = false
@@ -220,7 +225,6 @@
           if (valid) {
             this.dialogFormVisible = false
             putObj(this.form).then(() => {
-              debugger
               this.dialogFormVisible = false
               this.getList()
               this.$notify({
@@ -268,3 +272,14 @@
     }
   }
 </script>
+<style lang="scss" scoped>
+ .vertical-line {
+  width: 1px;
+  height: 14px;
+  background-color: #8F8F8F;
+  display: inline-block;
+  content: '';
+  margin: 0 5px;
+  vertical-align: text-bottom;
+}
+</style>

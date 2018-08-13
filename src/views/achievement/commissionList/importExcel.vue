@@ -26,11 +26,13 @@
       <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item'>
       </el-table-column>
     </el-table>
-    <el-table v-if="errorList.length !== 0" :data="errorList" border highlight-current-row style="width: 100%;margin-top:20px;">
-      
+    <el-table v-if="errorList.length !== 0" :data="errorList" :span-method="objectSpanMethod" border highlight-current-row style="width: 100%;margin-top:20px;">
       <el-table-column prop="errorNo" label="行数">
       </el-table-column>
-      <el-table-column prop="errorMegs" :formatter="cellMegs" label="错误项">
+      <el-table-column label="错误项">
+        <template slot-scope="prop">
+          {{prop.row.errorItem}}<span style="color: #D0021B">（{{prop.row.errorReason}}）</span>
+        </template>
       </el-table-column>
     </el-table>
   </div>
@@ -51,46 +53,67 @@
         formData: null,
         dialogVisible: false,
         downloadUrl: 'static/excel/佣金列表模版.xlsx',
-        formContent: [],
         errorList: [],
-        errorMsg: [],
-        errLength: 0
+        spanArr: [],
+        pos: null
       }
     },
     methods: {
-      cellMegs(row, column, cellValue, index) {
-        this.errLength = 0
-        this.errLength = cellValue.length
-        this.errorMsg = [...cellValue]
-        console.log(row)
-        console.log(column)
-        console.log(cellValue)
-        console.log(index)
-        // row.errorMegs.map(item => {
-        //   // console.log(item.errorItem + '(' + item.errorReason + ')')
-        //   this.errorMsg.push(item.errorItem + '(' + item.errorReason + ')')
-        //   this.errorMsg.join('|')
-        //   // console.log(this.errorMsg)
-        // })
+      getSpanArr(data) {
+        for (let i = 0; i < data.length; i++) {
+          if (i === 0) {
+            this.spanArr.push(1)
+            this.pos = 0
+          } else {
+            // 判断当前元素与上一个元素是否相同
+            if (data[i].errorNo === data[i - 1].errorNo) {
+              this.spanArr[this.pos] += 1
+              this.spanArr.push(0)
+            } else {
+              this.spanArr.push(1)
+              this.pos = i
+            }
+          }
+        }
+      },
+      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+        if (columnIndex === 0) {
+          const _row = this.spanArr[rowIndex]
+          const _col = _row > 0 ? 1 : 0
+          return {
+            rowspan: _row,
+            colspan: _col
+          }
+        }
       },
       showDialog() {
         if (this.tableData.length > 0) {
           this.dialogVisible = true
         }
       },
+      transferError(data) {
+        const tempArr = []
+        data.map((ele, index) => {
+          ele.errorMegs.map((item, idx) => {
+            tempArr.push(
+              {
+                errorNo: ele.errorNo,
+                errorItem: item.errorItem,
+                errorReason: item.errorReason
+              }
+            )
+          })
+        })
+        return tempArr
+      },
       selected(data) {
-        // this.tableHeader = data.header
+        this.spanArr = []
+        this.pos = null
+        this.errorList = []
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
         this.tableData = temp.results
-        // console.log(this.tableData)
         this.formData = JSON.parse(JSON.stringify(this.tableData))
-        // this.tableData = Object.assign([], data.results)
-        // console.log(this.tableHeader)
-        // console.log(this.tableData)
-        // this.formData = data.formData
-        // this.formData = Object.assign([], data.results)
-        // this.formContent = this.formData
         let kepMap = {
           '公司': "company",
           '区域': "regional",
@@ -108,7 +131,7 @@
           '职级': "rankName",
           '订单段': "timeSlot",
           '部门': "deptName",
-          '行数': "lineNo"
+          '行号': "lineNo"
         }
         this.formData.forEach( item => {
           replaceKey(item, kepMap)
@@ -117,30 +140,26 @@
           item.finalCommission = parseInt(item.finalCommission)
           item.occurrenceDate = new Date(item.occurrenceDate).getTime()
         })
+        document.getElementById('excel-upload-input').value = null
       },
       submit() {
-        // const config = {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
-        // }
         commissionListImport(this.formData).then(res => {
-          // console.log(res.data)
-          if (res.data.length === 0) {
-            console.log('上传成功')
+          if (res.status === 200) {
             this.dialogVisible = false
-          } else {
-            console.log('上传失败')
-            this.errorList = res.data
-            this.dialogVisible = false            
+            if (res.data.length === 0) {
+              this.$notify({
+                title: '成功',
+                type: 'success',
+                duration: 2000,
+                message: '导入成功'
+              })
+              this.$router.push({ path: '/achievement/commissionList' })
+            } else {
+              this.errorList = this.transferError(res.data)
+              this.getSpanArr(this.errorList)
+              this.dialogVisible = false
+            }
           }
-          // console.log(this.errorList)
-          // if (!res) {
-          //   console.log('上传失败')
-          // } else {
-          //   console.log('上传成功')
-          //   this.dialogVisible = false
-          // }
         })
       }
     }

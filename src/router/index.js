@@ -152,7 +152,7 @@ export const constantRouterMap = [
     component: Layout,
     name: '业绩/佣金管理1',
     hidden: true,
-    redirect: '/achievement/allList',
+    redirect: '/achievement/perform',
     meta: {
       title: '业绩/佣金管理',
       icon: 'product_mg'
@@ -187,8 +187,33 @@ export const constantRouterMap = [
         hidden: true
       }
     ]
+  },
+  {
+    menuId: 4,
+    path: '/setting',
+    component: Layout,
+    name: '设置管理1',
+    redirect: '/setting/currency',
+    hidden: true,
+    // icon: 'table',
+    meta: {
+      title: '设置管理',
+      icon: 'setting'
+    },
+    children:[
+      {
+        path: 'currency/detail/:name/:id',
+        component: _import('admin/setting/detail'),
+        name: '币种详情',
+        meta: { title: '币种详情', icon: '', noCache: true },
+        hidden: true
+      }
+    ]
   }
 ]
+
+
+
 
 export default new Router({
   // mode: 'history', // 后端支持可开
@@ -213,6 +238,7 @@ export const asyncRouterMap = [
       { menuId: 5, path: 'user', component: _import('admin/user/index'), name: '用户管理', meta: { title: '用户管理', icon: 'user2' }},
       { menuId: 7, path: 'role', component: _import('admin/role/index'), name: '角色管理', meta: { title: '角色管理', icon: 'role' }},
       { menuId: 43, path: 'posi', component: _import('admin/posi/index'), name: '职位管理', meta: { title: '职位管理', icon: 'position' }},
+      { menuId: 299, path: 'rank', component: _import('admin/rank/index'), name: '职级管理', meta: { title: '职级管理', icon: 'position' }},
       { menuId: 10, path: 'dept', component: _import('admin/dept/index'), name: '部门管理', meta: { title: '部门管理', icon: 'dept' }},
       { menuId: 2, path: 'uploadUser', component: _import('admin/user/uploadExcel'), name: '用户批量导入', meta: { title: '用户批量导入', icon: 'upload' }}
     ]
@@ -238,6 +264,8 @@ export const asyncRouterMap = [
       { menuId: 23, path: 'allocated', component: _import('client/allocated/index'), name: '待分配客户', meta: { title: '待分配客户', icon: 'allocated' }},
       { menuId: 24, path: 'certFile', component: _import('client/certFile/index'), name: '认证资料管理', meta: { title: '认证资料管理', icon: 'certFile' }},
       { menuId: 25, path: 'customerLabel', component: _import('client/customerLabel/index'), name: '客户标签设置', meta: { title: '客户标签设置', icon: 'certFile' }},
+      { menuId: 25, path: 'customerBatch', component: _import('client/batch/index'), name: '客户导入', meta: { title: '客户导入', icon: 'certFile' }},
+      { menuId: 25, path: 'customerBuyPdBatch', component: _import('client/pdbatch/index'), name: '已购买导入', meta: { title: '已购买导入', icon: 'certFile' }},
       // { menuId: 22, path: 'detail/:id', component: _import('client/customer/detail'), name: '客户详情', meta: { title: '客户详情', icon: 'user' }},
     ]
   },
@@ -264,7 +292,7 @@ export const asyncRouterMap = [
       { menuId: 48, path: 'cashing', component: _import('product/cashing/index'), name: '兑付中列表', meta: { title: '兑付中列表', icon: 'shutDown' }},
       { menuId: 48, path: 'payCompletion', component: _import('product/payCompletion/index'), name: '兑付完成列表', meta: { title: '兑付完成列表', icon: 'shutDown' }},
       { menuId: 48, path: 'material', component: _import('product/materialManagement/index'), name: '材料管理', meta: { title: '材料管理', icon: 'file' }},
-      // { menuId: 48, path: 'batch', component: _import('product/batch/index'), name: '批量导入', meta: { title: '批量导入', icon: 'product' }},
+      { menuId: 48, path: 'productBatch', component: _import('product/batch/index'), name: '批量导入', meta: { title: '批量导入', icon: 'product' }},
       { menuId: 49, path: 'productType', component: _import('product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'productType' }},
     ]
   },
@@ -295,19 +323,19 @@ export const asyncRouterMap = [
     component: Layout,
     name: '业绩/佣金管理',
     hidden: false,
-    redirect: '/achievement/allList',
+    redirect: '/achievement/perform',
     // icon: 'table',
     meta: {
       title: '业绩/佣金管理',
-      icon: 'product_mg'
+      icon: 'pf'
     },
     children: [
-      { menuId: 287, path: 'balanced', component: _import('achievement/balanced/index'), name: '平衡计分卡', meta: { title: '平衡计分卡', icon: 'product' }},
-      { menuId: 48, path: 'commissionList', component: _import('achievement/commissionList/index'), name: '佣金列表', meta: { title: '佣金列表', icon: 'product' }},
-      { menuId: 48, path: 'commCalc', component: _import('achievement/commissionCalc/index'), name: '佣金计算模版', meta: { title: '佣金计算模版', icon: 'product' }},
-      { menuId: 314, path: 'perform', component: _import('achievement/performanceIndicator/index'), name: '业绩指标列表', meta: { title: '业绩指标列表', icon: 'product' }},
-      { menuId: 283, path: 'probation', component: _import('achievement/performanceIndicator/probation'), name: '试用期业绩标准', meta: { title: '试用期业绩标准', icon: 'product' }},
-      { menuId: 291, path: 'saleSupport', component: _import('achievement/saleSupport/index'), name: '销售支持', meta: { title: '销售支持', icon: 'product' }},
+      { menuId: 314, path: 'perform', component: _import('achievement/performanceIndicator/index'), name: '业绩指标列表', meta: { title: '业绩指标列表', icon: 'pfIndi' }},
+      { menuId: 287, path: 'balanced', component: _import('achievement/balanced/index'), name: '平衡计分卡', meta: { title: '平衡计分卡', icon: 'pfBn' }},
+      { menuId: 48, path: 'commissionList', component: _import('achievement/commissionList/index'), name: '佣金列表', meta: { title: '佣金列表', icon: 'pfCm' }},
+      { menuId: 48, path: 'commCalc', component: _import('achievement/commissionCalc/index'), name: '佣金计算模版', meta: { title: '佣金计算模版', icon: 'pfCmcalc' }},
+      { menuId: 283, path: 'probation', component: _import('achievement/performanceIndicator/probation'), name: '试用期业绩标准', meta: { title: '试用期业绩标准', icon: 'pfBn' }},
+      { menuId: 291, path: 'saleSupport', component: _import('achievement/saleSupport/index'), name: '销售支持', meta: { title: '销售支持', icon: 'pfSale' }}
     ]
   },
   {
@@ -324,6 +352,8 @@ export const asyncRouterMap = [
     },
     children: [
       { menuId: 38, path: 'currency', component: _import('admin/setting/currency'), name: '币种管理', meta: { title: '币种管理', icon: 'currency' }},
+      { menuId: 349, path: 'asset', component: _import('admin/asset/index'), name: '资产规模设置', meta: { title: '资产规模设置', icon: 'currency' }},
+      { menuId: 332, path: 'cooling', component: _import('admin/cooling/index'), name: '冷静期时间', meta: { title: '冷静期时间', icon: 'currency' }},
       { menuId: 9, path: 'dict', component: _import('admin/dict/index'), name: '字典管理', meta: { title: '字典管理', icon: 'dict' }},
       { menuId: 8, path: 'log', component: _import('admin/log/index'), name: '日志管理', meta: { title: '日志管理', icon: 'log' }},
       { menuId: 330, path: 'complaint', component: _import('admin/complaint/index'), name: '投诉电话', meta: { title: '投诉电话', icon: 'log' }},

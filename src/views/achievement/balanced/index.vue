@@ -116,12 +116,10 @@
       </el-pagination>
     </div>
 		<el-dialog title="编辑平衡积分卡系数" :visible.sync="dialogEditVisible">
-      <el-form :model="form" ref="form" label-width="120px" :rules="rules">
-        
-        <el-form-item label="平衡计分卡系数" prop="coefficient">
+      <el-form :model="form" ref="form" label-width="170px" :rules="rules">
+        <el-form-item label="平衡计分卡系数（%）" prop="coefficient">
           <el-input v-model="form.coefficient"></el-input>
         </el-form-item>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button class="search_btn" @click="cancel('form')">取 消</el-button>
@@ -136,6 +134,18 @@ import { getAllPositon, getAllDeparts, getBalancedList, getBalancedId, editBalan
 import { parseTime, transformText } from '@/utils'
 export default {
 	data () {
+		const validatePass = (rule, value, callback) => {
+			if (!value) {
+				callback('请输入平衡计分卡系数')
+			} else {
+				callback()
+			}
+			// if (Number(value) > 1) {
+			// 	callback(new Error('平衡计分卡系数不能大于1'))
+			// } else {
+			// 	callback()
+			// }
+		}
 		return	{
 			list: null,
 			total: null,
@@ -159,7 +169,7 @@ export default {
 			},
 			rules: {
 				coefficient: [
-					{ required: true, message: '请输入平衡计分卡系数' }
+					{ required: true, trigger: 'blur', validator: validatePass }
 				]
 			}
 		}
@@ -184,14 +194,22 @@ export default {
 		blur() {
 			console.log('1111')
 		},
+		cycleList(list) {
+			list.forEach(item => {
+				if (item.children && !item.children.length) {
+					delete item.children
+				}
+				if (item.children && item.children.length) {
+					this.cycleList(item.children)
+				}
+			})
+		},
 		getList() {
 			this.listLoading = true
 			getAllDeparts()
 				.then(response => {
 					this.treeDeptData = response.data
-					console.log(this.treeDeptData, this.treeDeptData.find(item => 
-						item.id === 1
-					))
+					this.cycleList(this.treeDeptData)
 			}),
 			getBalancedList(this.listQuery).then(response => {
 				this.list = response.data.records
@@ -272,7 +290,6 @@ export default {
 		},
 		update(formName) {
 				const set = this.$refs
-				console.log(this.form)
         set[formName].validate(valid => {
           if (valid) {
 						this.form.coefficient -= 0

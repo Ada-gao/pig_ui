@@ -22,7 +22,7 @@
       <el-table-column align="center" prop="labelDescription" label="标签解释" ></el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="editAum(scope.row.clientLabelId,'newAddClient')">编辑</el-button>
+            <el-button type="text" class="common_btn" @click="editAum(scope.row.clientLabelId,'newAddClient')">编辑</el-button>
             <span class="space_line"> | </span>
             <el-button type="text" class="red" @click="deletes(scope.row.clientLabelId)">删除</el-button>
           </template>
@@ -48,31 +48,26 @@
       <div class="red remarks">备注：签约金额为客户资产管理规模</div>
     </section>
      <!-- 新增客户标签对话框 -->
-    <el-dialog
-      title="新增标签"
-      :visible.sync="newAdd" :before-close="handleClose">
-    
+    <el-dialog title="新增标签" :visible.sync="newAdd" :before-close="handleClose" width="30%">
         <el-form :model="newAddClient" ref="newAddClient" label-width="100px" class="demo-ruleForm">
 
           <el-form-item  label="标签名称"  prop="labelName" :rules="[
             { required: true, message: '标签名称不能为空'},
           ]"> 
-            <el-input v-model="newAddClient.labelName" placeholder="请输入标签名称" style="width:63%;"></el-input>
+            <el-input v-model="newAddClient.labelName" placeholder="请输入标签名称" style="width:90%;"></el-input>
           </el-form-item>
 
           <el-form-item label="标签解释">
-            <el-input  v-model="newAddClient.labelDescription"  placeholder="请输入标签解释" style="width:63%;"></el-input>
+            <el-input  v-model="newAddClient.labelDescription"  placeholder="请输入标签解释" style="width:90%;"></el-input>
           </el-form-item>
         </el-form>
-        <span slot="footer" class="dialog-footer">
+        <div slot="footer" class="dialog-footer">
           <el-button @click="cancel('newAddClient')">取 消</el-button>
           <el-button type="primary" @click="clientDetermine('newAddClient')">确 定</el-button>
-        </span>
+        </div>
     </el-dialog>
     <!-- 新增aum对话框 -->
-    <el-dialog
-      title="新增客户标签"
-      :visible.sync="newAddAum" :before-close="handleClose">
+    <el-dialog title="新增客户标签" :visible.sync="newAddAum" :before-close="handleClose" width="30%">
     
         <el-form :model="newAddParamet" :rules="rules" ref="newAddParamet" label-width="100px" class="demo-ruleForm">
           <el-form-item  label="签约金额" prop="lowLimit"  class="demo-block demo-box demo-zh-CN demo-form"> 
@@ -94,10 +89,10 @@
             <el-input  v-model="newAddParamet.labelName"  placeholder="请输入会员等级" style="width:71%;" auto-complete="off" ></el-input>
           </el-form-item>
         </el-form>
-        <span slot="footer" class="dialog-footer">
+        <div slot="footer" class="dialog-footer" style="text-align: center">
           <el-button @click="cancel('newAddParamet')">取 消</el-button>
           <el-button type="primary" @click="aumDetermine('newAddParamet')">确 定</el-button>
-        </span>
+        </div>
     </el-dialog>
 
     <el-dialog
@@ -105,10 +100,10 @@
       :visible.sync="dialogVisible"
       width="30%">
       <span>{{deletesTitle}}</span>
-      <span slot="footer" class="dialog-footer">
+      <div slot="footer" class="dialog-footer">
         <el-button class="search_btn" @click="dialogVisible = false">取 消</el-button>
         <el-button class="add_btn" @click="todeletes">确 定</el-button>
-      </span>
+      </div>
     </el-dialog>
   </div>
 </template>

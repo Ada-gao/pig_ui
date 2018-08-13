@@ -4,20 +4,22 @@
 			<el-form label-position="right" label-width="80px">
         <el-row :gutter="20">
 					<el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="时间">
+            <el-form-item label="月份">
               <el-date-picker
+								style="width: 47.7%"
                 v-model="entryDateS"
                 type="month"
                 start-placeholder="选择时间"
                 end-placeholder="选择时间">
               </el-date-picker> - 
 							<el-date-picker
+								style="width: 47.7%"
                 v-model="entryDateE"
                 type="month"
                 start-placeholder="选择时间"
                 end-placeholder="选择时间">
               </el-date-picker>
-							<span class="error" v-if="errorTip">{{errorMes}}</span>							
+							<span class="error" v-if="errorTip">{{errorMes}}</span>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
@@ -222,11 +224,22 @@ export default {
 		this.getList()
   },
 	methods: {
+		cycleList(list) {
+			list.forEach(item => {
+				if (item.children && !item.children.length) {
+					delete item.children
+				}
+				if (item.children && item.children.length) {
+					this.cycleList(item.children)
+				}
+			})
+		},
 		getList() {
 			this.listLoading = true
 			getAllDeparts()
 				.then(response => {
 					this.treeDeptData = response.data
+					this.cycleList(this.treeDeptData)
 			}),
 			getCommissionList(this.listQuery).then(response => {
 				this.list = response.data.records
@@ -251,24 +264,25 @@ export default {
 			})
 		},
 		handleFilter() {
-			if (new Date(this.entryDateS).getTime() > new Date(this.entryDateE).getTime()) {
-				this.errorTip = true
-				this.errorMes = '结束时间不能小于开始时间'
-				 setTimeout(() => {
-					this.errorTip = false
-				}, 5000)
-				return
-			} else if ( this.entryDateS === undefined || this.entryDateE === undefined) {
+			if ( (this.entryDateS === '' && this.entryDateE === '') || (this.entryDateS === null && this.entryDateE === null) || (this.entryDateS === '' && this.entryDateE === null) || (this.entryDateS === null && this.entryDateE === '') ) {
+				// return
+			} else if ( this.entryDateS === '' || this.entryDateE === '' || this.entryDateS === null || this.entryDateE === null ) {
 				this.errorTip = true
 				this.errorMes = '时间不能为空'
 				 setTimeout(() => {
 					this.errorTip = false
-				}, 5000)
+				}, 3000)
 				return
-			} else if (this.entryDateS && this.entryDateE) {
+			} else if (new Date(this.entryDateS).getTime() > new Date(this.entryDateE).getTime()) {
+				this.errorTip = true
+				this.errorMes = '结束时间不能小于开始时间'
+				 setTimeout(() => {
+					this.errorTip = false
+				}, 3000)
+				return
+			}  else if (this.entryDateS && this.entryDateE) {
 				this.listQuery.date = [parseTime(this.entryDateS, '{y}-{m}'), parseTime(this.entryDateE, '{y}-{m}')]
 			}
-			console.log(this.listQuery.date)
 			this.listQuery.page = 1
 			if(this.deptName.length) {
 				this.listQuery.deptName = this.deptName[this.deptName.length - 1]
@@ -319,10 +333,12 @@ export default {
 </script>
 <style lang="scss" scoped>
 .el-date-editor.el-input{
-	width: 143px;
+	// width: 143px;
+	// box-sizing: border-box
 }
 .error{
 	position: absolute;
+	left: 0;
 	top: 50px;
 	line-height: 0;
 	color: #f56c6c;

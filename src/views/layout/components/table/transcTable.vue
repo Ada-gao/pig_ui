@@ -36,51 +36,57 @@
 
       <el-table-column align="center" label="客户编号" v-if="clientNoCol">
         <template slot-scope="scope">
-        <span>{{scope.row.clientNo}}</span>
+          <span>{{scope.row.clientNo}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="客户姓名">
         <template slot-scope="scope">
-        <span>{{scope.row.clientName}}</span>
+          <span>{{scope.row.clientName}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="客户性别" v-if="clientGenderCol">
         <template slot-scope="scope">
-        <span>{{scope.row.clientGender}}</span>
+          <span>{{scope.row.clientGender}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="国籍（常住地区）" v-if="cityCol">
         <template slot-scope="scope">
-        <span>{{scope.row.city}}</span>
+          <span>{{scope.row.city}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="手机号" v-if="clientMobileCol">
         <template slot-scope="scope">
-        <span>{{scope.row.clientMobile}}</span>
+          <span>{{scope.row.clientMobile}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="预约金额/万" v-if="aptCol">
         <template slot-scope="scope">
-        <span>{{scope.row.appointmentAmount}}</span>
+          <span>{{scope.row.appointmentAmount}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="预约时间" v-if="aptCol">
         <template slot-scope="scope">
-        <span>{{scope.row.appointmentDate | parseTime('{y}-{m}-{d}')}}</span>
+          <span>{{scope.row.appointmentDate | parseTime('{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="打款金额/万" v-if="paymentCol">
         <template slot-scope="scope">
-        <span>{{scope.row.remitAmount}}</span>
+          <span>{{scope.row.remitAmount}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="起息日">
+        <template slot-scope="scope">
+          <span>{{scope.row.valueDate}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="理财师姓名">
         <template slot-scope="scope">
-        <span>{{scope.row.userName}}</span>
+          <span>{{scope.row.userName}}</span>
         </template>
       </el-table-column>
 
@@ -89,13 +95,13 @@
           <span>{{scope.row.userDeptName}}</span>
         </template>
       </el-table-column>
-      
+
       <el-table-column align="center" label="打款状态" v-if="payStatusCol">
         <template slot-scope="scope">
           <span>{{scope.row.statusText}}</span>
         </template>
       </el-table-column>
-      
+
       <el-table-column align="center" label="退款状态" v-if="refundCol">
         <template slot-scope="scope">
           <span>{{scope.row.refundStatusText}}</span>
@@ -123,10 +129,10 @@
       <el-table-column align="center" label="操作" v-if="!transcStatus">
         <template slot-scope="scope">
           <a v-if="sys_product_upd && scope.row.status != 3001" size="small" class="common_btn"
-                     @click="handleUpdate(scope.row)">查 看
+             @click="handleUpdate(scope.row)">查 看
           </a>
           <a v-if="scope.row.status == 3001" size="small" class="common_btn"
-                     @click="receiveContract(scope.row)">收到合同
+             @click="receiveContract(scope.row)">收到合同
           </a>
         </template>
       </el-table-column>
@@ -303,7 +309,6 @@
         this.listLoading = true
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         let list = null
-        console.log(this.listQuery)
         if(this.orderStatus == '1') { // 交易列表
           fetchTranscList(this.listQuery).then(response => {
             this.list = response.data.records
@@ -311,8 +316,10 @@
             this.listLoading = false
             this.list.forEach(item => {
               item.statusText = transformText(this.appointmentStatus, item.status)
-              item.clientClass = transformText(this.clientClass, item.clientClass)
+              // item.clientClass = transformText(this.clientClass, item.clientClass)
+              item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
             })
+            console.log(this.list)
           })
         } else if(this.orderStatus == '2') { // 预约列表
           fetchAppointList(this.listQuery).then(response => {
@@ -321,7 +328,8 @@
             this.listLoading = false
             this.list.forEach(item => {
               item.statusText = transformText(this.appointmentStatus, item.status)
-              item.clientClass = transformText(this.clientClass, item.clientClass)
+              // item.clientClass = transformText(this.clientClass, item.clientClass)
+              item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
             })
           })
 
@@ -332,7 +340,8 @@
             this.listLoading = false
             this.list.forEach(item => {
               item.statusText = transformText(this.appointmentStatus, item.status)
-              item.clientClass = transformText(this.clientClass, item.clientClass)
+              // item.clientClass = transformText(this.clientClass, item.clientClass)
+              item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
             })
           })
 
@@ -343,7 +352,8 @@
             this.listLoading = false
             this.list.forEach(item => {
               item.statusText = transformText(this.appointmentStatus, item.status)
-              item.clientClass = transformText(this.clientClass, item.clientClass)
+              // item.clientClass = transformText(this.clientClass, item.clientClass)
+              item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
             })
           })
 
@@ -355,7 +365,8 @@
             this.list.forEach(item => {
               item.statusText = transformText(this.appointmentStatus, item.status)
               item.refundStatusText = transformText(this.refundStatus, item.refundStatus)
-              item.clientClass = transformText(this.clientClass, item.clientClass)
+              // item.clientClass = transformText(this.clientClass, item.clientClass)
+              item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
             })
           })
         }
@@ -363,15 +374,16 @@
       getHistory() {
         this.queryId = 2
         // if(this.historyStatus) {
-          // console.log(this.historyStatus)
-          fetchRecords(this.listQuery).then(response => {
-            this.list = response.data.records
-            this.total = response.data.total
-            this.listLoading = false
-            this.list.forEach(item => {
-              item.statusText = transformText(this.appointmentStatus, item.status)
-            })
+        // console.log(this.historyStatus)
+        fetchRecords(this.listQuery).then(response => {
+          this.list = response.data.records
+          this.total = response.data.total
+          this.listLoading = false
+          this.list.forEach(item => {
+            item.statusText = transformText(this.appointmentStatus, item.status)
+            item.valueDate = item.valueDate ? parseTime(item.valueDate, '{y}-{m}-{d}') : ''
           })
+        })
         // }
       },
       getAppointList() { // 产品模块交易人数表
@@ -445,8 +457,8 @@
 </script>
 
 <style lang="scss" scoped>
-// .hide {
-//   display: none;
-// }
+  // .hide {
+  //   display: none;
+  // }
 </style>
 

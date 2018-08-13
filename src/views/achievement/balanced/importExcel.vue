@@ -22,8 +22,17 @@
         </i>条
       </span>
     </div>
-    <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
+    <el-table v-if="errorList.length === 0" :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
       <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item'>
+      </el-table-column>
+    </el-table>
+    <el-table v-if="errorList.length !== 0" :data="errorList" :span-method="objectSpanMethod" border highlight-current-row style="width: 100%;margin-top:20px;">
+      <el-table-column prop="errorNo" label="行数">
+      </el-table-column>
+      <el-table-column label="错误项">
+        <template slot-scope="prop">
+          {{prop.row.errorItem}}<span style="color: #D0021B">（{{prop.row.errorReason}}）</span>
+        </template>
       </el-table-column>
     </el-table>
   </div>
@@ -32,7 +41,7 @@
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import { balancedImport } from '@/api/achievement/index'
-  import { replaceKey } from '@/utils'  
+  import { replaceKey } from '@/utils'
 
   export default {
     name: 'uploadExcel',
@@ -43,22 +52,32 @@
         tableHeader: [],
         formData: null,
         dialogVisible: false,
-        downloadUrl: 'static/excel/平衡计分卡系数模版.xlsx'
+        downloadUrl: 'static/excel/平衡计分卡系数模版.xlsx',
+        errorList: [],
+        spanArr: [],
+        pos: null
       }
     },
     methods: {
+      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+        if (columnIndex === 0) {
+          const _row = this.spanArr[rowIndex]
+          const _col = _row > 0 ? 1 : 0
+          return {
+            rowspan: _row,
+            colspan: _col
+          }
+        }
+      },
       showDialog() {
         if (this.tableData.length > 0) {
           this.dialogVisible = true
         }
       },
       selected(data) {
-        // this.tableHeader = data.header
-        // this.tableData = data.results
-        // console.log(this.tableHeader)
-        // console.log(this.tableData)
-        // this.formData = data.formData
-        // console.log(this.formData)
+        this.spanArr = []
+        this.pos = null
+        this.errorList = []
         const temp = Object.assign({}, data)
         this.tableHeader = temp.header
         this.tableData = temp.results
@@ -70,28 +89,70 @@
           '职位': "positionName",
           '职级': "rankName",
           '部门': "deptName",
-          '时间': "time",
+          // '时间': "time",
+          '开始时间': "start",
+          '结束时间': "end",
+          '行号': "lineNo"
         }
-        this.formData.forEach( item => {
+        this.formData.forEach(item => {
           replaceKey(item, kepMap)
-          let timeRange = item.time.split('—')
-          item.start =  new Date(timeRange[0]).getTime()
-          item.end = new Date(timeRange[1]).getTime()
-          delete item.time
+          item.lineNo = parseInt(item.lineNo)
+          // const timeRange = item.time.split('—')
+          item.start = new Date(item.start).getTime()
+          item.end = new Date(item.end).getTime()
+          // delete item.time
         })
+        document.getElementById('excel-upload-input').value = null
+      },
+      getSpanArr(data) {
+        for (let i = 0; i < data.length; i++) {
+          if (i === 0) {
+            this.spanArr.push(1)
+            this.pos = 0
+          } else {
+            // 判断当前元素与上一个元素是否相同
+            if (data[i].errorNo === data[i - 1].errorNo) {
+              this.spanArr[this.pos] += 1
+              this.spanArr.push(0)
+            } else {
+              this.spanArr.push(1)
+              this.pos = i
+            }
+          }
+        }
+      },
+      transferError(data) {
+        const tempArr = []
+        data.map((ele, index) => {
+          ele.errorMegs.map((item, idx) => {
+            tempArr.push(
+              {
+                errorNo: ele.errorNo,
+                errorItem: item.errorItem,
+                errorReason: item.errorReason
+              }
+            )
+          })
+        })
+        return tempArr
       },
       submit() {
-        // const config = {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
-        // }
         balancedImport(this.formData).then(res => {
-          if (!res) {
-            console.log('上传失败')
-          } else {
-            console.log('上传成功')
+          if (res.status === 200) {
             this.dialogVisible = false
+            if (res.data.length === 0) {
+              this.$notify({
+                title: '成功',
+                type: 'success',
+                duration: 2000,
+                message: '导入成功'
+              })
+              this.$router.push({ path: '/achievement/balanced' })
+            } else {
+              this.errorList = this.transferError(res.data)
+              this.getSpanArr(this.errorList)
+              this.dialogVisible = false
+            }
           }
         })
       }

@@ -40,3 +40,11 @@ export function logout(accesstoken, refreshToken) {
     params: { accesstoken, refreshToken }
   })
 }
+
+export function sendVcode(query) {
+  return request({
+    url: '/password/code',
+    method: 'get',
+    query
+  })
+}

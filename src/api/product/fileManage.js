@@ -87,3 +87,18 @@ export function delTranscFile(id, obj) {
     data: obj
   })
 }
+
+/**
+ * 产品批量导入
+ * @param file
+ */
+export function importPd(file) {
+  return request({
+    url: '/product/products/import',
+    method: 'post',
+    data: file,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}

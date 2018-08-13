@@ -46,7 +46,7 @@
             <el-form-item label="职级">
               <el-select class="filter-item"
                          placeholder="请选择职级"
-                         v-model="listQuery.rankId">
+                         v-model="rankId">
                 <el-option v-for="item in level"
                            :value="item.rankId"
                            :label="item.rankName"
@@ -77,10 +77,10 @@
         <svg-icon icon-class="add"></svg-icon>新增指标
       </el-button>
       <el-button class="search_btn" @click="handleImport">
-        <svg-icon icon-class="upload"></svg-icon>批量导入
+        <svg-icon icon-class="import"></svg-icon>批量导入
       </el-button>
       <el-button class="search_btn" @click="handleExport">
-        <svg-icon icon-class="upload"></svg-icon>批量导出
+        <svg-icon icon-class="export"></svg-icon>批量导出
       </el-button>
     </div>
     <el-table :data="list"
@@ -154,6 +154,7 @@
       <el-form :model="form"
                ref="form"
                :rules="rules1"
+               :validate-on-rule-change="true"
                label-width="100px">
         <el-row>
           <el-col class="inline-col">
@@ -185,7 +186,6 @@
                 v-if="dialogStatus === 'edit'"
                 change-on-select
                 v-model="form.deptIds"
-                @change="changeE"
               ></el-cascader>
               <div v-else>
                 <!--<el-cascader-->
@@ -240,11 +240,23 @@
         </el-row>
         <el-row>
           <el-col>
-            <el-form-item label="职级" prop="rankIds">
+            <el-form-item label="职级" prop="rankIds" v-if="dialogStatus === 'create'">
               <el-select class="filter-item"
                          placeholder="请选择职级"
-                         :multiple="dialogStatus === 'create'"
-                         v-model="dialogStatus === 'create' ? form.rankIds : form.rankId">
+                         multiple
+                         v-model="form.rankIds">
+                <el-option v-for="item in level"
+                           :value="item.rankId"
+                           :label="item.rankName"
+                           :key="item.rankId">
+                  <span style="float: left;">{{item.rankName}}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="职级" prop="rankIds" v-else>
+              <el-select class="filter-item"
+                         placeholder="请选择职级"
+                         v-model="tempRankId">
                 <el-option v-for="item in level"
                            :value="item.rankId"
                            :label="item.rankName"
@@ -292,6 +304,7 @@
     components: {},
     data() {
       return {
+        rankId: null,
         list: null,
         total: null,
         listLoading: true,
@@ -307,7 +320,9 @@
         },
         listQuery: {
           page: 1,
-          limit: 20
+          limit: 20,
+          orderByField: 'create_time',
+          isAsc: false
         },
         deptId: [],
         selectedOptions: [],
@@ -330,16 +345,17 @@
             { required: true, message: '请选择结束时间', trigger: 'blur' }
           ],
           deptIds: [
-            { required: true, message: '请选择部门', trigger: 'blur' }
+            // message: '请选择部门',
+            { required: true, trigger: 'blur', message: '请选择部门' }
           ],
           positionId: [
-            { required: true, message: '请选择职位', trigger: 'blur' }
+            { required: true, message: '请选择职位', trigger: 'blur, change' }
           ],
           rankIds: [
-            { required: true, message: '请选择职级', trigger: 'blur' }
+            { required: true, message: '请选择职级', trigger: 'blur, change' }
           ],
           performanceIndicator: [
-            { required: true, message: '请输入业绩指标', trigger: 'blur' }
+            { required: true, message: '请输入业绩指标', trigger: 'blur, change' }
           ]
         },
         departs: [], // 部门
@@ -348,7 +364,8 @@
         curPrevId: '', // 循环前累计拼接的id
         result: [],
         eachIndex: 0,
-        tempDeptIds: []
+        tempDeptIds: [],
+        tempRankId: null
       }
     },
     computed: {
@@ -364,9 +381,6 @@
       this.sys_prd_type_del = this.permissions['sys_prd_type_del']
     },
     methods: {
-      changeE(value) {
-        console.log(value)
-      },
       cycleList(list) {
         list.forEach(item => {
           if (item.children && !item.children.length) {
@@ -400,7 +414,6 @@
         })
       },
       handleClose(index) {
-        console.log(index)
         this.form.deptIds.splice(index, 1)
       },
       upperIds(list1, list2, id) {
@@ -412,7 +425,7 @@
             }
           })
         })
-        console.log(list2)
+        // console.log(list2)
         this.form.deptIds = list2
       },
       addOption() {
@@ -426,6 +439,11 @@
                 id: this.selectedOptions[this.selectedOptions.length - 1]
               }
             )
+            this.$refs.form.validate(valid => {
+              if (valid) {
+                // console.log('ssss')
+              }
+            })
           }
         }
       },
@@ -448,6 +466,8 @@
       },
       getList() {
         this.listLoading = true
+        this.listQuery.rankId = this.rankId
+        // console.log(this.listQuery)
         getPfList(this.listQuery).then(res => {
           this.list = res.data.records
           this.total = res.data.total || 0
@@ -471,6 +491,8 @@
         })
       },
       handlePosition(val) {
+        this.rankId = null
+        this.form.rankIds = []
         if (val) {
           getAllRank({ positionId: val }).then(res => {
             this.level = res.data
@@ -492,19 +514,21 @@
         this.getList()
       },
       resetFilter() { // reset
+        this.rankId = null
         this.listQuery = {
           page: 1,
           limit: 20,
           positionId: undefined,
           rankId: undefined,
-          deptId: undefined
+          deptId: undefined,
+          orderByField: 'create_time',
+          isAsc: false
         }
         this.deptId = []
         this.handleFilter()
       },
       handleCreate() {
         this.resetTemp()
-        // console.log(this.form)
         this.dialogStatus = 'create'
         this.dialogCreate = true
       },
@@ -541,8 +565,8 @@
         editPfItem(id).then(res => {
           this.form = res.data
           this.upperIds(this.result, this.tempDeptIds, this.form.deptId)
-          console.log(this.form.deptIds)
           this.handlePosition(this.form.positionId)
+          this.tempRankId = res.data.rankId
           this.dialogCreate = true
         })
       },
@@ -588,18 +612,25 @@
       cancel(formName) {
         this.dialogCreate = false
         this.form.deptIds = []
+        this.tempRankId = ''
+        this.selectedOptions = []
         this.$refs[formName].resetFields()
       },
       close() {
-        this.form = {}
+        this.resetTemp()
+        this.$refs['form'].resetFields()
       },
       create(formName) {
         this.tempForm = {
           deptIds: []
         }
         const set = this.$refs
-        this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
-        this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
+        if (this.form.start && this.form.start.toString().split('-').length !== 3) {
+          this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
+        }
+        if (this.form.end && this.form.end.toString().split('-').length !== 3) {
+          this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
+        }
         if (Number(new Date(this.form.end)) < Number(new Date(this.form.start))) {
           this.$notify({
             title: '失败',
@@ -631,10 +662,14 @@
                   message: '创建成功'
                 })
               }
+              this.selectedOptions = []
               this.form.deptIds = []
+              this.$refs[formName].resetFields()
             }).catch(() => {
               this.dialogCreate = false
               this.form.deptIds = []
+              this.selectedOptions = []
+              this.$refs[formName].resetFields()
               this.$notify({
                 title: '失败',
                 message: '创建失败',
@@ -649,9 +684,13 @@
       },
       update(formName) {
         const set = this.$refs
-        console.log(this.form)
-        this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
-        this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
+        // console.log(this.form)
+        if (this.form.start && this.form.start.toString().split('-').length !== 3) {
+          this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
+        }
+        if (this.form.end && this.form.end.toString().split('-').length !== 3) {
+          this.form.end = parseTime(this.form.end, '{y}-{m}-{d}')
+        }
         if (Number(new Date(this.form.end)) < Number(new Date(this.form.start))) {
           this.$notify({
             title: '失败',
@@ -659,8 +698,10 @@
             type: 'error',
             duration: 2000
           })
+          this.dialogCreate = false
           return false
         }
+        this.form.rankIds = [this.tempRankId]
         set[formName].validate(valid => {
           if (valid) {
             putPfItem(this.form.performanceIndicatorId, this.form).then(res => {
@@ -671,18 +712,20 @@
                   title: '成功',
                   type: 'success',
                   duration: 2000,
-                  message: '创建成功'
+                  message: '修改成功'
                 })
               }
-              this.form.deptIds = []
+              this.resetTemp()
+              this.tempRankId = null
               this.$refs[formName].resetFields()
             }).catch(() => {
               this.dialogCreate = false
+              this.resetTemp()
+              this.tempRankId = null
               this.$refs[formName].resetFields()
-              this.form.deptIds = []
               this.$notify({
                 title: '失败',
-                message: '创建失败',
+                message: '修改失败',
                 type: 'error',
                 duration: 2000
               })

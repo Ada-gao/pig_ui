@@ -138,6 +138,14 @@ $btn: #0299CC;
   color: #fff;
   outline: none;
 }
+.el-button.is-disabled,
+.el-button.is-disabled:hover,
+.el-button.is-disabled:active,
+.el-button.is-disabled:focus {
+  background-color: #eff2f7;
+  color: #c0ccda;
+  border: none;
+}
 .search_btn,
 .search_btn:focus,
 .search_btn:hover {
@@ -168,6 +176,12 @@ input::-webkit-inner-spin-button {
 input[type="number"]{
   -moz-appearance: textfield;
 }
+.el-dialog__body {
+  padding-bottom: 0;
+}
+.el-dialog__footer {
+  padding-bottom: 40px;
+}
 // 分割线
 .split-line {
   border-bottom: 1px solid #e9e9e9;
@@ -176,6 +190,15 @@ input[type="number"]{
   .ml5.el-icon-sort-down {
     margin-left: 5px;
     cursor: pointer;
+  }
+}
+.swiper-dialog {
+  .el-dialog__body {
+    padding-bottom: 20px;
+    .el-carousel__container {
+      //max-height: 400px;
+      min-height: 460px;
+    }
   }
 }
 .nopb {

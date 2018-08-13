@@ -65,7 +65,7 @@ service.interceptors.response.use(
         query: {redirect: router.fullPath}
       })
       console.log('router.fullPath: ' + router.fullPath)
-    }else if(res.status === 403) {
+    } else if(res.status === 403) {
       message('管理权限不足，请联系管理员')
     } else if(res.status === 500) {
       message(res.data.msg, 'error')
