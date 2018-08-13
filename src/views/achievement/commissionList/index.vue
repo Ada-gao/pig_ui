@@ -62,10 +62,10 @@
     </div>
 		<div style="text-align: right;">
       <el-button class="add_btn" @click="handleImport">
-        <svg-icon icon-class="upload"></svg-icon>批量导入
+        <svg-icon icon-class="import" style="margin-right: 5px;"></svg-icon>批量导入
       </el-button>
       <el-button class="add_btn" @click="handleExport">
-        <svg-icon icon-class="upload"></svg-icon>批量导出
+        <svg-icon icon-class="export" style="margin-right: 5px;"></svg-icon>批量导出
       </el-button>
     </div>
 		<el-table :key='tableKey'
