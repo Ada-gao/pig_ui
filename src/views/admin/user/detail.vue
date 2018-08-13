@@ -123,7 +123,12 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="离职原因" prop="dimissionReason">
-              <el-input v-model="form.dimissionReason"></el-input>
+              <!-- <el-input v-model="form.dimissionReason"></el-input> -->
+              <el-select class="filter-item" v-model="form.dimissionReason" placeholder="请选择" :readonly="isReadonly">
+                <el-option v-for="item in dimissionReason" :key="item.value" :value="item.value" :label="item.label">
+                  <span style="float: left">{{ item.label }}</span>
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -136,7 +141,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="离职时间" prop="idType">
+            <el-form-item label="离职时间" prop="employeeDate">
               <el-date-picker
                 v-model="form.employeeDate"
                 type="date"
@@ -258,22 +263,22 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="性别：" prop="gender">
-              {{form.gender}}
+              {{form.gender|turnText(genderType)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="入职日期：" prop="date">
-              {{form.employeeDate}}
+              {{form.employeeDate|parseTime('{y}-{m}-{d}')}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="证件类型：" prop="idType">
-              {{form.education}}
+              {{form.idType|turnText(idTypeOptions)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="试用期到期日：" prop="idType">
-              {{form.education}}
+            <el-form-item label="试用期到期日：" prop="probationExpirationDate">
+              {{form.probationExpirationDate|parseTime('{y}-{m}-{d}')}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -282,8 +287,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="转正时间：" prop="idNo">
-              {{form.education}}
+            <el-form-item label="转正时间：" prop="officialDate">
+              {{form.officialDate|parseTime('{y}-{m}-{d}')}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -292,8 +297,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="状态：" prop="mobile">
-              {{form.education}}
+            <el-form-item label="状态：" prop="status">
+              {{form.status|turnText(workStatus)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -302,18 +307,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="离职原因：" prop="mobile">
-              {{form.education}}
+            <el-form-item label="离职原因：" prop="dimissionReason">
+              {{form.dimissionReason|turnText(dimissionReason)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="学历：" prop="education">
-              {{form.education}}
+              {{form.education|turnText(educationType)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="离职时间：" prop="deptName">
-              {{form.education}}
+            <el-form-item label="离职时间：" prop="employeeDate">
+              {{form.employeeDate|parseTime('{y}-{m}-{d}')}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -323,7 +328,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="是否营销岗：" prop="marriageStatus">
-              <el-radio-group v-model="form.isFloat" disabled>
+              <el-radio-group v-model="form.isMarketing" disabled>
                 <el-radio :label="0" style="display: inline-block">是</el-radio>
                 <el-radio :label="1" style="display: inline-block">否</el-radio>
               </el-radio-group>
@@ -388,13 +393,6 @@
       ElOption,
       ElRadioGroup,
       DirectChange
-    },
-    filters: {
-      parseTime (time) {
-        if(!time) return
-        let date = new Date(time)
-        return parseTime(date)
-      }
     },
     name: 'table_user',
     directives: {
@@ -473,9 +471,9 @@
         statusOptions: ['0', '1', '2'],
         positionsOptions: [],
         rolesOptions: [],
-        dialogFormVisible: false,
+        // dialogFormVisible: false,
         // dialogDeptVisible: false,
-        dialogFormView: false,
+        // dialogFormView: false,
         userAdd: false,
         userUpd: false,
         userDel: false,
@@ -518,12 +516,18 @@
         'genderType',
         'idTypeOptions',
         'marriageStatusOptions',
-        'workStatus'
+        'workStatus',
+        'dimissionReason'
       ])
     },
     filters: {
       turnText (val, list) {
         return transformText1(val, list)
+      },
+      parseTime (time) {
+        if(!time) return
+        let date = new Date(time)
+        return parseTime(date)
       }
     },
     created() {
@@ -531,6 +535,7 @@
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
+      this.handleCreate()
     },
     mounted() {
       this.id = this.$route.params.id
@@ -545,24 +550,25 @@
         getObj(this.id)
           .then(response => {
             this.form = response.data
+            this.form.isMarketing = this.form.isMarketing - 0
             this.form.role = this.form.roleList[0].roleDesc
             this.deptIds[0] = this.form.deptId
             console.log(this.deptIds)
             // this.role = row.roleList[0].roleDesc
             if(this.state === 'view') {
-              this.dialogFormView = true
-              this.dialogFormVisible = false
+              // this.dialogFormView = true
+              // this.dialogFormVisible = false
               this.dialogStatus = 'view'
               this.isReadonly = true
-              this.form.gender = transformText(this.genderType, this.form.gender)
-              this.form.education = transformText(this.educationType, this.form.education)
-              this.form.idType = transformText(this.idTypeOptions, this.form.idType)
+              // this.form.gender = transformText(this.genderType, this.form.gender)
+              // this.form.education = transformText(this.educationType, this.form.education)
+              // this.form.idType = transformText(this.idTypeOptions, this.form.idType)
               this.form.positionId = transformText(this.positionsOptions, this.form.positionId)
               this.form.marriageStatus = transformText(this.marriageStatusOptions, this.form.marriageStatus)
-              this.form.employeeDate = parseTime(this.form.employeeDate, '{y}-{m}-{d}')
+              // this.form.employeeDate = parseTime(this.form.employeeDate, '{y}-{m}-{d}')
             } else {
-              this.dialogFormView = false
-              this.dialogFormVisible = true
+              // this.dialogFormView = false
+              // this.dialogFormVisible = true
               this.dialogStatus = 'update'
               this.form.directSupervisorId = this.form.directSupervisorId
             }
@@ -624,19 +630,20 @@
         })
       },
       changeDept(val) {
-        console.log(val)
+        this.form.role = ''
+        this.getNodeData(val[val.length - 1])
         // this.role = ''
-        // this.form.role = ''
       },
       handleCreate() {
         this.resetTemp()
         this.dialogStatus = 'create'
-        this.dialogFormVisible = true
+        // this.dialogFormVisible = true
         this.PYCode = getPYData() // 获取拼音数据
       },
       create(formName) {
         const set = this.$refs
         this.form.role = this.role
+        this.form.deptId = this.deptIds[this.deptIds.length - 1]
         // this.form.positionId = this.form.positionName
         // this.form.idType = this.IDType
         // this.form.marriageStatus = this.maritalStatus
@@ -645,7 +652,7 @@
             addObj(this.form)
               .then((res) => {
                 if (res.status === 200) {
-                  this.dialogFormVisible = false
+                  // this.dialogFormVisible = false
                   // this.getList()
                   this.$notify({
                     title: '成功',
@@ -653,6 +660,7 @@
                     type: 'success',
                     duration: 2000
                   })
+                  this.step = '2'
                 }
               })
           } else {
@@ -662,7 +670,7 @@
       },
       cancel(formName) {
         console.log(this.$refs[formName])
-        this.dialogFormVisible = false
+        // this.dialogFormVisible = false
         this.$refs[formName].resetFields()
       },
       update(formName) { // 编辑提交
@@ -682,7 +690,7 @@
               this.fileList = []
             }
             putObj(this.form).then(() => {
-              this.dialogFormVisible = false
+              // this.dialogFormVisible = false
               // this.getList()
               this.$notify({
                 title: '成功',
@@ -717,7 +725,9 @@
       handleSuccess(files, fileList) {
         this.fileList.push(fileList)
         // console.log(files)
-        console.log(this.fileList)
+        console.log(fileList)
+        this.form.resumeName = fileList.response.fileName
+        this.form.resumeUrl = fileList.response.fileUrl
       },
       beforeUpload(file) {
         const isFile = file.type === 'application/pdf'
@@ -751,6 +761,7 @@
          while (I1.indexOf('--') > 0) {
              I1 = I1.replace('--', '-')
          }
+         console.log(I1)
          return I1
       },
       arraySearch(l1, l2) { // 搜索对象
@@ -763,6 +774,7 @@
         return false
       },
       getPYCode(val) {
+        console.log(val)
         this.form.username = this.covertPY(val)
       }
     }
