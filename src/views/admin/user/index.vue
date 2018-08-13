@@ -95,7 +95,7 @@
 
       <el-table-column align="center" label="入职时间">
         <template slot-scope="scope">
-          <span>{{scope.row.employeeDate | parseTime('{y}-{m}-{d}')}}</span>
+          <span>{{scope.row.employeeDate|parseTime('{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
 
@@ -105,9 +105,9 @@
                           'normal': scope.row.statusNum == 1,
                           'unusual': scope.row.statusNum == 2"
           >{{scope.row.status}}</el-tag> -->
-          <el-tag v-if="scope.row.statusNum == 0" class="normal">{{scope.row.status}}</el-tag>
-          <el-tag v-if="scope.row.statusNum == 1" class="leave">{{scope.row.status}}</el-tag>
-          <el-tag v-if="scope.row.statusNum == 2" class="unusual">{{scope.row.status}}</el-tag>
+          <el-tag v-if="scope.row.statusNum == 0" class="normal">{{scope.row.status|turnText(workStatus)}}</el-tag>
+          <el-tag v-if="scope.row.statusNum == 1" class="leave">{{scope.row.status|turnText(workStatus)}}</el-tag>
+          <el-tag v-if="scope.row.statusNum == 2" class="unusual">{{scope.row.status|turnText(workStatus)}}</el-tag>
         </template>
       </el-table-column>
 
@@ -179,7 +179,7 @@
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime, transformText } from '@/utils'
+  import { parseTime, transformText, transformText1 } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -191,6 +191,9 @@
       ElRadioGroup,
     },
     filters: {
+      turnText (val, list) {
+        return transformText1(val, list)
+      },
       parseTime (time) {
         if(!time) return
         let date = new Date(time)
@@ -203,12 +206,12 @@
     },
     data() {
       return {
-        treeDeptData: [],
-        checkedKeys: [],
-        defaultProps: {
-          children: 'children',
-          label: 'name'
-        },
+        // treeDeptData: [],
+        // checkedKeys: [],
+        // defaultProps: {
+        //   children: 'children',
+        //   label: 'name'
+        // },
         list: null,
         total: null,
         listLoading: true,
@@ -224,42 +227,31 @@
           status: undefined,
           deptId: undefined
         },
-        statusOptions: ['0', '1', '2'],
+        // statusOptions: ['0', '1', '2'],
         positionsOptions: [],
-        rolesOptions: [],
-        dialogFormVisible: false,
-        dialogDeptVisible: false,
-        dialogFormView: false,
+        // dialogDeptVisible: false,
         userAdd: false,
         userUpd: false,
         userDel: false,
-        dialogStatus: '',
+        // dialogStatus: '',
         tableKey: 0,
-        input2: '',
-        gender: '',
-        value13: '',
+        // value13: '',
         eduOptions: [],
-        education: '',
         // IDType: '',
-        employeeDate: '',
-        maritalStatus: '',
-        fileList: [],
+        // employeeDate: '',
+        // maritalStatus: '',
         positionId: '',
         status: '',
-        tableData: [],
-        tableHeader: [],
+        // tableData: [],
+        // tableHeader: [],
         entryDate: [],
         // positionName: '',
-        isReadonly: false
+        // isReadonly: false
       }
     },
     computed: {
       ...mapGetters([
         'permissions',
-        'educationType',
-        'genderType',
-        'idTypeOptions',
-        'marriageStatusOptions',
         'workStatus'
       ])
     },
@@ -285,7 +277,7 @@
         // this.handlePosition()
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
-          console.log(this.list)
+          // console.log(this.list)
           this.list.map(item => {
             item.roleDesc = item.roleList.length > 0 ? item.roleList[0].roleDesc : ''
           })
@@ -296,37 +288,37 @@
             this.list.forEach(item => {
               item.positionId = transformText(this.positionsOptions, item.positionId)
               item.statusNum = item.status
-              item.status = transformText(this.workStatus, item.status)
+              // item.status = transformText(this.workStatus, item.status)
             })
           })
         })
       },
-      getNodeData(data) { // 部门查询
-        this.dialogDeptVisible = false
-        this.form.deptId = data.id
-        this.form.deptName = data.name
-        deptRoleList(data.id)
-          .then(response => {
-            this.rolesOptions = response.data
-            this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
-          })
-      },
+      // getNodeData(data) { // 部门查询
+      //   // this.dialogDeptVisible = false
+      //   this.form.deptId = data.id
+      //   this.form.deptName = data.name
+      //   deptRoleList(data.id)
+      //     .then(response => {
+      //       this.rolesOptions = response.data
+      //       this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
+      //     })
+      // },
       handlePosition() {
         getAllPositon().then(res => {
           this.positionsOptions = res.data
         })
       },
-      handleDept() {
-        fetchDeptTree()
-          .then(response => {
-            this.treeDeptData = response.data
-            this.dialogDeptVisible = true
-          })
-      },
-      changeDept() {
-        this.role = ''
-        this.form.role = ''
-      },
+      // handleDept() {
+      //   fetchDeptTree()
+      //     .then(response => {
+      //       this.treeDeptData = response.data
+      //       // this.dialogDeptVisible = true
+      //     })
+      // },
+      // changeDept() {
+      //   this.role = ''
+      //   this.form.role = ''
+      // },
       handleFilter() {
         this.listQuery.page = 1
         this.getList()
@@ -341,7 +333,7 @@
       },
       handleCreate() { // 新增
         this.resetTemp()
-        this.dialogStatus = 'create'
+        // this.dialogStatus = 'create'
         this.$router.push('/admin/user-detail')
         Bus.$emit('activeIndex', '/admin/user')
       },
