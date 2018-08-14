@@ -439,7 +439,9 @@
                 id: this.selectedOptions[this.selectedOptions.length - 1]
               }
             )
+            console.log(this.$refs.form)
             this.$refs.form.validate(valid => {
+              console.log(valid)
               if (valid) {
                 // console.log('ssss')
               }
