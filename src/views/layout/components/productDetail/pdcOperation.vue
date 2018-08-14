@@ -295,17 +295,17 @@
             <el-row  type="flex" justify="space-between" class="row-bg product-commission">
               <span style="line-height:41px;">产品佣金系数第{{item.age}}年</span>
              <!--  <span @click="addProductCommission" class="color-0299CC border-0299CC" v-if="index == 0"><i class="el-icon-plus mr5"></i >新增</span> -->
-              <el-button class="search_btn" @click="addProductCommission" v-if="index == 0">
+              <el-button class="search_btn" @click="addProductCommission" v-if="index == 0 && !operationDisabled">
                 <svg-icon icon-class="add"></svg-icon>新增</el-button>
-              <span @click="deleteProductCommission(index)" class="color-0299CC " v-if="index != 0 && index == normalDTO.normalBrokerageCoefficients.length-1"><i class="el-icon-delete mr5"></i >删除</span>
+              <span @click="deleteProductCommission(index)" class="color-0299CC " v-if="index != 0 && index == normalDTO.normalBrokerageCoefficients.length-1&& !operationDisabled"><i class="el-icon-delete mr5"></i >删除</span>
             </el-row>
             
              <el-form :model="Citem" ref="Citem" :rules="rules2" class="demo-ruleForm"  v-for="(Citem,i) in item.brokerageCoefficientDTOList" :key="i" label-width="120px">
               <el-form-item :label="`第${Citem.hierarchy}层级(%)`" prop="coefficient">
                 <span class="el-input" v-if="operationDisabled">{{Citem.coefficient}}</span>
                 <el-input  v-else v-model="Citem.coefficient" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input>
-                    <svg-icon icon-class="add" @click="addProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0" class="color-0299CC"></svg-icon>
-                  <i  @click="deleteProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0" class="el-icon-delete color-0299CC"></i >
+                    <svg-icon icon-class="add" @click="addProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0 && !operationDisabled" class="color-0299CC"></svg-icon>
+                  <i  @click="deleteProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0 && !operationDisabled" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
                </el-form>
                
@@ -316,11 +316,11 @@
        <div class="split-line" style="margin: 20px 0;"></div>
      <!-- 活动时间段业绩统计 -->
      <div class="group-item">
-        <h3 class="activity-title">活动时间段业绩统计 <el-button class="search_btn add-statistics"  @click="addStatistics">
+        <h3 class="activity-title">活动时间段业绩统计 <el-button class="search_btn add-statistics" v-if="!operationDisabled" @click="addStatistics">
                 <svg-icon icon-class="add"></svg-icon>新增统计</el-button></h3>
   
         <el-row v-for="(item,index) in activityData" :key="index" :class="{dashed:index!=0}">
-          <span @click="deleteStatistics(index)" class="color-0299CC delete-fr" v-if="activityData.length == index+1 && index != 0"><i class="el-icon-delete mr5"></i >删除</span>
+          <span @click="deleteStatistics(index)" class="color-0299CC delete-fr" v-if="activityData.length == index+1 && index != 0&& !operationDisabled"><i class="el-icon-delete mr5"></i >删除</span>
          <el-row style="clear: both;">
           <el-col :span="11" style="margin-right: 3%;">
             <el-form-item label="活动时间段">
@@ -349,17 +349,17 @@
             margin-right:3%;" >
               <el-row  type="flex" justify="space-between" class="row-bg product-commission">
                 <span style="line-height:41px;">活动时间产品佣金系数第{{Citem.age}}年</span>
-                 <el-button class="search_btn" @click="addactivityTime(index)" v-if="Cindex == 0">
+                 <el-button class="search_btn" @click="addactivityTime(index)" v-if="Cindex == 0 && !operationDisabled">
                 <svg-icon icon-class="add"></svg-icon>新增</el-button>
-                <span @click="deleteActivityTime(index,Citem)" class="color-0299CC " v-if="Cindex != 0 && Cindex == item.activityBrokerageCoefficients.length-1"><i class="el-icon-delete mr5"></i >删除</span>
+                <span @click="deleteActivityTime(index,Citem)" class="color-0299CC " v-if="Cindex != 0 && Cindex == item.activityBrokerageCoefficients.length-1 && !operationDisabled"><i class="el-icon-delete mr5"></i >删除</span>
               </el-row>
                 <el-form :model="cvalue" ref="cvalue" :rules="rules2" class="demo-ruleForm" v-for="(cvalue,k) in Citem.brokerageCoefficientDTOList" :key="k" label-width="120px">
               <el-form-item :label="`第${cvalue.hierarchy}层级(%)`" prop="coefficient">
                 <span class="el-input" v-if="operationDisabled">{{cvalue.coefficient}}</span>
                 <el-input
                   v-model="cvalue.coefficient" v-else onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'   type="number"></el-input>
-                  <svg-icon icon-class="add"  @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0" class="color-0299CC"></svg-icon>
-                  <i  @click="deleteActivityTimeLevel(index,Cindex,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0" class="el-icon-delete color-0299CC"></i >
+                  <svg-icon icon-class="add"  @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0 && !operationDisabled" class="color-0299CC"></svg-icon>
+                  <i  @click="deleteActivityTimeLevel(index,Cindex,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0 && !operationDisabled" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
               </el-form>
 
@@ -828,6 +828,7 @@
       activityFilter(filter){
         let self = true;
         this.activityData.forEach(item=>{
+        
           //折标业绩系数
           if(!item.performanceCoefficient && filter){
             this.judgeEmpty();
@@ -836,14 +837,23 @@
           }
           console.log(item.activeDate)
           //活动时间段
-          if(!item.activeDate){
-            this.judgeEmpty();
+          if(!item.activeDate && filter){
+          
+              this.$notify({
+                title: '警告',
+                message: '活动时间段不能为空',
+                type: 'warning'
+              });
               self = false;
               return false;
           }
           item.activeDate.forEach(item=>{
             if(!item && filter){
-              this.judgeEmpty();
+              this.$notify({
+                title: '警告',
+                message: '活动时间段不能为空',
+                type: 'warning'
+              });
               self = false;
               return false;
             }

@@ -66,7 +66,7 @@
         errorList: [],
         spanArr: [],
         pos: null,
-        downloadUrl: 'static/excel/产品导入模版.xlsx'
+        downloadUrl: 'static/excel/客户导入模版.xlsx'
       }
     },
     methods: {
@@ -84,46 +84,23 @@
         this.tableData = temp.results
         this.formData = JSON.parse(JSON.stringify(this.tableData))
         const kepMap = {
-          '产品编号': 'productCode',
-          '产品全称': 'productName',
-          '产品简称': 'productShortName',
-          '产品状态': 'productStatusName',
-          '产品结构类型': 'productMixType',
-          '产品收益类型': 'productType',
-          '产品风险级别': 'productRiskLevel',
-          '基金管理人': 'manager',
-          '交易币种': 'currency',
-          '购买人群': 'buyingCrowdsName',
-          '产品期限': 'investmentHorizon',
-          '期限单位': 'investmentHorizonUnitName',
-          '收益率类型': 'isFloatName',
-          '收益对标基准（%）': 'annualizedReturn',
-          '募集额度（万）': 'collectionAmount',
-          '募集人数': 'productLp',
-          '起投金额（万）': 'minimalAmount',
-          '追加金额（万）': 'minimalAddAmount',
-          '收益分配方式': 'incomeDistribution',
-          '资产团队': 'assetTeam',
-          '托管银行': 'custodianBank',
-          '关联产品': 'relevanceName',
-          '关联类型': 'relevanceType',
-          '渠道人数': 'channelNumber',
-          '渠道打款金额（万）': 'channelAmount',
-          '付息方式': 'interestPaymentName',
-          '认购费': 'subscribeName',
-          '价外认购（%）': 'subscribeRate',
-          '产品公告': 'announcement',
-          '账户名称': 'accountName',
-          '帐号': 'cardNo',
-          '开户银行名称': 'bankName',
-          '大额支付行号': 'paymentNumber',
-          '成立日期': 'establishmentDate',
-          '起息日期': 'valueDate',
-          '关账日期': 'closeDate',
-          '重点产品起始时间': 'importantStart',
-          '重点产品结束时间': 'importantEnd',
-          '预约时效（小时）': 'timeliness',
-          '行号': 'lineNo'
+          '序号': 'lineNo',
+          '客户姓名': 'name',
+          '客户编号': 'clientNo',
+          '性别': 'gender',
+          '客户性质': 'clientClassStr',
+          '邮箱': 'email',
+          '微信': 'wechat',
+          '客户来源': 'clientFrom',
+          '国籍': 'nationality',
+          '人群划分': 'crowds',
+          '常住地区': 'city',
+          '实名认证状态': 'realnameStatus',
+          '证件类型': 'idType',
+          '证件号码': 'idNo',
+          '手机号': 'mobile',
+          '绑定理财师编号': 'empNo',
+          '资产管理规模': 'assetAmount'
         }
         this.formData.forEach(item => {
           replaceKey(item, kepMap)

@@ -221,11 +221,19 @@
     </div>
 
     <!-- 预览图片 -->
-    <el-dialog :visible.sync="dialogImgVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
+    <el-dialog :visible.sync="dialogImgVisible" @close="handleClose">
+      <div style="width:57%;margin:0 auto">
+        <img style="width:100%;display: inline-block;"
+             :src="dialogImageUrl"
+             :class="'rotate_' + rotateCnt * 90"
+             alt="">
+      </div>
+      <el-button type="primary"
+                 @click="handleRotate"
+                 style="display: block;margin:65px auto 0">顺时针翻转90度</el-button>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogImgVisible1" class="swiper-dialog">
+    <el-dialog :visible.sync="dialogImgVisible1" class="swiper-dialog rotate-dialog">
       <!--<img width="100%" :src="dialogImageUrl" alt="">-->
       <el-carousel arrow="always"
                    indicator-position="none"
@@ -236,13 +244,13 @@
                           :key="item">
           <img :src="item"
                alt=""
-               :class="'rotate_' + rotateCnt * 90 + '_' + index"
-               style="max-height: 400px">
-          <el-button type="primary"
-                     @click="handleRotate(index)"
-                     style="display: block;margin:10px auto 0">顺时针翻转90度</el-button>
+               :class="'rotate_' + rotateCnt * 90"
+               style="width:80%;height:100%">
         </el-carousel-item>
       </el-carousel>
+      <el-button type="primary"
+                 @click="handleRotate"
+                 style="display: block;margin:0 auto">顺时针翻转90度</el-button>
     </el-dialog>
 
   </div>
@@ -437,7 +445,10 @@
           if(this.realnameStatus) {
             getClientBankcard(id, '1').then(response => {
               if (response.status === 200) {
-                this.bankcardList = response.data
+                this.bankcardList = JSON.parse(JSON.stringify(response.data))
+                this.bankcardList.map(item => {
+                  item.cardFrontUrl += '!160x100'
+                })
               }
             }).catch(() => {
               this.bankcardList = []
@@ -528,7 +539,7 @@
       },
       previewImg(url) {
         this.dialogImgVisible = true
-        this.dialogImageUrl = url
+        this.dialogImageUrl = url.split('!160x100')[0]
       },
       previewImg1() {
         this.dialogImgVisible1 = true
@@ -536,7 +547,10 @@
       carouselChange(value) {
         this.rotateCnt = 0
       },
-      handleRotate(index) {
+      handleClose() {
+        this.rotateCnt = 0
+      },
+      handleRotate() {
         this.rotateCnt === 3 ? this.rotateCnt = 0 : ++this.rotateCnt
       }
     }
@@ -557,62 +571,6 @@
   .btn-padding {
     @include padding;
   }
-}
-.rotate_0_0 {
-  -webkit-transform: rotate(0deg);
-  -moz-transform: rotate(0deg);
-  -ms-transform: rotate(0deg);
-  -o-transform: rotate(0deg);
-  transform: rotate(0deg);
-}
-  .rotate_90_0 {
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    transform: rotate(90deg);
-  }
-.rotate_180_0 {
-  -webkit-transform: rotate(180deg);
-  -moz-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
-  -o-transform: rotate(180deg);
-  transform: rotate(180deg);
-}
-.rotate_270_0 {
-  -webkit-transform: rotate(270deg);
-  -moz-transform: rotate(270deg);
-  -ms-transform: rotate(270deg);
-  -o-transform: rotate(270deg);
-  transform: rotate(270deg);
-}
-.rotate_0_1 {
-  -webkit-transform: rotate(0deg);
-  -moz-transform: rotate(0deg);
-  -ms-transform: rotate(0deg);
-  -o-transform: rotate(0deg);
-  transform: rotate(0deg);
-}
-.rotate_90_1 {
-  -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  transform: rotate(90deg);
-}
-.rotate_180_1 {
-  -webkit-transform: rotate(180deg);
-  -moz-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
-  -o-transform: rotate(180deg);
-  transform: rotate(180deg);
-}
-.rotate_270_1 {
-  -webkit-transform: rotate(270deg);
-  -moz-transform: rotate(270deg);
-  -ms-transform: rotate(270deg);
-  -o-transform: rotate(270deg);
-  transform: rotate(270deg);
 }
 </style>
 

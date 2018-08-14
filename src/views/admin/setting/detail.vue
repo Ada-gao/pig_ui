@@ -105,7 +105,7 @@
           ],
            exchangeRate: [
            { required: true, message: '请输入汇率' },
-           { type: 'number', message: '年龄必须为数字值'}
+           { type: 'number', message: '汇率必须为数字值'}
           ]
         }
       }

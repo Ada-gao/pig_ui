@@ -217,3 +217,19 @@ input[type="number"]{
     margin-left: 0!important;
   }
 }
+// 缩略图旋转
+.rotate-dialog .el-carousel__item {
+  height: 94%;
+}
+.rotate_0 {
+  transform: rotate(0deg);
+}
+.rotate_90 {
+  transform: rotate(90deg);
+}
+.rotate_180 {
+  transform: rotate(180deg);
+}
+.rotate_270 {
+  transform: rotate(270deg);
+}
