@@ -21,13 +21,13 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="性别：" prop="gender">
-            <span>{{form.gender}}</span>
+            <span>{{form.gender|turnText(genderType)}}</span>
             <!-- <el-input v-model="form.gender" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="国籍：" prop="nationality">
-            <span>{{form.nationality}}</span>
+            <span>{{form.nationality|turnText(nationality)}}</span>
             <!-- <el-input v-model="form.nationality" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
@@ -39,7 +39,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="录入时间：" prop="createTime">
-            <span>{{form.createTime}}</span>
+            <span>{{form.createTime|parseTime('{y}-{m}-{d}')}}</span>
             <!-- <el-input v-model="form.city" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
@@ -98,13 +98,13 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="投资者类型：" prop="clientType">
-            <span>{{clientStatus.clientType}}</span>
+            <span>{{clientStatus.clientType||'--'}}</span>
             <!-- <el-input v-model="clientStatus.clientType" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="认证时间：" prop="clientType">
-            <span>{{clientStatus.clientType}}</span>
+            <span>{{clientStatus.clientType||'--'}}</span>
             <!-- <el-input v-model="clientStatus.clientType" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
@@ -134,7 +134,7 @@
         </el-col>
         <el-col :span="8" v-if="idType">
           <el-form-item label="证件有效期：" prop="date">
-            <span>{{clientStatus.idExpiration}}</span>
+            <span>{{clientStatus.idStartDate}} 至 {{clientStatus.idExpiration}}</span>
             <!-- <el-input v-model="clientStatus.idExpiration" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
@@ -221,22 +221,36 @@
     </div>
 
     <!-- 预览图片 -->
-    <el-dialog :visible.sync="dialogImgVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
+    <el-dialog :visible.sync="dialogImgVisible" @close="handleClose">
+      <div style="width:57%;margin:0 auto">
+        <img style="width:100%;display: inline-block;"
+             :src="dialogImageUrl"
+             :class="'rotate_' + rotateCnt * 90"
+             alt="">
+      </div>
+      <el-button type="primary"
+                 @click="handleRotate"
+                 style="display: block;margin:65px auto 0">顺时针翻转90度</el-button>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogImgVisible1" class="swiper-dialog">
+    <el-dialog :visible.sync="dialogImgVisible1" class="swiper-dialog rotate-dialog">
       <!--<img width="100%" :src="dialogImageUrl" alt="">-->
       <el-carousel arrow="always"
                    indicator-position="none"
                    style="width:100%;text-align:center"
+                   @change="carouselChange"
                    :autoplay="false">
         <el-carousel-item v-for="(item, index) in idcardImgs"
                           :key="item">
-          <img :src="item" alt="" style="max-height: 400px">
-          <el-button type="primary" style="display: block;margin:10px auto 0">顺时针翻转90度</el-button>
+          <img :src="item"
+               alt=""
+               :class="'rotate_' + rotateCnt * 90"
+               style="width:80%;height:100%">
         </el-carousel-item>
       </el-carousel>
+      <el-button type="primary"
+                 @click="handleRotate"
+                 style="display: block;margin:0 auto">顺时针翻转90度</el-button>
     </el-dialog>
 
   </div>
@@ -247,8 +261,7 @@
   // import { getClientStatus, getClientBankcard } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  // import { parseTime } from '@/utils'
-  import { transformText, transformText1 } from '@/utils'
+  import { transformText, transformText1, parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -362,7 +375,8 @@
         dialogImgVisible1: false,
         dialogImageUrl: '',
         idcardImgs: [],
-        bankcardImgs: []
+        bankcardImgs: [],
+        rotateCnt: 0 // 旋转图片的次数
       }
     },
     computed: {
@@ -389,6 +403,11 @@
       },
       turnText(val, list) {
         return transformText1(val, list)
+      },
+      parseTime (time) {
+        if(!time) return
+        let date = new Date(time)
+        return parseTime(date)
       }
     },
     created() {
@@ -409,7 +428,7 @@
           this.clientStatus.idFrontUrl += '!160x100'
           this.clientStatus.idBackUrl += '!160x100'
           this.idcardImgs.push(response.data.idFrontUrl, response.data.idBackUrl)
-          console.log(this.idcardImgs)
+          // console.log(this.idcardImgs)
           this.realnameStatus = this.clientStatus.realnameStatus != 0 ? true : false // 认证状态判断
           this.isClientType = this.clientStatus.clientType == 0 ? true : false// 投资者类型判断
           // this.idType = this.clientStatus.idType == 0 ? true : false // 证件类型判断(0: 身份证)
@@ -421,28 +440,30 @@
 
         getObj(id, '1').then(response => {
           this.form = response.data
-          this.form.gender = transformText(this.genderType, this.form.gender)
-          this.form.nationality = transformText(this.nationality, this.form.nationality)
+          // this.form.gender = transformText(this.genderType, this.form.gender)
+          // this.form.nationality = transformText(this.nationality, this.form.nationality)
           if(this.realnameStatus) {
             getClientBankcard(id, '1').then(response => {
               if (response.status === 200) {
-                this.bankcardList = response.data
+                this.bankcardList = JSON.parse(JSON.stringify(response.data))
+                this.bankcardList.map(item => {
+                  item.cardFrontUrl += '!160x100'
+                })
               }
             }).catch(() => {
               this.bankcardList = []
             })
           }
         })
-
       },
-      handleDept() {
-        console.log('产品状态')
-      },
+      // handleDept() {
+      //   // console.log('产品状态')
+      // },
       submitResult(result) { //
-        if(result == 3 && !this.failReason) {
-          this.tip = true
-          return
-        }
+        // if(result == 3 && !this.failReason) {
+        //   this.tip = true
+        //   return
+        // }
         this.tip = false
         let params = {
           // failId: this.form.clientId,
@@ -518,10 +539,19 @@
       },
       previewImg(url) {
         this.dialogImgVisible = true
-        this.dialogImageUrl = url
+        this.dialogImageUrl = url.split('!160x100')[0]
       },
       previewImg1() {
         this.dialogImgVisible1 = true
+      },
+      carouselChange(value) {
+        this.rotateCnt = 0
+      },
+      handleClose() {
+        this.rotateCnt = 0
+      },
+      handleRotate() {
+        this.rotateCnt === 3 ? this.rotateCnt = 0 : ++this.rotateCnt
       }
     }
     // mounted() {

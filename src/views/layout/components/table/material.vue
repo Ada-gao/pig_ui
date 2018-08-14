@@ -15,7 +15,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="操作" fixed="right">
+        <el-table-column align="center" label="操作" v-if="operationEdit">
           <template slot-scope="scope">
             <a size="small" class="common_btn"
                       @click="transcId=scope.row.productClientFileId">编辑
@@ -77,8 +77,9 @@
       productStatusNo: {
         default: ''
       },
-      productQuery: {
-        default: false
+      operationEdit: {
+        type: Boolean,
+        default: true
       },
       productList: {
         default: () => {

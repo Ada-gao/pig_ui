@@ -160,7 +160,7 @@
         <!-- 产品/募集分期才有 -->
         <!-- <el-col :span="11">
           <el-form-item label="关联产品">
-            <span v-if="detailDisabled">{{form.}}</span>
+            <span v-if="detailDisabled">{{}}</span>
             <el-input v-else v-model="form.assetTeam" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col> -->
@@ -228,7 +228,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      
+
       <el-row :gutter="90">
         <el-col :span="22">
           <el-form-item label="备注" prop="remark">
@@ -252,7 +252,7 @@
       <el-row v-show="userNewAttr">
         <el-col :span="11" v-for="(item, index) in form.userDefinedAttribute" :key="index">
           <el-form-item :label="item.label" prop="">
-            <el-input v-model="item.value" placeholder="请输入" :disabled="detailDisabled"></el-input>11
+            <el-input v-model="item.value" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -336,6 +336,7 @@
         form: {
           userDefinedAttribute: []
         },
+        userDefinedAttribute: [],
         productTypes: [],
         productMixTypes: [],
         currencyList: [],
@@ -352,6 +353,9 @@
           ],
           isFloat: [
             { required: true, message: '请选择收益', trigger: 'blue' }
+          ],
+          accountName: [
+            { required: true, message: '请输入账户名称', trigger: 'blur' }
           ],
           bankName: [
             { required: true, message: '请输入开户银行名称', trigger: 'blur' }
@@ -458,7 +462,7 @@
     mounted() {
       this.form = this.formData
       let list = Object.keys(this.formData)
-      
+
       if(list.length > 1 && !list.productId) {
         if(this.stageType === '0') {
           // 产品分期
@@ -550,8 +554,7 @@
           this.form.annualizedReturn = null
           this.isDisabled = true
         }
-        if(this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit!='1') {
-          console.log(this.form.investmentHorizon.indexOf('+'))
+        if(this.form.investmentHorizon && this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit!='1') {
           this.$notify({
             title: '提示',
             message: '产品期限填写有误，请重新输入',
@@ -573,6 +576,8 @@
                     type: 'success',
                     duration: 2000
                   })
+                  // 滚动到头部
+                  document.documentElement.scrollTop = document.body.scrollTop = 0
                   this.$emit('productIdByDetail', response.data.productId)
                 }
               })
@@ -655,10 +660,13 @@
         Bus.$emit('activeIndex', this.backUrl)
       },
       handleAddProperty() { // 新增属性
-        this.form.userDefinedAttribute.push({
+        console.log(this.userDefinedAttribute)
+        this.userDefinedAttribute.push({
           label: this.propertyName
         })
+        this.form.userDefinedAttribute = this.userDefinedAttribute
         this.dialogPropertyVisible = false
+        this.userNewAttr = true
         this.propertyName = ''
       }
     }

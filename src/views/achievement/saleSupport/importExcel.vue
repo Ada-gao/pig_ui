@@ -86,9 +86,9 @@
         let kepMap = {
           '预约编号': "appointmentCode",
           '理财师姓名': "userName",
-          '理财师编号': "userCode",
+          '理财师工号': "userCode",
           '销售支持姓名': "salesName",
-          '销售支持编号': "salesCode",
+          '销售支持工号': "salesCode",
           '佣金比例': "commissionRate",
           '行号': 'lineNo'
         }

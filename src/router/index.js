@@ -47,7 +47,7 @@ export const constantRouterMap = [
         path: 'user-detail/:id?/:state?',
         component: _import('admin/user/detail'),
         name: '员工详情页',
-        meta: { title: '查看员工详情', icon: '', noCache: true },
+        meta: { title: '员工详情', icon: '', noCache: true },
         hidden: true
       }
     ]
@@ -211,9 +211,6 @@ export const constantRouterMap = [
     ]
   }
 ]
-
-
-
 
 export default new Router({
   // mode: 'history', // 后端支持可开

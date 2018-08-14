@@ -142,7 +142,7 @@ import { fetchDeptTree } from '@/api/role'
 import { mapGetters } from 'vuex'
 import { fetchProductTypeList } from '@/api/product/productType'
 import Bus from '@/assets/js/bus'
-import { parseTime } from '@/utils'
+import { parseTime, eachChildren } from '@/utils'
 
 export default {
   props: {
@@ -290,6 +290,7 @@ export default {
       fetchDeptTree()
         .then(response => {
           this.treeDeptData = response.data
+          eachChildren(this.treeDeptData)
         })
     }
   }

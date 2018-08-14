@@ -48,6 +48,7 @@
               下一步
             </el-button>
           </el-form-item>
+          <div class="forget_pw" @click="handleReturn">返回登录</div>
         </div>
 
         <div class="step" v-else-if="activeStep === 1">
@@ -72,6 +73,7 @@
               确定
             </el-button>
           </el-form-item>
+          <div class="forget_pw" @click="handleReturn">返回登录</div>
         </div>
 
         <div class="step" v-else>
@@ -302,7 +304,7 @@
           mobile: [
             {
               required: true,
-              message: '请输入手机号',
+              message: '请输入手机号或邮箱',
               trigger: 'blur'
             }
           ],
@@ -335,10 +337,14 @@
         },
         loading: false,
         pwdType: 'password',
-        pwdStep: 1
+        pwdStep: 1,
+        verifyTmer: null
       }
     },
     methods: {
+      returnToLogin() {
+
+      },
       refreshCode: function () {
         this.loginForm.randomStr = Math.ceil(Math.random() * 100000) + Date.now()
         this.src = '/admin/code/' + this.loginForm.randomStr
@@ -377,9 +383,11 @@
       },
       handleReturn() {
         this.resetTemp()
-        this.timeFlag = false
         this.time = 60
         this.pwdStep = 1
+        clearInterval(this.verifyTimer)
+        this.verifyTimer = null
+        this.timeFlag = false
       },
       handleNext(formName) {
         this.$refs[formName].validate(valid => {
@@ -461,7 +469,7 @@
       getMobileCode1: function () {
         const pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
         if (!this.loginForm1.mobile) {
-          this.$message.error('请输入手机号码')
+          this.$message.error('请输入手机号码或邮箱')
         } else if (this.loginForm1.mobile.split('.').length > 1) {
           if (!pattern.test(this.loginForm1.mobile)) {
             this.$message.error('邮箱格式不正确')
@@ -476,7 +484,7 @@
             }).then(response => {
               // console.log(response)
               if (response.data.data) {
-                this.timer()
+                this.definiteTimer()
                 this.$message.success('验证码发送成功')
               } else {
                 this.$message.error(response.data.msg)
@@ -498,7 +506,7 @@
             }).then(response => {
               // console.log(response)
               if (response.data.data) {
-                this.timer()
+                this.definiteTimer()
                 this.$message.success('验证码发送成功')
               } else {
                 this.$message.error(response.data.msg)
@@ -535,6 +543,19 @@
         } else {
           this.timeFlag = false
           this.time = 60
+        }
+      },
+      definiteTimer() {
+        if (this.time > 0) {
+          this.timeFlag = true
+          this.verifyTimer = setInterval(() => {
+            --this.time
+          }, 1000)
+        } else {
+          this.timeFlag = false
+          this.time = 60
+          setInterval(this.verifyTimer)
+          this.verifyTimer = null
         }
       }
     },

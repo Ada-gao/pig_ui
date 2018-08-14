@@ -74,13 +74,13 @@
       <el-button v-if="sys_prd_type_add"
                  class="add_btn"
                  @click="handleCreate">
-        <svg-icon icon-class="add"></svg-icon>新增指标
+        <svg-icon icon-class="add" style="margin-right: 5px;"></svg-icon>新增指标
       </el-button>
       <el-button class="search_btn" @click="handleImport">
-        <svg-icon icon-class="import"></svg-icon>批量导入
+        <svg-icon icon-class="import" style="margin-right: 5px;"></svg-icon>批量导入
       </el-button>
       <el-button class="search_btn" @click="handleExport">
-        <svg-icon icon-class="export"></svg-icon>批量导出
+        <svg-icon icon-class="export" style="margin-right: 5px;"></svg-icon>批量导出
       </el-button>
     </div>
     <el-table :data="list"
@@ -240,7 +240,7 @@
         </el-row>
         <el-row>
           <el-col>
-            <el-form-item label="职级" prop="rankIds" v-if="dialogStatus === 'create'">
+            <el-form-item label="职级" prop="rankIds">
               <el-select class="filter-item"
                          placeholder="请选择职级"
                          multiple
@@ -253,18 +253,18 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="职级" prop="rankIds" v-else>
-              <el-select class="filter-item"
-                         placeholder="请选择职级"
-                         v-model="tempRankId">
-                <el-option v-for="item in level"
-                           :value="item.rankId"
-                           :label="item.rankName"
-                           :key="item.rankId">
-                  <span style="float: left;">{{item.rankName}}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
+            <!--<el-form-item label="职级" prop="rankIds" v-else>-->
+              <!--<el-select class="filter-item"-->
+                         <!--placeholder="请选择职级"-->
+                         <!--v-model="tempRankId">-->
+                <!--<el-option v-for="item in level"-->
+                           <!--:value="item.rankId"-->
+                           <!--:label="item.rankName"-->
+                           <!--:key="item.rankId">-->
+                  <!--<span style="float: left;">{{item.rankName}}</span>-->
+                <!--</el-option>-->
+              <!--</el-select>-->
+            <!--</el-form-item>-->
           </el-col>
         </el-row>
         <el-row>
@@ -443,7 +443,7 @@
             this.$refs.form.validate(valid => {
               console.log(valid)
               if (valid) {
-                // console.log('ssss')
+                //
               }
             })
           }
@@ -569,10 +569,11 @@
         this.form = {}
         // this.tempDeptId = []
         editPfItem(id).then(res => {
-          this.form = res.data
+          this.form = Object.assign({}, res.data)
           this.upperIds(this.result, this.tempDeptIds, this.form.deptId)
           this.handlePosition(this.form.positionId)
-          this.tempRankId = res.data.rankId
+          // this.tempRankId = res.data.rankId
+          this.form.rankIds = [...res.data.rankIds]
           this.dialogCreate = true
         })
       },
@@ -707,7 +708,7 @@
           this.dialogCreate = false
           return false
         }
-        this.form.rankIds = [this.tempRankId]
+        // this.form.rankIds = [this.tempRankId]
         set[formName].validate(valid => {
           if (valid) {
             putPfItem(this.form.performanceIndicatorId, this.form).then(res => {

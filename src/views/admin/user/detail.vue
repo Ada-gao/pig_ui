@@ -5,17 +5,17 @@
       <el-radio-button style="border-radius: 0" label="2">直属变更</el-radio-button>
     </el-radio-group>
     <!-- 新增/编辑 -->
-    <div v-show="state!=='view'&step==='1'">
+    <div v-show="state!=='view'&&step==='1'">
       <el-form :model="form" :rules="rules" ref="form" label-width="120px">
         <el-row :gutter="40">
           <el-col :span="10">
             <el-form-item label="姓名" prop="name">
-              <el-input v-model="form.name" placeholder="请输入姓名" @change="getPYCode" :readonly="isReadonly"></el-input>
+              <el-input v-model="form.name" placeholder="请输入姓名" @change="getPYCode"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="用户名" prop="username">
-              <el-input v-model="form.username" placeholder="请输入用户名" :readonly="isReadonly"></el-input>
+              <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -38,7 +38,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="工号" prop="empNo">
-              <el-input v-model="form.empNo" placeholder="请输入工号" :readonly="isReadonly"></el-input>
+              <el-input v-model="form.empNo" placeholder="请输入工号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -53,7 +53,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="性别" prop="gender">
-              <el-select class="filter-item" v-model="form.gender" placeholder="请选择" :readonly="isReadonly">
+              <el-select class="filter-item" v-model="form.gender" placeholder="请选择">
                 <el-option v-for="item in genderType" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
@@ -66,13 +66,13 @@
                 v-model="form.employeeDate"
                 type="date"
                 placeholder="选择日期"
-                :readonly="isReadonly">
+               >
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="证件类型" prop="idType">
-              <el-select class="filter-item" v-model="form.idType" placeholder="请选择" :readonly="isReadonly">
+              <el-select class="filter-item" v-model="form.idType" placeholder="请选择">
                 <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
@@ -85,13 +85,13 @@
                 v-model="form.probationExpirationDate"
                 type="date"
                 placeholder="选择日期"
-                :readonly="isReadonly">
+               >
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="证件号码" prop="idNo">
-              <el-input v-model="form.idNo" :maxlength="18" placeholder="请输入证件号码" :readonly="isReadonly"></el-input>
+              <el-input v-model="form.idNo" :maxlength="18" placeholder="请输入证件号码"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -100,13 +100,13 @@
                 v-model="form.officialDate"
                 type="date"
                 placeholder="选择日期"
-                :readonly="isReadonly">
+               >
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="手机号" prop="mobile">
-              <el-input v-model="form.mobile" :maxlength="11" placeholder="请输入手机号码" :readonly="isReadonly"></el-input>
+              <el-input v-model="form.mobile" :maxlength="11" placeholder="请输入手机号码"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -124,7 +124,7 @@
           <el-col :span="10">
             <el-form-item label="离职原因" prop="dimissionReason">
               <!-- <el-input v-model="form.dimissionReason"></el-input> -->
-              <el-select class="filter-item" v-model="form.dimissionReason" placeholder="请选择" :readonly="isReadonly">
+              <el-select class="filter-item" v-model="form.dimissionReason" placeholder="请选择">
                 <el-option v-for="item in dimissionReason" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
@@ -133,7 +133,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="学历" prop="education">
-              <el-select class="filter-item" v-model="form.education" placeholder="请选择" :readonly="isReadonly">
+              <el-select class="filter-item" v-model="form.education" placeholder="请选择">
                 <el-option v-for="item in educationType" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
@@ -146,13 +146,13 @@
                 v-model="form.employeeDate"
                 type="date"
                 placeholder="选择日期"
-                :readonly="isReadonly">
+               >
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="婚姻状况" prop="marriageStatus">
-              <el-select class="filter-item" v-model="form.marriageStatus" placeholder="请选择" :readonly="isReadonly">
+              <el-select class="filter-item" v-model="form.marriageStatus" placeholder="请选择">
                 <el-option v-for="item in marriageStatusOptions" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
@@ -164,6 +164,14 @@
               <el-radio-group v-model="form.isMarketing">
                 <el-radio :label="1" style="display: inline-block">是</el-radio>
                 <el-radio :label="0" style="display: inline-block">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="客户锁定状态" prop="lock">
+              <el-radio-group v-model="form.lock">
+                <el-radio :label="1" style="display: inline-block">锁定</el-radio>
+                <el-radio :label="0" style="display: inline-block">正常</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -202,7 +210,6 @@
               <el-upload
                 class="upload-demo"
                 action="/zuul/admin/user/upload"
-                :on-preview="handlePreview"
                 :on-remove="handleRemove"
                 :headers="headers"
                 multiple
@@ -233,7 +240,7 @@
       </div>
     </div>
     <!-- 查看 -->
-    <el-form v-show="state==='view'&step==='1'" :model="form" ref="form" label-width="120px">
+    <el-form v-show="state==='view'&&step==='1'" :model="form" ref="form" label-width="120px">
       <el-row :gutter="20">
           <el-col :span="10">
             <el-form-item label="姓名：" prop="name">
@@ -328,8 +335,16 @@
           <el-col :span="10">
             <el-form-item label="是否营销岗：" prop="marriageStatus">
               <el-radio-group v-model="form.isMarketing" disabled>
-                <el-radio :label="0" style="display: inline-block">是</el-radio>
-                <el-radio :label="1" style="display: inline-block">否</el-radio>
+                <el-radio :label="1" style="display: inline-block">是</el-radio>
+                <el-radio :label="0" style="display: inline-block">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="账户锁定状态：" prop="lock">
+              <el-radio-group v-model="form.lock" disabled>
+                <el-radio :label="1" style="display: inline-block">锁定</el-radio>
+                <el-radio :label="0" style="display: inline-block">正常</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -353,12 +368,12 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj, getDirectSupervisorList } from '@/api/user'
+  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/user'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime, transformText, transformText1 } from '@/utils'
+  import { parseTime, transformText, transformText1, eachChildren } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -379,9 +394,9 @@
 
   const validID = (rule, value, callback) => {
     if (!value) {
-      callback(new Error('请输入身份证号码'))
+      callback(new Error('请输入证件号码'))
     } else if (!isvalidID(value)) {
-      callback(new Error('请输入正确的身份证号码'))
+      callback(new Error('请输入正确的证件号码'))
     } else {
       callback()
     }
@@ -407,15 +422,14 @@
           value: 'id'
         },
         list: null,
-        listLoading: true,
+        // listLoading: true,
         role: undefined,
         form: {
-          name: 'rank',
+          name: '',
           username: undefined,
           password: undefined,
           status: undefined,
           deptId: undefined,
-          // deptIds: [],
           roleList: []
         },
         deptIds: [],
@@ -467,12 +481,9 @@
             {required: true, trigger: 'change', message: '请选择状态'}
           ],
         },
-        statusOptions: ['0', '1', '2'],
-        positionsOptions: [],
+        // statusOptions: ['0', '1', '2'],
+        // positionsOptions: [],
         rolesOptions: [],
-        // dialogFormVisible: false,
-        // dialogDeptVisible: false,
-        // dialogFormView: false,
         userAdd: false,
         userUpd: false,
         userDel: false,
@@ -501,7 +512,6 @@
         headers: {
           Authorization: 'Bearer ' + getToken()
         },
-        isReadonly: false,
         directSupervisor: [],
         step: '1',
         id: '',
@@ -541,9 +551,13 @@
       this.state = this.$route.params.state
       if(this.id) {
         this.getList()
+      } else {
+        this.dialogStatus = 'create'
+        this.state = this.dialogStatus
       }
       this.handleDept()
-      // console.log(this.id, this.state)
+      console.log(this.step)
+      console.log(this.state)
     },
     methods: {
       getList() { // 编辑查询（查看）
@@ -551,20 +565,16 @@
           .then(response => {
             this.form = response.data
             this.form.isMarketing = this.form.isMarketing - 0
+            this.form.lock = this.form.lock - 0
             this.form.role = this.form.roleList[0].roleId
             this.deptIds[0] = this.form.deptId
             // this.role = row.roleList[0].roleDesc
             if(this.state === 'view') {
-              // this.dialogFormView = true
-              // this.dialogFormVisible = false
               this.dialogStatus = 'view'
-              this.isReadonly = true
-              this.form.positionId = transformText(this.positionsOptions, this.form.positionId)
+              // this.form.positionId = transformText(this.positionsOptions, this.form.positionId)
             } else {
-              // this.dialogFormView = false
-              // this.dialogFormVisible = true
               this.dialogStatus = 'update'
-              this.form.directSupervisorId = this.form.directSupervisorId
+              // this.form.directSupervisorId = this.form.directSupervisorId
             }
             let obj = {
               name: this.form.resumeName,
@@ -575,13 +585,11 @@
             } else {
               this.fileList.push(obj)
               this.fileList.length = 1
-              // console.log(this.fileList[0])
             }
             this.getNodeData(response.data.deptId)
           })
       },
       getNodeData(id) { // 部门查询角色
-        // this.dialogDeptVisible = false
         // this.form.deptId = data.id
         // this.form.deptName = data.name
         deptRoleList(id)
@@ -590,41 +598,28 @@
             this.form.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
           })
       },
-      getDirectSupervisorList() { // 直属上级查询
-        // this.dialogDeptVisible = false
-        // this.form.deptId = data.id
-        // this.form.deptName = data.name
-        getDirectSupervisorList()
-          .then(response => {
-            this.directSupervisor = response.data
-            // this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
-          })
-      },
-      handlePosition() {
-        getAllPositon().then(res => {
-          this.positionsOptions = res.data
-        })
-      },
+      // getDirectSupervisorList() { // 直属上级查询
+      //   // this.form.deptId = data.id
+      //   // this.form.deptName = data.name
+      //   getDirectSupervisorList()
+      //     .then(response => {
+      //       this.directSupervisor = response.data
+      //       // this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
+      //     })
+      // },
+      // handlePosition() {
+      //   getAllPositon().then(res => {
+      //     this.positionsOptions = res.data
+      //   })
+      // },
       handleDept() { // 部门数据
         fetchDeptTree().then(res => {
           this.treeDeptData = res.data
-          this.eachChildren(this.treeDeptData)
+          eachChildren(this.treeDeptData)
         })
       },
-      // getRoleList() {
-      //   this.getNodeData(this.deptIds[0])
-      // },
       handleChageRole(val) {
         this.rolesOptions = this.rolesOptions.slice(0)
-      },
-      eachChildren(list) { // 过滤children的空数组
-        list.forEach(item => {
-          if(item.children && !item.children.length) {
-            delete item.children
-          } else if(item.children && item.children.length) {
-            this.eachChildren(item.children)
-          }
-        })
       },
       changeDept(val) {
         this.form.role = ''
@@ -633,8 +628,7 @@
       },
       handleCreate() {
         this.resetTemp()
-        this.dialogStatus = 'create'
-        // this.dialogFormVisible = true
+        // this.dialogStatus = 'create'
         this.PYCode = getPYData() // 获取拼音数据
       },
       create(formName) {
@@ -643,13 +637,13 @@
         this.form.deptId = this.deptIds[this.deptIds.length - 1]
         // this.form.positionId = this.form.positionName
         // this.form.idType = this.IDType
-        // this.form.marriageStatus = this.maritalStatus
+        console.log(set[formName])
         set[formName].validate(valid => {
           if (valid) {
+            console.log('valid: ' + valid)
             addObj(this.form)
               .then((res) => {
                 if (res.status === 200) {
-                  // this.dialogFormVisible = false
                   // this.getList()
                   this.$notify({
                     title: '成功',
@@ -666,8 +660,8 @@
         })
       },
       cancel(formName) {
-        // this.dialogFormVisible = false
         this.$refs[formName].resetFields()
+        this.$router.push('/admin/user')
       },
       update(formName) { // 编辑提交
         const set = this.$refs
@@ -688,7 +682,6 @@
               this.fileList = []
             }
             putObj(this.form).then(() => {
-              // this.dialogFormVisible = false
               // this.getList()
               this.$notify({
                 title: '成功',
@@ -715,9 +708,6 @@
         this.fileList = []
         // console.log(file, fileList)
       },
-      handlePreview(file) {
-        // console.log(file)
-      },
       handleExceed(files, fileList) {
         this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
       },
@@ -739,6 +729,9 @@
       },
       handleChange(val) {
         this.form.positionId = val
+      },
+      getPYCode(val) {
+        this.form.username = this.covertPY(val)
       },
       covertPY(l1) { // 汉字转拼音
         let l2 = l1.length
@@ -767,9 +760,6 @@
           }
         }
         return false
-      },
-      getPYCode(val) {
-        this.form.username = this.covertPY(val)
       }
     }
   }

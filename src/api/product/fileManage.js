@@ -94,7 +94,7 @@ export function delTranscFile(id, obj) {
  */
 export function importPd(file) {
   return request({
-    url: '/product/products/import',
+    url: '/client/client/uploadExcel',
     method: 'post',
     data: file,
     headers: {

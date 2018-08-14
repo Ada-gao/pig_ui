@@ -7,6 +7,7 @@
       :searchNationality="false"
       :searchCity="false"
       :searchClientType="false"
+      :searchValidate="true"
       >
     </search-bar-component>
 
@@ -44,6 +45,11 @@
       <el-table-column align="center" label="手机号">
         <template slot-scope="scope">
           <span>{{scope.row.mobile}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="验证状态">
+        <template slot-scope="scope">
+          <span>{{scope.row.mobileValidatedName}}</span>
         </template>
       </el-table-column>
 
@@ -243,7 +249,7 @@
           this.total = response.data.total
           this.listLoading = false
           this.list.forEach(item => {
-            
+
             item.realnameStatus = transformText(this.realnameStatus, item.realnameStatus)
             item.positionId = transformText(this.positionsOptions, item.positionId)
             item.clientType = transformText(this.clientType, item.clientType)

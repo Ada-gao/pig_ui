@@ -26,7 +26,9 @@
             </template>
           </el-table-column>
           <el-table-column align="center" label="认证原因" v-else>
-            <span>具有2年以上证券、基金、期货等投资经验</span>
+            <template slot-scope="scope">
+              <span>{{scope.row.applyReason}}</span>
+            </template>
           </el-table-column>
           <el-table-column align="center" label="风险测评问卷（图片）">
             <template slot-scope="scope">
@@ -56,7 +58,7 @@
 
         <el-table-column align="center" label="提交时间">
           <template slot-scope="scope">
-            <span>{{scope.row.commitDate}}</span>
+            <span>{{scope.row.commitDate|parseTime('{y}-{m}-{d}')}}</span>
           </template>
         </el-table-column>
         
@@ -68,7 +70,7 @@
 
         <el-table-column align="center" label="投资者类型">
           <template slot-scope="scope">
-            <span>{{scope.row.certificationType}}</span>
+            <span>{{scope.row.certificationType|turnText(certificationType)}}</span>
           </template>
         </el-table-column>
         
@@ -80,13 +82,13 @@
         
         <el-table-column align="center" label="审核时间">
           <template slot-scope="scope">
-            <span>{{scope.row.auditDate}}</span>
+            <span>{{scope.row.auditDate|parseTime('{y}-{m}-{d}')}}</span>
           </template>
         </el-table-column>
         
         <el-table-column align="center" label="审核结果">
           <template slot-scope="scope">
-            <span>{{scope.row.auditFailReason}}</span>
+            <span>{{scope.row.auditResult|turnText(certificationStatus)}}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -119,8 +121,7 @@
 <script>
   import { getCertHistory, getCertInfo, putObj } from '@/api/client/investor'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  // import { parseTime } from '@/utils'
-  import { transformText } from '@/utils'
+  import { transformText1, parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -206,6 +207,14 @@
           9: '异常'
         }
         return statusMap[status]
+      },
+      turnText(val, list) {
+        return transformText1(val, list)
+      },
+      parseTime (time) {
+        if(!time) return
+        let date = new Date(time)
+        return parseTime(date)
       }
     },
     created() {
@@ -240,17 +249,17 @@
         console.log(val)
       },
       submitResult(result) {
-        if(this.investorType === 0 && !this.riskLevel) {
+        if(this.investorType == 0 && !this.riskLevel) {
           this.selectMsg = true
           return
         }
-        if(result == 3 && !this.failReason) {
-          this.tip = true
-          return
-        }
+        // if(result == 3 && !this.failReason) {
+        //   this.tip = true
+        //   return
+        // }
         let params = {
           // failId: this.form.clientId,
-          failReason: this.failReason,
+          // failReason: this.failReason,
           result: result,
           riskLevel: this.riskLevel
         }
@@ -262,8 +271,6 @@
             //   type: 'success',
             //   duration: 2000
             // })
-          
-          // console.log(response.code)
           if(response.status == 200) {
             this.$notify({
               title: '成功',

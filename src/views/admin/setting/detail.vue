@@ -93,7 +93,7 @@
         },
         textMap: {
           update: '编辑币种',
-          create: '新增币种'
+          create: '新增汇率'
         },
         tableKey: 0,
         rules: {
@@ -105,7 +105,7 @@
           ],
            exchangeRate: [
            { required: true, message: '请输入汇率' },
-           { type: 'number', message: '年龄必须为数字值'}
+           { type: 'number', message: '汇率必须为数字值'}
           ]
         }
       }
@@ -171,7 +171,6 @@
         this.getList()
       },
       handleCreate() {
-      	console.log(this.$route.params.name)
       	this.form.name = this.$route.params.name;
       	this.form.currencyId = this.$route.params.id;
         //this.resetTemp()
