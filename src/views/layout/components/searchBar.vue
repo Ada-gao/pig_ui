@@ -125,6 +125,7 @@
 import { fetchDeptTree } from '@/api/role'
 import { mapGetters } from 'vuex'
 import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
+import { eachChildren } from '@/utils'
 
 export default {
   props: {
@@ -233,6 +234,7 @@ export default {
       fetchDeptTree()
         .then(response => {
           this.treeDeptData = response.data
+          eachChildren(this.treeDeptData)
           this.dialogDeptVisible = true
         })
     },

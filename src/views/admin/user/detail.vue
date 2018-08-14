@@ -5,7 +5,7 @@
       <el-radio-button style="border-radius: 0" label="2">直属变更</el-radio-button>
     </el-radio-group>
     <!-- 新增/编辑 -->
-    <div v-show="state!=='view'&step==='1'">
+    <div v-show="state!=='view'&&step==='1'">
       <el-form :model="form" :rules="rules" ref="form" label-width="120px">
         <el-row :gutter="40">
           <el-col :span="10">
@@ -240,7 +240,7 @@
       </div>
     </div>
     <!-- 查看 -->
-    <el-form v-show="state==='view'&step==='1'" :model="form" ref="form" label-width="120px">
+    <el-form v-show="state==='view'&&step==='1'" :model="form" ref="form" label-width="120px">
       <el-row :gutter="20">
           <el-col :span="10">
             <el-form-item label="姓名：" prop="name">
@@ -551,9 +551,13 @@
       this.state = this.$route.params.state
       if(this.id) {
         this.getList()
+      } else {
+        this.dialogStatus = 'create'
+        this.state = this.dialogStatus
       }
       this.handleDept()
-      // console.log(this.id, this.state)
+      console.log(this.step)
+      console.log(this.state)
     },
     methods: {
       getList() { // 编辑查询（查看）
@@ -624,7 +628,7 @@
       },
       handleCreate() {
         this.resetTemp()
-        this.dialogStatus = 'create'
+        // this.dialogStatus = 'create'
         this.PYCode = getPYData() // 获取拼音数据
       },
       create(formName) {
@@ -633,8 +637,10 @@
         this.form.deptId = this.deptIds[this.deptIds.length - 1]
         // this.form.positionId = this.form.positionName
         // this.form.idType = this.IDType
+        console.log(set[formName])
         set[formName].validate(valid => {
           if (valid) {
+            console.log('valid: ' + valid)
             addObj(this.form)
               .then((res) => {
                 if (res.status === 200) {

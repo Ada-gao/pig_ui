@@ -528,7 +528,7 @@
       :visible.sync="dialogStVisible"
       width="30%">
       <div style="margin-bottom: 30px;">此产品现在为{{productStatusText}}，确定进入{{msgText}}吗？</div>
-      <el-form label-width="110px">
+      <el-form :model="dto" ref="dto" label-width="110px">
         <el-row>
           <el-col :span="11">
             <el-form-item label="产品名称:" prop="minimalAmount" style="white-space: nowrap">
@@ -548,9 +548,14 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-show="productStatusNo===2">
-          <el-col :span="11">
-            <el-form-item label="关账时间:" prop="closeDate">
+        <el-row v-if="productStatusNo===2">
+          <el-col :span="15">
+            <el-form-item
+              label="关账时间:"
+              prop="closeDate"
+              :rules="[
+                { required: true, message: '关账时间不能为空'}
+              ]">
               <el-date-picker
                 v-model="dto.closeDate"
                 type="datetime"
@@ -559,9 +564,14 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-show="productStatusNo===3">
-          <el-col :span="11">
-            <el-form-item label="已成立时间" prop="establishmentDate">
+        <el-row v-if="productStatusNo===3">
+          <el-col :span="15">
+            <el-form-item
+              label="已成立时间"
+              prop="establishmentDate"
+              :rules="[
+                { required: true, message: '已成立时间不能为空'}
+              ]">
               <el-date-picker
                 v-model="dto.establishmentDate"
                 type="datetime"
@@ -570,9 +580,14 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-show="productStatusNo===3">
-          <el-col :span="11">
-            <el-form-item label="起息日期" prop="valueDate">
+        <el-row v-if="productStatusNo===3">
+          <el-col :span="15">
+            <el-form-item
+              label="起息日期"
+              prop="valueDate"
+              :rules="[
+                { required: true, message: '起息日起不能为空'}
+              ]">
               <el-date-picker
                 v-model="dto.valueDate"
                 type="date"
@@ -584,7 +599,7 @@
       </el-form>
       <div class="dialog-footer text-right">
         <el-button @click="dialogStVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleProStatus">确 定</el-button>
+        <el-button type="primary" @click="handleProStatus('dto')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -1343,18 +1358,25 @@
 
         })
       },
-      handleProStatus() { // 弹框确定事件
-        updProductType(this.productId, this.dto).then(res => {
-          this.$notify({
-            title: '成功',
-            message: '状态操作成功',
-            type: 'success',
-            duration: 2000
-          })
-          this.dialogStVisible = false
-          this.$router.push({path: this.url})
-          Bus.$emit('activeUrl', this.url)
+      handleProStatus(formName) { // 弹框确定事件
+        this.$refs[formName].validate(valid => {
+          if(valid) {
+            updProductType(this.productId, this.dto).then(res => {
+              this.$notify({
+                title: '成功',
+                message: '状态操作成功',
+                type: 'success',
+                duration: 2000
+              })
+              this.dialogStVisible = false
+              this.$router.push({path: this.url})
+              Bus.$emit('activeUrl', this.url)
+            })
+          } else {
+            return false
+          }
         })
+        
       },
       cancel(formName) {
         // this.$refs[formName].resetFields()
