@@ -167,6 +167,14 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
+          <el-col :span="10">
+            <el-form-item label="客户锁定状态" prop="lock">
+              <el-radio-group v-model="form.lock">
+                <el-radio :label="1" style="display: inline-block">锁定</el-radio>
+                <el-radio :label="0" style="display: inline-block">正常</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
         <!-- </el-row>
         <el-row :gutter="20"> -->
           <!-- <el-col :span="10">
@@ -327,8 +335,16 @@
           <el-col :span="10">
             <el-form-item label="是否营销岗：" prop="marriageStatus">
               <el-radio-group v-model="form.isMarketing" disabled>
-                <el-radio :label="0" style="display: inline-block">是</el-radio>
-                <el-radio :label="1" style="display: inline-block">否</el-radio>
+                <el-radio :label="1" style="display: inline-block">是</el-radio>
+                <el-radio :label="0" style="display: inline-block">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="账户锁定状态：" prop="lock">
+              <el-radio-group v-model="form.lock" disabled>
+                <el-radio :label="1" style="display: inline-block">锁定</el-radio>
+                <el-radio :label="0" style="display: inline-block">正常</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -357,7 +373,7 @@
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime, transformText, transformText1 } from '@/utils'
+  import { parseTime, transformText, transformText1, eachChildren } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -545,6 +561,7 @@
           .then(response => {
             this.form = response.data
             this.form.isMarketing = this.form.isMarketing - 0
+            this.form.lock = this.form.lock - 0
             this.form.role = this.form.roleList[0].roleId
             this.deptIds[0] = this.form.deptId
             // this.role = row.roleList[0].roleDesc
@@ -594,20 +611,11 @@
       handleDept() { // 部门数据
         fetchDeptTree().then(res => {
           this.treeDeptData = res.data
-          this.eachChildren(this.treeDeptData)
+          eachChildren(this.treeDeptData)
         })
       },
       handleChageRole(val) {
         this.rolesOptions = this.rolesOptions.slice(0)
-      },
-      eachChildren(list) { // 过滤children的空数组
-        list.forEach(item => {
-          if(item.children && !item.children.length) {
-            delete item.children
-          } else if(item.children && item.children.length) {
-            this.eachChildren(item.children)
-          }
-        })
       },
       changeDept(val) {
         this.form.role = ''

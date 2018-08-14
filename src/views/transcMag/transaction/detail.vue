@@ -1,6 +1,31 @@
 <template>
   <div class="app-container calendar-list-container">
 
+    <el-dialog :visible.sync="dialogImgVisible1"
+               @close="handleClose"
+               class="swiper-dialog rotate-dialog">
+      <!--<img width="100%" :src="dialogImageUrl" alt="">-->
+      <el-carousel arrow="always"
+                   indicator-position="none"
+                   style="width:100%;text-align:center"
+                   @change="carouselChange"
+                   :autoplay="false">
+        <el-carousel-item v-for="(item, index) in idcardImgs"
+                          :key="item">
+          <img :src="item"
+               alt=""
+               :class="'rotate_' + rotateCnt * 90"
+               style="width:80%;height:100%">
+          <!--<el-button type="primary"-->
+                     <!--@click="handleRotate"-->
+                     <!--style="display: block;margin:10px auto 0">顺时针翻转90度</el-button>-->
+        </el-carousel-item>
+      </el-carousel>
+      <el-button type="primary"
+                 @click="handleRotate"
+                 style="display: block;margin:0 auto">顺时针翻转90度</el-button>
+    </el-dialog>
+
     <el-tabs v-model="activeName2" type="card" @tab-click="handleClick" class="transc">
       <el-tab-pane label="预约详情" name="first">
         <el-form :model="form" ref="form" label-width="100px">
@@ -153,7 +178,7 @@
             <h5>打款凭证</h5>
             <div class="split-line"></div>
             <div class="imgs">
-              <img :src="item.pictureUrl" alt="" @click="previewImg(item.pictureUrl)" v-for="item in remitFiles">
+              <img :src="item.pictureUrl" alt="" @click="previewImg1('remit')" v-for="item in remitFiles">
             </div>
           </div>
 
@@ -161,7 +186,7 @@
             <h5>交易所需材料</h5>
             <div class="split-line"></div>
             <div class="imgs">
-              <img :src="item.pictureUrl" alt="" @click="previewImg(item.pictureUrl)" v-for="item in dealFiles">
+              <img :src="item.pictureUrl" alt="" @click="previewImg1('deal')" v-for="item in dealFiles">
             </div>
           </div>
 
@@ -169,13 +194,21 @@
             <h5>退款申请书</h5>
             <div class="split-line"></div>
             <div class="imgs">
-              <img :src="item.pictureUrl" alt="" @click="previewImg(item.pictureUrl)" v-for="item in refundFiles">
+              <img :src="item.pictureUrl" alt="" @click="previewImg1('refund')" v-for="item in refundFiles">
             </div>
           </div>
 
           <!-- 预览图片 -->
-          <el-dialog :visible.sync="dialogImgVisible">
-            <img width="100%" :src="dialogImageUrl" alt="">
+          <el-dialog :visible.sync="dialogImgVisible" @close="handleClose">
+            <div style="width:57%;margin:0 auto">
+              <img style="width:100%;display: inline-block;"
+                   :src="dialogImageUrl"
+                   :class="'rotate_' + rotateCnt * 90"
+                   alt="">
+            </div>
+            <el-button type="primary"
+                       @click="handleRotate"
+                       style="display: block;margin:65px auto 0">顺时针翻转90度</el-button>
           </el-dialog>
 
         </el-form>
@@ -391,6 +424,12 @@
     },
     data() {
       return {
+        dialogImgVisible1: false,
+        idcardImgs: [],
+        rotateCnt: 0,
+        remitImgArr: [],
+        dealImgArr: [],
+        refundImgArr: [],
         treeDeptData: [],
         checkedKeys: [],
         defaultProps: {
@@ -473,7 +512,7 @@
             { required: true, message: '请输入寄出方式'}
           ],
           auditRemark: [
-            { required: true, message: '请填写原因'}          
+            { required: true, message: '请填写原因'}
           ]
         },
         clientId: ''
@@ -492,12 +531,35 @@
       this.sys_user_del = this.permissions['sys_user_del']
       this.type_is_update = this.$route.path.substr(-1)
       this.orderStatus = this.$route.params.orderStatus
-      console.log(this.orderStatus)
+      // console.log(this.orderStatus)
       this.getList()
       // this.status = this.$route.params.status
       // console.log(this.$route.params)
     },
     methods: {
+      previewImg1(flag) {
+        switch (flag) {
+          case 'remit':
+            this.idcardImgs = [...this.remitImgArr]
+            break
+          case 'deal':
+            this.idcardImgs = [...this.dealImgArr]
+            break
+          case 'refund':
+            this.idcardImgs = [...this.refundImgArr]
+            break
+        }
+        this.dialogImgVisible1 = true
+      },
+      carouselChange(value) {
+        this.rotateCnt = 0
+      },
+      handleClose() {
+        this.rotateCnt = 0
+      },
+      handleRotate() {
+        this.rotateCnt === 3 ? this.rotateCnt = 0 : ++this.rotateCnt
+      },
       getList() {
         let id = this.$route.params.appointmentId
 
@@ -510,19 +572,31 @@
           this.form.status = transformText(this.appointmentStatus, this.form.status)
           this.form.appointmentDate = parseTime(this.form.appointmentDate, '{y}-{m}-{d}')
           this.form.remitDate = parseTime(this.form.remitDate, '{y}-{m}-{d}')
-          this.form.remitAmount = this.form.appointmentAmount
+          this.form.remitAmount = this.form.remitAmount
         })
         // console.log(this.orderStatus)
         if(this.orderStatus != '2') {
           getFileObj(id).then(response => {
-            this.bankCardUrl = response.data.cardUrl
-            this.dealFiles = response.data.dealFiles
-            this.remitFiles = response.data.remitFiles
+            this.bankCardUrl = response.data.cardUrl + '!160x100'
+            this.dealFiles = JSON.parse(JSON.stringify(response.data.dealFiles))
+            this.dealFiles.map(item => {
+              this.dealImgArr.push(item.pictureUrl)
+              item.pictureUrl += '!160x100'
+            })
+            this.remitFiles = JSON.parse(JSON.stringify(response.data.remitFiles))
+            this.remitFiles.map(item => {
+              this.remitImgArr.push(item.pictureUrl)
+              item.pictureUrl += '!160x100'
+            })
           })
         }
         if(this.orderStatus == '5') {
           getRefundFile(id).then(response => {
-            this.refundFiles = response.data
+            this.refundFiles = JSON.parse(JSON.stringify(response.data))
+            this.refundFiles.map(item => {
+              this.reFundImgArr.push(item.pictureUrl)
+              item.pictureUrl += '!160x100'
+            })
           })
         }
       },
@@ -548,7 +622,7 @@
               duration: 2000
             })
             this.dialogVisible = false
-            return 
+            return
           }
         }
       },
@@ -618,7 +692,7 @@
         } else if(this.orderStatus == 3) { // 打款
           params.remitAmount = this.form.remitAmount - 0
           params.remitDate = this.form.remitDate
-          
+
           if(this.status === '2003') { //订单关闭后退款审核
             putRefund(this.form.appointmentId, params).then(response => {
               console.log(response.code)
@@ -707,7 +781,7 @@
       },
       previewImg(url) {
         this.dialogImgVisible = true
-        this.dialogImageUrl = url
+        this.dialogImageUrl = url.split('!160x100')[0]
       },
       changeReason(val) {
         this.result.auditRemark = transformText(this.options, val)
@@ -741,8 +815,10 @@
 }
 .imgs {
   img {
-    width: 250px;
-    height: 150px;
+    width: 160px;
+    height: 100px;
+  }
+  img:not(:last-child) {
     margin-right: 20px;
   }
 }

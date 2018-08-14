@@ -20,11 +20,11 @@
                 </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-                <el-form-item label="理财师编号">
+                <el-form-item label="理财师工号">
                   <el-input class="filter-item"
                             clearable
                             v-model="listQuery.usercode"
-                            placeholder="请输入理财师编号"></el-input>
+                            placeholder="请输入理财师工号"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
@@ -36,11 +36,11 @@
                 </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-                <el-form-item label="销售支持编号">
+                <el-form-item label="销售支持工号">
                   <el-input class="filter-item"
                             clearable
                             v-model="listQuery.salescode"
-                            placeholder="请输入销售支持编号"></el-input>
+                            placeholder="请输入销售支持工号"></el-input>
                 </el-form-item>
             </el-col>
 
@@ -68,10 +68,10 @@
 
     <div v-if="sales_support_add"  style="text-align: right;">
       <el-button class="add_btn" @click="handleCreate">
-        <svg-icon icon-class="add"></svg-icon>新增销售支持
+        <svg-icon icon-class="add" style="margin-right: 5px;"></svg-icon>新增销售支持
       </el-button>
       <el-button class="search_btn" @click="handleImport">
-        <svg-icon icon-class="upload"></svg-icon>批量导入
+        <svg-icon icon-class="upload" style="margin-right: 5px;"></svg-icon>批量导入
       </el-button>
     </div>
     <el-table :data="list"
@@ -91,7 +91,7 @@
           <span>{{scope.row.userName}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="理财师编号">
+      <el-table-column align="center" label="理财师工号">
         <template slot-scope="scope">
           <span>{{scope.row.userCode}}</span>
         </template>
@@ -102,7 +102,7 @@
         </template>
       </el-table-column>
       <el-table-column align="center"
-                      label="销售支持编号"
+                      label="销售支持工号"
                       :render-header="tableHeader">
         <template slot-scope="scope">
           <span>
@@ -194,8 +194,8 @@
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="理财师编号" prop="userCode">
-              <el-input v-model="form.userCode" readonly="readonly" placeholder="请输入理财师编号"></el-input>
+            <el-form-item label="理财师工号" prop="userCode">
+              <el-input v-model="form.userCode" readonly="readonly" placeholder="请输入理财师工号"></el-input>
             </el-form-item>
           </el-col>
 
@@ -219,8 +219,8 @@
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="销售支持编号" prop="salesCode">
-              <el-input v-model="form.salesCode" readonly="readonly" placeholder="请输入销售支持编号"></el-input>
+            <el-form-item label="销售支持工号" prop="salesCode">
+              <el-input v-model="form.salesCode" readonly="readonly" placeholder="请输入销售支持工号"></el-input>
             </el-form-item>
           </el-col>
 
@@ -291,13 +291,13 @@
             { required: true, validator: validDateRate, trigger: 'blur' }
           ],
           salesCode: [
-            { required: true, message: '请输入销售支持姓名', trigger: 'blur' }
+            { required: true, message: '请输入销售支持工号', trigger: 'blur' }
           ],
           salesName: [
             { required: true, message: '请选择销售支持姓名', trigger: 'blur' }
           ],
           userCode: [
-            { required: true, message: '请输入理财师编号', trigger: 'blur' }
+            { required: true, message: '请输入理财师工号', trigger: 'blur' }
           ],
           userName: [
             { required: true, message: '请选择理财师姓名', trigger: 'blur' }

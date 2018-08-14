@@ -120,7 +120,7 @@
         </el-row>
         <el-row>
           <el-col :span="22">
-            <el-form-item label="备注" prop="reason">
+            <el-form-item label="分配原因" prop="reason">
               <el-input type="textarea" v-model="modal.reason"></el-input>
             </el-form-item>
           </el-col>
@@ -143,7 +143,7 @@
   import { getAllPositon } from '@/api/queryConditions'
   import { getPlannerList } from '@/api/user'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime, transformText } from '@/utils'
+  import { parseTime, transformText, eachChildren } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -357,6 +357,7 @@
         fetchDeptTree()
           .then(response => {
             this.treeDeptData = response.data
+            eachChildren(this.treeDeptData)
             this.dialogDeptVisible = true
           })
       },
@@ -402,7 +403,6 @@
         //   })
       },
       changeDept(val) {
-        console.log(val)
         this.modal.name = ''
         this.getPlannerList(val)
       },
@@ -413,7 +413,6 @@
         }
         getPlannerList(params).then(response => {
           this.plannerList = response.data
-          console.log(this.plannerList)
         })
       },
       changePlanner() {
@@ -461,9 +460,9 @@
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`);
       // },
-      handleChange (value) {
-        console.log(value)
-      },
+      // handleChange (value) {
+      //   console.log(value)
+      // },
       changetest(val) {
         this.plannerList = this.plannerList.slice(0)
       }

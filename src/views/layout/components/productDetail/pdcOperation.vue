@@ -57,12 +57,14 @@
       <product-material-component
         v-show="secStep==='1'"
         :productList="data1"
+        :operationEdit="!operationDisabled"
         @del-client-file="deleteClient"
         @upd-client-file="updateClientFile">
       </product-material-component>
       <product-material-component
         v-show="secStep==='0'"
         :productList="data2"
+        :operationEdit="!operationDisabled"
         @del-client-file="deleteClient"
         @upd-client-file="updateClientFile">
       </product-material-component>
@@ -163,7 +165,8 @@
         <el-table-column
           prop=""
           label="操作"
-          align="center">
+          align="center"
+          v-if="!operationDisabled">
           <template slot-scope="scope">
             <a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>
             <a class="danger_btn" size="small" @click="delfiles(scope.row, 'announcement')">删除</a>
@@ -507,7 +510,7 @@
       width="30%">
       <el-radio-group v-model="collectVal" @change="radioChange">
         <el-radio style="display: block" :label="1">立即进入产品募集</el-radio>
-        <el-radio style="margin-left: 0" :label="2">定时进入产品募集</el-radio>
+        <el-radio style="margin-left: 0; margin-right: 10px;" :label="2">定时进入产品募集</el-radio>
         <el-date-picker
           v-model="collectTime"
           type="datetime"
