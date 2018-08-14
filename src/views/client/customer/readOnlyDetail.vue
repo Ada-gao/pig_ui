@@ -67,6 +67,16 @@
             <span>{{form.clientFrom|turnText(clientFrom)}}</span>
           </el-form-item>
         </el-col>
+        <el-col :span="8">
+          <el-form-item label="客户级别：" prop="clientGrade">
+            <span>{{form.clientGrade}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="资产管理规模：" prop="assetAmount">
+            <span>{{form.assetAmount}}万</span>
+          </el-form-item>
+        </el-col>
         <!-- <el-col :span="11">
           <el-form-item label="姓名" prop="name">
             <el-input v-model="form.name" placeholder="" readonly></el-input>
@@ -128,52 +138,70 @@
 
       <h5>客户状态</h5>
       <el-row :gutter="20">
-        <el-col :span="11">
+        <el-col :span="8">
           <el-form-item label="实名认证状态：" prop="username">
             <!-- <el-input v-model="form.realnameStatus" placeholder="" readonly></el-input> -->
             <span>{{form.realnameStatus|turnText(certificationStatus)}}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus">
-          <el-form-item label="投资者身份：" prop="clientType">
+        <el-col :span="8" v-if="realnameStatus">
+          <el-form-item label="投资者类型：" prop="clientType">
             <!-- <el-input v-model="form.clientType" placeholder="" readonly></el-input> -->
-            <span>{{form.clientType|turnText(clientType)}}</span>
+            <span>{{clientStatus.clientType|turnText(clientType)}}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus">
+        <el-col :span="8" v-if="realnameStatus">
+          <el-form-item label="认证时间：" prop="clientType">
+            <!-- <el-input v-model="form.clientType" placeholder="" readonly></el-input> -->
+            <span>{{clientStatus.certificationDate|parseTime('{y}-{m}-{d}')||'--'}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="realnameStatus">
           <el-form-item label="证件类型：" prop="idType">
             <!-- <el-input v-model="form.idType" placeholder="" readonly></el-input> -->
-            <span>{{form.idType|turnText(idTypeOptions)}}</span>
+            <span>{{clientStatus.idType|turnText(idTypeOptions)}}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus && idType">
+        <el-col :span="8" v-if="realnameStatus && idType">
           <el-form-item label="证件号码：" prop="idNo">
             <!-- <el-input v-model="form.idNo" placeholder="" readonly></el-input> -->
-            <span>{{form.idNo}}</span>
+            <span>{{clientStatus.idNo}}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus && idType">
+        <el-col :span="8" v-if="realnameStatus && idType">
           <el-form-item label="出生日期：" prop="date">
             <!-- <el-input v-model="clientStatus.birthday" placeholder="" readonly></el-input> -->
             <span>{{clientStatus.birthday}}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="realnameStatus && idType">
-          <el-form-item label="证件有效期：" prop="date">
-            <!-- <el-input v-model="clientStatus.idExpiration" placeholder="" readonly></el-input> -->
-            <span>{{clientStatus.idExpiration}}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11" v-if="realnameStatus && idType">
+        <el-col :span="8" v-if="realnameStatus && idType">
           <el-form-item label="地址：" prop="address">
             <!-- <el-input v-model="form.address" placeholder="" readonly></el-input> -->
-            <span>{{form.address}}</span>
+            <span>{{clientStatus.address}}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="11" v-if="isClientType && realnameStatus && idType">
+        <el-col :span="8" v-if="realnameStatus && idType">
+          <el-form-item label="证件有效期：" prop="date">
+            <!-- <el-input v-model="clientStatus.idExpiration" placeholder="" readonly></el-input> -->
+            <span>{{clientStatus.idStartDate}}至{{clientStatus.idExpiration}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="realnameStatus && idType">
+          <el-form-item label="人群划分：" prop="crowds">
+            <!-- <el-input v-model="clientStatus.idExpiration" placeholder="" readonly></el-input> -->
+            <span>{{clientStatus.crowds|turnText(buyingCrowds)}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="isClientType && realnameStatus && idType">
           <el-form-item label="风险测评：" prop="riskLevel">
             <!-- <el-input v-model="clientStatus.riskLevel" placeholder="" readonly></el-input> -->
             <span>{{clientStatus.riskLevel}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="isClientType && realnameStatus && idType" style="white-space: nowrap">
+          <el-form-item label="风险评估表填写时间：" prop="riskLevel">
+            <!-- <el-input v-model="clientStatus.riskLevel" placeholder="" readonly></el-input> -->
+            <span style="padding-left: 20px;">{{clientStatus.riskLevel}}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -331,7 +359,7 @@
         userAdd: false,
         userUpd: false,
         userDel: false,
-        dialogStatus: 'create',
+        // dialogStatus: 'create',
         textMap: {
           update: '编辑员工',
           create: '新增员工'
@@ -360,8 +388,8 @@
         bankcardList: [],
         productList: [],
         realnameStatus: '',
-        idType: '',
-        isClientType: '',
+        idType: true,
+        isClientType: false,
         defaultProps2: {
           value: 'label'
         },
@@ -387,7 +415,8 @@
         'clientType',
         'idTypeOptions',
         'nationality',
-        'clientFrom'
+        'clientFrom',
+        'buyingCrowds'
       ])
     },
     created() {
@@ -404,8 +433,8 @@
         getObj(id).then(response => {
           this.form = response.data
 
-          this.realnameStatus = this.form.realnameStatus == 2 ? true : false // 认证状态判断
-          this.idType = this.form.idType == 0 ? true : false // 证件类型判断
+          this.realnameStatus = this.form.realnameStatus != 0 ? true : false // 认证状态判断
+          // this.idType = this.form.idType == 0 ? true : false // 证件类型判断
           this.isClientType = this.form.clientType == 0 ? true : false// 投资者类型判断
 
           // this.form.gender = transformText(this.genderType, this.form.gender)
@@ -419,7 +448,7 @@
               this.bankcardList = response.data || []
             })
           }
-          if(this.realnameStatus == 2) {
+          if(this.form.realnameStatus == 2) {
             getClientStatus(id).then(response => {
               this.clientStatus = response.data
             })

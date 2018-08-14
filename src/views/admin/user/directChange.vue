@@ -26,7 +26,7 @@
       <el-table-column align="center" label="团队经理变更时间" prop="teamManagerChangeDate"> </el-table-column>
       <el-table-column align="center" label="团队经理" prop="teamManagerName"> </el-table-column>
       <el-table-column align="center" label="公司变更时间" prop="companyChangeDate"> </el-table-column>
-      <el-table-column align="center" label="公司" prop="deptName"> </el-table-column>
+      <el-table-column align="center" label="公司" prop="companyName"> </el-table-column>
       <el-table-column align="center" label="区域变更时间" prop="regionalChangeDate"> </el-table-column>
       <el-table-column align="center" label="区域" prop="regional"> </el-table-column>
       <el-table-column align="center" label="部门变更时间" prop="deptChangeDate"> </el-table-column>
@@ -38,7 +38,7 @@
 
     </el-table>
 
-    <div v-show="!listLoading&list" class="pagination-container">
+    <div v-show="!listLoading&&list" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                      :current-page.sync="listQuery.page"
                      :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
@@ -265,11 +265,19 @@
             <el-form-item label="部门" required>
              <el-col :span="18">
              <el-form-item prop="deptName">
-              <el-select class="filter-item" v-model="form.deptName" placeholder="请选择部门" @change="changeWatch('deptChangeDate')">
+              <el-cascader
+              style="width: 100%"
+              :options="departs"
+              v-model="form.deptName"
+              :props="deptNameProps"
+              @change="changeWatch('deptChangeDate')"
+              >
+            </el-cascader>
+         <!--      <el-select class="filter-item" v-model="listBox.deptName" placeholder="请选择部门" @change="changeWatch('deptChangeDate')">
                 <el-option v-for="item in rolesOptions" :key="item.roleId" :label="item.roleDesc" :value="item.roleId">
                   <span style="float: left">{{ item.roleDesc }}</span>
                 </el-option>
-              </el-select>
+              </el-select> -->
                </el-form-item>
               </el-col>
               <el-col class="line" :span="0.8" style="width:3%">&nbsp;</el-col>
@@ -348,7 +356,7 @@
   import { fetchList, getObj, addObj, putObj, delObj, getDirectSupervisorList } from '@/api/user'
   import { deptRoleList, fetchDeptTree ,getDirectChangeList,seeDirectChangeList,addDirectChangeList} from '@/api/role'
   import { getPositionName } from '@/api/posi'
-  import { getAllRank } from '@/api/achievement/index'
+  import { getAllRank,getAllDeparts} from '@/api/achievement/index'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { parseTime } from '@/utils'
@@ -364,6 +372,10 @@
     },
     data() {
       return {
+        tempDeptIds: [],
+        result: [],
+         eachIndex: 0,
+        departs: [], // 部门
         listLoading: false,
         tableKey: 0,
         list: [],
@@ -378,7 +390,7 @@
         },
         rolesOptions: [],
         dialogStatus: '',
-        dialogFormVisible: true,
+        dialogFormVisible: false,
         form: {},
         oldForm:{},
         newForm:{},
@@ -473,6 +485,11 @@
         defaultProps2: {
           value: 'label'
         },
+        deptNameProps:{
+          children: 'children',
+          label: 'name',
+          value: 'id'
+        },
         options: provinceAndCityData
       }
     },
@@ -481,11 +498,11 @@
         'permissions'
       ])
     },
-    created() {
-      this.getAllPositon()
-      this.getDirectSupervisorList()
+    created() {    
+     
       this.resetTemp()
-     this.handlePosition()
+     this.handlePosition(this.listQuery)
+
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
@@ -495,6 +512,43 @@
       this.state = this.$route.params.state
     },
     methods: {
+         upperIds(list1, list2, id) {
+        list1.map(item => {
+          item.map((el, index) => {
+          
+            if (el === id) {
+
+              list2 = JSON.parse(JSON.stringify(item))
+              list2.splice(index + 1, list2.length - 1)
+            }
+          })
+        })
+         // console.log(list2)
+        this.form.deptIds = list2
+
+      },
+      cycleList(list) {
+        list.forEach(item => {
+          if (item.children && !item.children.length) {
+            delete item.children
+          }
+          if (item.children && item.children.length) {
+            this.cycleList(item.children)
+          }
+        })
+      },
+      cycleListId(list, prevId = []) {
+        list.forEach(item => {
+          if (item.children && item.children.length > 0) {
+            this.curPrevId = [...prevId, item.id]
+            this.cycleListId(item.children, this.curPrevId)
+          }
+          if (item.children && !item.children.length) {
+            this.result[this.eachIndex] = [...prevId, item.id]
+            this.eachIndex++
+          }
+        })
+      },
       //监听数据变化改变
       changeWatch(disabled,event){
         this.disabledChange[disabled] = false; 
@@ -588,6 +642,16 @@
           }
         })
       },
+      // 返回树形菜单集合  部门管理
+      getAllDeparts(){
+        getAllDeparts().then(res => {
+          if(res.status == 200){
+            this.departs=this.listBox.deptName = res.data;
+            this.cycleListId(this.departs)
+            this.cycleList(this.departs)
+          }
+        })
+      },
         // 根据职位id查询职级
       getAllRank(id){
         getAllRank(id).then(res => {
@@ -595,13 +659,17 @@
             this.listBox.rankList = res.data; 
             this.disabledChange.rankChangeDate = false; 
             this.form.rankName = this.listBox.rankList[0] && this.listBox.rankList[0].positionName;
+           
           }
         })
       },
-    	handlePosition(){
-    		 getDirectChangeList(this.listQuery).then(res => {
+    	handlePosition(listQuery){
+        this.listLoading = true;
+    		getDirectChangeList(listQuery).then(res => {
     		 	if(res.status == 200){
+          this.listLoading = false;
     		 	this.list =	res.data.records; 
+          this.total = res.data.total;
     		 	}
         })
     	},
@@ -609,10 +677,12 @@
         console.log(val)
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val
+        this.listQuery.limit = val;
+        this.handlePosition(this.listQuery);
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val
+        this.listQuery.page = val;
+        this.handlePosition(this.listQuery);
       },
       handleCreate() {
         this.resetTemp()
@@ -642,6 +712,13 @@
         })
       },
       update(formName) {
+        console.log(this.departs)
+        console.log(this.form)
+        this.departs.forEach(item=>{
+          if(item.id == this.form.deptName[0]){
+            console.log(item)
+          }
+        })
         let label;
          if(this.form.city[1]){
              label = this.form.city[1] == '市辖区'?this.form.city[0]:this.form.city[1]
@@ -651,9 +728,10 @@
          this.newForm.city = label;
          if(JSON.stringify(this.oldForm) == JSON.stringify(this.newForm)) return false;
          
+         return false
         delete this.newForm.changeId;
         this.$refs[formName].validate((valid) => {
-          console.log(this.form)
+          
           if (valid) {
             addDirectChangeList(this.newForm).then(res => {
               if(res.status == 200){
@@ -679,12 +757,17 @@
       },
       resetTemp(id) {
         if(this.list){
+
+          this.form.deptName = [ '2', '39' ]
           this.disabledTrue();
           seeDirectChangeList(2).then(res => {
             if(res.status == 200){
             this.newForm =JSON.parse(JSON.stringify(res.data));
             this.oldForm =JSON.parse(JSON.stringify(res.data));
             this.form = res.data;
+
+            this.form.deptName = [ 5, 49 ]
+           // this.upperIds(this.result, this.tempDeptIds, this.form.deptId)
             let label = this.form.city;
             let newArr = [];
             if(label == '台湾省'){
@@ -708,6 +791,12 @@
               }
             }
             this.form.city = newArr;
+            // 查询直属上级
+            this.getDirectSupervisorList()
+            // 查询全部职位
+            this.getAllPositon();
+            // 返回树形菜单集合  部门管理
+            this.getAllDeparts()
             }
           })
         }else{

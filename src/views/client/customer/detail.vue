@@ -14,7 +14,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="手机号" prop="mobile">
-            <el-input v-model="form.mobile" placeholder="请输入手机号" :readonly="isReadonly"></el-input>
+            <el-input type="tel" v-model.number="form.mobile" :maxlength="11" placeholder="请输入手机号" :readonly="isReadonly"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -96,6 +96,17 @@
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
+  import { isvalidMobile } from '@/utils/validate'
+
+  const validMobile = (rule, value, callback) => {
+    if (!value) {
+      callback(new Error('请输入电话号码'))
+    } else if (!isvalidMobile(value)) {
+      callback(new Error('请输入正确的11位手机号'))
+    } else {
+      callback()
+    }
+  }
 
   export default {
     components: {
@@ -136,25 +147,26 @@
         },
         rules: {
           name: [
-            {required: true, trigger: 'blur'}
+            {required: true, message: '请输入姓名', trigger: 'blur'}
           ],
           mobile: [
-            {required: true, trigger: 'blur'}
+            {required: true, trigger: 'blur', validator: validMobile}
           ],
           // city: [
           //   {required: true, trigger: 'blur'}
           // ],
           nationality: [
-            {required: true, trigger: 'blur'}
+            {required: true, message: '请选择国籍', trigger: 'blur'}
           ],
           marriageStatus: [
-            {required: true, trigger: 'blur'}
+            {required: true, message: '请选择婚姻状况', trigger: 'blur'}
           ],
           positionId: [
-            {required: true, trigger: 'blur'}
+            {required: true, message: '请选择职位', trigger: 'blur'}
           ],
           email: [
-            {required: true, trigger: 'blur'}
+            {required: true, message: '请输入邮箱', trigger: 'blur'},
+            {type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change']}
           ]
         },
         sex: '',
@@ -278,11 +290,9 @@
             this.form.city = this.city[1]
           }
         }
-
         set[formName].validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
-            console.log(this.form)
             putObj(this.form.clientId, this.form).then((response) => {
               if(!response || response.status !== 200) return
               // this.getList()

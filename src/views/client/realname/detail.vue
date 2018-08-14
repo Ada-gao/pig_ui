@@ -21,13 +21,13 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="性别：" prop="gender">
-            <span>{{form.gender}}</span>
+            <span>{{form.gender|turnText(genderType)}}</span>
             <!-- <el-input v-model="form.gender" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="国籍：" prop="nationality">
-            <span>{{form.nationality}}</span>
+            <span>{{form.nationality|turnText(nationality)}}</span>
             <!-- <el-input v-model="form.nationality" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
@@ -39,7 +39,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="录入时间：" prop="createTime">
-            <span>{{form.createTime}}</span>
+            <span>{{form.createTime|parseTime('{y}-{m}-{d}')}}</span>
             <!-- <el-input v-model="form.city" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
@@ -98,13 +98,13 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="投资者类型：" prop="clientType">
-            <span>{{clientStatus.clientType}}</span>
+            <span>{{clientStatus.clientType||'--'}}</span>
             <!-- <el-input v-model="clientStatus.clientType" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="认证时间：" prop="clientType">
-            <span>{{clientStatus.clientType}}</span>
+            <span>{{clientStatus.clientType||'--'}}</span>
             <!-- <el-input v-model="clientStatus.clientType" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
@@ -134,7 +134,7 @@
         </el-col>
         <el-col :span="8" v-if="idType">
           <el-form-item label="证件有效期：" prop="date">
-            <span>{{clientStatus.idExpiration}}</span>
+            <span>{{clientStatus.idStartDate}} 至 {{clientStatus.idExpiration}}</span>
             <!-- <el-input v-model="clientStatus.idExpiration" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
@@ -261,8 +261,7 @@
   // import { getClientStatus, getClientBankcard } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  // import { parseTime } from '@/utils'
-  import { transformText, transformText1 } from '@/utils'
+  import { transformText, transformText1, parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -404,6 +403,11 @@
       },
       turnText(val, list) {
         return transformText1(val, list)
+      },
+      parseTime (time) {
+        if(!time) return
+        let date = new Date(time)
+        return parseTime(date)
       }
     },
     created() {
@@ -436,8 +440,8 @@
 
         getObj(id, '1').then(response => {
           this.form = response.data
-          this.form.gender = transformText(this.genderType, this.form.gender)
-          this.form.nationality = transformText(this.nationality, this.form.nationality)
+          // this.form.gender = transformText(this.genderType, this.form.gender)
+          // this.form.nationality = transformText(this.nationality, this.form.nationality)
           if(this.realnameStatus) {
             getClientBankcard(id, '1').then(response => {
               if (response.status === 200) {
@@ -452,14 +456,14 @@
           }
         })
       },
-      handleDept() {
-        console.log('产品状态')
-      },
+      // handleDept() {
+      //   // console.log('产品状态')
+      // },
       submitResult(result) { //
-        if(result == 3 && !this.failReason) {
-          this.tip = true
-          return
-        }
+        // if(result == 3 && !this.failReason) {
+        //   this.tip = true
+        //   return
+        // }
         this.tip = false
         let params = {
           // failId: this.form.clientId,
