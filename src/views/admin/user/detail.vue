@@ -167,6 +167,14 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
+          <el-col :span="10">
+            <el-form-item label="客户锁定状态" prop="lock">
+              <el-radio-group v-model="form.lock">
+                <el-radio :label="1" style="display: inline-block">锁定</el-radio>
+                <el-radio :label="0" style="display: inline-block">正常</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
         <!-- </el-row>
         <el-row :gutter="20"> -->
           <!-- <el-col :span="10">
@@ -327,8 +335,16 @@
           <el-col :span="10">
             <el-form-item label="是否营销岗：" prop="marriageStatus">
               <el-radio-group v-model="form.isMarketing" disabled>
-                <el-radio :label="0" style="display: inline-block">是</el-radio>
-                <el-radio :label="1" style="display: inline-block">否</el-radio>
+                <el-radio :label="1" style="display: inline-block">是</el-radio>
+                <el-radio :label="0" style="display: inline-block">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="账户锁定状态：" prop="lock">
+              <el-radio-group v-model="form.lock" disabled>
+                <el-radio :label="1" style="display: inline-block">锁定</el-radio>
+                <el-radio :label="0" style="display: inline-block">正常</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -545,6 +561,7 @@
           .then(response => {
             this.form = response.data
             this.form.isMarketing = this.form.isMarketing - 0
+            this.form.lock = this.form.lock - 0
             this.form.role = this.form.roleList[0].roleId
             this.deptIds[0] = this.form.deptId
             // this.role = row.roleList[0].roleDesc

@@ -1,6 +1,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 var path = require('path')
-var baseUrl = "http://10.9.60.141:9999"
+// var url.BASE_API = "http://10.9.60.141:9999"
+var url = require('./dev.env')
 
 module.exports = {
   build: {
@@ -30,42 +31,42 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/auth': {
-        target: baseUrl,
+        target: url.BASE_API,
         changeOrigin: true,
         pathRewrite: {
           '^/auth' : '/auth'
         }
       },
       '/admin': {
-        target: baseUrl,
+        target: url.BASE_API,
         changeOrigin: true,
         pathRewrite: {
           '^/admin' : '/admin'
         }
       },
       '/zuul': {
-        target: baseUrl,
+        target: url.BASE_API,
         changeOrigin: true,
         pathRewrite: {
           '^/zuul' : '/zuul'
         }
       },
       '/product': {
-        target: baseUrl,
+        target: url.BASE_API,
         changeOrigin: true,
         pathRewrite: {
           '^/product' : '/product'
         }
       },
       '/client': {
-        target: baseUrl,
+        target: url.BASE_API,
         changeOrigin: true,
         pathRewrite: {
           '^/client' : '/client'
         }
       },
       '/performance': {
-        target: baseUrl,
+        target: url.BASE_API,
         changeOrigin: true,
         pathRewrite: {
           '^/performance' : '/performance'

@@ -29,7 +29,8 @@ const dictionary = {
     investHorizonUnit: [],
     interestPayment: [],
     buyingCrowds: [],
-    dimissionReason: []
+    dimissionReason: [],
+    lockStatus: []
   },
 
   mutations: {
@@ -116,6 +117,9 @@ const dictionary = {
     },
     SET_DIMISSION_REASON: (state, dimissionReason) => {
       state.dimissionReason = dimissionReason
+    },
+    SET_LOCK_STATUS: (state, lockStatus) => {
+      state.lockStatus = lockStatus
     }
   },
 
@@ -154,6 +158,7 @@ const dictionary = {
           let interestPaymentList = []
           let buyingCrowdsList = []
           let dimissionReasonList = []
+          let lockStatusList = []
           
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -230,6 +235,9 @@ const dictionary = {
 
             } else if(data[i].type === 'dimission_reason') {
               dimissionReasonList.push(data[i])
+
+            } else if(data[i].type === 'lock') {
+              lockStatusList.push(data[i])
             }
           }
 
@@ -271,6 +279,7 @@ const dictionary = {
           commit('SET_INTEREST_PAYMENT', interestPaymentList)
           commit('SET_BUYING_CROWDS', buyingCrowdsList)
           commit('SET_DIMISSION_REASON', dimissionReasonList)
+          commit('SET_LOCK_STATUS', lockStatusList)
           resolve()
         }).catch(error => {
           reject(error)
