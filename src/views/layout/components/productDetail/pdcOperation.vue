@@ -813,6 +813,7 @@
       activityFilter(filter){
         let self = true;
         this.activityData.forEach(item=>{
+        
           //折标业绩系数
           if(!item.performanceCoefficient && filter){
             this.judgeEmpty();
@@ -821,14 +822,23 @@
           }
           console.log(item.activeDate)
           //活动时间段
-          if(!item.activeDate){
-            this.judgeEmpty();
+          if(!item.activeDate && filter){
+          
+              this.$notify({
+                title: '警告',
+                message: '活动时间段不能为空',
+                type: 'warning'
+              });
               self = false;
               return false;
           }
           item.activeDate.forEach(item=>{
             if(!item && filter){
-              this.judgeEmpty();
+              this.$notify({
+                title: '警告',
+                message: '活动时间段不能为空',
+                type: 'warning'
+              });
               self = false;
               return false;
             }
