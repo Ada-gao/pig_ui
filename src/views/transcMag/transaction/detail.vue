@@ -572,7 +572,7 @@
           this.form.status = transformText(this.appointmentStatus, this.form.status)
           this.form.appointmentDate = parseTime(this.form.appointmentDate, '{y}-{m}-{d}')
           this.form.remitDate = parseTime(this.form.remitDate, '{y}-{m}-{d}')
-          this.form.remitAmount = this.form.appointmentAmount
+          this.form.remitAmount = this.form.remitAmount
         })
         // console.log(this.orderStatus)
         if(this.orderStatus != '2') {
