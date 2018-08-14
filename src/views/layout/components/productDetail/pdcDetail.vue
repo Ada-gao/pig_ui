@@ -228,7 +228,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      
+
       <el-row :gutter="90">
         <el-col :span="22">
           <el-form-item label="备注" prop="remark">
@@ -458,7 +458,7 @@
     mounted() {
       this.form = this.formData
       let list = Object.keys(this.formData)
-      
+
       if(list.length > 1 && !list.productId) {
         if(this.stageType === '0') {
           // 产品分期
@@ -573,6 +573,8 @@
                     type: 'success',
                     duration: 2000
                   })
+                  // 滚动到头部
+                  document.documentElement.scrollTop = document.body.scrollTop = 0
                   this.$emit('productIdByDetail', response.data.productId)
                 }
               })

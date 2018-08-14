@@ -93,6 +93,15 @@
             </el-input>
           </el-form-item>
         </el-col>
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="searchValidate">
+          <el-form-item label="验证状态">
+            <el-select v-model="listQuery.mobileValidated" style="width: 100%" placeholder="请选择">
+              <el-option v-for="item in mobileValidatedArr" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
         <el-col :sm="12" :lg="8" v-if="searchNationality">
           <el-form-item label="国籍" style="margin-bottom: 10px;">
             <el-select v-model="listQuery.nationality" @change="changeNation" style="width: 100%" placeholder="请选择">
@@ -152,6 +161,9 @@ export default {
     searchAmount: {
       default: true
     },
+    searchValidate: {
+      default: false
+    },
     searchEmail: {
       default: true
     },
@@ -165,6 +177,16 @@ export default {
   data() {
     return {
       listQuery: {},
+      mobileValidatedArr: [
+        {
+          label: '未验证',
+          value: '1'
+        },
+        {
+          label: '已验证',
+          value: '0'
+        }
+      ],
       deptId: [],
       treeDeptData: [],
       options: provinceAndCityData,
@@ -223,7 +245,8 @@ export default {
         username: '',
         positionId: '',
         // delFlag: '',
-        deptId: ''
+        deptId: '',
+        mobileValidated: undefined
       },
       this.deptId = []
       this.entryDate = []

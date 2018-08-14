@@ -5,7 +5,7 @@
       <el-radio-button style="border-radius: 0" label="2">直属变更</el-radio-button>
     </el-radio-group>
     <!-- 新增/编辑 -->
-    <div v-show="state!=='view'&step==='1'">
+    <div v-show="state!=='view'&&step==='1'">
       <el-form :model="form" :rules="rules" ref="form" label-width="120px">
         <el-row :gutter="40">
           <el-col :span="10">
@@ -553,7 +553,7 @@
         this.getList()
       }
       this.handleDept()
-      // console.log(this.id, this.state)
+      console.log(this.step, this.state)
     },
     methods: {
       getList() { // 编辑查询（查看）
@@ -633,6 +633,7 @@
         this.form.deptId = this.deptIds[this.deptIds.length - 1]
         // this.form.positionId = this.form.positionName
         // this.form.idType = this.IDType
+        console.log(this.form)
         set[formName].validate(valid => {
           if (valid) {
             addObj(this.form)
