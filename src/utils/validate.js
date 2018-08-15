@@ -54,3 +54,13 @@ export function isNumber(str) {
   const reg = /^\d{1,10}$/
   return reg.test(str)
 }
+
+/**
+ * 检验邮箱时候合法
+ * @param str 邮箱
+ * @returns {boolean}
+ */
+export function validateEmail(str) {
+  const reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
+  return reg.test(str)
+}

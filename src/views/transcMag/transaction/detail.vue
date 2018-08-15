@@ -200,8 +200,8 @@
 
           <!-- 预览图片 -->
           <el-dialog :visible.sync="dialogImgVisible" @close="handleClose">
-            <div style="width:57%;margin:0 auto">
-              <img style="width:100%;display: inline-block;"
+            <div style="width:400px;height:400px;margin:0 auto">
+              <img style="width:100%;height:100%;display: inline-block;"
                    :src="dialogImageUrl"
                    :class="'rotate_' + rotateCnt * 90"
                    alt="">
