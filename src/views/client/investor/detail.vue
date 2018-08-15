@@ -22,7 +22,8 @@
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
               </el-select>
-              <div class="warn_msg" v-show="selectMsg"><svg-icon icon-class="warn"></svg-icon> 风险评级为必选</div>
+              <div class="warn_msg" style="text-align: center;" v-show="selectMsg">
+                <svg-icon icon-class="warn"></svg-icon> 风险评级为必选</div>
             </template>
           </el-table-column>
           <el-table-column align="center" label="认证原因" v-else>
@@ -253,6 +254,7 @@
           this.selectMsg = true
           return
         }
+        this.selectMsg = false
         // if(result == 3 && !this.failReason) {
         //   this.tip = true
         //   return
@@ -265,12 +267,6 @@
         }
         
         putObj(this.clientId, params).then(response => {
-          // this.$notify({
-            //   title: '成功',
-            //   message: response.msg,
-            //   type: 'success',
-            //   duration: 2000
-            // })
           if(response.status == 200) {
             this.$notify({
               title: '成功',
@@ -283,7 +279,6 @@
             } else {
               this.$router.push({path: '/client/professionalInvestor'})
             }
-            
           }
         })
       },
