@@ -74,7 +74,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="资产管理规模：" prop="assetAmount">
-            <span>{{form.assetAmount}}万</span>
+            <span>{{form.assetAmount||0}}万</span>
           </el-form-item>
         </el-col>
         <!-- <el-col :span="11">
@@ -183,7 +183,7 @@
         <el-col :span="8" v-if="realnameStatus && idType">
           <el-form-item label="证件有效期：" prop="date">
             <!-- <el-input v-model="clientStatus.idExpiration" placeholder="" readonly></el-input> -->
-            <span>{{clientStatus.idStartDate}}至{{clientStatus.idExpiration}}</span>
+            <span>{{clientStatus.idStartDate}} 至 {{clientStatus.idExpiration}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="realnameStatus && idType">
