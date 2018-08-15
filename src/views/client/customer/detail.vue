@@ -88,21 +88,30 @@
 
 <script>
   import { getObj, putObj } from '@/api/client/client'
-  import { deptRoleList, fetchDeptTree } from '@/api/role'
+  // import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   // import { parseTime } from '@/utils'
   import { transformText } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
-  import ElOption from "element-ui/packages/select/src/option"
+  import ElOption from 'element-ui/packages/select/src/option'
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
-  import { isvalidMobile } from '@/utils/validate'
+  import { isvalidMobile, validateEmail } from '@/utils/validate'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
       callback(new Error('请输入电话号码'))
     } else if (!isvalidMobile(value)) {
       callback(new Error('请输入正确的11位手机号'))
+    } else {
+      callback()
+    }
+  }
+  const validEmail = (rule, value, callback) => {
+    if (!value) {
+      callback(new Error('请输入邮箱'))
+    } else if (!validateEmail(value)) {
+      callback(new Error('请输入正确的邮箱'))
     } else {
       callback()
     }
@@ -147,26 +156,25 @@
         },
         rules: {
           name: [
-            {required: true, message: '请输入姓名', trigger: 'blur'}
+            { required: true, message: '请输入姓名', trigger: 'blur' }
           ],
           mobile: [
-            {required: true, trigger: 'blur', validator: validMobile}
+            { required: true, trigger: 'blur', validator: validMobile }
           ],
           // city: [
           //   {required: true, trigger: 'blur'}
           // ],
           nationality: [
-            {required: true, message: '请选择国籍', trigger: 'blur'}
+            { required: true, message: '请选择国籍', trigger: 'blur' }
           ],
           marriageStatus: [
-            {required: true, message: '请选择婚姻状况', trigger: 'blur'}
+            { required: true, message: '请选择婚姻状况', trigger: 'blur' }
           ],
           positionId: [
-            {required: true, message: '请选择职位', trigger: 'blur'}
+            { required: true, message: '请选择职位', trigger: 'blur' }
           ],
           email: [
-            {required: true, message: '请输入邮箱', trigger: 'blur'},
-            {type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change']}
+            { required: true, validator: validEmail, trigger: 'blur' }
           ]
         },
         sex: '',
