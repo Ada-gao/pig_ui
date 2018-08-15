@@ -433,7 +433,7 @@
         getObj(id).then(response => {
           this.form = response.data
 
-          this.realnameStatus = this.form.realnameStatus != 0 ? true : false // 认证状态判断
+          this.realnameStatus = this.form.realnameStatus == 2 ? true : false // 认证状态判断
           // this.idType = this.form.idType == 0 ? true : false // 证件类型判断
           this.isClientType = this.form.clientType == 0 ? true : false// 投资者类型判断
 

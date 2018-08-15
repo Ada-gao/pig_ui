@@ -2,7 +2,7 @@
   <div class="product-detail">
     <el-form :model="form" :rules="rules" ref="form" label-width="110px">
       <el-row :gutter="90">
-        <el-col :span="11" v-if="!stage&createStatus==='update'">
+        <el-col :span="11" v-if="!stage&&createStatus==='update'">
           <!-- 如果分期，不显示编号 -->
           <el-form-item label="产品编号" prop="productCode">
             <span>{{form.productCode}}</span>
@@ -82,7 +82,7 @@
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
-            <el-input v-else v-model="form.investmentHorizon" style="width: 35%;"></el-input>
+            <el-input v-else v-model="form.investmentHorizon" style="width: 30%;"></el-input>
             <span v-if="detailDisabled||stageType=='0'"></span>
             <el-select v-else v-model="form.investmentHorizonUnit" style="width: 23%;">
               <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
@@ -99,7 +99,18 @@
             <el-radio-group v-else v-model="form.isFloat" @change="radioChange">
               <el-radio :label="0" style="display: inline-block">浮动收益</el-radio>
               <el-radio :label="1" style="display: inline-block">收益对标基准(%)</el-radio>
-              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn"></el-input>
+              <el-form-item label=""
+                prop="annualizedReturn"
+                v-if="!isDisabled"
+                style="display: inline-block"
+                :rules="[
+                  {required: true, message: '请输入收益对标基准', trigger: 'change'}
+                ]">
+                <el-input
+                  style="display: inline-block; width: 100px; margin-left: 20px;"
+                  :maxlength="5"
+                  v-model="form.annualizedReturn"></el-input>
+              </el-form-item>
             </el-radio-group>
           </el-form-item>
         </el-col>
@@ -158,12 +169,12 @@
           </el-form-item>
         </el-col>
         <!-- 产品/募集分期才有 -->
-        <!-- <el-col :span="11">
+        <el-col :span="11" v-if="form.relevanceName">
           <el-form-item label="关联产品">
-            <span v-if="detailDisabled">{{}}</span>
-            <el-input v-else v-model="form.assetTeam" placeholder="请输入"></el-input>
+            <span v-if="detailDisabled">{{form.relevanceName}}</span>
+            <el-input v-else v-model="form.relevanceName" placeholder="请输入"></el-input>
           </el-form-item>
-        </el-col> -->
+        </el-col>
         <el-col :span="11">
           <el-form-item label="付息方式" prop="interestPayment">
             <span v-if="detailDisabled">{{form.interestPayment}}</span>
@@ -425,6 +436,7 @@
         } else if(this.form.investmentHorizonUnit === '2') {
           this.ratio = this.form.investmentHorizon / 365 * 100
         }
+        this.ratio = this.ratio > 100 ? 100 : this.ratio
         return this.ratio
       }
     },
@@ -467,8 +479,9 @@
         if(this.stageType === '0') {
           // 产品分期
           this.detailDisabled = false
-          this.stage = true
+          // this.stage = true
         }
+        this.stage = true
       }
       this.backUrl = localStorage.getItem('activeUrl')
     },
