@@ -57,8 +57,6 @@ service.interceptors.response.use(
       }
     } else if(res.status.toString().indexOf('401') !== -1) {
       message('登陆时间过期，请重新登陆', 'error')
-      // console.log(router.fullPath)
-      // removeToken()
       store.dispatch('FedLogOut')
       router.replace({
         path: '/login',
