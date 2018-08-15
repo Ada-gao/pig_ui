@@ -322,13 +322,13 @@
         // let amountStart = this.listQuery.amountStart || -1
         // let amountEnd = this.listQuery.amountEnd || -1
         // this.listQuery.amount = [amountStart, amountEnd]
-        
+
         fetchList(this.listQuery).then(response => {
-          this.list = response.data.records
+          this.list = Object.assign([], response.data.records)
           this.total = response.data.total
           this.listLoading = false
           this.list.forEach(item => {
-
+            item.assetAmount = item.assetAmount ? item.assetAmount + '万' : ''
             item.clientType = transformText(this.certificationType, item.clientType)
             item.idType = transformText(this.idTypeOptions, item.idType)
             item.gender = transformText(this.genderType, item.gender)
@@ -385,7 +385,7 @@
       //       this.role = row.roleList[0].roleDesc
       //       this.dialogFormVisible = true
       //       this.dialogStatus = 'update'
-            
+
       //     })
       // },
       resetTemp() {
@@ -408,7 +408,7 @@
         this.entryDate = []
         this.handleFilter()
       },
-      
+
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`);
       // },

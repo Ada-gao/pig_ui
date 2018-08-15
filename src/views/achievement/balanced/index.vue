@@ -135,8 +135,11 @@ import { parseTime, transformText } from '@/utils'
 export default {
 	data () {
 		const validatePass = (rule, value, callback) => {
+			console.log(!new RegExp("^[0-9]*$").test(value))
 			if (!value) {
 				callback('请输入平衡计分卡系数')
+			} else if (!new RegExp("^[0-9]*$").test(value)) {
+				callback('只能填写数字哦')
 			} else {
 				callback()
 			}

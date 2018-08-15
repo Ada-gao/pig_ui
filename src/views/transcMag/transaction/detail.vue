@@ -612,9 +612,9 @@
         this.result.status = sts
         this.dialogVisible = true
         if(sts === '2004') { // 打款审核通过
-          if(!this.form.remitAmount||!this.form.remitDate) {
+          if(!this.form.remitAmount || Number(this.form.remitAmount) <= 0 || !this.form.remitDate) {
             let statusText = ''
-            if(!this.form.remitAmount) {
+            if(!this.form.remitAmount || Number(this.form.remitAmount) <= 0) {
               statusText = '打款金额不能为空'
             }
             if(!this.form.remitDate) {

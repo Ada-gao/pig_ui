@@ -55,11 +55,24 @@
     },
     data() {
       var validatePass = (rule, value, callback) => {
-        console.log(value)
         if (value === '') {
           callback(new Error('请输入密码'))
         } else if (value.length < 6) {
           callback(new Error('密码不能小于6位'))
+        } else {
+          if (this.ruleForm2.repassword !== '') {
+            this.$refs.ruleForm2.validateField('repassword')
+          }
+          callback()
+        }
+      }
+      var validatePass1 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'))
+        } else if (value.length < 6) {
+          callback(new Error('密码不能小于6位'))
+        } else if (value === this.ruleForm2.password) {
+          callback(new Error('原密码不能等于新密码!'))
         } else {
           if (this.ruleForm2.repassword !== '') {
             this.$refs.ruleForm2.validateField('repassword')
@@ -96,7 +109,7 @@
             { validator: validatePass, trigger: 'blur' }
           ],
           newpassword: [
-            { validator: validatePass, trigger: 'blur' }
+            { validator: validatePass1, trigger: 'blur' }
           ],
           repassword: [
             { validator: validatePass2, trigger: 'blur' }
