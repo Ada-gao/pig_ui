@@ -19,14 +19,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="部门" prop="deptId">
+            <el-form-item label="部门" prop="deptIds">
               <el-cascader
                 style="width: 100%"
                 :options="treeDeptData"
                 :props="defaultProps"
                 :show-all-levels="false"
                 change-on-select
-                v-model="deptIds"
+                v-model="form.deptIds"
                 @change="changeDept"
               ></el-cascader>
               <!-- <el-input v-model="form.deptName" placeholder="选择部门"
@@ -431,8 +431,8 @@
           // username: undefined,
           // password: undefined,
           // status: undefined,
-          deptId: undefined,
-          roleList: []
+          deptIds: [],
+          roleList: [],
         },
         deptIds: [],
         rules: {
@@ -482,6 +482,9 @@
           status: [
             {required: true, trigger: 'change', message: '请选择状态'}
           ],
+          deptIds: [
+            {required: true, trigger: 'change', message: '请选择部门'}
+          ]
         },
         // statusOptions: ['0', '1', '2'],
         // positionsOptions: [],
@@ -574,7 +577,7 @@
             } else {
               this.form.role = ''
             }
-            this.deptIds[0] = this.form.deptId
+            this.form.deptIds[0] = this.form.deptId
             // this.role = row.roleList[0].roleDesc
             if(this.state === 'view') {
               this.dialogStatus = 'view'
@@ -641,12 +644,11 @@
       create(formName) {
         const set = this.$refs
         // this.form.role = this.role
-        this.form.deptId = this.deptIds[this.deptIds.length - 1]
         // this.form.positionId = this.form.positionName
         // this.form.idType = this.IDType
-        console.log(set[formName])
         set[formName].validate(valid => {
           if (valid) {
+            this.form.deptId = this.form.deptIds[this.form.deptIds.length - 1]
             addObj(this.form)
               .then((res) => {
                 if (res.status === 200) {
