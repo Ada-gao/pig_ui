@@ -189,7 +189,7 @@
       </el-row>
     </div>
     <div class="split-line" style="margin: 20px 0;"></div>
-    <el-form :rules="rules2" ref="form2" label-width="120px">
+    <el-form :rules="rules2" ref="form2" label-width="120px" :model="form2">
       <div class="group-item">
         <h3>产品预约审核条件（不选择，代表不需要审核，可多选）</h3>
         <el-row>
@@ -224,12 +224,13 @@
             </el-checkbox>
           </el-col>
           <el-col :md="12" :lg="8" style="margin-bottom: 10px">
-            <!-- <el-form-item label="预约时效" prop="timeliness" style="padding-left: 71px"> -->
-            <span style="width: 135px; display: inline-block; text-align: right">预约时效</span>
+             <el-form-item label="预约时效" prop="timeliness" style="padding-left: 71px">
+            <!--<span style="width: 135px; display: inline-block; text-align: right">预约时效</span>-->
             <el-input style="width: 100px;"
                       :disabled="operationDisabled"
-                      v-model="form2.timeliness"></el-input> 小时
-            <!-- </el-form-item> -->
+                      type="number"
+                      v-model.number="form2.timeliness"></el-input> 小时
+             </el-form-item>
           </el-col>
         </el-row>
       </div>
@@ -237,14 +238,16 @@
         <h3>是否标注重点产品</h3>
         <el-row>
           <el-col :span="5">
-            <el-form-item prop="keyProduct" label="是否标注重点产品" style="white-space: nowrap;" :rules="keyProRules">
-              <el-radio-group v-model="radio2" :disabled="operationDisabled" @change="test">
+            <el-form :rules="defineRules" ref="defineform" label-width="120px" :model="defineform">
+            <el-form-item prop="radio2" label="是否标注重点产品" style="white-space: nowrap;" >
+              <el-radio-group v-model="defineform.radio2" :disabled="operationDisabled" @change="test">
                 <el-radio :label="1">否</el-radio>
                 <el-radio :label="2">是</el-radio>
               </el-radio-group>
             </el-form-item>
+            </el-form>
           </el-col>
-          <el-col :span="12" v-show="radio2===2">
+          <el-col :span="12" v-show="defineform.radio2===2">
             <el-form-item label="重点产品时间段">
               <!--<el-date-picker-->
                 <!--style="width: 80%"-->
@@ -288,7 +291,7 @@
             </el-form-item>
              </el-form>
           </el-col>
-         
+
         </el-row>
         <el-row>
           <el-col :span="11"  v-for="(item,index) in normalDTO.normalBrokerageCoefficients" :key="item.age" style="white-space: nowrap; margin-right:3%; min-height:114px;" >
@@ -299,7 +302,7 @@
                 <svg-icon icon-class="add"></svg-icon>新增</el-button>
               <span @click="deleteProductCommission(index)" class="color-0299CC " v-if="index != 0 && index == normalDTO.normalBrokerageCoefficients.length-1&& !operationDisabled"><i class="el-icon-delete mr5"></i >删除</span>
             </el-row>
-            
+
              <el-form :model="Citem" ref="Citem" :rules="rules2" class="demo-ruleForm"  v-for="(Citem,i) in item.brokerageCoefficientDTOList" :key="i" label-width="120px">
               <el-form-item :label="`第${Citem.hierarchy}层级(%)`" prop="coefficient">
                 <span class="el-input" v-if="operationDisabled">{{Citem.coefficient}}</span>
@@ -308,8 +311,8 @@
                   <i  @click="deleteProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0 && !operationDisabled" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
                </el-form>
-               
-              
+
+
           </el-col>
         </el-row>
       </div>
@@ -318,7 +321,7 @@
      <div class="group-item">
         <h3 class="activity-title">活动时间段业绩统计 <el-button class="search_btn add-statistics" v-if="!operationDisabled" @click="addStatistics">
                 <svg-icon icon-class="add"></svg-icon>新增统计</el-button></h3>
-  
+
         <el-row v-for="(item,index) in activityData" :key="index" :class="{dashed:index!=0}">
           <span @click="deleteStatistics(index)" class="color-0299CC delete-fr" v-if="activityData.length == index+1 && index != 0&& !operationDisabled"><i class="el-icon-delete mr5"></i >删除</span>
          <el-row style="clear: both;">
@@ -343,7 +346,7 @@
             </el-form-item>
             </el-form>
           </el-col>
-          </el-row>
+         </el-row>
           <el-row>
             <el-col :span="11"  v-for="(Citem,Cindex) in item.activityBrokerageCoefficients" :key="Citem.age" style="white-space: nowrap;
             margin-right:3%;" >
@@ -366,9 +369,8 @@
             </el-col>
         </el-row>
         </el-row>
-        </el-row>
       </div>
-<!-- 
+<!--
 
       <div class="group-item" style="position: relative">
         <h3>活动时间段</h3>
@@ -528,7 +530,7 @@
       :visible.sync="dialogStVisible"
       width="30%">
       <div style="margin-bottom: 30px;">此产品现在为{{productStatusText}}，确定进入{{msgText}}吗？</div>
-      <el-form label-width="110px">
+      <el-form :model="dto" ref="dto" label-width="110px">
         <el-row>
           <el-col :span="11">
             <el-form-item label="产品名称:" prop="minimalAmount" style="white-space: nowrap">
@@ -548,9 +550,14 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-show="productStatusNo===2">
-          <el-col :span="11">
-            <el-form-item label="关账时间:" prop="closeDate">
+        <el-row v-if="productStatusNo===2">
+          <el-col :span="15">
+            <el-form-item
+              label="关账时间:"
+              prop="closeDate"
+              :rules="[
+                { required: true, message: '关账时间不能为空'}
+              ]">
               <el-date-picker
                 v-model="dto.closeDate"
                 type="datetime"
@@ -559,9 +566,14 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-show="productStatusNo===3">
-          <el-col :span="11">
-            <el-form-item label="已成立时间" prop="establishmentDate">
+        <el-row v-if="productStatusNo===3">
+          <el-col :span="15">
+            <el-form-item
+              label="已成立时间"
+              prop="establishmentDate"
+              :rules="[
+                { required: true, message: '已成立时间不能为空'}
+              ]">
               <el-date-picker
                 v-model="dto.establishmentDate"
                 type="datetime"
@@ -570,9 +582,14 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-show="productStatusNo===3">
-          <el-col :span="11">
-            <el-form-item label="起息日期" prop="valueDate">
+        <el-row v-if="productStatusNo===3">
+          <el-col :span="15">
+            <el-form-item
+              label="起息日期"
+              prop="valueDate"
+              :rules="[
+                { required: true, message: '起息日起不能为空'}
+              ]">
               <el-date-picker
                 v-model="dto.valueDate"
                 type="date"
@@ -584,7 +601,7 @@
       </el-form>
       <div class="dialog-footer text-right">
         <el-button @click="dialogStVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleProStatus">确 定</el-button>
+        <el-button type="primary" @click="handleProStatus('dto')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -625,6 +642,10 @@
       callback()
     }
   }
+  const defineRadio = (rule, value, callback) => {
+    console.log(value)
+    callback()
+  }
 
   export default {
     components: {
@@ -635,7 +656,7 @@
         if (value>100) {
           return callback(new Error('输入内容不能大于等于100'));
         }
-     
+
       };
       return {
         fileList1: [],
@@ -685,7 +706,9 @@
         },
         activityTime:1,
         cmsIndex: 1,
-        radio2: 1,
+        defineform: {
+          radio2: 1
+        },
         checked1: false,
         checked2: false,
         checked3: false,
@@ -707,14 +730,17 @@
           ],
           coefficient:[
             { validator: checkAge, trigger: 'blur' }
+          ],
+          timeliness: [
+            { required: true, message: '请输入预约失效', trigger: 'blur'}
           ]
         },
-        keyProRules: {
-          keyProduct: [
+        defineRules: {
+          radio2: [
             {
               required: true,
               trigger: 'blur, change',
-              message: '请标注产品'
+              validator: defineRadio
             }
           ]
         },
@@ -742,7 +768,7 @@
         // stage: false,
         // stageTypeNo: '',
       }
-     
+
     },
     // props: ['productId', 'proStatus', 'productInfo'],
     props: {
@@ -813,7 +839,7 @@
       activityFilter(filter){
         let self = true;
         this.activityData.forEach(item=>{
-        
+
           //折标业绩系数
           if(!item.performanceCoefficient && filter){
             this.judgeEmpty();
@@ -823,7 +849,7 @@
           console.log(item.activeDate)
           //活动时间段
           if(!item.activeDate && filter){
-          
+
               this.$notify({
                 title: '警告',
                 message: '活动时间段不能为空',
@@ -872,7 +898,7 @@
       },
       //新增产品佣金系数
       addProductCommission(){
-        if(!this.normalFilter(false)) return false; 
+        if(!this.normalFilter(false)) return false;
         let objArr = this.normalDTO.normalBrokerageCoefficients;
         if(objArr.length >=5) return false;
         let levelDataArr = []
@@ -903,7 +929,7 @@
       },
       //佣金业绩统计 - 产品佣金系数 增加
       addProductLevel(i){
-        if(!this.normalFilter(false)) return false; 
+        if(!this.normalFilter(false)) return false;
         this.normalDTO.normalBrokerageCoefficients.forEach((item,index)=>{
             item.brokerageCoefficientDTOList.push({
               hierarchy:i+2,
@@ -988,7 +1014,7 @@
         //     ]
         //   }
         // ],
-       
+
       },
        //删除活动时间产品佣金系数 - 层级
       deleteActivityTimeLevel(index,Cindex,k){
@@ -999,6 +1025,7 @@
       },
 
       getOperations() { // 获取操作指南信息
+        // console.log('获取操作指南信息')
         if(!this.productId) return false
         this.getAllFiles(this.productId)
         fetchOperation(this.productId).then(res => {
@@ -1006,7 +1033,7 @@
           this.form2 = res.data;
           this.normalDTO =this.form2.normalDTO = res.data.normalDTO || this.normalDTO;
           this.activityData = res.data.activityDTO || this.activityData;
-         
+
 
           // console.log(this.form2.collectDate)
           // if(this.form2.collectDate) {
@@ -1014,9 +1041,9 @@
           // }
 
           if(this.form2.importantStart || this.form2.importantEnd) {
-            this.radio2 = 2
+            this.defineform.radio2 = 2
           } else {
-            this.radio2 = 1
+            this.defineform.radio2 = 1
           }
           // this.importantDate = [this.form2.importantStart, this.form2.importantEnd]
           this.importantStart = this.form2.importantStart
@@ -1077,6 +1104,8 @@
         })
       },
       updateRouter() { // 操作指南新建或编辑提交
+        // console.log(this.importantStart, 'start')
+        // console.log(this.importantEnd, 'end')
         this.activityList = this.activityList.concat(this.activityData)
         this.activityList.forEach(item => {
           item.activityEnd = item.activeDate[1]
@@ -1102,7 +1131,7 @@
         }
         if(this.productStatusNo == 2){
          if(!this.activityFilter(true)) return false;
-         if(!this.normalFilter(true)) return false; 
+         if(!this.normalFilter(true)) return false;
         }
         if(this.normalDTO.performanceCoefficient>=100){
           this.$notify({
@@ -1134,7 +1163,7 @@
               type: 'error',
               duration: 2000
             })
-            return false;
+            return false
           }
           item.activityBrokerageCoefficients.forEach(item=>{
             item.brokerageCoefficientDTOList.forEach(item=>{
@@ -1145,27 +1174,38 @@
                   type: 'error',
                   duration: 2000
                 })
-                return false;
+                return false
               }
             })
           })
          })
-        this.form2.normalDTO = this.normalDTO;
+        this.form2.normalDTO = this.normalDTO
         // this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
-        this.form2.activityDTO = this.activityData;
+        this.form2.activityDTO = this.activityData
         //this.form2.normalDTO.normalBrokerageCoefficients = this.normalList.concat(this.addNormList)
         // this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
-        this.form2.productId = this.productId;
+        this.form2.productId = this.productId
         // this.form2.keyProduct = this.radio2
-
-        if (!this.operationDisabled && !this.form2.importantStart) {
+        // console.log('aaa', this.form2.timeliness)
+        if (!this.form2.timeliness || this.form2.timeliness < 0) {
           this.$notify({
             title: '失败',
-            message: '开始时间不能为空',
+            message: '预约时效不能为空',
             type: 'error',
             duration: 2000
           })
           return false
+        }
+        if (!this.operationDisabled && !this.form2.importantStart) {
+          if (this.defineform.radio2 === 2) {
+            this.$notify({
+              title: '失败',
+              message: '重点产品开始时间不能为空',
+              type: 'error',
+              duration: 2000
+            })
+            return false
+          }
         }
         if (this.form2.importantStart && window.Number(this.form2.importantEnd) < Number(this.form2.importantStart)) {
           this.$notify({
@@ -1276,7 +1316,7 @@
         //进入 预热或者进入募集中需要验证层级不能为空
         if(status == 1 || status == 2){
            if(!this.activityFilter(true)) return false;
-          if(!this.normalFilter(true)) return false; 
+          if(!this.normalFilter(true)) return false;
         }
         this.dto.status = status
         this.productStatusText = transformText(this.productStatus, this.productStatusNo)
@@ -1314,7 +1354,7 @@
       handleToCollect() { // 募集定时
         let params = {
           collect: this.collectVal === 1 ? true : false,
-          collectDate: this.collectTime = this.collectVal === 1 ? '' : this.collectTime 
+          collectDate: this.collectTime = this.collectVal === 1 ? '' : this.collectTime
         }
         updToCollect(this.productId, params).then(res => {
           this.dialogCollectVisible = false
@@ -1353,18 +1393,25 @@
 
         })
       },
-      handleProStatus() { // 弹框确定事件
-        updProductType(this.productId, this.dto).then(res => {
-          this.$notify({
-            title: '成功',
-            message: '状态操作成功',
-            type: 'success',
-            duration: 2000
-          })
-          this.dialogStVisible = false
-          this.$router.push({path: this.url})
-          Bus.$emit('activeUrl', this.url)
+      handleProStatus(formName) { // 弹框确定事件
+        this.$refs[formName].validate(valid => {
+          if(valid) {
+            updProductType(this.productId, this.dto).then(res => {
+              this.$notify({
+                title: '成功',
+                message: '状态操作成功',
+                type: 'success',
+                duration: 2000
+              })
+              this.dialogStVisible = false
+              this.$router.push({path: this.url})
+              Bus.$emit('activeUrl', this.url)
+            })
+          } else {
+            return false
+          }
         })
+
       },
       cancel(formName) {
         // this.$refs[formName].resetFields()

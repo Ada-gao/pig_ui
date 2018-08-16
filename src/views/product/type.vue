@@ -236,7 +236,9 @@
           if (valid) {
             if (this.tabcard === 'first') {
               addObj(this.form)
-                .then(() => {
+                .then((res) => {
+                  console.log(res)
+                  if(res.code !== 200) return
                   this.dialogFormVisible = false
                   this.getList()
                   this.$notify({
@@ -248,6 +250,7 @@
                 })
             } else if (this.tabcard === 'second') {
               postProductMix(this.form).then(res => {
+                if(res.code !== 200) return
                 this.dialogFormVisible = false
                 this.getList()
                 this.$notify({

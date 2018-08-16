@@ -200,8 +200,8 @@
 
           <!-- 预览图片 -->
           <el-dialog :visible.sync="dialogImgVisible" @close="handleClose">
-            <div style="width:57%;margin:0 auto">
-              <img style="width:100%;display: inline-block;"
+            <div style="width:400px;height:400px;margin:0 auto">
+              <img style="width:100%;height:100%;display: inline-block;"
                    :src="dialogImageUrl"
                    :class="'rotate_' + rotateCnt * 90"
                    alt="">
@@ -271,7 +271,12 @@
           <el-tabs v-model="activeName1" type="card">
             <el-tab-pane label="不通过原因" name="first">
               <el-form :model="result" ref="result" :rules="rules" class="demo-form-inline">
-                <el-form-item label="原因" prop="reasonId">
+                <el-form-item
+                  label="原因"
+                  prop="reasonId"
+                  :rules="[
+                    {required: true, message: '请选择不通过原因', trigger: 'change'}
+                  ]">
                   <el-select v-model="result.reasonId"
                     clearable
                     placeholder="请选择"
@@ -285,7 +290,7 @@
                     </el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item v-show="result.status == 3003" label="寄出方式" prop="contractMail">
+                <el-form-item v-if="result.status == 3003" label="寄出方式" prop="contractMail">
                   <el-select v-model="result.contractMail"
                     v-show="result.status == 3003"
                     clearable
@@ -336,7 +341,7 @@
                 <el-form-item label="原因" prop="auditRemark">
                   <el-input v-model="result1.auditRemark" style="margin-bottom: 30px;"></el-input>
                 </el-form-item>
-                <el-form-item v-show="result.status == 3003" label="寄出方式" prop="contractMail">
+                <el-form-item v-if="result.status == 3003" label="寄出方式" prop="contractMail">
                   <el-select v-model="result1.contractMail"
                     v-show="result.status == 3003"
                     clearable
@@ -600,16 +605,16 @@
           })
         }
       },
-      handleDept() {
-        console.log('产品状态')
-      },
+      // handleDept() {
+      //   console.log('产品状态')
+      // },
       submitResult(sts) {
         this.result.status = sts
         this.dialogVisible = true
         if(sts === '2004') { // 打款审核通过
-          if(!this.form.remitAmount||!this.form.remitDate) {
+          if(!this.form.remitAmount || Number(this.form.remitAmount) <= 0 || !this.form.remitDate) {
             let statusText = ''
-            if(!this.form.remitAmount) {
+            if(!this.form.remitAmount || Number(this.form.remitAmount) <= 0) {
               statusText = '打款金额不能为空'
             }
             if(!this.form.remitDate) {
@@ -646,21 +651,28 @@
         this.dialogComVisible = true
       },
       submitRejectCheck(result) { // 审核不通过/订单关闭提交
-        if(this.orderStatus == '4') {
+        const set = this.$refs
+          set[result].validate(valid => {
+          if (valid) {
+            this.submitCheck()
+          } else {
+            return false
+          }
+        })
+        // if(this.orderStatus == '4') {
           // if (!this.result.contractMail) {
-            const set = this.$refs
-            set[result].validate(valid => {
-            if (valid) {
-              this.dialogReject = false
-              this.submitCheck()
-            } else {
-              return false
-            }
-          })
+          //   const set = this.$refs
+          //   set[result].validate(valid => {
+          //   if (valid) {
+          //     this.submitCheck()
+          //   } else {
+          //     return false
+          //   }
+          // })
           // }
-        } else {
-          this.submitCheck()
-        }
+        // } else {
+        //   this.submitCheck()
+        // }
         // if (!this.result.auditRemark) {
         //   console.log('nonono')
         //   return false
@@ -684,7 +696,8 @@
                 type: 'success',
                 duration: 2000
               })
-              this.dialogVisible = false
+              this.dialogVisible = false // 通过
+              this.dialogReject = false // 不通过
               this.$router.push({path: '/transcMag/appoint'})
             }
           })
@@ -786,7 +799,7 @@
       changeReason(val) {
         this.result.auditRemark = transformText(this.options, val)
         this.result.auditFailReasonId = val
-        console.log(this.result)
+        // console.log(this.result)
       }
     }
   }

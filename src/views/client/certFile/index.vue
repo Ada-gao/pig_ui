@@ -28,7 +28,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="文件大小">
+      <el-table-column align="center" label="文件大小/K">
         <template slot-scope="scope">
           <span>{{scope.row.fileSize}}</span>
         </template>

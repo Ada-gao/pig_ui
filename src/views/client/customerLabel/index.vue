@@ -57,7 +57,7 @@
           <el-form-item  label="标签名称"  prop="labelName" :rules="[
             { required: true, message: '标签名称不能为空'},
           ]"> 
-            <el-input v-model="newAddClient.labelName" placeholder="请输入标签名称" style="width:90%;"></el-input>
+            <el-input v-model="newAddClient.labelName" :maxlength="20" placeholder="请输入标签名称" style="width:90%;"></el-input>
           </el-form-item>
 
           <el-form-item label="标签解释">
