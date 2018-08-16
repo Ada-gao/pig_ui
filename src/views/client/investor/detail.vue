@@ -6,7 +6,7 @@
     </el-radio-group>
     <!-- <h3 v-if="type_is_update==1"></h3>
     <h3 v-else>审核信息</h3> -->
-    <el-form v-if="step==='1'" :model="form" ref="form" label-width="100px">
+    <el-form v-show="step==='1'" :model="form" ref="form" label-width="100px">
       <div class="split-line"></div>
 
       <div class="general-investor">
@@ -111,16 +111,153 @@
       </div> -->
     </el-form>
 
-    <div v-if="isView == 1" slot="footer" class="dialog-footer" style="text-align: center; margin-top: 20px">
+    <div v-show="isView==1&&step==='1'" slot="footer" class="dialog-footer" style="text-align: center; margin-top: 20px">
       <el-button class="search_btn" @click="submitResult('2')">通 过</el-button>
       <el-button class="add_btn" @click="submitResult('3')">不通过</el-button>
     </div>
+    <el-form v-show="step==='2'">
+      <div class="split-line"></div>
+      <h5>客户信息</h5>
+      <el-row :gutter="20">
+        <el-col :span="8">
+          <el-form-item label="姓名：" prop="name">
+            <span>{{clientForm.name}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="手机号：" prop="mobile">
+            <span>{{clientForm.mobile}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="性别：" prop="gender">
+            <span>{{clientForm.gender|turnText(genderType)}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="国籍：" prop="nationality">
+            <span>{{clientForm.nationality|turnText(nationality)}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="常住地区：" prop="city">
+            <span>{{clientForm.city}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="录入时间：" prop="createTime">
+            <span>{{clientForm.createTime|parseTime('{y}-{m}-{d}')}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="邮箱：" prop="email">
+            <span>{{clientForm.email}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="微信：" prop="wechat">
+            <span>{{clientForm.wechat}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="客户编号：" prop="clientNo">
+            <span>{{clientForm.clientNo}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="理财师：" prop="userName">
+            <span>{{clientForm.userName}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="部门：" prop="userDeptName">
+            <span>{{clientForm.userDeptName}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="客户来源：" prop="clientFrom">
+            <span>{{clientForm.clientFrom|turnText(clientFrom)}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="客户级别：" prop="clientGrade">
+            <span>{{clientForm.clientGrade}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="资产管理规模：" prop="assetAmount">
+            <span>{{clientForm.assetAmount||0}}万</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
 
+      <div class="split-line"></div>
+
+      <h5>客户状态</h5>
+      <el-row :gutter="20">
+        <el-col :span="8">
+          <el-form-item label="实名认证状态：" prop="username">
+            <span>{{clientForm.realnameStatus|turnText(certificationStatus)}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="投资者类型：" prop="clientType">
+            <span>{{clientStatus.clientType|turnText(clientType)}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="认证时间：" prop="clientType">
+            <span>{{clientStatus.certificationDate|parseTime('{y}-{m}-{d}')||'--'}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="证件类型：" prop="idType">
+            <span>{{clientStatus.idType|turnText(idTypeOptions)}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="证件号码：" prop="idNo">
+            <span>{{clientStatus.idNo}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="出生日期：" prop="date">
+            <span>{{clientStatus.birthday}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="地址：" prop="address">
+            <span>{{clientStatus.address}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="证件有效期：" prop="date">
+            <span>{{clientStatus.idStartDate}} 至 {{clientStatus.idExpiration}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="人群划分：" prop="crowds">
+            <span>{{clientStatus.crowds|turnText(buyingCrowds)}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="isClientType">
+          <el-form-item label="风险测评：" prop="riskLevel">
+            <span>{{clientStatus.riskLevel}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" v-if="isClientType" style="white-space: nowrap">
+          <el-form-item label="风险评估表填写时间：" prop="riskLevel">
+            <span style="padding-left: 20px;">{{clientStatus.riskAuditTime}}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
   </div>
 </template>
 
 <script>
   import { getCertHistory, getCertInfo, putObj } from '@/api/client/investor'
+  import { getObj, getClientStatus } from '@/api/client/client'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { transformText1, parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
@@ -173,7 +310,6 @@
         indexList: [],
         type_is_update: '',
         productStus: '',
-        realnameStatus: '',
         idType: '',
         isCertificationType: '',
         list: [],
@@ -185,7 +321,10 @@
         isView: '',
         tip: false,
         selectMsg: false,
-        step: '1'
+        step: '1',
+        clientForm: {},
+        clientStatus: {},
+        isClientType: false
       }
     },
     computed: {
@@ -197,7 +336,10 @@
         'certificationType',
         'idTypeOptions',
         'nationality',
-        'customerRiskLevel'
+        'customerRiskLevel',
+        'clientFrom',
+        'clientType',
+        'buyingCrowds'
       ])
     },
     filters: {
@@ -245,8 +387,20 @@
           // console.log(this.certInfo)
         })
       },
+      getClient() {
+        getObj(this.clientId).then(res => {
+          this.clientForm = res.data
+          this.isClientType = this.form.clientType == 0 ? true : false// 投资者类型判断
+        })
+        getClientStatus(this.clientId).then(response => {
+          this.clientStatus = response.data
+        })
+      },
       handleChangeStep(val) {
         this.step = val
+        if(this.step == 2) {
+          this.getClient()
+        }
         console.log(val)
       },
       submitResult(result) {

@@ -103,6 +103,7 @@
                 prop="annualizedReturn"
                 v-if="!isDisabled"
                 style="display: inline-block"
+                class="sec-form-item"
                 :rules="[
                   {required: true, message: '请输入收益对标基准', trigger: 'change'}
                 ]">
@@ -287,23 +288,28 @@
     </el-form>
     <div slot="footer" class="dialog-footer" style="text-align: center;">
       <!-- 创建 -->
-      <el-button class="search_btn" v-if="createStatus=='create'" @click="cancel()">取 消</el-button>
+      <el-button class="search_btn" v-if="createStatus=='create'" @click="cancel('form')">取 消</el-button>
       <el-button class="add_btn" v-if="createStatus=='create'" type="primary" @click="create('form')">保 存</el-button>
       <!-- 编辑 -->
-      <el-button class="search_btn" v-if="createStatus=='update'" @click="cancel()">取 消</el-button>
+      <el-button class="search_btn" v-if="createStatus=='update'" @click="cancel('form')">取 消</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'" type="primary" @click="update('form')">保 存</el-button>
     </div>
     <el-dialog :visible.sync="dialogPropertyVisible" title="新增属性">
-      <el-form label-width="120px">
+      <el-form :model="newAttrForm" ref="newAttrForm" label-width="120px">
         <el-col>
-          <el-form-item label="属性名称">
-            <el-input v-model="propertyName"></el-input>
+          <el-form-item
+            label="属性名称"
+            prop="propertyName"
+            :rules="[
+              {required: true, message: '请输入属性名称', trigger: 'change'}
+            ]">
+            <el-input v-model="newAttrForm.propertyName"></el-input>
           </el-form-item>
         </el-col>
       </el-form>
       <div class="dialog-footer text-right">
-        <el-button @click="dialogPropertyVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleAddProperty">确 定</el-button>
+        <el-button @click="cancelAddNewAttr('newAttrForm')">取 消</el-button>
+        <el-button type="primary" @click="handleAddProperty('newAttrForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -412,7 +418,9 @@
         createStatus: 'create',
         backUrl: '',
         dialogPropertyVisible: false,
-        propertyName: '',
+        newAttrForm: {
+          propertyName: ''
+        },
         subDisabled: false,
         ratio: 0,
         userNewAttr: false
@@ -499,7 +507,6 @@
               this.userNewAttr = true
             }
             this.ratio = this.form.discountCoefficient
-            // this.dialogFormVisible = true
             this.dialogStatus = 'update' // 设置每个产品详情对应显示的提交按钮
             if(this.form.isFloat === 0) {
               this.form.annualizedReturn = null
@@ -667,20 +674,26 @@
         })
       },
       cancel(formName) {
-        // this.dialogFormVisible = false
-        // this.$refs[formName].resetFields()
+        this.$refs[formName].resetFields()
         this.$router.push({path: this.backUrl})
         Bus.$emit('activeIndex', this.backUrl)
       },
-      handleAddProperty() { // 新增属性
-        console.log(this.userDefinedAttribute)
-        this.userDefinedAttribute.push({
-          label: this.propertyName
+      handleAddProperty(formName) { // 新增属性
+        this.$refs[formName].validate(valid => {
+          if(valid) {
+            this.userDefinedAttribute.push({
+            label: this.newAttrForm.propertyName
+          })
+          this.form.userDefinedAttribute = this.userDefinedAttribute
+          this.dialogPropertyVisible = false
+          this.userNewAttr = true
+          this.newAttrForm.propertyName = ''
+          }
         })
-        this.form.userDefinedAttribute = this.userDefinedAttribute
+      },
+      cancelAddNewAttr(formName) {
         this.dialogPropertyVisible = false
-        this.userNewAttr = true
-        this.propertyName = ''
+        this.$refs[formName].resetFields()
       }
     }
   }

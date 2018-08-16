@@ -398,6 +398,7 @@
             this.cycleListId(item.children, this.curPrevId)
           }
           if (item.children && !item.children.length) {
+            console.log(this.result)
             this.result[this.eachIndex] = [...prevId, item.id]
             this.eachIndex++
           }
@@ -417,6 +418,7 @@
         this.form.deptIds.splice(index, 1)
       },
       upperIds(list1, list2, id) {
+        console.log(list1)
         list1.map(item => {
           item.map((el, index) => {
             if (el === id) {
@@ -425,7 +427,7 @@
             }
           })
         })
-        // console.log(list2)
+        console.log(list2)
         this.form.deptIds = list2
       },
       addOption() {

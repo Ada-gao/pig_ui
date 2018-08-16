@@ -201,7 +201,7 @@
         <el-col :span="8" v-if="isClientType && realnameStatus && idType" style="white-space: nowrap">
           <el-form-item label="风险评估表填写时间：" prop="riskLevel">
             <!-- <el-input v-model="clientStatus.riskLevel" placeholder="" readonly></el-input> -->
-            <span style="padding-left: 20px;">{{clientStatus.riskLevel}}</span>
+            <span style="padding-left: 20px;">{{clientStatus.riskAuditTime}}</span>
           </el-form-item>
         </el-col>
       </el-row>

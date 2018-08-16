@@ -520,7 +520,11 @@
         directSupervisor: [],
         step: '1',
         id: '',
-        state: ''
+        state: '',
+        result: [],
+        tempDeptIds: [],
+        eachIndex: 0,
+        curPrevId: ''
       }
     },
     computed: {
@@ -551,6 +555,7 @@
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
       this.handleCreate()
+      this.handleDept()
     },
     mounted() {
       this.id = this.$route.params.id
@@ -561,11 +566,18 @@
         this.dialogStatus = 'create'
         this.state = this.dialogStatus
       }
-      this.handleDept()
-      console.log(this.step)
-      console.log(this.state)
     },
     methods: {
+      // findId(list, id) {
+      //   return list.forEach(item => {
+      //     if(item.id === id) {
+      //       console.log(item)
+      //       return item
+      //     } else {
+      //       if(item.children && item.children.length) this.findId(item.children)
+      //     }
+      //   })
+      // },
       getList() { // 编辑查询（查看）
         getObj(this.id)
           .then(response => {
@@ -577,7 +589,9 @@
             } else {
               this.form.role = ''
             }
-            this.form.deptIds[0] = this.form.deptId
+            this.deptIds.push(this.form.deptId)
+
+            this.form.deptIds = this.deptIds
             // this.role = row.roleList[0].roleDesc
             if(this.state === 'view') {
               this.dialogStatus = 'view'
@@ -625,6 +639,7 @@
       handleDept() { // 部门数据
         fetchDeptTree().then(res => {
           this.treeDeptData = res.data
+          // this.cycleListId(this.treeDeptData)
           eachChildren(this.treeDeptData)
         })
       },
@@ -689,9 +704,8 @@
               this.form.resumeUrl =''
               this.fileList = []
             }
-            console.log('put 请求')
+            this.form.deptId = this.form.deptIds[this.form.deptIds.length - 1]
             putObj(this.form).then(() => {
-              console.log('确定 put 请求')
               // this.getList()
               this.$notify({
                 title: '成功',
