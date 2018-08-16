@@ -732,7 +732,7 @@
             { validator: checkAge, trigger: 'blur' }
           ],
           timeliness: [
-            { required: true, message: '请输入预约失效', trigger: 'blur'}
+            { required: true, message: '请输入预约时效', trigger: 'blur'}
           ]
         },
         defineRules: {
