@@ -224,7 +224,7 @@
             </el-checkbox>
           </el-col>
           <el-col :md="12" :lg="8" style="margin-bottom: 10px">
-             <el-form-item label="预约时效" prop="timeliness" style="padding-left: 71px">
+             <el-form-item label="预约时效" prop="timeliness" class="timeliness">
             <!--<span style="width: 135px; display: inline-block; text-align: right">预约时效</span>-->
             <el-input style="width: 100px;"
                       :disabled="operationDisabled"
@@ -239,7 +239,7 @@
         <el-row>
           <el-col :span="5">
             <el-form :rules="defineRules" ref="defineform" label-width="120px" :model="defineform">
-            <el-form-item prop="radio2" label="是否标注重点产品" style="white-space: nowrap;" >
+            <el-form-item prop="radio2" label="是否标注重点产品" style="white-space: nowrap;" class="define-radio">
               <el-radio-group v-model="defineform.radio2" :disabled="operationDisabled" @change="test">
                 <el-radio :label="1">否</el-radio>
                 <el-radio :label="2">是</el-radio>
@@ -732,7 +732,7 @@
             { validator: checkAge, trigger: 'blur' }
           ],
           timeliness: [
-            { required: true, message: '请输入预约失效', trigger: 'blur'}
+            { required: true, message: '请输入预约时效', trigger: 'blur'}
           ]
         },
         defineRules: {
