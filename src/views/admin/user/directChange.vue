@@ -563,6 +563,7 @@
         this.disabledChange[disabled] = false; 
         if(disabled == 'positionChangeDate'){ 
            this.getAllRank({positionId:event});
+            this.disabledChange.rankChangeDate = false; 
         } else if(disabled === 'rankChangeDate') {
           this.rankList = this.rankList.slice(0)
         }
@@ -715,7 +716,6 @@
         getAllRank(id).then(res => {
           if(res.status == 200){
             this.rankList = res.data; 
-            this.disabledChange.rankChangeDate = false; 
             this.rankNameSelf = false;
             this.form.rankId = this.rankList[0] && this.rankList[0].rankId;
           }
@@ -813,7 +813,14 @@
              } 
              this.newForm.city = cityLabel;
              if(this.list.length>=1){
-              if(JSON.stringify(this.oldForm) == JSON.stringify(this.newForm)) return false;
+              if(JSON.stringify(this.oldForm) == JSON.stringify(this.newForm)){
+                this.$notify({
+                  title: '警告',
+                  message: '数据没有做任何修改',
+                  type: 'warning'
+                });
+                return false;
+              } 
              }
            this.idTurnName()
             delete this.newForm.changeId;
@@ -844,7 +851,7 @@
         // 判断是否是第一次建立
         if(this.list.length>=1){
           this.disabledTrue();
-          seeDirectChangeList(this.list[0].userId).then(res => {
+          seeDirectChangeList(this.list[0].changeId).then(res => {
             if(res.status == 200){
             this.newForm =JSON.parse(JSON.stringify(res.data));
             this.oldForm =JSON.parse(JSON.stringify(res.data));
