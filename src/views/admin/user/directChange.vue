@@ -812,7 +812,10 @@
                 cityLabel = '台湾省';
              } 
              this.newForm.city = cityLabel;
+             this.idTurnName()
              if(this.list.length>=1){
+              console.log(JSON.stringify(this.oldForm))
+              console.log(JSON.stringify(this.newForm))
               if(JSON.stringify(this.oldForm) == JSON.stringify(this.newForm)){
                 this.$notify({
                   title: '警告',
@@ -822,12 +825,12 @@
                 return false;
               } 
              }
-           this.idTurnName()
+           
             delete this.newForm.changeId;
             addDirectChangeList(this.newForm).then(res => {
               if(res.status == 200){
                 this.dialogFormVisible = false;
-                 this.handlePosition();
+                 this.handlePosition(this.listQuery);
                   this.$notify({
                     title: '成功',
                     message: '创建成功',
