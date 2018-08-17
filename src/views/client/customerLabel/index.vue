@@ -226,11 +226,12 @@
           this.newAddClient.clientLabelId = this.id;
           editClientLabel(this.newAddClient,this.id).then(response =>{
              this.changeLabel(response);
-          
+          this.$refs[formName].resetFields();
         })
         }else{
           clientLabel(this.newAddClient).then(response =>{
               this.changeLabel(response);
+              this.$refs[formName].resetFields();
           })
         }
       },
@@ -271,6 +272,7 @@
                 type: 'success',
                 duration: 2000
               })
+             this.$refs[formName].resetFields();
             this.newAddParamet = {};
             this.newAddAum = false;
           }
