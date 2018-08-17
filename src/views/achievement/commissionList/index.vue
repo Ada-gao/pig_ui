@@ -30,14 +30,14 @@
 								:props="defaultProps"
 								:show-all-levels="false"
 								change-on-select
-								v-model="deptName"
+								v-model="deptId"
 							></el-cascader>
 						</el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="职位">
-              <el-select style="width: 100%" class="filter-item" v-model="listQuery.positionName" placeholder="请选择" @focus="handlePosition()">
-                <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionName" :label="item.positionName">
+              <el-select style="width: 100%" class="filter-item" v-model="listQuery.positionId" placeholder="请选择" @focus="handlePosition()">
+                <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName">
                   <span style="float: left">{{ item.positionName }}</span>
                 </el-option>
               </el-select>
@@ -196,12 +196,12 @@ export default {
 				limit: 20
 			},
 			positionsOptions: [],
-      deptName: [],
+      deptId: [],
 			treeDeptData: [],
 			defaultProps: {
         children: 'children',
         label: 'name',
-        value: 'name'
+        value: 'id'
 			},
 			tableKey: 0,
 			entryDateS: '',
@@ -284,8 +284,8 @@ export default {
 				this.listQuery.date = [parseTime(this.entryDateS, '{y}-{m}'), parseTime(this.entryDateE, '{y}-{m}')]
 			}
 			this.listQuery.page = 1
-			if(this.deptName.length) {
-				this.listQuery.deptName = this.deptName[this.deptName.length - 1]
+			if(this.deptId.length) {
+				this.listQuery.deptId = this.deptId[this.deptId.length - 1]
       }
 			this.getList()
 		},
@@ -294,13 +294,13 @@ export default {
 				page: 1,
 				limit: 20,
 				username: undefined,
-				positionName: undefined,
-				deptName: undefined,
+				positionId: undefined,
+				deptId: undefined,
 				date: undefined
 			},
 			this.entryDateE = '',
 			this.entryDateS = ''
-			this.deptName = []
+			this.deptId = []
 			// this.handleFilter()
 			this.getList()
 		},
