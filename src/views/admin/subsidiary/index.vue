@@ -1,64 +1,43 @@
 `<template>
   <div class="app-container calendar-list-container">
-   <el-table
-    ref="multipleTable"
-    :data="tableData3"
-    tooltip-effect="dark"
+    <div class="flex">
+      <el-button v-if="editSelf" @click="onCancel">取消</el-button>
+      <el-button v-if="editSelf" type="primary" @click="sava">保存</el-button>
+      <el-button type="primary" v-else @click="edit"><i class="el-icon-setting">&nbsp&nbsp</i>子公司管理</el-button>
+    </div>
+  
+  <el-table
+    :data="rootList"
     style="width: 100%"
     border
-    align="center"
-    @selection-change="handleSelectionChange">
+    align="center">
     <el-table-column
-    label="是否子公司"
-    align="center"
-      width="55">
+      label="是否子公司"
+      align="center"
+      width="180">
+       <template slot-scope="scope">
+        <el-checkbox @change="handleCheckedCitiesChange(scope.row)" v-model="scope.row.isCompany == 1" :disabled="!editSelf"></el-checkbox>
+      </template>
     </el-table-column>
     <el-table-column
-    align="center"
-      label="日期">
-      <template slot-scope="scope">{{ scope.row.date }}</template>
+      align="center"
+      label="部门名称"
+      prop="name"
+      >
     </el-table-column>
   </el-table>
   </div>
 </template>
 
 <script>
-  import { fetchTree, getObj, addObj, delObj, putObj } from '@/api/dept'
+  import { getDeptRoots,editDeptRoots} from '@/api/dept'
   import { mapGetters } from 'vuex'
   export default {
     name: 'menu',
     data() {
       return {
-          tableData3: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }],
-        multipleSelection: []
+          rootList:null,
+          editSelf:false
       }
     },
     created() {
@@ -74,95 +53,46 @@
       ])
     },
     methods: {
+      //获取列表
       getList() {
-        fetchTree(this.listQuery).then(response => {
-          this.treeData = response.data
+        getDeptRoots().then(response => {
+          if(response.status == 200){
+            this.rootList = response.data;
+          }
         })
       },
-      filterNode(value, data) {
-        if (!value) return true
-        return data.label.indexOf(value) !== -1
+      //更改复选框状态
+      handleCheckedCitiesChange(event){
+        event.isCompany = event.isCompany==1?0:1;
       },
-      getNodeData(data) {
-        if (!this.formEdit) {
-          this.formStatus = 'update'
-        }
-        getObj(data.id).then(response => {
-          this.form = response.data
-        })
-        this.currentId = data.id
-        this.showElement = true
+      //编辑
+      edit(){
+        this.editSelf = true;
       },
-      handlerEdit() {
-        if (this.form.deptId) {
-          this.formEdit = false
-          this.formStatus = 'update'
-        }
+      onCancel(){
+        this.editSelf = false;
       },
-      handlerAdd() {
-        this.resetForm()
-        this.formEdit = false
-        this.formStatus = 'create'
-      },
-      handleDelete() {
-        this.$confirm('此操作将永久删除, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          delObj(this.currentId).then(() => {
-            this.getList()
-            this.resetForm()
-            this.onCancel()
+      sava(){
+        editDeptRoots(this.rootList).then(response => {
+          if(response.status == 200){
             this.$notify({
               title: '成功',
-              message: '删除成功',
+              message: '修改成功',
               type: 'success',
-              duration: 2000
-            })
-          })
+              duration:2000,
+              offset:100
+            });
+            this.onCancel()
+          }
+          
         })
-      },
-      update() {
-        putObj(this.form).then(() => {
-          this.getList()
-          this.$notify({
-            title: '成功',
-            message: '更新成功',
-            type: 'success',
-            duration: 2000
-          })
-        })
-      },
-      create() {
-        addObj(this.form).then(() => {
-          this.getList()
-          this.$notify({
-            title: '成功',
-            message: '创建成功',
-            type: 'success',
-            duration: 2000
-          })
-        })
-      },
-      onCancel() {
-        this.formEdit = true
-        this.formStatus = ''
-      },
-      resetForm() {
-        this.form = {
-          permission: undefined,
-          name: undefined,
-          menuId: undefined,
-          parentId: this.currentId,
-          url: undefined,
-          icon: undefined,
-          sort: undefined,
-          component: undefined,
-          type: undefined,
-          method: undefined
-        }
       }
     }
   }
 </script>
+<style lang="scss" scoped>
+  .flex{
+    display: flex;
+     justify-content:flex-end;
+  }
+</style>

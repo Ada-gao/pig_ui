@@ -37,3 +37,18 @@ export function putObj(obj) {
     data: obj
   })
 }
+//获取一级部门及子公司列表
+export function getDeptRoots() {
+  return request({
+    url: '/admin/dept/roots',
+    method: 'get'
+  })
+}
+//获取一级部门及子公司列表
+export function editDeptRoots(data) {
+  return request({
+    url: '/admin/dept/roots',
+    method: 'post',
+    data
+  })
+}

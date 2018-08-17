@@ -7,33 +7,58 @@
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
-      <el-table-column align="center" label="所在城市变更时间" prop="cityChangeDate"></el-table-column>
+      <el-table-column align="center" label="所在城市变更时间">
+       <template slot-scope="scope">{{scope.row.cityChangeDate | parseTime}}</template></el-table-column>
       <el-table-column align="center" label="所在城市" prop="city"></el-table-column>
-      <el-table-column align="center" label="物理职场变更时间" prop="workplaceChangeDate"></el-table-column>
+      <el-table-column align="center" label="物理职场变更时间"> 
+      <template slot-scope="scope">{{scope.row.workplaceChangeDate | parseTime}}</template>
+      </el-table-column></el-table-column>
       <el-table-column align="center" label="物理职场" prop="workplace"></el-table-column>
-      <el-table-column align="center" label="直属上级变更时间" prop="supervisorChangeDate"> </el-table-column>
+      <el-table-column align="center" label="直属上级变更时间">
+      <template slot-scope="scope">{{scope.row.supervisorChangeDate | parseTime}}</template></el-table-column>
       <el-table-column align="center" label="直属上级" prop="directSupervisorName"> </el-table-column>
-      <el-table-column align="center" label="合伙人变更时间" prop="partnerChangeDate"> </el-table-column>
+      <el-table-column align="center" label="合伙人变更时间"> 
+      <template slot-scope="scope">{{scope.row.partnerChangeDate | parseTime}}</template>
+      </el-table-column>
       <el-table-column align="center" label="合伙人" prop="partnerName"> </el-table-column>
-      <el-table-column align="center" label="区域总变更时间" prop="regionalManagerChangeDate"> </el-table-column>
+      <el-table-column align="center" label="区域总变更时间">
+      <template slot-scope="scope">{{scope.row.regionalManagerChangeDate | parseTime}}</template>
+      </el-table-column>
       <el-table-column align="center" label="区域总" prop="regionalManagerName"> </el-table-column>
-      <el-table-column align="center" label="区域副总变更时间" prop="regionalViceManagerChangeDate"> </el-table-column>
+      <el-table-column align="center" label="区域副总变更时间">
+      <template slot-scope="scope">{{scope.row.regionalViceManagerChangeDate | parseTime}}</template>
+      </el-table-column>
       <el-table-column align="center" label="区域副总" prop="regionalViceManagerName"> </el-table-column>
-      <el-table-column align="center" label="城市总变更时间" prop="cityManagerChangeDate"> </el-table-column>
+      <el-table-column align="center" label="城市总变更时间"> 
+      <template slot-scope="scope">{{scope.row.cityManagerChangeDate | parseTime}}</template></el-table-column>
       <el-table-column align="center" label="城市总" prop="cityManagerName"> </el-table-column>
-      <el-table-column align="center" label="城市副总变更时间" prop="cityViceManagerChangeDate"> </el-table-column>
+      <el-table-column align="center" label="城市副总变更时间"> 
+      <template slot-scope="scope">{{scope.row.cityViceManagerChangeDate | parseTime}}</template> 
+      </el-table-column>
       <el-table-column align="center" label="城市副总" prop="cityViceManagerName"> </el-table-column>
-      <el-table-column align="center" label="团队经理变更时间" prop="teamManagerChangeDate"> </el-table-column>
+      <el-table-column align="center" label="团队经理变更时间">  
+      <template slot-scope="scope">{{scope.row.teamManagerChangeDate | parseTime}}</template>
+      </el-table-column>
       <el-table-column align="center" label="团队经理" prop="teamManagerName"> </el-table-column>
-      <el-table-column align="center" label="公司变更时间" prop="companyChangeDate"> </el-table-column>
+      <el-table-column align="center" label="公司变更时间"> 
+      <template slot-scope="scope">{{scope.row.companyChangeDate | parseTime}}</template> 
+      </el-table-column>
       <el-table-column align="center" label="公司" prop="companyName"> </el-table-column>
-      <el-table-column align="center" label="区域变更时间" prop="regionalChangeDate"> </el-table-column>
+      <el-table-column align="center" label="区域变更时间"> 
+      <template slot-scope="scope">{{scope.row.regionalChangeDate | parseTime}}</template> 
+      </el-table-column>
       <el-table-column align="center" label="区域" prop="regional"> </el-table-column>
-      <el-table-column align="center" label="部门变更时间" prop="deptChangeDate"> </el-table-column>
+      <el-table-column align="center" label="部门变更时间"> 
+      <template slot-scope="scope">{{scope.row.deptChangeDate | parseTime}}</template> 
+      </el-table-column>
       <el-table-column align="center" label="部门" prop="deptName"> </el-table-column>
-      <el-table-column align="center" label="职位变更时间" prop="positionChangeDate"> </el-table-column>
+      <el-table-column align="center" label="职位变更时间"> 
+      <template slot-scope="scope">{{scope.row.positionChangeDate | parseTime}}</template> 
+      </el-table-column>
       <el-table-column align="center" label="职位" prop="positionName"> </el-table-column>
-      <el-table-column align="center" label="职级变更时间" prop="rankChangeDate"> </el-table-column>
+      <el-table-column align="center" label="职级变更时间"> 
+      <template slot-scope="scope">{{scope.row.rankChangeDate | parseTime}}</template> 
+      </el-table-column>
       <el-table-column align="center" label="职级" prop="rankName"> </el-table-column>
 
     </el-table>
@@ -521,7 +546,7 @@
       this.state = this.$route.params.state
     },
     methods: {
-         upperIds(list1, list2, id) {
+      upperIds(list1, list2, id) {
         list1.map(item => {
           item.map((el, index) => {
           
