@@ -74,7 +74,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="资产管理规模：" prop="assetAmount">
-            <span>{{form.assetAmount}}万</span>
+            <span>{{form.assetAmount||0}}万</span>
           </el-form-item>
         </el-col>
         <!-- <el-col :span="11">
@@ -183,7 +183,7 @@
         <el-col :span="8" v-if="realnameStatus && idType">
           <el-form-item label="证件有效期：" prop="date">
             <!-- <el-input v-model="clientStatus.idExpiration" placeholder="" readonly></el-input> -->
-            <span>{{clientStatus.idStartDate}}至{{clientStatus.idExpiration}}</span>
+            <span>{{clientStatus.idStartDate}} 至 {{clientStatus.idExpiration}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="realnameStatus && idType">
@@ -201,7 +201,7 @@
         <el-col :span="8" v-if="isClientType && realnameStatus && idType" style="white-space: nowrap">
           <el-form-item label="风险评估表填写时间：" prop="riskLevel">
             <!-- <el-input v-model="clientStatus.riskLevel" placeholder="" readonly></el-input> -->
-            <span style="padding-left: 20px;">{{clientStatus.riskLevel}}</span>
+            <span style="padding-left: 20px;">{{clientStatus.riskAuditTime}}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -246,7 +246,7 @@
         </el-table-column>
         <el-table-column align="center" label="产品期限">
           <template slot-scope="scope">
-            <span>{{scope.row.tradeDate}}</span>
+            <span>{{scope.row.tradeDate|parseTime('{y}-{m}-{d}')}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="风险等级">
@@ -254,19 +254,24 @@
             <span>{{scope.row.productRiskLevel}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="募集规模">
+        <el-table-column align="center" label="募集规模（万）">
           <template slot-scope="scope">
             <span>{{scope.row.amount}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="起息日">
+        <el-table-column align="center" label="购买金额（万）">
+          <template slot-scope="scope">
+            <span>{{scope.row.amount}}</span>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column align="center" label="起息日">
           <template slot-scope="scope">
             <span>{{scope.row.valueDate|parseTime('{y}-{m}-{d}')}}</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="center" label="收益对标基准">
           <template slot-scope="scope">
-            <span>{{scope.row.remark}}</span>
+            <span>{{scope.row.productRiskLevel}}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -300,7 +305,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="状态">
+        <el-table-column align="center" label="原因">
           <template slot-scope="scope">
             <span>{{scope.row.changeReason}}</span>
           </template>
@@ -433,7 +438,7 @@
         getObj(id).then(response => {
           this.form = response.data
 
-          this.realnameStatus = this.form.realnameStatus != 0 ? true : false // 认证状态判断
+          this.realnameStatus = this.form.realnameStatus == 2 ? true : false // 认证状态判断
           // this.idType = this.form.idType == 0 ? true : false // 证件类型判断
           this.isClientType = this.form.clientType == 0 ? true : false// 投资者类型判断
 

@@ -23,16 +23,18 @@ router.beforeEach((to, from, next) => { // 开启Progress
       if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetInfo').then(res => { // 拉取用户信息
           const roles = res.data.data.roles
-          store.dispatch('GenerateRoutes', { roles }).then(() => { // 生成可访问的路由表
-            router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-            next({ ...to }) // hack方法 确保addRoutes已完成
-          })
-          // const params = {
-          //   page: 1,
-          //   limit: 60,
-          //   isAsc: false
-          // }
-          store.dispatch('FetchList') // 获取字典信息
+          if(!roles.length) { // 登录账号没有角色
+            store.dispatch('FedLogOut').then(() => {
+              Message.error('没有登录权限')
+              next({ path: '/login' })
+            })
+          } else {
+            store.dispatch('GenerateRoutes', { roles }).then(() => { // 生成可访问的路由表
+              router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+              next({ ...to }) // hack方法 确保addRoutes已完成
+            })
+            store.dispatch('FetchList') // 获取字典信息
+          }
         }).catch((e) => {
           store.dispatch('FedLogOut').then(() => {
             Message.error('验证失败,请重新登录')

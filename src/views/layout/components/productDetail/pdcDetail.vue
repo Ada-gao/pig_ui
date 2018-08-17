@@ -2,7 +2,7 @@
   <div class="product-detail">
     <el-form :model="form" :rules="rules" ref="form" label-width="110px">
       <el-row :gutter="90">
-        <el-col :span="11" v-if="!stage&createStatus==='update'">
+        <el-col :span="11" v-if="!stage&&createStatus==='update'">
           <!-- 如果分期，不显示编号 -->
           <el-form-item label="产品编号" prop="productCode">
             <span>{{form.productCode}}</span>
@@ -82,7 +82,7 @@
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
-            <el-input v-else v-model="form.investmentHorizon" style="width: 35%;"></el-input>
+            <el-input v-else v-model="form.investmentHorizon" style="width: 30%;"></el-input>
             <span v-if="detailDisabled||stageType=='0'"></span>
             <el-select v-else v-model="form.investmentHorizonUnit" style="width: 23%;">
               <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
@@ -99,7 +99,19 @@
             <el-radio-group v-else v-model="form.isFloat" @change="radioChange">
               <el-radio :label="0" style="display: inline-block">浮动收益</el-radio>
               <el-radio :label="1" style="display: inline-block">收益对标基准(%)</el-radio>
-              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="!isDisabled" required="!isDisabled" v-model="form.annualizedReturn"></el-input>
+              <el-form-item label=""
+                prop="annualizedReturn"
+                v-if="!isDisabled"
+                style="display: inline-block"
+                class="sec-form-item"
+                :rules="[
+                  {required: true, message: '请输入收益对标基准', trigger: 'change'}
+                ]">
+                <el-input
+                  style="display: inline-block; width: 100px; margin-left: 20px;"
+                  :maxlength="5"
+                  v-model="form.annualizedReturn"></el-input>
+              </el-form-item>
             </el-radio-group>
           </el-form-item>
         </el-col>
@@ -154,16 +166,16 @@
         <el-col :span="11">
           <el-form-item label="渠道人数">
             <span v-if="detailDisabled">{{form.channelNumber}}</span>
-            <el-input v-else v-model="form.channelNumber" placeholder="请输入"></el-input>
+            <el-input v-else type="number" v-model.number="form.channelNumber" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <!-- 产品/募集分期才有 -->
-        <!-- <el-col :span="11">
+        <el-col :span="11" v-if="form.relevanceName">
           <el-form-item label="关联产品">
-            <span v-if="detailDisabled">{{}}</span>
-            <el-input v-else v-model="form.assetTeam" placeholder="请输入"></el-input>
+            <span v-if="detailDisabled">{{form.relevanceName}}</span>
+            <el-input v-else v-model="form.relevanceName" placeholder="请输入"></el-input>
           </el-form-item>
-        </el-col> -->
+        </el-col>
         <el-col :span="11">
           <el-form-item label="付息方式" prop="interestPayment">
             <span v-if="detailDisabled">{{form.interestPayment}}</span>
@@ -212,7 +224,7 @@
         <el-col :span="11">
           <el-form-item label="账号" prop="cardNo">
             <span v-if="detailDisabled">{{form.cardNo}}</span>
-            <el-input v-else v-model.number="form.cardNo" placeholder="请输入"></el-input>
+            <el-input v-else type="number" v-model.number="form.cardNo" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -224,7 +236,7 @@
         <el-col :span="11">
           <el-form-item label="大额支付行号" prop="paymentNumber">
             <span v-if="detailDisabled">{{form.paymentNumber}}</span>
-            <el-input v-else v-model="form.paymentNumber" placeholder="请输入"></el-input>
+            <el-input v-else type="number" v-model.number="form.paymentNumber" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -250,7 +262,7 @@
       </el-row>
       <div class="split-line" style="margin-bottom: 20px;"></div>
       <el-row v-show="userNewAttr">
-        <el-col :span="11" v-for="(item, index) in form.userDefinedAttribute" :key="index">
+        <el-col :span="11" v-for="(item, index) in userDefinedAttribute" :key="index">
           <el-form-item :label="item.label" prop="">
             <el-input v-model="item.value" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
@@ -276,23 +288,28 @@
     </el-form>
     <div slot="footer" class="dialog-footer" style="text-align: center;">
       <!-- 创建 -->
-      <el-button class="search_btn" v-if="createStatus=='create'" @click="cancel()">取 消</el-button>
+      <el-button class="search_btn" v-if="createStatus=='create'" @click="cancel('form')">取 消</el-button>
       <el-button class="add_btn" v-if="createStatus=='create'" type="primary" @click="create('form')">保 存</el-button>
       <!-- 编辑 -->
-      <el-button class="search_btn" v-if="createStatus=='update'" @click="cancel()">取 消</el-button>
+      <el-button class="search_btn" v-if="createStatus=='update'" @click="cancel('form')">取 消</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'" type="primary" @click="update('form')">保 存</el-button>
     </div>
     <el-dialog :visible.sync="dialogPropertyVisible" title="新增属性">
-      <el-form label-width="120px">
+      <el-form :model="newAttrForm" ref="newAttrForm" label-width="120px">
         <el-col>
-          <el-form-item label="属性名称">
-            <el-input v-model="propertyName"></el-input>
+          <el-form-item
+            label="属性名称"
+            prop="propertyName"
+            :rules="[
+              {required: true, message: '请输入属性名称', trigger: 'change'}
+            ]">
+            <el-input v-model="newAttrForm.propertyName"></el-input>
           </el-form-item>
         </el-col>
       </el-form>
       <div class="dialog-footer text-right">
-        <el-button @click="dialogPropertyVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleAddProperty">确 定</el-button>
+        <el-button @click="cancelAddNewAttr('newAttrForm')">取 消</el-button>
+        <el-button type="primary" @click="handleAddProperty('newAttrForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -401,7 +418,9 @@
         createStatus: 'create',
         backUrl: '',
         dialogPropertyVisible: false,
-        propertyName: '',
+        newAttrForm: {
+          propertyName: ''
+        },
         subDisabled: false,
         ratio: 0,
         userNewAttr: false
@@ -425,6 +444,7 @@
         } else if(this.form.investmentHorizonUnit === '2') {
           this.ratio = this.form.investmentHorizon / 365 * 100
         }
+        this.ratio = this.ratio > 100 ? 100 : this.ratio
         return this.ratio
       }
     },
@@ -458,6 +478,7 @@
           }
         })
       })
+      document.documentElement.scrollTop = document.body.scrollTop = 0
     },
     mounted() {
       this.form = this.formData
@@ -467,8 +488,9 @@
         if(this.stageType === '0') {
           // 产品分期
           this.detailDisabled = false
-          this.stage = true
+          // this.stage = true
         }
+        this.stage = true
       }
       this.backUrl = localStorage.getItem('activeUrl')
     },
@@ -478,15 +500,15 @@
           getObj(this.productId)
           .then(response => {
             this.form = response.data
-            this.form.userDefinedAttribute = JSON.parse(this.form.userDefinedAttribute)
+            this.userDefinedAttribute = JSON.parse(this.form.userDefinedAttribute)
+            console.log(JSON.parse(this.form.userDefinedAttribute))
             this.form.subscribe = this.form.subscribe - 0
-            if(this.form.userDefinedAttribute == 'null') {
+            if(this.userDefinedAttribute == 'null') {
               this.userNewAttr = false
-            } else if(this.form.userDefinedAttribute instanceof Array) {
+            } else if(this.userDefinedAttribute instanceof Array) {
               this.userNewAttr = true
             }
             this.ratio = this.form.discountCoefficient
-            // this.dialogFormVisible = true
             this.dialogStatus = 'update' // 设置每个产品详情对应显示的提交按钮
             if(this.form.isFloat === 0) {
               this.form.annualizedReturn = null
@@ -566,7 +588,8 @@
         set[formName].validate(valid => {
           if (valid) {
             this.form.discountCoefficient = this.investRatio
-            this.form.userDefinedAttribute = JSON.stringify(this.form.userDefinedAttribute)
+            this.form.userDefinedAttribute = JSON.stringify(this.userDefinedAttribute)
+            console.log(this.form.userDefinedAttribute)
             addObj(this.form)
               .then(response => {
                 if(response.status === 200) {
@@ -610,7 +633,7 @@
         set[formName].validate(valid => {
           if (valid) {
             this.form.discountCoefficient = this.investRatio
-            this.form.userDefinedAttribute = JSON.stringify(this.form.userDefinedAttribute)
+            this.form.userDefinedAttribute = JSON.stringify(this.userDefinedAttribute)
             if (this.stage) { //分期
               updProductStage(this.form).then(response => {
                 if(!response.data || response.status !== 200) {
@@ -654,20 +677,27 @@
         })
       },
       cancel(formName) {
-        // this.dialogFormVisible = false
-        // this.$refs[formName].resetFields()
+        this.$refs[formName].resetFields()
         this.$router.push({path: this.backUrl})
         Bus.$emit('activeIndex', this.backUrl)
       },
-      handleAddProperty() { // 新增属性
-        console.log(this.userDefinedAttribute)
-        this.userDefinedAttribute.push({
-          label: this.propertyName
+      handleAddProperty(formName) { // 新增属性
+        this.$refs[formName].validate(valid => {
+          if(valid) {
+            this.userDefinedAttribute.push({
+            label: this.newAttrForm.propertyName,
+            value: ''
+          })
+          this.form.userDefinedAttribute = this.userDefinedAttribute
+          this.dialogPropertyVisible = false
+          this.userNewAttr = true
+          this.newAttrForm.propertyName = ''
+          }
         })
-        this.form.userDefinedAttribute = this.userDefinedAttribute
+      },
+      cancelAddNewAttr(formName) {
         this.dialogPropertyVisible = false
-        this.userNewAttr = true
-        this.propertyName = ''
+        this.$refs[formName].resetFields()
       }
     }
   }

@@ -233,3 +233,17 @@ input[type="number"]{
 .rotate_270 {
   transform: rotate(270deg);
 }
+// 产品操作指南
+.timeliness {
+  .el-form-item__label {
+    font-weight: 500;
+  }
+  .el-form-item__content {
+    margin-left: 137px!important;
+  }
+}
+.define-radio {
+  .el-form-item__content {
+    margin-left: 130px!important;
+  }
+}

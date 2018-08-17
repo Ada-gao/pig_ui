@@ -5,7 +5,7 @@
       <el-radio-button style="border-radius: 0" label="2">直属变更</el-radio-button>
     </el-radio-group>
     <!-- 新增/编辑 -->
-    <div v-show="state!=='view'&&step==='1'">
+    <div v-if="state!=='view'&&step==='1'">
       <el-form :model="form" :rules="rules" ref="form" label-width="120px">
         <el-row :gutter="40">
           <el-col :span="10">
@@ -19,21 +19,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="部门" prop="deptId">
-              <el-cascader
+            <el-form-item label="部门" prop="deptIds">
+              <dept @change="changeDept" :deptId="deptIds"></dept>
+              <!-- <el-cascader
                 style="width: 100%"
                 :options="treeDeptData"
                 :props="defaultProps"
                 :show-all-levels="false"
                 change-on-select
-                v-model="deptIds"
+                v-model="form.deptIds"
                 @change="changeDept"
-              ></el-cascader>
-              <!-- <el-input v-model="form.deptName" placeholder="选择部门"
-                @focus="handleDept"
-                @change="changeDept"
-                ></el-input>
-              <input type="hidden" v-model="form.deptId"/> -->
+              ></el-cascader> -->
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -121,10 +117,10 @@
               <el-input v-model="form.email"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="10" v-show="form.status=='1'">
             <el-form-item label="离职原因" prop="dimissionReason">
               <!-- <el-input v-model="form.dimissionReason"></el-input> -->
-              <el-select class="filter-item" v-model="form.dimissionReason" placeholder="请选择">
+              <el-select class="filter-item" v-model="form.dimissionReason" clearable placeholder="请选择">
                 <el-option v-for="item in dimissionReason" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
@@ -140,7 +136,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="10" v-show="form.status=='1'">
             <el-form-item label="离职时间" prop="employeeDate">
               <el-date-picker
                 v-model="form.employeeDate"
@@ -152,7 +148,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="婚姻状况" prop="marriageStatus">
-              <el-select class="filter-item" v-model="form.marriageStatus" placeholder="请选择">
+              <el-select class="filter-item" v-model="form.marriageStatus" clearable placeholder="请选择">
                 <el-option v-for="item in marriageStatusOptions" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
@@ -240,7 +236,7 @@
       </div>
     </div>
     <!-- 查看 -->
-    <el-form v-show="state==='view'&&step==='1'" :model="form" ref="form" label-width="120px">
+    <el-form v-if="state==='view'&&step==='1'" :model="form" ref="form1" label-width="120px">
       <el-row :gutter="20">
           <el-col :span="10">
             <el-form-item label="姓名：" prop="name">
@@ -264,7 +260,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="角色：">
-              {{form.role|turnText(rolesOptions)}}
+              {{form.roleName}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -312,7 +308,7 @@
               {{form.email}}
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="10" v-show="form.status=='1'">
             <el-form-item label="离职原因：" prop="dimissionReason">
               {{form.dimissionReason|turnText(dimissionReason)}}
             </el-form-item>
@@ -322,7 +318,7 @@
               {{form.education|turnText(educationType)}}
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="10" v-show="form.status=='1'">
             <el-form-item label="离职时间：" prop="employeeDate">
               {{form.employeeDate|parseTime('{y}-{m}-{d}')}}
             </el-form-item>
@@ -333,19 +329,21 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="是否营销岗：" prop="marriageStatus">
-              <el-radio-group v-model="form.isMarketing" disabled>
+            <el-form-item label="是否营销岗：" prop="isMarketing">
+              {{form.isMarketing==1?'是':'否'}}
+              <!-- <el-radio-group v-model="form.isMarketing">
                 <el-radio :label="1" style="display: inline-block">是</el-radio>
                 <el-radio :label="0" style="display: inline-block">否</el-radio>
-              </el-radio-group>
+              </el-radio-group> -->
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="账户锁定状态：" prop="lock">
-              <el-radio-group v-model="form.lock" disabled>
+              {{form.lock|turnText(lockStatus)}}
+              <!-- <el-radio-group v-model="form.lock">
                 <el-radio :label="1" style="display: inline-block">锁定</el-radio>
                 <el-radio :label="0" style="display: inline-block">正常</el-radio>
-              </el-radio-group>
+              </el-radio-group> -->
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -381,6 +379,7 @@
   import { getPYData } from '@/assets/data'
   import { getToken } from '@/utils/auth'
   import DirectChange from './directChange.vue'
+  import Dept from 'components/dept'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
@@ -406,7 +405,8 @@
     components: {
       ElOption,
       ElRadioGroup,
-      DirectChange
+      DirectChange,
+      Dept
     },
     name: 'table_user',
     directives: {
@@ -414,7 +414,7 @@
     },
     data() {
       return {
-        treeDeptData: [],
+        // treeDeptData: [],
         checkedKeys: [],
         defaultProps: {
           children: 'children',
@@ -426,11 +426,11 @@
         role: undefined,
         form: {
           name: '',
-          username: undefined,
-          password: undefined,
-          status: undefined,
-          deptId: undefined,
-          roleList: []
+          // username: undefined,
+          // password: undefined,
+          // status: undefined,
+          deptIds: [],
+          roleList: [],
         },
         deptIds: [],
         rules: {
@@ -480,6 +480,9 @@
           status: [
             {required: true, trigger: 'change', message: '请选择状态'}
           ],
+          deptIds: [
+            {required: true, trigger: 'change', message: '请选择部门'}
+          ]
         },
         // statusOptions: ['0', '1', '2'],
         // positionsOptions: [],
@@ -515,7 +518,11 @@
         directSupervisor: [],
         step: '1',
         id: '',
-        state: ''
+        state: '',
+        result: [],
+        tempDeptIds: [],
+        eachIndex: 0,
+        curPrevId: ''
       }
     },
     computed: {
@@ -526,7 +533,8 @@
         'idTypeOptions',
         'marriageStatusOptions',
         'workStatus',
-        'dimissionReason'
+        'dimissionReason',
+        'lockStatus'
       ])
     },
     filters: {
@@ -545,6 +553,7 @@
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
       this.handleCreate()
+      // this.handleDept()
     },
     mounted() {
       this.id = this.$route.params.id
@@ -555,9 +564,6 @@
         this.dialogStatus = 'create'
         this.state = this.dialogStatus
       }
-      this.handleDept()
-      console.log(this.step)
-      console.log(this.state)
     },
     methods: {
       getList() { // 编辑查询（查看）
@@ -566,8 +572,16 @@
             this.form = response.data
             this.form.isMarketing = this.form.isMarketing - 0
             this.form.lock = this.form.lock - 0
-            this.form.role = this.form.roleList[0].roleId
-            this.deptIds[0] = this.form.deptId
+            if(this.form.roleList.length) {
+              this.form.role = this.form.roleList[0].roleId
+              this.form.roleName = this.form.roleList[0].roleDesc
+            } else {
+              this.form.role = ''
+            }
+            this.deptIds.push(this.form.deptId)
+
+            this.form.deptIds = this.deptIds
+            console.log(this.deptIds)
             // this.role = row.roleList[0].roleDesc
             if(this.state === 'view') {
               this.dialogStatus = 'view'
@@ -595,7 +609,7 @@
         deptRoleList(id)
           .then(response => {
             this.rolesOptions = response.data
-            this.form.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
+            // this.form.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
           })
       },
       // getDirectSupervisorList() { // 直属上级查询
@@ -612,12 +626,6 @@
       //     this.positionsOptions = res.data
       //   })
       // },
-      handleDept() { // 部门数据
-        fetchDeptTree().then(res => {
-          this.treeDeptData = res.data
-          eachChildren(this.treeDeptData)
-        })
-      },
       handleChageRole(val) {
         this.rolesOptions = this.rolesOptions.slice(0)
       },
@@ -634,13 +642,11 @@
       create(formName) {
         const set = this.$refs
         // this.form.role = this.role
-        this.form.deptId = this.deptIds[this.deptIds.length - 1]
         // this.form.positionId = this.form.positionName
         // this.form.idType = this.IDType
-        console.log(set[formName])
         set[formName].validate(valid => {
           if (valid) {
-            console.log('valid: ' + valid)
+            this.form.deptId = this.form.deptIds[this.form.deptIds.length - 1]
             addObj(this.form)
               .then((res) => {
                 if (res.status === 200) {
@@ -665,7 +671,6 @@
       },
       update(formName) { // 编辑提交
         const set = this.$refs
-        // this.form.role = this.role
         if(isNaN(this.form.role - 0)) {
           this.form.role = this.form.roleList[0].roleId
         }
@@ -681,6 +686,7 @@
               this.form.resumeUrl =''
               this.fileList = []
             }
+            this.form.deptId = this.form.deptIds[this.form.deptIds.length - 1]
             putObj(this.form).then(() => {
               // this.getList()
               this.$notify({

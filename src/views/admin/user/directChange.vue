@@ -7,33 +7,58 @@
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
-      <el-table-column align="center" label="所在城市变更时间" prop="cityChangeDate"></el-table-column>
+      <el-table-column align="center" label="所在城市变更时间">
+       <template slot-scope="scope">{{scope.row.cityChangeDate | parseTime}}</template></el-table-column>
       <el-table-column align="center" label="所在城市" prop="city"></el-table-column>
-      <el-table-column align="center" label="物理职场变更时间" prop="workplaceChangeDate"></el-table-column>
+      <el-table-column align="center" label="物理职场变更时间"> 
+      <template slot-scope="scope">{{scope.row.workplaceChangeDate | parseTime}}</template>
+      </el-table-column></el-table-column>
       <el-table-column align="center" label="物理职场" prop="workplace"></el-table-column>
-      <el-table-column align="center" label="直属上级变更时间" prop="supervisorChangeDate"> </el-table-column>
+      <el-table-column align="center" label="直属上级变更时间">
+      <template slot-scope="scope">{{scope.row.supervisorChangeDate | parseTime}}</template></el-table-column>
       <el-table-column align="center" label="直属上级" prop="directSupervisorName"> </el-table-column>
-      <el-table-column align="center" label="合伙人变更时间" prop="partnerChangeDate"> </el-table-column>
+      <el-table-column align="center" label="合伙人变更时间"> 
+      <template slot-scope="scope">{{scope.row.partnerChangeDate | parseTime}}</template>
+      </el-table-column>
       <el-table-column align="center" label="合伙人" prop="partnerName"> </el-table-column>
-      <el-table-column align="center" label="区域总变更时间" prop="regionalManagerChangeDate"> </el-table-column>
+      <el-table-column align="center" label="区域总变更时间">
+      <template slot-scope="scope">{{scope.row.regionalManagerChangeDate | parseTime}}</template>
+      </el-table-column>
       <el-table-column align="center" label="区域总" prop="regionalManagerName"> </el-table-column>
-      <el-table-column align="center" label="区域副总变更时间" prop="regionalViceManagerChangeDate"> </el-table-column>
+      <el-table-column align="center" label="区域副总变更时间">
+      <template slot-scope="scope">{{scope.row.regionalViceManagerChangeDate | parseTime}}</template>
+      </el-table-column>
       <el-table-column align="center" label="区域副总" prop="regionalViceManagerName"> </el-table-column>
-      <el-table-column align="center" label="城市总变更时间" prop="cityManagerChangeDate"> </el-table-column>
+      <el-table-column align="center" label="城市总变更时间"> 
+      <template slot-scope="scope">{{scope.row.cityManagerChangeDate | parseTime}}</template></el-table-column>
       <el-table-column align="center" label="城市总" prop="cityManagerName"> </el-table-column>
-      <el-table-column align="center" label="城市副总变更时间" prop="cityViceManagerChangeDate"> </el-table-column>
+      <el-table-column align="center" label="城市副总变更时间"> 
+      <template slot-scope="scope">{{scope.row.cityViceManagerChangeDate | parseTime}}</template> 
+      </el-table-column>
       <el-table-column align="center" label="城市副总" prop="cityViceManagerName"> </el-table-column>
-      <el-table-column align="center" label="团队经理变更时间" prop="teamManagerChangeDate"> </el-table-column>
+      <el-table-column align="center" label="团队经理变更时间">  
+      <template slot-scope="scope">{{scope.row.teamManagerChangeDate | parseTime}}</template>
+      </el-table-column>
       <el-table-column align="center" label="团队经理" prop="teamManagerName"> </el-table-column>
-      <el-table-column align="center" label="公司变更时间" prop="companyChangeDate"> </el-table-column>
+      <el-table-column align="center" label="公司变更时间"> 
+      <template slot-scope="scope">{{scope.row.companyChangeDate | parseTime}}</template> 
+      </el-table-column>
       <el-table-column align="center" label="公司" prop="companyName"> </el-table-column>
-      <el-table-column align="center" label="区域变更时间" prop="regionalChangeDate"> </el-table-column>
+      <el-table-column align="center" label="区域变更时间"> 
+      <template slot-scope="scope">{{scope.row.regionalChangeDate | parseTime}}</template> 
+      </el-table-column>
       <el-table-column align="center" label="区域" prop="regional"> </el-table-column>
-      <el-table-column align="center" label="部门变更时间" prop="deptChangeDate"> </el-table-column>
+      <el-table-column align="center" label="部门变更时间"> 
+      <template slot-scope="scope">{{scope.row.deptChangeDate | parseTime}}</template> 
+      </el-table-column>
       <el-table-column align="center" label="部门" prop="deptName"> </el-table-column>
-      <el-table-column align="center" label="职位变更时间" prop="positionChangeDate"> </el-table-column>
+      <el-table-column align="center" label="职位变更时间"> 
+      <template slot-scope="scope">{{scope.row.positionChangeDate | parseTime}}</template> 
+      </el-table-column>
       <el-table-column align="center" label="职位" prop="positionName"> </el-table-column>
-      <el-table-column align="center" label="职级变更时间" prop="rankChangeDate"> </el-table-column>
+      <el-table-column align="center" label="职级变更时间"> 
+      <template slot-scope="scope">{{scope.row.rankChangeDate | parseTime}}</template> 
+      </el-table-column>
       <el-table-column align="center" label="职级" prop="rankName"> </el-table-column>
 
     </el-table>
@@ -103,8 +128,8 @@
           <el-col :span="11">
             <el-form-item label="直属上级" required>
              <el-col :span="11">
-              <el-form-item prop="directSupervisorName">
-              <el-select class="filter-item" v-model="form.directSupervisorName" placeholder="请选择直属上级" @change="changeWatch('supervisorChangeDate')">
+              <el-form-item prop="directSupervisorId">
+              <el-select class="filter-item" v-model="form.directSupervisorId" placeholder="请选择直属上级" @change="changeWatch('supervisorChangeDate')">
                 <el-option v-for="item in listBox.employeeList" :key="item.userId" :label="item.name" :value="item.userId">
                 </el-option>
               </el-select>
@@ -126,8 +151,8 @@
           <el-col :span="11" :offset="1">
             <el-form-item label="合伙人" required>
              <el-col :span="11">
-             <el-form-item prop="partnerName">
-              <el-select class="filter-item" v-model="form.partnerName" placeholder="请选择合伙人" @change="changeWatch('partnerChangeDate')">
+             <el-form-item prop="partnerId">
+              <el-select class="filter-item" v-model="form.partnerId" placeholder="请选择合伙人" @change="changeWatch('partnerChangeDate')">
                 <el-option v-for="item in listBox.employeeList" :key="item.userId" :label="item.name" :value="item.userId">
                 </el-option>
               </el-select>
@@ -149,8 +174,8 @@
           <el-col :span="11">
             <el-form-item label="区域总" required>
              <el-col :span="11">
-              <el-form-item prop="regionalManagerName">
-              <el-select class="filter-item" v-model="form.regionalManagerName" placeholder="请选择区域总" @change="changeWatch('regionalManagerChangeDate')">
+              <el-form-item prop="regionalManagerId">
+              <el-select class="filter-item" v-model="form.regionalManagerId" placeholder="请选择区域总" @change="changeWatch('regionalManagerChangeDate')">
                 <el-option v-for="item in listBox.employeeList" :key="item.userId" :label="item.name" :value="item.userId">
                 </el-option>
               </el-select>
@@ -172,8 +197,8 @@
           <el-col :span="11" :offset="1">
             <el-form-item label="区域副总" required>
              <el-col :span="11">
-             <el-form-item prop="regionalViceManagerName">
-              <el-select class="filter-item" v-model="form.regionalViceManagerName" placeholder="请选择区域副总" @change="changeWatch('regionalViceManagerChangeDate')">
+             <el-form-item prop="regionalViceManagerId">
+              <el-select class="filter-item" v-model="form.regionalViceManagerId" placeholder="请选择区域副总" @change="changeWatch('regionalViceManagerChangeDate')">
                 <el-option v-for="item in listBox.employeeList" :key="item.userId" :label="item.name" :value="item.userId">
                 </el-option>
               </el-select>
@@ -195,8 +220,8 @@
           <el-col :span="11">
             <el-form-item label="城市总" required>
              <el-col :span="11">
-             <el-form-item prop="cityManagerName">
-              <el-select class="filter-item" v-model="form.cityManagerName" placeholder="请选择城市总" @change="changeWatch('cityManagerChangeDate')">
+             <el-form-item prop="cityManagerId">
+              <el-select class="filter-item" v-model="form.cityManagerId" placeholder="请选择城市总" @change="changeWatch('cityManagerChangeDate')">
                 <el-option v-for="item in listBox.employeeList" :key="item.userId" :label="item.name" :value="item.userId">
                 </el-option>
               </el-select>
@@ -218,8 +243,8 @@
           <el-col :span="11" :offset="1">
             <el-form-item label="城市副总" required>
              <el-col :span="11">
-            <el-form-item prop="cityViceManagerName">
-              <el-select class="filter-item" v-model="form.cityViceManagerName" placeholder="请选择城市副总" @change="changeWatch('cityViceManagerChangeDate')">
+            <el-form-item prop="cityViceManagerId">
+              <el-select class="filter-item" v-model="form.cityViceManagerId" placeholder="请选择城市副总" @change="changeWatch('cityViceManagerChangeDate')">
                 <el-option v-for="item in listBox.employeeList" :key="item.userId" :label="item.name" :value="item.userId">
                 </el-option>
               </el-select>
@@ -241,8 +266,8 @@
           <el-col :span="11">
             <el-form-item label="团队经理" required>
              <el-col :span="11">
-            <el-form-item prop="teamManagerName">
-              <el-select class="filter-item" v-model="form.teamManagerName" placeholder="请选择团队经理" @change="changeWatch('teamManagerChangeDate')">
+            <el-form-item prop="teamManagerId">
+              <el-select class="filter-item" v-model="form.teamManagerId" placeholder="请选择团队经理" @change="changeWatch('teamManagerChangeDate')">
                 <el-option v-for="item in listBox.employeeList" :key="item.userId" :label="item.name" :value="item.userId">
                 </el-option>
               </el-select>
@@ -296,8 +321,8 @@
           <el-col :span="11" >
             <el-form-item label="职位" required>
              <el-col :span="11">
-             <el-form-item prop="positionName">
-              <el-select class="filter-item" v-model="form.positionName" placeholder="请选择职位" @change="changeWatch('positionChangeDate',$event)">
+             <el-form-item prop="positionId">
+              <el-select class="filter-item" v-model="form.positionId" placeholder="请选择职位" @change="changeWatch('positionChangeDate',$event)">
                 <el-option v-for="item in listBox.jobList" :key="item.positionId" :label="item.positionName" :value="item.positionId">
                 </el-option>
               </el-select>
@@ -319,9 +344,9 @@
           <el-col :span="11" :offset="1">
             <el-form-item label="职级" required>
              <el-col :span="11">
-             <el-form-item prop="rankName">
-              <el-select class="filter-item" v-model="form.rankName" placeholder="请选择职级" @change="changeWatch('rankChangeDate')">
-                <el-option v-for="item in listBox.rankList" :key="item.rankId" :label="item.positionName" :value="item.rankId">
+             <el-form-item prop="rankId">
+              <el-select class="filter-item" v-model="form.rankId" placeholder="请选择职级" @change="changeWatch('rankChangeDate')" :disabled = "rankNameSelf">
+                <el-option v-for="item in rankList" :key="item.rankId" :label="item.rankName" :value="item.rankId">
                 </el-option>
               </el-select>
               </el-form-item>
@@ -345,8 +370,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button class="search_btn" @click="cancel('form')">取 消</el-button>
-        <el-button class="add_btn" v-if="dialogStatus=='create'" @click="create('form')">确 定</el-button>
-        <el-button class="add_btn" v-else @click="update('form')">修 改</el-button>
+        <el-button class="add_btn"  @click="update('form')">确 定</el-button>
+       <!--  <el-button class="add_btn" v-else @click="update('form')">修 改</el-button> -->
       </div>
     </el-dialog>
   </div>
@@ -377,6 +402,7 @@
          eachIndex: 0,
         departs: [], // 部门
         listLoading: false,
+        rankNameSelf:false,
         tableKey: 0,
         list: [],
         listQuery: {
@@ -394,7 +420,9 @@
         form: {},
         oldForm:{},
         newForm:{},
-        listBox:{},
+        listBox:{
+          rankList:null
+        },
         disabledChange:{},
         rules: {
           city:[
@@ -406,19 +434,19 @@
           cityManagerChangeDate:[
             {required: true, trigger: 'change', message: '请选择城市总变更时间'}
           ],
-          cityManagerName:[
+          cityManagerId:[
             {required: true, trigger: 'change', message: '请选择城市总姓名'}
           ],
           cityViceManagerChangeDate:[
             {required: true, trigger: 'change', message: '请选择城市副总变更时间'}
           ],
-          cityViceManagerName:[
+          cityViceManagerId:[
             {required: true, trigger: 'change', message: '请选择城市副总姓名'}
           ],
           companyChangeDate:[
             {required: true, trigger: 'change', message: '请选择公司变更时间'}
           ],
-          companyName:[
+          companyId:[
             {required: true, trigger: 'change', message: '请选择公司名称'}
           ],
           deptChangeDate:[
@@ -427,25 +455,25 @@
           deptName:[
             {required: true, trigger: 'change', message: '请选择部门名称'}
           ],
-          directSupervisorName:[
+          directSupervisorId:[
             {required: true, trigger: 'change', message: '请选择直属上级名称'}
           ],
           partnerChangeDate:[
             {required: true, trigger: 'change', message: '请选择合伙人变更时间'}
           ],
-          partnerName:[
+          partnerId:[
             {required: true, trigger: 'change', message: '请选择合伙人名称'}
           ],
           positionChangeDate:[
             {required: true, trigger: 'change', message: '请选择职位变更时间'}
           ],
-          positionName:[
+          positionId:[
             {required: true, trigger: 'change', message: '请选择职位名称'}
           ],
           rankChangeDate:[
             {required: true, trigger: 'change', message: '请选择职级变更时间'}
           ],
-          rankName:[
+          rankId:[
             {required: true, trigger: 'change', message: '请选择职级名称'}
           ],
           regional:[
@@ -457,13 +485,13 @@
           regionalManagerChangeDate:[
             {required: true, trigger: 'change', message: '请选择区域总变更时间'}
           ],
-          regionalManagerName:[
+          regionalManagerId:[
             {required: true, trigger: 'change', message: '请选择区域总名称'}
           ],
           regionalViceManagerChangeDate:[
             {required: true, trigger: 'change', message: '请选择区域副总变更时间'}
           ],
-          regionalViceManagerName:[
+          regionalViceManagerId:[
             {required: true, trigger: 'change', message: '请选择区域副总姓名'}
           ],
           supervisorChangeDate:[
@@ -472,7 +500,7 @@
           teamManagerChangeDate:[
             {required: true, trigger: 'change', message: '请选择团队经理变更时间'}
           ],
-          teamManagerName:[
+          teamManagerId:[
             {required: true, trigger: 'change', message: '请选择团队经理'}
           ],
           workplace:[
@@ -490,7 +518,8 @@
           label: 'name',
           value: 'id'
         },
-        options: provinceAndCityData
+        options: provinceAndCityData,
+        rankList: null
       }
     },
     computed: {
@@ -498,11 +527,16 @@
         'permissions'
       ])
     },
-    created() {    
-     
-      this.resetTemp()
+    created() {   
+     //初始化直属变更列表 
      this.handlePosition(this.listQuery)
-
+      // 查询直属上级
+      this.getDirectSupervisorList();
+      // 查询全部职位
+      this.getAllPositon();
+    
+      // 返回树形菜单集合  部门管理
+      this.getAllDeparts()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
@@ -512,7 +546,7 @@
       this.state = this.$route.params.state
     },
     methods: {
-         upperIds(list1, list2, id) {
+      upperIds(list1, list2, id) {
         list1.map(item => {
           item.map((el, index) => {
           
@@ -552,8 +586,11 @@
       //监听数据变化改变
       changeWatch(disabled,event){
         this.disabledChange[disabled] = false; 
-        if(disabled == 'positionChangeDate'){
+        if(disabled == 'positionChangeDate'){ 
            this.getAllRank({positionId:event});
+            this.disabledChange.rankChangeDate = false; 
+        } else if(disabled === 'rankChangeDate') {
+          this.rankList = this.rankList.slice(0)
         }
       },
       initializationForm(){
@@ -561,29 +598,29 @@
             city:'',
             cityChangeDate:'',
             cityManagerChangeDate:'',
-            cityManagerName:'',
+            cityManagerId:'',
             cityViceManagerChangeDate:'',
-            cityViceManagerName:'',
+            cityViceManagerId:'',
             companyChangeDate:'',
-            companyName:'',
+            companyId:'',
             deptChangeDate:'',
             deptName:'',
-            directSupervisorName:'',
+            directSupervisorId:'',
             partnerChangeDate:'',
-            partnerName:'',
+            partnerId:'',
             positionChangeDate:'',
-            positionName:'',
+            positionId:'',
             rankChangeDate:'',
-            rankName:'',
-            regional:'',
+            rankId:'',
+            regionalId:'',
             regionalChangeDate:'',
             regionalManagerChangeDate:'',
-            regionalManagerName:'',
+            regionalManagerId:'',
             regionalViceManagerChangeDate:'',
-            regionalViceManagerName:'',
+            regionalViceManagerId:'',
             supervisorChangeDate:'',
             teamManagerChangeDate:'',
-            teamManagerName:'',
+            teamManagerId:'',
             workplace:'',
             workplaceChangeDate:''
           }
@@ -626,6 +663,53 @@
             workplaceChangeDate:false
         }
       },
+      // 通过id 转 名称
+      idTurnName(){
+        console.log(this.form)
+        this.listBox.employeeList.find(item=>{
+          if(item.userId == this.form.directSupervisorId){
+            this.newForm.directSupervisorId = item.userId
+            this.newForm.directSupervisorName = item.name
+          }
+          if(item.userId == this.form.partnerId){
+            this.newForm.partnerId = item.userId
+            this.newForm.partnerName = item.name
+          }
+          if(item.userId == this.form.regionalManagerId){
+            this.newForm.regionalManagerId = item.userId
+            this.newForm.regionalManagerName = item.name
+          }
+          if(item.userId == this.form.regionalViceManagerId){
+            this.newForm.regionalViceManagerId = item.userId
+            this.newForm.regionalViceManagerName = item.name
+          }
+          if(item.userId == this.form.cityManagerId){
+            this.newForm.cityManagerId = item.userId
+            this.newForm.cityManagerName = item.name
+          }
+          if(item.userId == this.form.cityViceManagerId){
+            this.newForm.cityViceManagerId = item.userId
+            this.newForm.cityViceManagerName = item.name
+          }
+          if(item.userId == this.form.cityViceManagerId){
+            this.newForm.cityViceManagerId = item.userId
+            this.newForm.teamManagerName = item.name
+          }
+        }) 
+        this.listBox.jobList.find(item=>{
+          if(item.positionId == this.form.positionId){
+            this.newForm.positionId = item.positionId
+            this.newForm.positionName = item.positionName
+          }
+         })
+        if(!this.rankList) return false;
+         this.rankList.find(item=>{
+          if(item.rankId == this.form.rankId){
+            this.newForm.rankId = item.rankId
+            this.newForm.rankName = item.rankName
+          }
+         })
+      },
       // 查询直属上级
       getDirectSupervisorList(){
         getDirectSupervisorList().then(res => {
@@ -656,10 +740,9 @@
       getAllRank(id){
         getAllRank(id).then(res => {
           if(res.status == 200){
-            this.listBox.rankList = res.data; 
-            this.disabledChange.rankChangeDate = false; 
-            this.form.rankName = this.listBox.rankList[0] && this.listBox.rankList[0].positionName;
-           
+            this.rankList = res.data; 
+            this.rankNameSelf = false;
+            this.form.rankId = this.rankList[0] && this.rankList[0].rankId;
           }
         })
       },
@@ -685,58 +768,94 @@
         this.handlePosition(this.listQuery);
       },
       handleCreate() {
+       
         this.resetTemp()
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
       },
-      create(formName) {
-        const set = this.$refs
-        set[formName].validate(valid => {
-          if (valid) {
-            // addObj(this.form)
-            //   .then((res) => {
-            //     if (res.status === 200) {
-            //       this.dialogFormVisible = false
-            //       // this.getList()
-            //       this.$notify({
-            //         title: '成功',
-            //         message: '创建成功',
-            //         type: 'success',
-            //         duration: 2000
-            //       })
-            //     }
-            //   })
-          } else {
-            return false
-          }
-        })
-      },
-      update(formName) {
-        console.log(this.departs)
-        console.log(this.form)
+      // 将公司区域部门转成后台可识别的
+      departmentchange(){
         this.departs.forEach(item=>{
           if(item.id == this.form.deptName[0]){
-            console.log(item)
+           this.newForm.companyId =  item.id;
+           this.newForm.companyName =  item.name;
+           if(item.children.length>=1){
+           item.children.forEach(item=>{
+              if(item.id == this.form.deptName[1]){
+                this.newForm.regionalId =  item.id;
+                this.newForm.regional =  item.name;
+                if(item.children.length>=1){
+                  item.children.forEach(item=>{
+                    if(item.id == this.form.deptName[2]){
+                      this.newForm.deptId =  item.id;
+                       this.newForm.deptName =  item.name;
+                    }
+                  })
+                }else{
+                  this.newForm.deptId =  '';
+                  this.newForm.deptName =  '';
+                  this.newForm.deptChangeDate = '';
+                }
+              }
+           })
+         }else{
+          this.newForm.regionalId =  '';
+          this.newForm.regional =  '';
+          this.newForm.regionalChangeDate =  '';
+          this.newForm.deptId =  '';
+          this.newForm.deptName =  '';
+          this.newForm.deptChangeDate = '';
+         }
+
           }
         })
-        let label;
-         if(this.form.city[1]){
-             label = this.form.city[1] == '市辖区'?this.form.city[0]:this.form.city[1]
-         }else{
-            label = '台湾省';
-         } 
-         this.newForm.city = label;
-         if(JSON.stringify(this.oldForm) == JSON.stringify(this.newForm)) return false;
-         
-         return false
-        delete this.newForm.changeId;
+       
+        if(this.newForm.companyId != this.form.companyId){
+          this.newForm.companyChangeDate = this.form.deptChangeDate;
+        }
+        if(this.newForm.regionalId != this.form.regionalId){
+          this.newForm.regionalChangeDate = this.form.deptChangeDate; 
+        }
+        if(this.newForm.deptId != this.form.deptId){
+         this.newForm.deptChangeDate = this.form.deptChangeDate;
+        }
+      },
+      update(formName) {
+ 
         this.$refs[formName].validate((valid) => {
-          
           if (valid) {
+            if(this.list.length<1){
+              this.newForm =JSON.parse(JSON.stringify(this.form));
+              this.newForm.userId = this.$route.params.id;
+            }
+        
+            this.departmentchange();
+            let cityLabel;
+             if(this.form.city[1]){
+                 cityLabel = this.form.city[1] == '市辖区'?this.form.city[0]:this.form.city[1]
+             }else{
+                cityLabel = '台湾省';
+             } 
+             this.newForm.city = cityLabel;
+             this.idTurnName()
+             if(this.list.length>=1){
+              console.log(JSON.stringify(this.oldForm))
+              console.log(JSON.stringify(this.newForm))
+              if(JSON.stringify(this.oldForm) == JSON.stringify(this.newForm)){
+                this.$notify({
+                  title: '警告',
+                  message: '数据没有做任何修改',
+                  type: 'warning'
+                });
+                return false;
+              } 
+             }
+           
+            delete this.newForm.changeId;
             addDirectChangeList(this.newForm).then(res => {
               if(res.status == 200){
                 this.dialogFormVisible = false;
-                 this.handlePosition();
+                 this.handlePosition(this.listQuery);
                   this.$notify({
                     title: '成功',
                     message: '创建成功',
@@ -755,18 +874,20 @@
         this.dialogFormVisible = false
         this.$refs[formName].resetFields()
       },
-      resetTemp(id) {
-        if(this.list){
+      resetTemp() {
 
-          this.form.deptName = [ '2', '39' ]
+        // 判断是否是第一次建立
+        if(this.list.length>=1){
           this.disabledTrue();
-          seeDirectChangeList(2).then(res => {
+          seeDirectChangeList(this.list[0].changeId).then(res => {
             if(res.status == 200){
             this.newForm =JSON.parse(JSON.stringify(res.data));
             this.oldForm =JSON.parse(JSON.stringify(res.data));
             this.form = res.data;
+             // 根据职位id查询
+            this.getAllRank({positionId:this.form.positionId})
 
-            this.form.deptName = [ 5, 49 ]
+            this.form.deptName = [ this.form.companyId, this.form.regionalId,this.form.deptId ];
            // this.upperIds(this.result, this.tempDeptIds, this.form.deptId)
             let label = this.form.city;
             let newArr = [];
@@ -791,17 +912,13 @@
               }
             }
             this.form.city = newArr;
-            // 查询直属上级
-            this.getDirectSupervisorList()
-            // 查询全部职位
-            this.getAllPositon();
-            // 返回树形菜单集合  部门管理
-            this.getAllDeparts()
+          
             }
           })
         }else{
-          this.initializationForm();
+          //this.initializationForm();
           this.disabledFalse();
+          this.rankNameSelf = true;
          }
       }
     }

@@ -203,7 +203,7 @@
   export default {
     components: {
       ElOption,
-      ElRadioGroup,
+      ElRadioGroup
     },
     filters: {
       turnText (val, list) {

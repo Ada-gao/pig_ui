@@ -121,6 +121,15 @@
             </el-cascader>
           </el-form-item>
         </el-col>
+        <el-col :sm="12" :lg="8" v-if="searchPreserveExpired">
+          <el-form-item label="保护期过期">
+            <el-select v-model="listQuery.preserveStatus" style="width: 100%" placeholder="请选择">
+              <el-option v-for="item in preserveExpired" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
       </el-row>
       <el-row style="text-align: center;">
         <el-button class="search_btn btn-padding" type="info" @click="handleFilter"><svg-icon icon-class="search"></svg-icon> 查询</el-button>
@@ -174,6 +183,9 @@ export default {
     searchCity: {
       default: true
     },
+    searchPreserveExpired: {
+      default: false
+    }
   },
   data() {
     return {
@@ -212,7 +224,8 @@ export default {
       'idTypeOptions',
       'nationality',
       'clientClass',
-      'clientType'
+      'clientType',
+      'preserveExpired'
     ])
   },
   created() {
@@ -247,9 +260,12 @@ export default {
         positionId: '',
         // delFlag: '',
         deptId: '',
-        mobileValidated: undefined
+        mobileValidated: undefined,
+        nationality: '',
+        city: ''
       },
       this.deptId = []
+      this.city = []
       this.entryDate = []
       this.handleFilter()
     },
