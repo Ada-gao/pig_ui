@@ -41,6 +41,7 @@ const getters = {
   interestPayment: state => state.dictionary.interestPayment,
   buyingCrowds: state => state.dictionary.buyingCrowds,
   dimissionReason: state => state.dictionary.dimissionReason,
-  lockStatus: state => state.dictionary.lockStatus
+  lockStatus: state => state.dictionary.lockStatus,
+  preserveExpired: state => state.dictionary.preserveExpired
 }
 export default getters

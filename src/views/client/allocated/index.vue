@@ -1,6 +1,8 @@
 <template>
   <div class="app-container calendar-list-container">
-    <search-bar-component @search-list="serachList"></search-bar-component>
+    <search-bar-component
+      @search-list="serachList"
+      :searchPreserveExpired="true"></search-bar-component>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">

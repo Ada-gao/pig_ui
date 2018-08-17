@@ -30,7 +30,8 @@ const dictionary = {
     interestPayment: [],
     buyingCrowds: [],
     dimissionReason: [],
-    lockStatus: []
+    lockStatus: [],
+    preserveExpired: []
   },
 
   mutations: {
@@ -120,6 +121,9 @@ const dictionary = {
     },
     SET_LOCK_STATUS: (state, lockStatus) => {
       state.lockStatus = lockStatus
+    },
+    SET_PRESERVE_EXPIRED: (state, preserveExpired) => {
+      state.preserveExpired = preserveExpired
     }
   },
 
@@ -159,6 +163,7 @@ const dictionary = {
           let buyingCrowdsList = []
           let dimissionReasonList = []
           let lockStatusList = []
+          let preserveExpiredList = []
           
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -238,6 +243,9 @@ const dictionary = {
 
             } else if(data[i].type === 'lock') {
               lockStatusList.push(data[i])
+
+            } else if(data[i].type === 'preserve_expired') {
+              preserveExpiredList.push(data[i])
             }
           }
 
@@ -280,6 +288,7 @@ const dictionary = {
           commit('SET_BUYING_CROWDS', buyingCrowdsList)
           commit('SET_DIMISSION_REASON', dimissionReasonList)
           commit('SET_LOCK_STATUS', lockStatusList)
+          commit('SET_PRESERVE_EXPIRED', preserveExpiredList)
           resolve()
         }).catch(error => {
           reject(error)
