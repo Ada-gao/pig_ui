@@ -20,7 +20,8 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="部门" prop="deptIds">
-              <el-cascader
+              <dept @change="changeDept" :deptId="deptIds"></dept>
+              <!-- <el-cascader
                 style="width: 100%"
                 :options="treeDeptData"
                 :props="defaultProps"
@@ -28,12 +29,7 @@
                 change-on-select
                 v-model="form.deptIds"
                 @change="changeDept"
-              ></el-cascader>
-              <!-- <el-input v-model="form.deptName" placeholder="选择部门"
-                @focus="handleDept"
-                @change="changeDept"
-                ></el-input>
-              <input type="hidden" v-model="form.deptId"/> -->
+              ></el-cascader> -->
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -264,7 +260,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="角色：">
-              {{form.role|turnText(rolesOptions)}}
+              {{form.roleName}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -312,7 +308,7 @@
               {{form.email}}
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="10" v-show="form.status=='1'">
             <el-form-item label="离职原因：" prop="dimissionReason">
               {{form.dimissionReason|turnText(dimissionReason)}}
             </el-form-item>
@@ -322,7 +318,7 @@
               {{form.education|turnText(educationType)}}
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="10" v-show="form.status=='1'">
             <el-form-item label="离职时间：" prop="employeeDate">
               {{form.employeeDate|parseTime('{y}-{m}-{d}')}}
             </el-form-item>
@@ -383,6 +379,7 @@
   import { getPYData } from '@/assets/data'
   import { getToken } from '@/utils/auth'
   import DirectChange from './directChange.vue'
+  import Dept from 'components/dept'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
@@ -408,7 +405,8 @@
     components: {
       ElOption,
       ElRadioGroup,
-      DirectChange
+      DirectChange,
+      Dept
     },
     name: 'table_user',
     directives: {
@@ -416,7 +414,7 @@
     },
     data() {
       return {
-        treeDeptData: [],
+        // treeDeptData: [],
         checkedKeys: [],
         defaultProps: {
           children: 'children',
@@ -555,7 +553,7 @@
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
       this.handleCreate()
-      this.handleDept()
+      // this.handleDept()
     },
     mounted() {
       this.id = this.$route.params.id
@@ -568,16 +566,6 @@
       }
     },
     methods: {
-      // findId(list, id) {
-      //   return list.forEach(item => {
-      //     if(item.id === id) {
-      //       console.log(item)
-      //       return item
-      //     } else {
-      //       if(item.children && item.children.length) this.findId(item.children)
-      //     }
-      //   })
-      // },
       getList() { // 编辑查询（查看）
         getObj(this.id)
           .then(response => {
@@ -586,12 +574,14 @@
             this.form.lock = this.form.lock - 0
             if(this.form.roleList.length) {
               this.form.role = this.form.roleList[0].roleId
+              this.form.roleName = this.form.roleList[0].roleDesc
             } else {
               this.form.role = ''
             }
             this.deptIds.push(this.form.deptId)
 
             this.form.deptIds = this.deptIds
+            console.log(this.deptIds)
             // this.role = row.roleList[0].roleDesc
             if(this.state === 'view') {
               this.dialogStatus = 'view'
@@ -636,13 +626,6 @@
       //     this.positionsOptions = res.data
       //   })
       // },
-      handleDept() { // 部门数据
-        fetchDeptTree().then(res => {
-          this.treeDeptData = res.data
-          // this.cycleListId(this.treeDeptData)
-          eachChildren(this.treeDeptData)
-        })
-      },
       handleChageRole(val) {
         this.rolesOptions = this.rolesOptions.slice(0)
       },
