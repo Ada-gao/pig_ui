@@ -619,7 +619,7 @@
         deptRoleList(id)
           .then(response => {
             this.rolesOptions = response.data
-            this.form.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
+            // this.form.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
           })
       },
       // getDirectSupervisorList() { // 直属上级查询
@@ -688,7 +688,6 @@
       },
       update(formName) { // 编辑提交
         const set = this.$refs
-        // this.form.role = this.role
         if(isNaN(this.form.role - 0)) {
           this.form.role = this.form.roleList[0].roleId
         }
