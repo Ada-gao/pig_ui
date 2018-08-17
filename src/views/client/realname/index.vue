@@ -6,7 +6,7 @@
       :searchNationality="false"
       :searchCity="false"
       :searchClientType="false"
-      :searchRealNameStatus="false"
+      :searchRealNameStatus="true"
       >
     </search-bar-component>
 
@@ -112,7 +112,7 @@
         listQuery: {
           page: 1,
           limit: 20,
-          realNameStatus: 1 // 待审核
+          // realNameStatus: 1 // 待审核
         },
         role: undefined,
         dialogFormVisible: false,
@@ -221,7 +221,7 @@
             this.role = row.roleList[0].roleDesc
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
-            
+
           })
       },
       resetTemp() {
@@ -244,7 +244,7 @@
       //   this.entryDate = []
       //   this.handleFilter()
       // },
-      
+
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`);
       // },
@@ -253,7 +253,7 @@
       },
       serachList(data) {
         this.listQuery = data
-        this.listQuery.realNameStatus = 1
+        // this.listQuery.realNameStatus = 1
         this.getList()
       }
     }
