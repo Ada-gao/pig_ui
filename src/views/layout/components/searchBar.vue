@@ -123,7 +123,7 @@
         </el-col>
         <el-col :sm="12" :lg="8" v-if="searchPreserveExpired">
           <el-form-item label="保护期过期">
-            <el-select v-model="listQuery.preserveExpired" style="width: 100%" placeholder="请选择">
+            <el-select v-model="listQuery.preserveStatus" style="width: 100%" placeholder="请选择">
               <el-option v-for="item in preserveExpired" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -260,9 +260,12 @@ export default {
         positionId: '',
         // delFlag: '',
         deptId: '',
-        mobileValidated: undefined
+        mobileValidated: undefined,
+        nationality: '',
+        city: ''
       },
       this.deptId = []
+      this.city = []
       this.entryDate = []
       this.handleFilter()
     },

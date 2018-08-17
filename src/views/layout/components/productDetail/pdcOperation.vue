@@ -643,7 +643,7 @@
     }
   }
   const defineRadio = (rule, value, callback) => {
-    console.log(value)
+    // console.log(value)
     callback()
   }
 
@@ -846,7 +846,7 @@
             self = false;
             return false;
           }
-          console.log(item.activeDate)
+          // console.log(item.activeDate)
           //活动时间段
           if(!item.activeDate && filter){
 
@@ -980,7 +980,7 @@
           age:objLength.length+1,
           brokerageCoefficientDTOList: levelDataArr
         })
-        console.log(objLength)
+        // console.log(objLength)
       },
       //删除活动时间产品佣金系数
       deleteActivityTime(index,cindex){
@@ -1368,7 +1368,7 @@
         })
       },
       changeCollect() {
-        console.log('修改定时')
+        // console.log('修改定时')
         this.dialogCollectVisible = true
         this.collectTime = this.form2.collectDate
         this.collectVal = 2

@@ -166,7 +166,7 @@
         <el-col :span="11">
           <el-form-item label="渠道人数">
             <span v-if="detailDisabled">{{form.channelNumber}}</span>
-            <el-input v-else v-model="form.channelNumber" placeholder="请输入"></el-input>
+            <el-input v-else type="number" v-model.number="form.channelNumber" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <!-- 产品/募集分期才有 -->
@@ -224,7 +224,7 @@
         <el-col :span="11">
           <el-form-item label="账号" prop="cardNo">
             <span v-if="detailDisabled">{{form.cardNo}}</span>
-            <el-input v-else v-model.number="form.cardNo" placeholder="请输入"></el-input>
+            <el-input v-else type="number" v-model.number="form.cardNo" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -236,7 +236,7 @@
         <el-col :span="11">
           <el-form-item label="大额支付行号" prop="paymentNumber">
             <span v-if="detailDisabled">{{form.paymentNumber}}</span>
-            <el-input v-else v-model="form.paymentNumber" placeholder="请输入"></el-input>
+            <el-input v-else type="number" v-model.number="form.paymentNumber" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -262,7 +262,7 @@
       </el-row>
       <div class="split-line" style="margin-bottom: 20px;"></div>
       <el-row v-show="userNewAttr">
-        <el-col :span="11" v-for="(item, index) in form.userDefinedAttribute" :key="index">
+        <el-col :span="11" v-for="(item, index) in userDefinedAttribute" :key="index">
           <el-form-item :label="item.label" prop="">
             <el-input v-model="item.value" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
@@ -478,6 +478,7 @@
           }
         })
       })
+      document.documentElement.scrollTop = document.body.scrollTop = 0
     },
     mounted() {
       this.form = this.formData
@@ -499,11 +500,12 @@
           getObj(this.productId)
           .then(response => {
             this.form = response.data
-            this.form.userDefinedAttribute = JSON.parse(this.form.userDefinedAttribute)
+            this.userDefinedAttribute = JSON.parse(this.form.userDefinedAttribute)
+            console.log(JSON.parse(this.form.userDefinedAttribute))
             this.form.subscribe = this.form.subscribe - 0
-            if(this.form.userDefinedAttribute == 'null') {
+            if(this.userDefinedAttribute == 'null') {
               this.userNewAttr = false
-            } else if(this.form.userDefinedAttribute instanceof Array) {
+            } else if(this.userDefinedAttribute instanceof Array) {
               this.userNewAttr = true
             }
             this.ratio = this.form.discountCoefficient
@@ -586,7 +588,8 @@
         set[formName].validate(valid => {
           if (valid) {
             this.form.discountCoefficient = this.investRatio
-            this.form.userDefinedAttribute = JSON.stringify(this.form.userDefinedAttribute)
+            this.form.userDefinedAttribute = JSON.stringify(this.userDefinedAttribute)
+            console.log(this.form.userDefinedAttribute)
             addObj(this.form)
               .then(response => {
                 if(response.status === 200) {
@@ -630,7 +633,7 @@
         set[formName].validate(valid => {
           if (valid) {
             this.form.discountCoefficient = this.investRatio
-            this.form.userDefinedAttribute = JSON.stringify(this.form.userDefinedAttribute)
+            this.form.userDefinedAttribute = JSON.stringify(this.userDefinedAttribute)
             if (this.stage) { //分期
               updProductStage(this.form).then(response => {
                 if(!response.data || response.status !== 200) {
@@ -682,7 +685,8 @@
         this.$refs[formName].validate(valid => {
           if(valid) {
             this.userDefinedAttribute.push({
-            label: this.newAttrForm.propertyName
+            label: this.newAttrForm.propertyName,
+            value: ''
           })
           this.form.userDefinedAttribute = this.userDefinedAttribute
           this.dialogPropertyVisible = false
