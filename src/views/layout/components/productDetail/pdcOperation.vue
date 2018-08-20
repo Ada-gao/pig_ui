@@ -329,7 +329,8 @@
             <el-form-item label="活动时间段">
               <el-date-picker
               style="width:100%"
-                v-model="item.activeDate"
+              @change = "activeDateChange"
+                v-model="activeDateList[index]"
                 :disabled="operationDisabled"
                 type="daterange"
                 start-placeholder="开始日期"
@@ -659,6 +660,7 @@
 
       };
       return {
+        activeDateList:[],
         fileList1: [],
         fileList2: [],
         fileList3: [],
@@ -813,6 +815,11 @@
       this.url = localStorage.getItem('activeUrl')
     },
     methods: {
+      activeDateChange(){
+        this.activityData.forEach((item,index)=>{
+          item.activeDate = this.activeDateList[index]||['',''];
+        })
+      },
       judgeEmpty(){
         this.$notify({
           title: '警告',
@@ -820,10 +827,22 @@
           type: 'warning'
         });
       },
+      //折标业绩系数 为空提示
+      performanceCoefficient(){
+         this.$notify({
+          title: '警告',
+          message: '折标业绩系数不能为空',
+          type: 'warning'
+        });
+      },
       //筛选佣金业绩统计
       normalFilter(filter){
         let self = true;
-        if(!this.normalDTO.performanceCoefficient && filter) return false;
+        if(!this.normalDTO.performanceCoefficient && filter){
+          this.performanceCoefficient();
+          self = false;
+          return false;
+        }
         this.normalDTO.normalBrokerageCoefficients.forEach(item=>{
           item.brokerageCoefficientDTOList.forEach(item=>{
             if(!item.coefficient){
@@ -842,14 +861,13 @@
 
           //折标业绩系数
           if(!item.performanceCoefficient && filter){
-            this.judgeEmpty();
+            this.performanceCoefficient();
             self = false;
             return false;
           }
           // console.log(item.activeDate)
           //活动时间段
           if(!item.activeDate && filter){
-
               this.$notify({
                 title: '警告',
                 message: '活动时间段不能为空',
@@ -859,6 +877,17 @@
               return false;
           }
           item.activeDate.forEach(item=>{
+            if(!item && filter){
+              this.$notify({
+                title: '警告',
+                message: '活动时间段不能为空',
+                type: 'warning'
+              });
+              self = false;
+              return false;
+            }
+          })
+          this.activeDateList.forEach(item=>{
             if(!item && filter){
               this.$notify({
                 title: '警告',
@@ -999,22 +1028,6 @@
               })
             })
 
-        //  activityData: [
-        //   {
-        //     activeDate: ['', ''],
-        //     performanceCoefficient:'',
-        //     year:1,
-        //     activityTime:[{
-        //         age:1,
-        //         levelData:[{
-        //           coefficient:'',
-        //           hierarchy: ''
-        //         }]
-        //       }
-        //     ]
-        //   }
-        // ],
-
       },
        //删除活动时间产品佣金系数 - 层级
       deleteActivityTimeLevel(index,Cindex,k){
@@ -1050,6 +1063,7 @@
           this.importantEnd = this.form2.importantEnd
           this.normalData = this.form2.normalDTO
           this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
+
           if(!this.normalList) {
             this.normalList = [{
               age: '1'
@@ -1075,6 +1089,7 @@
               item.activeDate = []
               item.activeDate[0] = item.activityStart
               item.activeDate[1] = item.activityEnd
+              this.activeDateList.push(item.activeDate)
             })
           }
           // console.log(res)
@@ -1106,6 +1121,9 @@
       updateRouter() { // 操作指南新建或编辑提交
         // console.log(this.importantStart, 'start')
         // console.log(this.importantEnd, 'end')
+        this.activityData.forEach((item,index)=>{
+          item.activeDate = this.activeDateList[index]||['',''];
+        })
         this.activityList = this.activityList.concat(this.activityData)
         this.activityList.forEach(item => {
           item.activityEnd = item.activeDate[1]
@@ -1181,6 +1199,7 @@
          })
         this.form2.normalDTO = this.normalDTO
         // this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
+        
         this.form2.activityDTO = this.activityData
         //this.form2.normalDTO.normalBrokerageCoefficients = this.normalList.concat(this.addNormList)
         // this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
