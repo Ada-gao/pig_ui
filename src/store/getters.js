@@ -42,6 +42,8 @@ const getters = {
   buyingCrowds: state => state.dictionary.buyingCrowds,
   dimissionReason: state => state.dictionary.dimissionReason,
   lockStatus: state => state.dictionary.lockStatus,
-  preserveExpired: state => state.dictionary.preserveExpired
+  preserveExpired: state => state.dictionary.preserveExpired,
+  maskCode: state => state.dictionary.maskCode,
+  dataScope: state => state.dictionary.dataScope
 }
 export default getters
