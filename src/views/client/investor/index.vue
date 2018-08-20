@@ -7,6 +7,7 @@
       :searchCity="false"
       :searchClientType="false"
       :searchRealNameStatus="false"
+      :searchCertificationStatus="true"
       >
     </search-bar-component>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -75,6 +76,11 @@
       <el-table-column align="center" label="部门" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.userDeptName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="认证状态" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{scope.row.certificationStatus}}</span>
         </template>
       </el-table-column>
 
@@ -173,7 +179,7 @@
           limit: 20,
           // clientType: 0 // 1：专业，0：普通
           certificationType: 0, //0: 普通， 1: 专业
-          certificationStatus: 1,
+          // certificationStatus: 1,
           realNameStatus: 2 // 实名认证
         },
         role: undefined,
@@ -311,7 +317,7 @@
           this.total = response.data.total
           this.listLoading = false
           this.list.forEach(item => {
-            
+            item.certificationStatus = transformText(this.certificationStatus, item.certificationStatus)
             item.idType = transformText(this.idTypeOptions, item.idType)
             item.nationality = transformText(this.nationality, item.nationality)
             item.gender = transformText(this.genderType, item.gender)
@@ -353,7 +359,7 @@
           path: '/client/investorDetail/' + id + '/0/' + isView
         })
         Bus.$emit('activeIndex', '/client/investor')
-        
+
       },
       // handleUpdate(row) { // 编辑查询
       //   getObj(row.userId)
@@ -363,7 +369,7 @@
       //       this.role = row.roleList[0].roleDesc
       //       this.dialogFormVisible = true
       //       this.dialogStatus = 'update'
-            
+
       //     })
       // },
       resetTemp() {
@@ -393,7 +399,7 @@
         this.listQuery = data
         // this.listQuery.type = 0
         this.listQuery.certificationType = 0, //0: 普通， 1: 专业
-        this.listQuery.certificationStatus = 1,
+        // this.listQuery.certificationStatus = 1,
         this.listQuery.realNameStatus = 2 // 实名认证
         this.getList()
       }

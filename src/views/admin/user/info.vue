@@ -72,7 +72,7 @@
         } else if (value.length < 6) {
           callback(new Error('密码不能小于6位'))
         } else if (value === this.ruleForm2.password) {
-          callback(new Error('原密码不能等于新密码!'))
+          callback(new Error('原密码和新密码不能相同'))
         } else {
           if (this.ruleForm2.repassword !== '') {
             this.$refs.ruleForm2.validateField('repassword')
