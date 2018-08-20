@@ -96,7 +96,7 @@ export const constantRouterMap = [
     ]
   },
   {
-    menuId: 3,
+    menuId: 48,
     path: '/product',
     component: Layout,
     name: '产品管理1',
@@ -267,7 +267,7 @@ export const asyncRouterMap = [
     ]
   },
   {
-    menuId: 3,
+    menuId: 48,
     path: '/product',
     component: Layout,
     name: '产品管理',
@@ -279,16 +279,16 @@ export const asyncRouterMap = [
       icon: 'product_mg'
     },
     children: [
-      { menuId: 48, path: 'productList', component: _import('product/product/list'), name: '产品列表', meta: { title: '产品列表', icon: 'product' }},
-      { menuId: 48, path: 'detail', component: _import('product/product/detail'), name: '产品新增', meta: { title: '产品新增', icon: 'createpro' }},
-      { menuId: 48, path: 'building', component: _import('product/buildingProduct/index'), name: '在建列表', meta: { title: '在建列表', icon: 'product' }},
-      { menuId: 48, path: 'preheating', component: _import('product/preheatingProduct/index'), name: '预热列表', meta: { title: '预热列表', icon: 'preheating' }},
-      { menuId: 48, path: 'collecting', component: _import('product/collecting/index'), name: '募集中列表', meta: { title: '募集中列表', icon: 'collecting' }},
-      { menuId: 48, path: 'shutDown', component: _import('product/shutDown/index'), name: '已关账列表', meta: { title: '已关账列表', icon: 'close' }},
-      { menuId: 48, path: 'established', component: _import('product/established/index'), name: '已成立列表', meta: { title: '已成立列表', icon: 'establish' }},
-      { menuId: 48, path: 'cashing', component: _import('product/cashing/index'), name: '兑付中列表', meta: { title: '兑付中列表', icon: 'shutDown' }},
-      { menuId: 48, path: 'payCompletion', component: _import('product/payCompletion/index'), name: '兑付完成列表', meta: { title: '兑付完成列表', icon: 'shutDown' }},
-      { menuId: 48, path: 'material', component: _import('product/materialManagement/index'), name: '材料管理', meta: { title: '材料管理', icon: 'file' }},
+      { menuId: 133, path: 'productList', component: _import('product/product/list'), name: '产品列表', meta: { title: '产品列表', icon: 'product' }},
+      { menuId: 50, path: 'detail', component: _import('product/product/detail'), name: '产品新增', meta: { title: '产品新增', icon: 'createpro' }},
+      { menuId: 138, path: 'building', component: _import('product/buildingProduct/index'), name: '在建列表', meta: { title: '在建列表', icon: 'product' }},
+      { menuId: 135, path: 'preheating', component: _import('product/preheatingProduct/index'), name: '预热列表', meta: { title: '预热列表', icon: 'preheating' }},
+      { menuId: 136, path: 'collecting', component: _import('product/collecting/index'), name: '募集中列表', meta: { title: '募集中列表', icon: 'collecting' }},
+      { menuId: 137, path: 'shutDown', component: _import('product/shutDown/index'), name: '已关账列表', meta: { title: '已关账列表', icon: 'close' }},
+      { menuId: 138, path: 'established', component: _import('product/established/index'), name: '已成立列表', meta: { title: '已成立列表', icon: 'establish' }},
+      { menuId: 139, path: 'cashing', component: _import('product/cashing/index'), name: '兑付中列表', meta: { title: '兑付中列表', icon: 'shutDown' }},
+      { menuId: 140, path: 'payCompletion', component: _import('product/payCompletion/index'), name: '兑付完成列表', meta: { title: '兑付完成列表', icon: 'shutDown' }},
+      { menuId: 144, path: 'material', component: _import('product/materialManagement/index'), name: '材料管理', meta: { title: '材料管理', icon: 'file' }},
       { menuId: 348, path: 'productBatch', component: _import('product/batch/index'), name: '批量导入', meta: { title: '批量导入', icon: 'product' }},
       { menuId: 49, path: 'productType', component: _import('product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'productType' }},
     ]
