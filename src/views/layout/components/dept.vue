@@ -26,12 +26,35 @@ export default {
       deptIds: this.deptId
     }
   },
-  props: ['isCompany', 'deptId'],
+  // props: ['isCompany', 'deptId'],
+  props: {
+    isCompany: {
+      type: String,
+      default: ''
+    },
+    // deptId: {
+    //   type: Array,
+    //   default: []
+    // },
+    value: {
+      type: Array,
+      default() {
+        return []
+      }
+    }
+  },
+  watch: {
+    value(val) {
+      console.log(val)
+      this.deptIds = val
+    }
+  },
   created() {
+    // console.log(this.value)
     this.handleDept()
   },
   mounted() {
-    console.log(this.deptId)
+    // console.log(this.value)
   },
   methods: {
     handleDept() { // 部门数据
@@ -44,6 +67,8 @@ export default {
       })
     },
     changeDept(val) {
+      console.log(this.value)
+      this.$emit('input', val)
       this.$emit('change', val)
     },
     delNullArr(list) {

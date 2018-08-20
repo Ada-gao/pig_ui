@@ -20,7 +20,8 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="部门" prop="deptIds">
-              <dept @change="changeDept" :deptId="deptIds"></dept>
+              <!-- <my-cascader v-model="form.deptIds" @change="changeDept"></my-cascader> -->
+              <dept v-model="form.deptIds" @change="changeDept"></dept>
               <!-- <el-cascader
                 style="width: 100%"
                 :options="treeDeptData"
@@ -380,6 +381,7 @@
   import { getToken } from '@/utils/auth'
   import DirectChange from './directChange.vue'
   import Dept from 'components/dept'
+  // import MyCascader from '@/components/MyCascader'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
@@ -406,6 +408,7 @@
       ElOption,
       ElRadioGroup,
       DirectChange,
+      // MyCascader
       Dept
     },
     name: 'table_user',
@@ -445,25 +448,25 @@
             {required: true, trigger: 'blur', message: '请输入工号'}
           ],
           gender: [
-            {required: true, trigger: 'blur', message: '请选择性别'}
+            {required: true, trigger: 'change', message: '请选择性别'}
           ],
           education: [
-            {required: true, trigger: 'blur', message: '请选择学历'}
+            {required: true, trigger: 'change', message: '请选择学历'}
           ],
           idType: [
-            {required: true, trigger: 'blur', message: '请输入证件类型'}
+            {required: true, trigger: 'change', message: '请选择证件类型'}
           ],
           marriageStatus: [
-            {required: false, trigger: 'blur', message: '请选择婚姻状况'}
+            {required: false, trigger: 'change', message: '请选择婚姻状况'}
           ],
           idNo: [
             {required: true, trigger: 'blur', validator: validID}
           ],
-          deptName: [
-            {required: true, trigger: 'change', message: '请选择部门'}
-          ],
+          // deptName: [
+          //   {required: true, trigger: 'change', message: '请选择部门'}
+          // ],
           role: [
-            {required: true, trigger: 'blur', message: '请选择角色'}
+            {required: true, trigger: 'change', message: '请选择角色'}
           ],
           positionName: [
             {required: true, trigger: 'change', message: '请选择职位'}
@@ -472,7 +475,7 @@
             {required: true, trigger: 'blur', message: '请输入邮箱'}
           ],
           mobile: [
-            {required: true, trigger: 'change', validator: validMobile}
+            {required: true, trigger: 'blur', validator: validMobile}
           ],
           isMarketing: [
             {required: true, trigger: 'change', message: '请选择是否是营销岗'}
@@ -630,6 +633,7 @@
         this.rolesOptions = this.rolesOptions.slice(0)
       },
       changeDept(val) {
+        console.log(val)
         this.form.role = ''
         this.getNodeData(val[val.length - 1])
         // this.role = ''
