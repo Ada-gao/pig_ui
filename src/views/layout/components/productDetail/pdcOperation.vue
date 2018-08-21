@@ -307,7 +307,7 @@
               <el-form-item :label="`第${Citem.hierarchy}层级(%)`" prop="coefficient">
                 <span class="el-input" v-if="operationDisabled">{{Citem.coefficient}}</span>
                 <el-input  v-else v-model="Citem.coefficient" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input>
-                    <svg-icon icon-class="add" @click="addProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0 && !operationDisabled" class="color-0299CC"></svg-icon>
+                    <span @click="addProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0 && !operationDisabled"><svg-icon icon-class="add" class="color-0299CC"></svg-icon></span>
                   <i  @click="deleteProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0 && !operationDisabled" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
                </el-form>
@@ -355,14 +355,14 @@
                 <span style="line-height:41px;">活动时间产品佣金系数第{{Citem.age}}年</span>
                  <el-button class="search_btn" @click="addactivityTime(index)" v-if="Cindex == 0 && !operationDisabled">
                 <svg-icon icon-class="add"></svg-icon>新增</el-button>
-                <span @click="deleteActivityTime(index,Citem)" class="color-0299CC " v-if="Cindex != 0 && Cindex == item.activityBrokerageCoefficients.length-1 && !operationDisabled"><i class="el-icon-delete mr5"></i >删除</span>
+                <span @click="deleteActivityTime(index,Cindex)" class="color-0299CC " v-if="Cindex != 0 && Cindex == item.activityBrokerageCoefficients.length-1 && !operationDisabled"><i class="el-icon-delete mr5"></i >删除</span>
               </el-row>
                 <el-form :model="cvalue" ref="cvalue" :rules="rules2" class="demo-ruleForm" v-for="(cvalue,k) in Citem.brokerageCoefficientDTOList" :key="k" label-width="120px">
               <el-form-item :label="`第${cvalue.hierarchy}层级(%)`" prop="coefficient">
                 <span class="el-input" v-if="operationDisabled">{{cvalue.coefficient}}</span>
                 <el-input
                   v-model="cvalue.coefficient" v-else onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'   type="number"></el-input>
-                  <svg-icon icon-class="add"  @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0 && !operationDisabled" class="color-0299CC"></svg-icon>
+                  <span @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0 && !operationDisabled"><svg-icon icon-class="add" class="color-0299CC"></svg-icon></span>
                   <i  @click="deleteActivityTimeLevel(index,Cindex,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0 && !operationDisabled" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
               </el-form>
