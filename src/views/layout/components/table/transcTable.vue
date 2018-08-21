@@ -78,7 +78,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="起息日">
+      <el-table-column align="center" label="起息日" v-if="showValueDate">
         <template slot-scope="scope">
           <span>{{scope.row.valueDate}}</span>
         </template>
@@ -178,6 +178,9 @@
       waves
     },
     props: {
+      showValueDate: {
+        default: true
+      },
       aptCol: {
         default: false
       },

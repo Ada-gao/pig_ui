@@ -1,7 +1,7 @@
 
 <template>
   <div class="app-container calendar-list-container">
-    
+
     <transc-search-component
       :searchDate="false"
       :searchTranscStatus="false"
@@ -9,9 +9,10 @@
       :searchRefund="false"
       :status="status">
     </transc-search-component>
-    
+
     <transc-table-component
       :activePath="activePath"
+      :showValueDate="false"
       :orderStatus="4"
       :contractCol="true">
     </transc-table-component>

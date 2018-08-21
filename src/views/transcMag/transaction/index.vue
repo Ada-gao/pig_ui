@@ -59,6 +59,7 @@
 
     <transc-table-component
       :orderStatus="1"
+      :showValueDate="false"
       :statusCol="true"
       :aptCol="true">
     </transc-table-component>
