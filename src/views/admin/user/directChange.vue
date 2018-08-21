@@ -837,10 +837,10 @@
                 cityLabel = '台湾省';
              } 
              this.newForm.city = cityLabel;
+             // 物理职场重新赋值
+            this.newForm.workplace = this.form.workplace;
              this.idTurnName()
              if(this.list.length>=1){
-              console.log(JSON.stringify(this.oldForm))
-              console.log(JSON.stringify(this.newForm))
               if(JSON.stringify(this.oldForm) == JSON.stringify(this.newForm)){
                 this.$notify({
                   title: '警告',
