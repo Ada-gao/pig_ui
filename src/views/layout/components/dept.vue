@@ -1,5 +1,6 @@
 <template>
   <section class="dept" style="min-height: 100%">
+    <!-- <el-input v-if="!getDepts" v-model="deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input> -->
     <el-cascader
       style="width: 100%"
       :options="treeDeptData"
@@ -23,10 +24,12 @@ export default {
         label: 'name',
         value: 'id'
       },
-      deptIds: this.deptId
+      deptIds: this.deptId,
+      getDepts: false,
+      curPrevId: '',
+      result: []
     }
   },
-  // props: ['isCompany', 'deptId'],
   props: {
     isCompany: {
       type: String,
@@ -37,10 +40,18 @@ export default {
     //   default: []
     // },
     value: {
-      type: Array,
-      default() {
-        return []
-      }
+      type: Number,
+      default: undefined
+    },
+    // value: {
+    //   type: Array,
+    //   default() {
+    //     return []
+    //   }
+    // },
+    deptName: {
+      type: String,
+      default: ''
     }
   },
   watch: {
@@ -50,7 +61,8 @@ export default {
     }
   },
   created() {
-    // console.log(this.value)
+    console.log(this.value)
+    this.deptIds = this.value
     this.handleDept()
   },
   mounted() {
@@ -62,12 +74,16 @@ export default {
         isCompany: this.isCompany
       }
       fetchDeptTree(parmas).then(res => {
+        this.getDepts = true
         this.treeDeptData = res.data
         this.delNullArr(this.treeDeptData)
+        this.cycleListId(this.treeDeptData)
+      }).then(() => {
+        this.upperIds(this.result, [], this.deptIds)
       })
     },
     changeDept(val) {
-      console.log(this.value)
+      // console.log(val)
       this.$emit('input', val)
       this.$emit('change', val)
     },
@@ -79,6 +95,32 @@ export default {
           this.delNullArr(item.children)
         }
       })
+    },
+    cycleListId(list, prevId = []) {
+      list.forEach(item => {
+        if (item.children && item.children.length > 0) {
+          this.curPrevId = [...prevId, item.id]
+          this.cycleListId(item.children, this.curPrevId)
+        }
+        if (item.children && !item.children.length) {
+          console.log(this.result)
+          this.result[this.eachIndex] = [...prevId, item.id]
+          this.eachIndex++
+        }
+      })
+    },
+    upperIds(list1, list2, id) {
+      // console.log(list1)
+      list1.map(item => {
+        item.map((el, index) => {
+          if (el === id) {
+            list2 = JSON.parse(JSON.stringify(item))
+            list2.splice(index + 1, list2.length - 1)
+          }
+        })
+      })
+      console.log(list2)
+      this.deptIds = list2
     }
   }
 }
