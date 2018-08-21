@@ -7,6 +7,7 @@
     <div class="tab-item" v-if="records == 1">
       <transc-table-component
         :id="clientId"
+        :showValueDate="true"
         :aptCol="true"
         :aptStatusCol="true">
       </transc-table-component>
@@ -14,6 +15,7 @@
     <div class="tab-item" v-if="records == 2">
       <transc-table-component
         :id="clientId"
+        :showValueDate="true"
         :paymentCol="true"
         :payStatusCol="true">
       </transc-table-component>
@@ -21,6 +23,7 @@
     <div class="tab-item" v-if="records == 3">
       <transc-table-component
         :id="clientId"
+        :showValueDate="true"
         :statusCol="true"
         :aptCol="true">
       </transc-table-component>
