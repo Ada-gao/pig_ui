@@ -53,7 +53,7 @@ export const constantRouterMap = [
     ]
   },
   {
-    menuId: 19,
+    menuId: 59,
     path: '/client',
     component: Layout,
     name: '客户管理1',
@@ -96,7 +96,7 @@ export const constantRouterMap = [
     ]
   },
   {
-    menuId: 3,
+    menuId: 48,
     path: '/product',
     component: Layout,
     name: '产品管理1',
@@ -125,7 +125,7 @@ export const constantRouterMap = [
     ]
   },
   {
-    menuId: 3,
+    menuId: 92,
     path: '/transcMag',
     component: Layout,
     name: '交易管理1',
@@ -242,7 +242,7 @@ export const asyncRouterMap = [
     ]
   },
   {
-    menuId: 19,
+    menuId: 59,
     path: '/client',
     component: Layout,
     name: '客户管理',
@@ -254,21 +254,20 @@ export const asyncRouterMap = [
       icon: 'client'
     },
     children: [
-      { menuId: 19, path: 'potential', component: _import('client/potential/index'), name: '潜客列表', meta: { title: '潜客列表', icon: 'potential' }},
-      { menuId: 20, path: 'customer', component: _import('client/customer/index'), name: '客户列表', meta: { title: '客户列表', icon: 'customer' }},
-      { menuId: 25, path: 'realname', component: _import('client/realname/index'), name: '实名认证审核', meta: { title: '实名认证审核', icon: 'realname' }},
-      { menuId: 22, path: 'investor', component: _import('client/investor/index'), name: '普通投资者审核', meta: { title: '普通投资者审核', icon: 'investor' }},
-      { menuId: 22, path: 'professionalInvestor', component: _import('client/professionalInvestor/index'), name: '专业投资者审核', meta: { title: '专业投资者审核', icon: 'professionalInvestor' }},
-      { menuId: 23, path: 'allocated', component: _import('client/allocated/index'), name: '待分配客户', meta: { title: '待分配客户', icon: 'allocated' }},
-      { menuId: 24, path: 'certFile', component: _import('client/certFile/index'), name: '认证资料管理', meta: { title: '认证资料管理', icon: 'certFile' }},
-      { menuId: 25, path: 'customerLabel', component: _import('client/customerLabel/index'), name: '客户标签设置', meta: { title: '客户标签设置', icon: 'certFile' }},
+      { menuId: 60, path: 'potential', component: _import('client/potential/index'), name: '潜客列表', meta: { title: '潜客列表', icon: 'potential' }},
+      { menuId: 61, path: 'customer', component: _import('client/customer/index'), name: '客户列表', meta: { title: '客户列表', icon: 'customer' }},
+      { menuId: 68, path: 'realname', component: _import('client/realname/index'), name: '实名认证审核', meta: { title: '实名认证审核', icon: 'realname' }},
+      { menuId: 74, path: 'investor', component: _import('client/investor/index'), name: '普通投资者审核', meta: { title: '普通投资者审核', icon: 'investor' }},
+      { menuId: 78, path: 'professionalInvestor', component: _import('client/professionalInvestor/index'), name: '专业投资者审核', meta: { title: '专业投资者审核', icon: 'professionalInvestor' }},
+      { menuId: 82, path: 'allocated', component: _import('client/allocated/index'), name: '待分配客户', meta: { title: '待分配客户', icon: 'allocated' }},
+      { menuId: 70, path: 'certFile', component: _import('client/certFile/index'), name: '认证资料管理', meta: { title: '认证资料管理', icon: 'certFile' }},
+      { menuId: 324, path: 'customerLabel', component: _import('client/customerLabel/index'), name: '客户标签设置', meta: { title: '客户标签设置', icon: 'certFile' }},
       { menuId: 25, path: 'customerBatch', component: _import('client/batch/index'), name: '客户导入', meta: { title: '客户导入', icon: 'certFile' }},
-      { menuId: 25, path: 'customerBuyPdBatch', component: _import('client/pdbatch/index'), name: '已购买导入', meta: { title: '已购买导入', icon: 'certFile' }},
-      // { menuId: 22, path: 'detail/:id', component: _import('client/customer/detail'), name: '客户详情', meta: { title: '客户详情', icon: 'user' }},
+      { menuId: 347, path: 'customerBuyPdBatch', component: _import('client/pdbatch/index'), name: '已购买导入', meta: { title: '已购买导入', icon: 'certFile' }},
     ]
   },
   {
-    menuId: 3,
+    menuId: 48,
     path: '/product',
     component: Layout,
     name: '产品管理',
@@ -280,22 +279,22 @@ export const asyncRouterMap = [
       icon: 'product_mg'
     },
     children: [
-      { menuId: 48, path: 'productList', component: _import('product/product/list'), name: '产品列表', meta: { title: '产品列表', icon: 'product' }},
-      { menuId: 48, path: 'detail', component: _import('product/product/detail'), name: '产品新增', meta: { title: '产品新增', icon: 'createpro' }},
-      { menuId: 48, path: 'building', component: _import('product/buildingProduct/index'), name: '在建列表', meta: { title: '在建列表', icon: 'product' }},
-      { menuId: 48, path: 'preheating', component: _import('product/preheatingProduct/index'), name: '预热列表', meta: { title: '预热列表', icon: 'preheating' }},
-      { menuId: 48, path: 'collecting', component: _import('product/collecting/index'), name: '募集中列表', meta: { title: '募集中列表', icon: 'collecting' }},
-      { menuId: 48, path: 'shutDown', component: _import('product/shutDown/index'), name: '已关账列表', meta: { title: '已关账列表', icon: 'close' }},
-      { menuId: 48, path: 'established', component: _import('product/established/index'), name: '已成立列表', meta: { title: '已成立列表', icon: 'establish' }},
-      { menuId: 48, path: 'cashing', component: _import('product/cashing/index'), name: '兑付中列表', meta: { title: '兑付中列表', icon: 'shutDown' }},
-      { menuId: 48, path: 'payCompletion', component: _import('product/payCompletion/index'), name: '兑付完成列表', meta: { title: '兑付完成列表', icon: 'shutDown' }},
-      { menuId: 48, path: 'material', component: _import('product/materialManagement/index'), name: '材料管理', meta: { title: '材料管理', icon: 'file' }},
-      { menuId: 48, path: 'productBatch', component: _import('product/batch/index'), name: '批量导入', meta: { title: '批量导入', icon: 'product' }},
+      { menuId: 133, path: 'productList', component: _import('product/product/list'), name: '产品列表', meta: { title: '产品列表', icon: 'product' }},
+      { menuId: 50, path: 'detail', component: _import('product/product/detail'), name: '产品新增', meta: { title: '产品新增', icon: 'createpro' }},
+      { menuId: 138, path: 'building', component: _import('product/buildingProduct/index'), name: '在建列表', meta: { title: '在建列表', icon: 'product' }},
+      { menuId: 135, path: 'preheating', component: _import('product/preheatingProduct/index'), name: '预热列表', meta: { title: '预热列表', icon: 'preheating' }},
+      { menuId: 136, path: 'collecting', component: _import('product/collecting/index'), name: '募集中列表', meta: { title: '募集中列表', icon: 'collecting' }},
+      { menuId: 137, path: 'shutDown', component: _import('product/shutDown/index'), name: '已关账列表', meta: { title: '已关账列表', icon: 'close' }},
+      { menuId: 138, path: 'established', component: _import('product/established/index'), name: '已成立列表', meta: { title: '已成立列表', icon: 'establish' }},
+      { menuId: 139, path: 'cashing', component: _import('product/cashing/index'), name: '兑付中列表', meta: { title: '兑付中列表', icon: 'shutDown' }},
+      { menuId: 140, path: 'payCompletion', component: _import('product/payCompletion/index'), name: '兑付完成列表', meta: { title: '兑付完成列表', icon: 'shutDown' }},
+      { menuId: 144, path: 'material', component: _import('product/materialManagement/index'), name: '材料管理', meta: { title: '材料管理', icon: 'file' }},
+      { menuId: 348, path: 'productBatch', component: _import('product/batch/index'), name: '批量导入', meta: { title: '批量导入', icon: 'product' }},
       { menuId: 49, path: 'productType', component: _import('product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'productType' }},
     ]
   },
   {
-    menuId: 3,
+    menuId: 92,
     path: '/transcMag',
     component: Layout,
     name: '交易管理',
@@ -307,12 +306,12 @@ export const asyncRouterMap = [
       icon: 'product_mg'
     },
     children: [
-      { menuId: 48, path: 'transc', component: _import('transcMag/transaction/index'), name: '交易列表', meta: { title: '交易列表', icon: 'product' }},
-      { menuId: 48, path: 'appoint', component: _import('transcMag/appointment/index'), name: '预约列表', meta: { title: '预约列表', icon: 'product' }},
-      { menuId: 48, path: 'payment', component: _import('transcMag/payment/index'), name: '打款列表', meta: { title: '打款列表', icon: 'product' }},
-      { menuId: 49, path: 'refund', component: _import('transcMag/refund/index'), name: '退款列表', meta: { title: '退款列表', icon: 'productType' }},
-      { menuId: 49, path: 'contract', component: _import('transcMag/contract/index'), name: '合同管理', meta: { title: '合同管理', icon: 'productType' }},
-      { menuId: 49, path: 'result', component: _import('transcMag/result/index'), name: '审核原因管理', meta: { title: '审核原因管理', icon: 'productType' }},
+      { menuId: 93, path: 'transc', component: _import('transcMag/transaction/index'), name: '交易列表', meta: { title: '交易列表', icon: 'product' }},
+      { menuId: 94, path: 'appoint', component: _import('transcMag/appointment/index'), name: '预约列表', meta: { title: '预约列表', icon: 'product' }},
+      { menuId: 95, path: 'payment', component: _import('transcMag/payment/index'), name: '打款列表', meta: { title: '打款列表', icon: 'product' }},
+      { menuId: 96, path: 'refund', component: _import('transcMag/refund/index'), name: '退款列表', meta: { title: '退款列表', icon: 'productType' }},
+      { menuId: 97, path: 'contract', component: _import('transcMag/contract/index'), name: '合同管理', meta: { title: '合同管理', icon: 'productType' }},
+      { menuId: 128, path: 'result', component: _import('transcMag/result/index'), name: '审核原因管理', meta: { title: '审核原因管理', icon: 'productType' }},
     ]
   },
   {

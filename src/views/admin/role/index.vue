@@ -73,6 +73,7 @@
     </div>
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :model="form" :rules="rules" ref="form" label-width="100px">
+        <el-input type="hidden" v-model="form.roleDeptId"></el-input>
         <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="form.roleName" placeholder="角色名称"></el-input>
         </el-form-item>
@@ -84,7 +85,18 @@
         </el-form-item>
         <el-form-item label="所属部门" prop="roleDept">
           <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
-          <el-input type="hidden" v-model="form.roleDeptId"></el-input>
+        </el-form-item>
+        <el-form-item label="脱敏显示" prop="maskCode">
+          <el-checkbox-group v-model="form.maskCode" @change="changeTest">
+            <el-checkbox v-for="item in maskCode" :label="item.value" :key="item.value">{{item.label}}</el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+        <el-form-item label="数据权限" prop="dataScope">
+          <el-radio-group v-model="form.dataScope">
+            <el-radio
+              style="display: inline-block"
+              v-for="item in dataScope" :label="item.value" :key="item.value">{{item.label}}</el-radio>
+          </el-radio-group>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -161,11 +173,13 @@
           limit: 20
         },
         form: {
+          maskCode: [],
           roleName: undefined,
           roleCode: undefined,
           roleDesc: undefined,
           deptName: undefined,
-          roleDeptId: undefined
+          roleDeptId: undefined,
+          dataScope: ''
         },
         roleId: undefined,
         roleCode: undefined,
@@ -208,6 +222,9 @@
               message: '长度在 3 到 20 个字符',
               trigger: 'blur'
             }
+          ],
+          dataScope: [
+            { required: true, message: '请选择数据', trigger: 'blur' }
           ]
         },
         statusOptions: ['0', '1'],
@@ -226,7 +243,9 @@
     },
     computed: {
       ...mapGetters([
-        'permissions'
+        'permissions',
+        'maskCode',
+        'dataScope'
       ])
     },
     created() {
@@ -261,6 +280,14 @@
         getObj(row.roleId)
           .then(response => {
             this.form = response.data
+            const listStr = this.form.maskCode
+            let arr = []
+            if(listStr) {
+              arr.push(listStr)
+              this.form.maskCode = listStr.length > 1 ? listStr.split(',') : arr
+            } else {
+              this.form.maskCode = []
+            }
             this.form.deptName = row.deptName
             this.form.roleDeptId = row.roleDeptId
             this.dialogFormVisible = true
@@ -315,6 +342,7 @@
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
+            this.form.maskCode = this.form.maskCode.join(',')
             addObj(this.form)
               .then(() => {
                 this.dialogFormVisible = false
@@ -339,7 +367,8 @@
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
-            this.dialogFormVisible = false
+            this.form.maskCode = this.form.maskCode.join(',')
+            // this.dialogFormVisible = false
             putObj(this.form).then(() => {
               this.dialogFormVisible = false
               this.getList()
@@ -379,8 +408,13 @@
           id: undefined,
           roleName: undefined,
           roleCode: undefined,
-          roleDesc: undefined
+          roleDesc: undefined,
+          maskCode: [],
+          dataScope: ''
         }
+      },
+      changeTest(val) {
+        console.log(val)
       }
     }
   }

@@ -809,6 +809,7 @@
       if(this.productId) {
         this.createStatus = 'update'
       }
+      document.documentElement.scrollTop = document.body.scrollTop = 0
     },
     mounted() {
       this.productStatusNo = this.proStatus
@@ -1295,12 +1296,12 @@
           // this.stage = true
           this.formData = res.data
           // console.log(this.stage)
-          this.formData.currencyIdNo = this.formData.currencyId
-          this.formData.productTypeIdNo = this.formData.productTypeId
-          this.formData.investmentHorizonUnitNo = this.formData.investmentHorizonUnit
-          this.formData.productTypeId = transformText(this.productTypes, this.formData.productTypeId)
-          this.formData.currencyId = transformText(this.currencyList, this.formData.currencyId)
-          this.formData.investmentHorizonUnit = transformText(this.investHorizonUnit, this.formData.investmentHorizonUnit)
+          // this.formData.currencyIdNo = this.formData.currencyId
+          // this.formData.productTypeIdNo = this.formData.productTypeId
+          // this.formData.investmentHorizonUnitNo = this.formData.investmentHorizonUnit
+          // this.formData.productTypeId = transformText(this.productTypes, this.formData.productTypeId)
+          // this.formData.currencyId = transformText(this.currencyList, this.formData.currencyId)
+          // this.formData.investmentHorizonUnit = transformText(this.investHorizonUnit, this.formData.investmentHorizonUnit)
           let params = {
             data: this.formData,
             stageType: this.stageType

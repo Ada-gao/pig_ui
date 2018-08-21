@@ -18,8 +18,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="产品结构类型" prop="productName">
-            <span v-if="detailDisabled">{{form.productMixTypeId}}</span>
+          <el-form-item label="产品结构类型" prop="productMixTypeId">
+            <span v-if="detailDisabled">{{form.productMixTypeId|turnText(productMixTypes)}}</span>
             <el-select v-else class="filter-item" v-model="form.productMixTypeId" placeholder="请选择">
               <el-option v-for="item in productMixTypes" :key="item.productMixTypeId" :value="item.productMixTypeId" :label="item.name">
                 <span style="float: left">{{ item.name }}</span>
@@ -70,7 +70,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="购买人群" prop="currencyId">
+          <el-form-item label="购买人群" prop="buyingCrowds">
             <span v-if="detailDisabled">{{form.buyingCrowds|turnText(buyingCrowds)}}</span>
             <el-select v-else class="filter-item" v-model="form.buyingCrowds" placeholder="请选择">
               <el-option v-for="item in buyingCrowds" :key="item.value" :value="item.value" :label="item.label">
@@ -81,9 +81,9 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
-            <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
+            <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}</span>
             <el-input v-else v-model="form.investmentHorizon" style="width: 30%;"></el-input>
-            <span v-if="detailDisabled||stageType=='0'"></span>
+            <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
             <el-select v-else v-model="form.investmentHorizonUnit" style="width: 23%;">
               <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
               </el-option>
@@ -124,7 +124,7 @@
         <el-col :span="11">
           <el-form-item label="募集人数" prop="productLp">
             <span v-if="collectDisabled">{{form.productLp}}</span>
-            <el-input v-else v-model.number="form.productLp" placeholder="请输入"></el-input>
+            <el-input v-else type="number" v-model.number="form.productLp" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -288,7 +288,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer" style="text-align: center;">
       <!-- 创建 -->
-      <el-button class="search_btn" v-if="createStatus=='create'" @click="cancel('form')">取 消</el-button>
+      <el-button class="search_btn" v-if="createStatus=='create'" @click="createCancel('form')">取 消</el-button>
       <el-button class="add_btn" v-if="createStatus=='create'" type="primary" @click="create('form')">保 存</el-button>
       <!-- 编辑 -->
       <el-button class="search_btn" v-if="createStatus=='update'" @click="cancel('form')">取 消</el-button>
@@ -369,7 +369,7 @@
             { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           isFloat: [
-            { required: true, message: '请选择收益', trigger: 'blue' }
+            { required: true, message: '请选择收益', trigger: 'change' }
           ],
           accountName: [
             { required: true, message: '请输入账户名称', trigger: 'blur' }
@@ -388,10 +388,13 @@
             { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           productTypeId: [
-            { required: true, message: '请选择产品类型', trigger: 'blur' }
+            { required: true, message: '请选择产品收益类型', trigger: 'change' }
+          ],
+          productMixTypeId: [
+            { required: true, message: '请选择产品结构类型', trigger: 'blur' }
           ],
           productRiskLevel: [
-            { required: true, message: '请选择产品风险级别', trigger: 'blur' }
+            { required: true, message: '请选择产品风险级别', trigger: 'change' }
           ],
           manager: [
             { required: true, message: '请输入基金管理人', trigger: 'blur' }
@@ -413,6 +416,9 @@
           ],
           investmentHorizon: [
             { required: true, message: '请输入产品期限', trigger: 'blur' }
+          ],
+          buyingCrowds: [
+            { required: true, message: '请选择购买人群', trigger: 'change' }
           ]
         },
         createStatus: 'create',
@@ -528,12 +534,12 @@
             this.form.currencyIdNo = this.form.currencyId
             this.form.productTypeIdNo = this.form.productTypeId
             this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
-            this.form.productMixTypeIdNo = this.form.productMixTypeId
+            // this.form.productMixTypeIdNo = this.form.productMixTypeId
             // this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
             // this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
             // this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
             this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
-            this.form.productMixTypeId = transformText(this.productMixTypes, this.form.productMixTypeId)
+            // this.form.productMixTypeId = transformText(this.productMixTypes, this.form.productMixTypeId)
 
             this.detailDisabled = true
             if(this.productStatusNo === 0) {
@@ -589,7 +595,7 @@
           if (valid) {
             this.form.discountCoefficient = this.investRatio
             this.form.userDefinedAttribute = JSON.stringify(this.userDefinedAttribute)
-            console.log(this.form.userDefinedAttribute)
+            // console.log(this.form.userDefinedAttribute)
             addObj(this.form)
               .then(response => {
                 if(response.status === 200) {
@@ -620,7 +626,7 @@
         this.form.currencyId = this.form.currencyIdNo
         this.form.productTypeId = this.form.productTypeIdNo
         // this.form.investmentHorizonUnit = this.form.investmentHorizonUnitNo
-        this.form.productMixTypeId = this.form.productMixTypeIdNo
+        // this.form.productMixTypeId = this.form.productMixTypeIdNo
         if(this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit!='1') {
           this.$notify({
             title: '提示',
@@ -681,6 +687,12 @@
         this.$router.push({path: this.backUrl})
         Bus.$emit('activeIndex', this.backUrl)
       },
+      createCancel(formName){
+        this.$refs[formName].resetFields()
+        const backUrl = '/product/productList'
+        Bus.$emit('activeIndex', backUrl)
+        this.$router.push({path: backUrl})
+      },
       handleAddProperty(formName) { // 新增属性
         this.$refs[formName].validate(valid => {
           if(valid) {
@@ -708,4 +720,3 @@
   display: block;
 }
 </style>
-
