@@ -29,7 +29,7 @@ export default {
   mounted() {
     Bus.$on('activeIndex', defaultActive => {
       this.defaultActive = defaultActive
-      // console.log(defaultActive)
+      console.log(this.defaultActive)
       // console.log(this.$route)
     })
   },

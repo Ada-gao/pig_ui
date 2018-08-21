@@ -83,11 +83,13 @@
         <el-form-item label="描述" prop="roleDesc">
           <el-input v-model="form.roleDesc" placeholder="描述"></el-input>
         </el-form-item>
-        <el-form-item label="所属部门" prop="roleDept">
-          <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input>
+        <el-form-item label="所属部门" prop="deptIds">
+          <!-- roleDept -->
+          <dept v-model="form.deptIds"></dept>
+          <!-- <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input> -->
         </el-form-item>
         <el-form-item label="脱敏显示" prop="maskCode">
-          <el-checkbox-group v-model="form.maskCode" @change="changeTest">
+          <el-checkbox-group v-model="form.maskCode">
             <el-checkbox v-for="item in maskCode" :label="item.value" :key="item.value">{{item.label}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
@@ -150,11 +152,15 @@
   import { fetchTree } from '@/api/menu'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { mapGetters } from 'vuex'
+  import Dept from 'components/dept'
 
   export default {
     name: 'table_role',
     directives: {
       waves
+    },
+    components: {
+      Dept
     },
     data() {
       return {
@@ -179,7 +185,8 @@
           roleDesc: undefined,
           deptName: undefined,
           roleDeptId: undefined,
-          dataScope: ''
+          dataScope: '',
+          deptIds: []
         },
         roleId: undefined,
         roleCode: undefined,
@@ -290,6 +297,10 @@
             }
             this.form.deptName = row.deptName
             this.form.roleDeptId = row.roleDeptId
+            let deptIds = []
+            deptIds.push(this.form.roleDeptId)
+            this.form.deptIds = deptIds
+            console.log(this.form.deptIds)
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
           })
@@ -412,9 +423,6 @@
           maskCode: [],
           dataScope: ''
         }
-      },
-      changeTest(val) {
-        console.log(val)
       }
     }
   }
