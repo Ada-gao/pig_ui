@@ -29,11 +29,11 @@
          <a size="small" class="common_btn"
                      @click="handleView(scope.row)">查看
           </a>
-          <span v-if="!scope.row.used" class='vertical-line'></span>
-          <a v-if="!scope.row.used" size="small" class="common_btn"
+          <span v-if="!scope.row.used && sys_currency_upd" class='vertical-line'></span>
+          <a v-if="!scope.row.used  && sys_currency_upd" size="small" class="common_btn"
                      @click="handleUpdate(scope.row)">编辑
           </a>
-          <a v-if="!scope.row.used" size="small" class="danger_btn"
+          <a v-if="!scope.row.used && sys_currency_del" size="small" class="danger_btn"
                      @click="deletes(scope.row)">删除
           </a>
         </template>
