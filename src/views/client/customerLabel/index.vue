@@ -7,7 +7,7 @@
       </el-radio-group>
     </div>
 
-    <div class="filter-container" style="text-align: right">
+    <div class="filter-container" style="text-align: right" v-if="sys_user_add">
       <el-button
                  class="filter-item add_btn"
                  @click="openModel"
@@ -22,10 +22,10 @@
       <el-table-column align="center" prop="labelDescription" label="标签解释" ></el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-              <a size="small" class="common_btn"
+              <a size="small"  v-if="sys_user_upd" class="common_btn"
                  @click="editAum(scope.row.clientLabelId,'newAddClient')">编辑
               </a>
-              <a size="small" class="danger_btn"
+              <a size="small"  v-if="sys_user_del" class="danger_btn"
                 @click="deletes(scope.row.clientLabelId)">删除
               </a>
           </template>
@@ -41,9 +41,12 @@
 
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="editAum(scope.row.clientAumLabelId)">编辑</el-button>
-            <span class="space_line"> | </span>
-            <el-button type="text" class="red" @click="deletes(scope.row.clientAumLabelId)">删除</el-button>
+               <a size="small"  v-if="sys_user_upd" class="common_btn"
+                 @click="editAum(scope.row.clientAumLabelId)">编辑
+              </a>
+              <a size="small"  v-if="sys_user_del" class="danger_btn"
+                @click="deletes(scope.row.clientAumLabelId)">删除
+              </a>
           </template>
         </el-table-column>
 
@@ -117,6 +120,7 @@
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
+  import { mapGetters } from 'vuex'
   export default {
     components: {
       ElOption,
@@ -171,10 +175,16 @@
         id:'',
       }
     },
-
+       computed: {
+      ...mapGetters([
+        'permissions'
+      ])
+    },
     created() {
       this.list();
-
+       this.sys_user_add = this.permissions['sys_user_add']
+      this.sys_user_upd = this.permissions['sys_user_upd']
+      this.sys_user_del = this.permissions['sys_user_del']
     },
     methods: {
         //获取客户标签列表
