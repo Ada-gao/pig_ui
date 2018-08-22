@@ -13,6 +13,7 @@
       :showValueDate="false"
       :orderStatus="2"
       :aptCol="true"
+      :aptCol1="true"
       :aptStatusCol="true">
     </transc-table-component>
 

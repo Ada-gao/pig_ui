@@ -259,7 +259,7 @@
                 <!--:default-time="['00:00:00', '23:59:59']">-->
               <!--</el-date-picker>-->
               <el-date-picker
-                      style="width: 40%"
+                      style="width: 45%"
                       v-model="importantStart"
                       :disabled="operationDisabled"
                       type="datetime"
@@ -267,7 +267,7 @@
                       :default-time="['00:00:00', '23:59:59']">
               </el-date-picker>
               <el-date-picker
-                style="width: 40%"
+                style="width: 45%"
                 v-model="importantEnd"
                 :disabled="operationDisabled"
                 type="datetime"
@@ -1122,8 +1122,8 @@
       updateRouter() { // 操作指南新建或编辑提交
         // console.log(this.importantStart, 'start')
         // console.log(this.importantEnd, 'end')
-        this.activityData.forEach((item,index)=>{
-          item.activeDate = this.activeDateList[index]||['',''];
+        this.activityData.forEach((item, index) => {
+          item.activeDate = this.activeDateList[index] || ['', '']
         })
         this.activityList = this.activityList.concat(this.activityData)
         this.activityList.forEach(item => {
@@ -1142,17 +1142,17 @@
           if (this.importantEnd) {
             this.form2.importantEnd = this.importantEnd
           } else {
-            this.form2.importantEnd = new Date('9999-01-01')
+            this.form2.importantEnd = new Date('2037-12-31')
           }
         } else {
           this.form2.importantStart = ''
           this.form2.importantEnd = ''
         }
-        if(this.productStatusNo == 2){
-         if(!this.activityFilter(true)) return false;
-         if(!this.normalFilter(true)) return false;
+        if (this.productStatusNo === 2) {
+         if (!this.activityFilter(true)) return false
+         if (!this.normalFilter(true)) return false
         }
-        if(this.normalDTO.performanceCoefficient>=100){
+        if(this.normalDTO.performanceCoefficient >= 100) {
           this.$notify({
             title: '失败',
             message: '输折标业绩系数应小于100',
@@ -1200,7 +1200,7 @@
          })
         this.form2.normalDTO = this.normalDTO
         // this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
-        
+
         this.form2.activityDTO = this.activityData
         //this.form2.normalDTO.normalBrokerageCoefficients = this.normalList.concat(this.addNormList)
         // this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
@@ -1236,6 +1236,7 @@
           })
           return false
         }
+        console.log(this.form2)
         addOperationObj(this.form2).then(res => {
           this.$notify({
             title: '成功',
@@ -1243,7 +1244,7 @@
             type: 'success',
             duration: 2000
           })
-          return false
+          // return false
           // if(this.createStatus = 'create') {}
           this.$router.push({path: '/product/productList'})
           Bus.$emit('activeIndex', '/product/productList')
