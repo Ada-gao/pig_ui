@@ -582,10 +582,7 @@
               this.form.role = ''
             }
             this.deptIds.push(this.form.deptId)
-
             this.form.deptIds = this.deptIds
-            console.log(this.deptIds)
-            // this.role = row.roleList[0].roleDesc
             if(this.state === 'view') {
               this.dialogStatus = 'view'
               // this.form.positionId = transformText(this.positionsOptions, this.form.positionId)

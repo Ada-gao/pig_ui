@@ -84,9 +84,7 @@
           <el-input v-model="form.roleDesc" placeholder="描述"></el-input>
         </el-form-item>
         <el-form-item label="所属部门" prop="deptIds">
-          <!-- roleDept -->
           <dept v-model="form.deptIds"></dept>
-          <!-- <el-input v-model="form.deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input> -->
         </el-form-item>
         <el-form-item label="脱敏显示" prop="maskCode">
           <el-checkbox-group v-model="form.maskCode">
@@ -300,7 +298,7 @@
             let deptIds = []
             deptIds.push(this.form.roleDeptId)
             this.form.deptIds = deptIds
-            console.log(this.form.deptIds)
+            // console.log(this.form.deptIds)
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
           })
@@ -333,7 +331,7 @@
         this.dialogDeptVisible = false
         this.form.roleDeptId = data.id
         this.form.deptName = data.name
-        console.log(data)
+        // console.log(data)
       },
       handleDelete(row) {
         delObj(row.roleId).then(response => {
@@ -379,6 +377,7 @@
         set[formName].validate(valid => {
           if (valid) {
             this.form.maskCode = this.form.maskCode.join(',')
+            this.form.roleDeptId = this.form.deptIds[this.form.deptIds.length - 1]
             // this.dialogFormVisible = false
             putObj(this.form).then(() => {
               this.dialogFormVisible = false

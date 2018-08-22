@@ -1,6 +1,5 @@
 <template>
   <section class="dept" style="min-height: 100%">
-    <!-- <el-input v-if="!getDepts" v-model="deptName" placeholder="选择部门" @focus="handleDept()" readonly></el-input> -->
     <el-cascader
       style="width: 100%"
       :options="treeDeptData"
@@ -14,6 +13,10 @@
 </template>
 
 <script>
+/**
+ * keyProps: isCompany
+ * default: 'all':所有部门  'topDept':一级部门   'subCompany':子公司
+ */
 import { fetchDeptTree } from '@/api/role'
 export default {
   data() {
@@ -24,70 +27,69 @@ export default {
         label: 'name',
         value: 'id'
       },
-      deptIds: this.deptId,
+      deptIds: [],
+      deptId: undefined,
       getDepts: false,
       curPrevId: '',
-      result: []
+      eachIndex: 0,
+      result: [],
+      changeVal: undefined
     }
   },
   props: {
     isCompany: {
       type: String,
-      default: ''
+      default: 'all'
     },
-    // deptId: {
-    //   type: Array,
-    //   default: []
-    // },
     value: {
-      type: Number,
-      default: undefined
-    },
-    // value: {
-    //   type: Array,
-    //   default() {
-    //     return []
-    //   }
-    // },
-    deptName: {
-      type: String,
-      default: ''
+      type: Array,
+      default() {
+        return []
+      }
     }
   },
   watch: {
     value(val) {
-      console.log(val)
-      this.deptIds = val
+      // console.log(val)
+      if(val === this.changeVal) return
+      if(val) {
+        this.deptIds = val
+        this.deptId = val[0]
+        this.handleDept()
+      }
     }
   },
   created() {
-    console.log(this.value)
-    this.deptIds = this.value
-    this.handleDept()
-  },
-  mounted() {
-    // console.log(this.value)
+    if(this.value === this.changeVal) return
+    if(this.value.length) {
+      this.deptIds = this.value
+      this.deptId = this.value[0]
+      this.handleDept()
+    }
   },
   methods: {
-    handleDept() { // 部门数据
-      const parmas = {
-        isCompany: this.isCompany
+    handleDept() {
+      let parmas = {}
+      if(this.isCompany !== 'all') {
+          parmas = {
+          isCompany: this.isCompany === 'topDept' ? '0' : '1'
+        }
       }
-      fetchDeptTree(parmas).then(res => {
+      fetchDeptTree(parmas).then(res => { // 获取部门数据并过滤
         this.getDepts = true
         this.treeDeptData = res.data
-        this.delNullArr(this.treeDeptData)
         this.cycleListId(this.treeDeptData)
+        this.delNullArr(this.treeDeptData)
       }).then(() => {
-        this.upperIds(this.result, [], this.deptIds)
+        this.upperIds(this.result, [], this.deptId)
       })
     },
     changeDept(val) {
-      // console.log(val)
-      this.$emit('input', val)
+      this.changeVal = val
+      this.$emit('input', val) // 传值给条用组件的v-model
       this.$emit('change', val)
     },
-    delNullArr(list) {
+    delNullArr(list) { // 清空数组的空children
       list.forEach(item => {
         if(item.children && !item.children.length) {
           delete item.children
@@ -103,14 +105,12 @@ export default {
           this.cycleListId(item.children, this.curPrevId)
         }
         if (item.children && !item.children.length) {
-          console.log(this.result)
           this.result[this.eachIndex] = [...prevId, item.id]
           this.eachIndex++
         }
       })
     },
-    upperIds(list1, list2, id) {
-      // console.log(list1)
+    upperIds(list1, list2, id) { // 获取v-model值的完整路径
       list1.map(item => {
         item.map((el, index) => {
           if (el === id) {
@@ -119,7 +119,7 @@ export default {
           }
         })
       })
-      console.log(list2)
+      // console.log(list2)
       this.deptIds = list2
     }
   }
