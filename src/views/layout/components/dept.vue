@@ -50,8 +50,7 @@ export default {
   },
   watch: {
     value(val) {
-      // console.log(val)
-      if(val === this.changeVal) return
+      if(val && val === this.changeVal) return
       if(val) {
         this.deptIds = val
         this.deptId = val[0]
@@ -60,11 +59,11 @@ export default {
     }
   },
   created() {
+    this.handleDept()
     if(this.value === this.changeVal) return
     if(this.value.length) {
       this.deptIds = this.value
       this.deptId = this.value[0]
-      this.handleDept()
     }
   },
   methods: {
