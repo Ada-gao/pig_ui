@@ -12,7 +12,7 @@
     </el-dialog>
     <upload-excel-component @on-selected-file='selected' :downloadUrl="downloadUrl"></upload-excel-component>
     <div class="detail-title" style="margin-top:30px">
-      <el-button :class="tableData.length > 0 ? 'add_btn' : 'insert_btn'" @click="showDialog">
+      <el-button :class="tableData.length < 0 ? 'add_btn' : 'insert_btn'" @click="showDialog">
         <svg-icon icon-class="upload" style="margin-right:10px;"></svg-icon>确认导入
       </el-button>
 
@@ -51,9 +51,8 @@
 
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { importPd } from '@/api/product/fileManage'
+  import { importPd } from '@/api/client/import'
   import { replaceKey } from '@/utils'
-
   export default {
     name: 'uploadExcel',
     components: { UploadExcelComponent },
@@ -83,6 +82,7 @@
         this.tableHeader = temp.header
         this.tableData = temp.results
         this.formData = JSON.parse(JSON.stringify(this.tableData))
+        console.log(this.tableData)
         const kepMap = {
           '序号': 'lineNo',
           '客户姓名': 'name',
