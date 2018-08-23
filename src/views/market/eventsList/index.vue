@@ -180,7 +180,7 @@
     },
     data() {
       return {
-        dialogVisible:true,
+        dialogVisible:false,
         list: null,
         total: null,
         listLoading: true,
