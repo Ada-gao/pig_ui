@@ -336,6 +336,24 @@ export const asyncRouterMap = [
     ]
   },
   {
+    menuId: 282,
+    path: '/market',
+    component: Layout,
+    name: '市场活动管理',
+    hidden: false,
+    redirect: '/market/eventsList',
+    // icon: 'table',
+    meta: {
+      title: '市场活动管理',
+      icon: 'market'
+    },
+    children: [
+      { menuId: 314, path: 'eventsList', component: _import('market/eventsList/index'), name: '市场活动列表', meta: { title: '市场活动列表', icon: 'eventsList' }},
+      { menuId: 314, path: 'customerPool', component: _import('market/customerPool/index'), name: '市场部客户池', meta: { title: '市场部客户池', icon: 'customerPool' }},
+      { menuId: 314, path: 'setting', component: _import('market/setting/index'), name: '活动相关设置', meta: { title: '活动相关设置', icon: 'activitySetting' }}
+    ]
+  },
+  {
     menuId: 4,
     path: '/setting',
     component: Layout,
@@ -381,4 +399,3 @@ export const asyncRouterMap = [
     ]
   }
 ]
-

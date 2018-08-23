@@ -7,7 +7,7 @@
       </el-radio-group>
     </div>
 
-    <div class="filter-container" style="text-align: right" v-if="sys_user_add">
+    <div class="filter-container" style="text-align: right" v-if="step == 1?client_label_operation_add:client_aum_label_add">
       <el-button
                  class="filter-item add_btn"
                  @click="openModel"
@@ -22,10 +22,10 @@
       <el-table-column align="center" prop="labelDescription" label="标签解释" ></el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-              <a size="small"  v-if="sys_user_upd" class="common_btn"
+              <a size="small"  v-if="client_label_operation_edit" class="common_btn"
                  @click="editAum(scope.row.clientLabelId,'newAddClient')">编辑
               </a>
-              <a size="small"  v-if="sys_user_del" class="danger_btn"
+              <a size="small"  v-if="client_label_operation_del" class="danger_btn"
                 @click="deletes(scope.row.clientLabelId)">删除
               </a>
           </template>
@@ -41,10 +41,10 @@
 
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-               <a size="small"  v-if="sys_user_upd" class="common_btn"
+               <a size="small"  v-if="client_aum_label_edit" class="common_btn"
                  @click="editAum(scope.row.clientAumLabelId)">编辑
               </a>
-              <a size="small"  v-if="sys_user_del" class="danger_btn"
+              <a size="small"  v-if="client_aum_label_del" class="danger_btn"
                 @click="deletes(scope.row.clientAumLabelId)">删除
               </a>
           </template>
@@ -59,7 +59,8 @@
 
           <el-form-item  label="标签名称"  prop="labelName" :rules="[
             { required: true, message: '标签名称不能为空'},
-          ]"> 
+            {  max: 20, message: '字符长度在20个以内', trigger:  ['blur', 'change']  }
+          ]">
             <el-input v-model="newAddClient.labelName" :maxlength="20" placeholder="请输入标签名称" style="width:90%;"></el-input>
           </el-form-item>
 
@@ -74,22 +75,22 @@
     </el-dialog>
     <!-- 新增aum对话框 -->
     <el-dialog title="新增客户标签" :visible.sync="newAddAum" :before-close="handleClose" width="30%">
-    
+
         <el-form :model="newAddParamet" :rules="rules" ref="newAddParamet" label-width="100px" class="demo-ruleForm">
-          <el-form-item  label="签约金额" prop="lowLimit"  class="demo-block demo-box demo-zh-CN demo-form"> 
+          <el-form-item  label="签约金额" prop="lowLimit"  class="demo-block demo-box demo-zh-CN demo-form">
             <el-col :span="8">
-              <el-form-item  prop="lowLimit" > 
+              <el-form-item  prop="lowLimit" >
                 <el-input v-model="newAddParamet.lowLimit" placeholder="请输入金额"></el-input>
               </el-form-item>
             </el-col>
             <el-col class="line" :span="1" style="text-align: center;">-</el-col>
             <el-col :span="8">
-               <el-form-item  prop="highLimit" > 
+               <el-form-item  prop="highLimit" >
                 <el-input v-model.number="newAddParamet.highLimit" placeholder="请输入金额"  auto-complete="off" ></el-input>
               </el-form-item>
             </el-col>
             <span class="ml10">万</span>
-          
+
           </el-form-item>
           <el-form-item label="会员等级" prop="labelName">
             <el-input  v-model="newAddParamet.labelName"  placeholder="请输入会员等级" style="width:71%;" auto-complete="off" ></el-input>
@@ -137,7 +138,7 @@
         if(!reg.test(value)){
            callback(new Error('金额必须为数字值'));
         }
-        
+
       };
       return {
         aumlist: null,
@@ -182,9 +183,14 @@
     },
     created() {
       this.list();
-       this.sys_user_add = this.permissions['sys_user_add']
-      this.sys_user_upd = this.permissions['sys_user_upd']
-      this.sys_user_del = this.permissions['sys_user_del']
+      // 客户标签权限判断
+      this.client_label_operation_edit = this.permissions['client_label_operation_edit']
+      this.client_label_operation_add = this.permissions['client_label_operation_add']
+      this.client_label_operation_del = this.permissions['client_label_operation_del']
+      // AUM标签权限判断
+      this.client_aum_label_edit = this.permissions['client_aum_label_edit']
+      this.client_aum_label_add = this.permissions['client_aum_label_add']
+      this.client_aum_label_del = this.permissions['client_aum_label_del']
     },
     methods: {
         //获取客户标签列表
@@ -193,7 +199,7 @@
         getClientList().then(response => {
           this.clientlist = response.data;
           this.listLoading = false;
-         
+
         })
       },
       handleClose(done){
@@ -208,7 +214,7 @@
         this.newAddParamet = {};
         this.newAddClient = {};
       },
-     
+
       // 取消 关闭对话框
       cancel(formName){
         this.$refs[formName].resetFields();
@@ -286,7 +292,7 @@
             this.newAddParamet = {};
             this.newAddAum = false;
           }
-          
+
         })
       },
       // 据id查询客户aum标签信息
@@ -305,7 +311,7 @@
             this.selfEdit = false;
           })
         }
-     
+
       },
       // 删除客户aum标签
       deleteAum(id){
@@ -316,15 +322,15 @@
       //获得全部客户aum标签
       getAumList() {
         this.listLoading = true
-      
+
         fetchList().then(response => {
-        
+
          response.data.forEach((val,index,taht)=>{
             val.signingAmount = `${val.lowLimit} - ${val.highLimit}万`;
           })
          this.aumlist = response.data;
           this.listLoading = false;
-         
+
         })
       },
 
@@ -335,7 +341,7 @@
         this.id = id
       },
       todeletes() {
-         
+
         if( this.step == 1){
           deleteClientLabel(this.id).then(response => {
             if(response.status === 200) {
