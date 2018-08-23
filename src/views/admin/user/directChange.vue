@@ -408,6 +408,7 @@
         tableKey: 0,
         list: [],
         listQuery: {
+          userId:this.$route.params.id,
           page: 1,
           limit: 20
         },

@@ -78,11 +78,10 @@ export function fetchDeptTree(query) {
   })
 }
 
-
 // 获取直属变更列表
 export function getDirectChangeList(listQuery) {
   return request({
-    url: '/admin/directlyAffiliatedChange/?orderByField=create_time&isAsc=false&page='+listQuery.page+'&limit='+listQuery.limit,
+    url: '/admin/directlyAffiliatedChange/user/' + listQuery.userId + '?orderByField=create_time&isAsc=false&page=' + listQuery.page + '&limit=' + listQuery.limit,
     method: 'get'
   })
 }
