@@ -85,14 +85,14 @@ export function getDirectChangeList(listQuery) {
     method: 'get'
   })
 }
-//根据id查询直属变更列表
+// 根据id查询直属变更列表
 export function seeDirectChangeList(id) {
   return request({
     url: '/admin/directlyAffiliatedChange/'+id,
     method: 'get'
   })
 }
-//新增/修改直属变更
+// 新增/修改直属变更
 export function addDirectChangeList(query) {
   return request({
     url: '/admin/directlyAffiliatedChange/',
