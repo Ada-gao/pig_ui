@@ -136,7 +136,8 @@
         :clientGenderCol="true"
         :clientMobileCol="true"
         :cityCol="true"
-        :aptCol="true"
+        :aptCol="showFlag"
+        :paymentCol="!showFlag"
         :showValueDate="false"
         :transcStatus="true">
       </transc-table-component>
@@ -204,6 +205,7 @@
     },
     data() {
       return {
+        showFlag: true, // 显示打款金额还是预约金额
         dialogVis: false,
         total: null,
         form: {
@@ -737,6 +739,7 @@
       },
       handleAppoint(type) {
         this.listQuery.type = type
+        type === '0' ? this.showFlag = true : this.showFlag = false
         Bus.$emit('queryAppoints', this.listQuery)
       },
       batchExport() {

@@ -285,21 +285,16 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          delRankById(row.rankId).then(() => {
-            this.getList()
-            this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
-              duration: 2000
-            })
-          }).catch(() => {
-            this.$notify({
-              title: '失败',
-              message: '删除失败',
-              type: 'error',
-              duration: 2000
-            })
+          delRankById(row.rankId).then(res => {
+            if (res.status === 200) {
+              this.getList()
+              this.$notify({
+                title: '成功',
+                message: '删除成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
           })
         })
       },
