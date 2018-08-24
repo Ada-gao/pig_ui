@@ -1,53 +1,18 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <!-- <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名"
-                v-model="listQuery.username">
-      </el-input>
-      <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
       <el-form label-position="right" label-width="100px">
         <el-row :gutter="20">
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="搜索">
+            <el-form-item label="活动名称">
               <el-input
-                placeholder="搜索员工、手机号、工号"
-                prefix-icon="el-icon-search"
+                placeholder="请输入活动名称"
                 v-model="listQuery.searchParams">
               </el-input>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="职位">
-              <el-select class="filter-item" v-model="listQuery.positionId" placeholder="请选择" @focus="handlePosition()">
-                <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName">
-                  <span style="float: left">{{ item.positionName }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="工作状态">
-              <el-select class="filter-item" v-model="listQuery.status" placeholder="请选择">
-                <el-option v-for="item in workStatus" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="客户锁定状态">
-              <el-select class="filter-item" v-model="listQuery.lock" placeholder="请选择">
-                <el-option v-for="item in lockStatus" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col> -->
-        <!-- </el-row> -->
-        <!-- <el-row :gutter="10"> -->
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="入职时间">
+            <el-form-item label="活动开始时间">
               <el-date-picker
                 v-model="entryDate"
                 type="daterange"
@@ -55,6 +20,24 @@
                 end-placeholder="结束日期"
                 :default-time="['00:00:00', '23:59:59']">
               </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+            <el-form-item label="活动结束时间">
+              <el-date-picker
+                v-model="entryDate"
+                type="daterange"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :default-time="['00:00:00', '23:59:59']">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+            <el-form-item label="活动状态">
+              <el-button class="add_btn">未发布</el-button>
+              <el-button class="">成功按钮</el-button>
+              <el-button class="add_btn">信息按钮</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -67,15 +50,15 @@
 
     <div style="text-align: right">
       <el-button v-if="sys_user_add" class="add_btn" @click="handleCreate">
-        <svg-icon icon-class="add"></svg-icon> 添加</el-button>
+        <svg-icon icon-class="add"></svg-icon> 新增活动</el-button>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
-      <el-table-column align="center" label="序号" type="index" width="50">
+      <el-table-column align="center" label="活动名称">
       </el-table-column>
 
-      <el-table-column align="center" label="用户名" class-name="left">
+      <el-table-column align="center" label="活动编号" class-name="left">
         <template slot-scope="scope">
           <span>
             <img v-if="scope.row.avatar" class="user-avatar" style="width: 20px; height: 20px; border-radius: 50%;" :src="scope.row.avatar+'?imageView2/1/w/20/h/20'">
@@ -84,65 +67,45 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="所属部门" show-overflow-tooltip>
+      <el-table-column align="center" label="活动开始时间" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.deptName}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="职位" class-name="toggle">
+      <el-table-column align="center" label="活动结束时间" class-name="toggle">
         <template slot-scope="scope">
           <span>{{scope.row.positionId}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="角色">
+      <el-table-column align="center" label="活动负责人">
         <template slot-scope="scope">
           <span>{{scope.row.roleDesc}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="入职时间">
+      <el-table-column align="center" label="活动部门">
         <template slot-scope="scope">
           <span>{{scope.row.employeeDate|parseTime('{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" class-name="status-col" label="状态">
+      <el-table-column align="center" class-name="status-col" label="活动状态">
         <template slot-scope="scope">
-          <!-- <el-tag :class="'leave': scope.row.statusNum == 0,
-                          'normal': scope.row.statusNum == 1,
-                          'unusual': scope.row.statusNum == 2"
-          >{{scope.row.status}}</el-tag> -->
           <el-tag v-if="scope.row.statusNum == 0" class="normal">{{scope.row.status|turnText(workStatus)}}</el-tag>
           <el-tag v-if="scope.row.statusNum == 1" class="leave">{{scope.row.status|turnText(workStatus)}}</el-tag>
           <el-tag v-if="scope.row.statusNum == 2" class="unusual">{{scope.row.status|turnText(workStatus)}}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="账户锁定状态" show-overflow-tooltip>
+      <el-table-column align="center" label="官方活动二维码" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.lock|turnText(lockStatus)}}</span>
+        <span @click="modelCode">{{scope.row.lock|turnText(lockStatus)}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="手机号" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <span>{{scope.row.mobile}}</span>
-        </template>
-      </el-table-column>
 
-      <el-table-column align="center" label="工号" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <span>{{scope.row.empNo}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="直属上级" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <span>{{scope.row.directSupervisorName}}</span>
-        </template>
-      </el-table-column>
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
@@ -153,9 +116,9 @@
           <a v-if="sys_user_upd" size="small" class="common_btn"
                      @click="handleUpdate(scope.row, 'edit')">编辑
           </a>
-          <!-- <el-button v-if="sys_user_del" size="small" type="danger"
+          <el-button  size="small" type="danger"
                      @click="deletes(scope.row)">删除
-          </el-button> -->
+          </el-button>
         </template>
       </el-table-column>
 
@@ -169,21 +132,17 @@
       </el-pagination>
     </div>
 
-    <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDeptVisible">
-      <el-tree
-        class="filter-tree"
-        :data="treeDeptData"
-        :default-checked-keys="checkedKeys"
-        check-strictly
-        node-key="id"
-        highlight-current
-        ref="deptTree"
-        :props="defaultProps"
-        @node-click="getNodeData"
-        default-expand-all
-      >
-      </el-tree>
-    </el-dialog> -->
+    <el-dialog :visible.sync="dialogVisible" width="20%">
+      <article>    
+        <div class="title-code">解码未来“2018年独角兽企业投资经济论坛</div>
+        <time>时间：2018-4-1 14:00-16:00</time>
+        <p>地点：陆家嘴软件园</p>
+      </article>
+      <section>
+        <p>报名请扫描二维码</p>
+
+      </section> 
+    </el-dialog>
 
   </div>
 </template>
@@ -221,12 +180,7 @@
     },
     data() {
       return {
-        // treeDeptData: [],
-        // checkedKeys: [],
-        // defaultProps: {
-        //   children: 'children',
-        //   label: 'name'
-        // },
+        dialogVisible:false,
         list: null,
         total: null,
         listLoading: true,
@@ -279,6 +233,9 @@
       this.sys_user_del = this.permissions['sys_user_del']
     },
     methods: {
+      modelCode(){
+
+      },
       getList() {
         this.listLoading = true
         this.listQuery.orderByField = '`user`.create_time'
@@ -358,7 +315,7 @@
         Bus.$emit('activeIndex', '/admin/user')
       },
       deletes(row) {
-        this.$confirm('此操作将永久删除该用户(用户名:' + row.username + '), 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除该活动，是否继续？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -409,5 +366,10 @@
 .el-date-editor {
   width: 100%;
 }
+.title-code{
+  font-family: PingFangSC-Medium;
+  font-size: 20px;
+  color: #000000;
+  letter-spacing: 0;
+}
 </style>
-
