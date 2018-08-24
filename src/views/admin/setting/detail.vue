@@ -33,7 +33,7 @@
           <el-date-picker type="date" placeholder="选择日期" v-model="form.time" style="width: 100%;"></el-date-picker>
         </el-form-item>
         <el-form-item label="汇率" prop="exchangeRate">
-          <el-input v-model.number="form.exchangeRate" onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
+          <el-input v-model="form.exchangeRate"></el-input>
         </el-form-item>
 
       </el-form>
@@ -63,6 +63,12 @@
       waves
     },
     data() {
+      let checkNumber = (rule, value, callback)=>{
+        let check = /^[1-9]\d{0,4}(\.\d{1,2})?$|^0\.0[1-9]$|^0\.[1-9][0-9]$/;
+        if(!check.test(value)){
+          callback(new Error('请输入正确的汇率格式'));
+        }
+      }
       return {
         treeDeptData: [],
         checkedKeys: [],
@@ -105,7 +111,7 @@
           ],
            exchangeRate: [
            { required: true, message: '请输入汇率' },
-           { type: 'number', message: '汇率必须为数字值'}
+           { validator: checkNumber, trigger: 'blur' }
           ]
         }
       }
@@ -126,10 +132,10 @@
       },
       time(time){
       	let date = new Date(time);
-		let Y = date.getFullYear() + '-';
-		let M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
-		let D = date.getDate() + ' ';
-		return Y+M+D;
+        let Y = date.getFullYear() + '-';
+        let M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+        let D = date.getDate() + ' ';
+        return Y+M+D;
       }
     },
     created() {
@@ -189,16 +195,27 @@
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
+            if(this.form.time<this.list[0].time){
+              this.$notify({
+                title: '警告',
+                message: '汇率时间应大于已有时间',
+                type: 'warning'
+              });
+              return false;
+            }
+         
             addExchangeRate(this.form)
-              .then(() => {
-                this.dialogFormVisible = false
-                this.getList()
-                this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
+              .then((res) => {
+                if(res.data){
+                  this.dialogFormVisible = false
+                  this.getList()
+                  this.$notify({
+                    title: '成功',
+                    message: '创建成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                }
               })
           } else {
             return false
@@ -206,10 +223,11 @@
         })
       },
       cancel(formName) {
-        this.dialogFormVisible = false
-        this.$refs[formName].resetFields()
+        this.dialogFormVisible = false;
+        this.$refs[formName].resetFields();
+        this.resetTemp();
       },
-   
+
       resetTemp() {
         this.form = {
           exchangeRate: '',

@@ -230,7 +230,9 @@
       </div>
       <el-button type="primary"
                  @click="handleRotate"
-                 style="display: block;margin:65px auto 0">顺时针翻转90度</el-button>
+                 style="display: block;margin:65px auto 0">
+        <svg-icon icon-class="rotate" style="vertical-align: bottom;margin-right: 5px;"></svg-icon>&nbsp;旋转图片
+      </el-button>
     </el-dialog>
 
     <el-dialog :visible.sync="dialogImgVisible1" class="swiper-dialog rotate-dialog">
@@ -250,7 +252,9 @@
       </el-carousel>
       <el-button type="primary"
                  @click="handleRotate"
-                 style="display: block;margin:0 auto">顺时针翻转90度</el-button>
+                 style="display: block;margin:0 auto">
+        <svg-icon icon-class="rotate" style="vertical-align: bottom;margin-right: 5px;"></svg-icon>&nbsp;旋转图片
+      </el-button>
     </el-dialog>
 
   </div>

@@ -121,7 +121,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :sm="12" :lg="8" v-if="listQuery.nationality == 0 && searchCity">
+        <el-col :sm="12" :lg="8" v-if="listQuery.nationality && searchCity">
           <el-form-item label="地区">
             <el-cascader
               size="large"
@@ -279,6 +279,7 @@ export default {
         nationality: '',
         city: ''
       },
+      console.log(this.listQuery.nationality)
       this.deptId = []
       this.city = []
       this.entryDate = []

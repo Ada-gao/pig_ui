@@ -18,7 +18,7 @@
         <el-step title="产品操作指南" ></el-step>
       </el-steps>
     <div v-else class="tabs">
-      
+
       <!-- <div class="tab-item" :class="{'tab-active':step===1,'tab-done':step===2}">产品详情
         <b class="right"><i class="right-arrow1"></i><i class="right-arrow2"></i></b>
       </div>
@@ -48,7 +48,7 @@
         :productId="productId"
         :productInfo="productInfo"
         v-on:detailByOperation="listenDetail"></product-operation>
-      
+
     </div>
     <!-- 交易信息 -->
     <div v-if="step===3">
@@ -134,9 +134,10 @@
         :productNameCol="false"
         :clientNoCol="true"
         :clientGenderCol="true"
-        :paymentCol="true"
         :clientMobileCol="true"
         :cityCol="true"
+        :aptCol="true"
+        :showValueDate="false"
         :transcStatus="true">
       </transc-table-component>
     </div>
@@ -458,7 +459,7 @@
         set[formName].validate(valid => {
           if (valid) {
             if (this.stage) { //分期
-              
+
               updProductStage(this.form).then(response => {
                 if(!response.data || response.status !== 200) {
                   return

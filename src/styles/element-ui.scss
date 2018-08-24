@@ -91,7 +91,6 @@ $hover_check: #00C1DF;
   }
 }
 
-
 //暂时性解决diolag 问题 https://github.com/ElemeFE/element/issues/2461
 .el-dialog {
   transform: none;
@@ -119,7 +118,6 @@ $hover_check: #00C1DF;
 .el-range-editor.is-active:hover {
   border-color: $hover_check;
 }
-
 //
 // .el-menu {
 //   .router-link-active li {
@@ -238,3 +236,10 @@ $leave_status: #FF4C4C;
 //     margin-left: -35px;
 //   }
 // }
+// error 对齐
+.sec-form-item {
+  .el-form-item__error {
+    padding-left: 20px;
+    white-space: nowrap;
+  }
+}

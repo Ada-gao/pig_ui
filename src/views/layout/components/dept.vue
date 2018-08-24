@@ -13,6 +13,10 @@
 </template>
 
 <script>
+/**
+ * keyProps: isCompany
+ * default: 'all':所有部门  'topDept':一级部门   'subCompany':子公司
+ */
 import { fetchDeptTree } from '@/api/role'
 export default {
   data() {
@@ -23,30 +27,68 @@ export default {
         label: 'name',
         value: 'id'
       },
-      deptIds: this.deptId
+      deptIds: [],
+      deptId: undefined,
+      getDepts: false,
+      curPrevId: '',
+      eachIndex: 0,
+      result: [],
+      changeVal: undefined
     }
   },
-  props: ['isCompany', 'deptId'],
+  props: {
+    isCompany: {
+      type: String,
+      default: 'all'
+    },
+    value: {
+      type: Array,
+      default() {
+        return []
+      }
+    }
+  },
+  watch: {
+    value(val) {
+      if(val && val === this.changeVal) return
+      if(val) {
+        this.deptIds = val
+        this.deptId = val[0]
+        this.handleDept()
+      }
+    }
+  },
   created() {
     this.handleDept()
-  },
-  mounted() {
-    console.log(this.deptId)
+    if(this.value === this.changeVal) return
+    if(this.value.length) {
+      this.deptIds = this.value
+      this.deptId = this.value[0]
+    }
   },
   methods: {
-    handleDept() { // 部门数据
-      const parmas = {
-        isCompany: this.isCompany
+    handleDept() {
+      let parmas = {}
+      if(this.isCompany !== 'all') {
+          parmas = {
+          isCompany: this.isCompany === 'topDept' ? '0' : '1'
+        }
       }
-      fetchDeptTree(parmas).then(res => {
+      fetchDeptTree(parmas).then(res => { // 获取部门数据并过滤
+        this.getDepts = true
         this.treeDeptData = res.data
+        this.cycleListId(this.treeDeptData)
         this.delNullArr(this.treeDeptData)
+      }).then(() => {
+        this.upperIds(this.result, [], this.deptId)
       })
     },
     changeDept(val) {
+      this.changeVal = val
+      this.$emit('input', val) // 传值给条用组件的v-model
       this.$emit('change', val)
     },
-    delNullArr(list) {
+    delNullArr(list) { // 清空数组的空children
       list.forEach(item => {
         if(item.children && !item.children.length) {
           delete item.children
@@ -54,6 +96,30 @@ export default {
           this.delNullArr(item.children)
         }
       })
+    },
+    cycleListId(list, prevId = []) {
+      list.forEach(item => {
+        if (item.children && item.children.length > 0) {
+          this.curPrevId = [...prevId, item.id]
+          this.cycleListId(item.children, this.curPrevId)
+        }
+        if (item.children && !item.children.length) {
+          this.result[this.eachIndex] = [...prevId, item.id]
+          this.eachIndex++
+        }
+      })
+    },
+    upperIds(list1, list2, id) { // 获取v-model值的完整路径
+      list1.map(item => {
+        item.map((el, index) => {
+          if (el === id) {
+            list2 = JSON.parse(JSON.stringify(item))
+            list2.splice(index + 1, list2.length - 1)
+          }
+        })
+      })
+      // console.log(list2)
+      this.deptIds = list2
     }
   }
 }

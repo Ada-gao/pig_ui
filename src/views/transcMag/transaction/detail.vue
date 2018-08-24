@@ -23,7 +23,8 @@
       </el-carousel>
       <el-button type="primary"
                  @click="handleRotate"
-                 style="display: block;margin:0 auto">顺时针翻转90度</el-button>
+                 style="display: block;margin:0 auto">
+        <svg-icon icon-class="rotate" style="vertical-align: bottom;margin-right: 5px;"></svg-icon>&nbsp;旋转图片</el-button>
     </el-dialog>
 
     <el-tabs v-model="activeName2" type="card" @tab-click="handleClick" class="transc">
@@ -208,7 +209,8 @@
             </div>
             <el-button type="primary"
                        @click="handleRotate"
-                       style="display: block;margin:65px auto 0">顺时针翻转90度</el-button>
+                       style="display: block;margin:65px auto 0">
+              <svg-icon icon-class="rotate" style="vertical-align: bottom;margin-right: 5px;"></svg-icon>旋转图片</el-button>
           </el-dialog>
 
         </el-form>
@@ -384,7 +386,7 @@
       <el-tab-pane label="客户交易记录" name="second">
 
         <tab-transc-component
-          :clientId="clientId"></tab-transc-component>
+          :clientId="this.clientId"></tab-transc-component>
 
       </el-tab-pane>
       <el-tab-pane label="操作日志" name="third">
@@ -570,7 +572,7 @@
 
         getObj(id).then(response => {
           this.form = response.data
-          // console.log(this.form)
+          console.log(this.form)
           this.status = this.form.status
           this.clientId = this.form.clientId
           this.statusH = this.status.indexOf('100') == -1 ? true : false
@@ -777,21 +779,23 @@
       handleClick(tab) {
         // console.log(tab)
         if(tab.name == 'second') {
-          this.listQuery.clientId = this.form.clientId
+          console.log('总要说点啥')
+          // this.clientId = this.form.clientId
+          // console.log(this.clientId)
           this.listQuery.status = 10
-          Bus.$emit('searchRecords', this.listQuery)
+          // Bus.$emit('searchRecords', this.listQuery)
         } else if(tab.name == 'third') {
           Bus.$emit('searchLog', this.listQuery)
         }
       },
-      handleSizeChange(val) {
-        this.listQuery.limit = val
-        this.getList()
-      },
-      handleCurrentChange(val) {
-        this.listQuery.page = val
-        this.getList()
-      },
+      // handleSizeChange(val) {
+      //   this.listQuery.limit = val
+      //   this.getList()
+      // },
+      // handleCurrentChange(val) {
+      //   this.listQuery.page = val
+      //   this.getList()
+      // },
       previewImg(url) {
         this.dialogImgVisible = true
         this.dialogImageUrl = url.split('!160x100')[0]

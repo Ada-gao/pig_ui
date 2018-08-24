@@ -99,7 +99,7 @@
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :model="modal" label-width="100px">
+      <el-form :model="modal" ref="modal" label-width="100px">
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="部门">
@@ -117,7 +117,7 @@
           <el-col :span="11">
             <el-form-item label="理财师" prop="name" >
               <el-select class="filter-item" v-model="modal.name" placeholder="请选择" @change="changetest">
-                <el-option v-for="item in plannerList" :key="item.userId" :label="item.name" :value="item.userId"> </el-option>
+                <el-option v-for="item in plannerList" :key="item.userId" :label="item.name" :value="item"> </el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -132,7 +132,7 @@
       </el-form> 
 
       <div slot="footer" class="dialog-footer">
-        <el-button class="search_btn" @click="changeCancle()">取 消</el-button>
+        <el-button class="search_btn" @click="changeCancel(modal)">取 消</el-button>
         <el-button class="add_btn" @click="changePlanner()">确 定</el-button>
       </div>
     </el-dialog>
@@ -300,7 +300,7 @@
         options: provinceAndCityData,
         selectedOptions: [],
         deptName: [],
-        deptId: [],
+        deptId: '',
         modal: {},
         plannerList: []
       }
@@ -421,22 +421,23 @@
       },
       changePlanner() {
         let params = {
-          plannerId: this.modal.name,
-          reason: this.modal.reason
+          plannerId: this.modal.name.userId,
+          reason: this.modal.reason,
+          deptId: this.deptId
         }
-        putPlanner(this.modal.clientId, params).then(response => {
-          if(response.status === 200) {
-            this.$notify({
-                  title: '成功',
-                  message: '分配成功',
-                  type: 'success',
-                  duration: 2000
-                })
-            this.dialogFormVisible = false
-          }
+        putPlanner(this.modal.clientId, params).then(res => {
+          this.$notify({
+                title: '成功',
+                message: '分配成功',
+                type: 'success',
+                duration: 2000
+              })
+          this.getList()
+          this.dialogFormVisible = false
         })
       },
-      changeCancle() {
+      changeCancel(formName) {
+        this.$refs[formName].resetFields()
         this.dialogFormVisible = false
       },
       resetTemp() {
@@ -447,19 +448,19 @@
           role: undefined
         }
       },
-      resetFilter() { // 重置搜索条件
-        this.listQuery = {
-          page: 1,
-          limit: 20,
-          username: '',
-          positionId: '',
-          // delFlag: '',
-          deptId: ''
-        },
-        this.deptId = []
-        this.entryDate = []
-        // this.handleFilter()
-      },
+      // resetFilter() { // 重置搜索条件
+      //   this.listQuery = {
+      //     page: 1,
+      //     limit: 20,
+      //     username: '',
+      //     positionId: '',
+      //     // delFlag: '',
+      //     deptId: ''
+      //   },
+      //   this.deptId = []
+      //   this.entryDate = []
+      //   // this.handleFilter()
+      // },
       
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`);
@@ -468,6 +469,8 @@
       //   console.log(value)
       // },
       changetest(val) {
+        console.log(val)
+        this.deptId = val.deptId
         this.plannerList = this.plannerList.slice(0)
       }
     }

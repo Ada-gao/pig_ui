@@ -12,7 +12,7 @@
     </el-dialog>
     <upload-excel-component @on-selected-file='selected' :downloadUrl="downloadUrl"></upload-excel-component>
     <div class="detail-title" style="margin-top:30px">
-      <el-button :class="tableData.length > 0 ? 'add_btn' : 'insert_btn'" @click="showDialog">
+      <el-button :class="tableData.length > 0 && !this.errorFlag ? 'add_btn' : 'insert_btn'" @click="showDialog">
         <svg-icon icon-class="upload" style="margin-right:10px;"></svg-icon>确认导入
       </el-button>
 
@@ -51,9 +51,8 @@
 
 <script>
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { importPd } from '@/api/product/fileManage'
+  import { importPd } from '@/api/client/import'
   import { replaceKey } from '@/utils'
-
   export default {
     name: 'uploadExcel',
     components: { UploadExcelComponent },
@@ -66,12 +65,13 @@
         errorList: [],
         spanArr: [],
         pos: null,
+        errorFlag: false,
         downloadUrl: 'static/excel/客户导入模版.xlsx'
       }
     },
     methods: {
       showDialog() {
-        if (this.tableData.length > 0) {
+        if (this.tableData.length > 0 && !this.errorFlag) {
           this.dialogVisible = true
         }
       },
@@ -83,6 +83,7 @@
         this.tableHeader = temp.header
         this.tableData = temp.results
         this.formData = JSON.parse(JSON.stringify(this.tableData))
+        console.log(this.tableData)
         const kepMap = {
           '序号': 'lineNo',
           '客户姓名': 'name',
@@ -105,6 +106,7 @@
         this.formData.forEach(item => {
           replaceKey(item, kepMap)
         })
+        this.errorFlag = false
         document.getElementById('excel-upload-input').value = null
       },
       getSpanArr(data) {
@@ -164,6 +166,7 @@
               // this.$router.push({ path: '/achievement/perform' })
             } else {
               this.errorList = this.transferError(res.data)
+              this.errorFlag = true
               this.getSpanArr(this.errorList)
               this.dialogVisible = false
             }

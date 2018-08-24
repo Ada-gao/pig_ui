@@ -30,7 +30,7 @@
 
       <el-table-column align="center" label="客户类型">
         <template slot-scope="scope">
-          <span>{{scope.row.clientClass}}</span>
+          <span>{{scope.row.clientClass|turnText(clientClass)}}</span>
         </template>
       </el-table-column>
 
@@ -46,7 +46,7 @@
       </el-table-column>
       <el-table-column align="center" label="客户性别" v-if="clientGenderCol">
         <template slot-scope="scope">
-          <span>{{scope.row.clientGender}}</span>
+          <span>{{scope.row.clientGender === '0' ? '男' : '女'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="国籍（常住地区）" v-if="cityCol">
@@ -66,9 +66,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="预约时间" v-if="aptCol">
+      <el-table-column align="center" label="预约时间" v-if="aptCol1">
         <template slot-scope="scope">
-          <span>{{scope.row.appointmentDate | parseTime('{y}-{m}-{d}')}}</span>
+          <span>{{scope.row.appointmentDate|parseTime('{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
 
@@ -78,9 +78,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="起息日">
+      <el-table-column align="center" label="起息日" v-if="showValueDate">
         <template slot-scope="scope">
-          <span>{{scope.row.valueDate}}</span>
+          <span>{{scope.row.valueDate|parseTime('{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
 
@@ -98,31 +98,31 @@
 
       <el-table-column align="center" label="打款状态" v-if="payStatusCol">
         <template slot-scope="scope">
-          <span>{{scope.row.statusText}}</span>
+          <span>{{scope.row.status|turnText(appointmentStatus)}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="退款状态" v-if="refundCol">
         <template slot-scope="scope">
-          <span>{{scope.row.refundStatusText}}</span>
+          <span>{{scope.row.refundStatus|turnText(refundStatus)}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" class-name="status-col" label="状态" v-if="statusCol">
         <template slot-scope="scope">
-          {{scope.row.statusText}}
+          {{scope.row.status|turnText(appointmentStatus)}}
         </template>
       </el-table-column>
 
       <el-table-column align="center" class-name="status-col" label="预约状态" v-if="aptStatusCol">
         <template slot-scope="scope">
-          {{scope.row.statusText}}
+          {{scope.row.status|turnText(appointmentStatus)}}
         </template>
       </el-table-column>
 
       <el-table-column align="center" class-name="status-col" label="合同状态" v-if="contractCol">
         <template slot-scope="scope">
-          {{scope.row.statusText}}
+          {{scope.row.status|turnText(appointmentStatus)}}
         </template>
       </el-table-column>
 
@@ -160,7 +160,7 @@
   import { fetchCurrency, getObjList } from '@/api/currency'
   import { getToken } from '@/utils/auth'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { transformText, parseTime } from '@/utils'
+  import { transformText, parseTime, transformText1 } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -178,7 +178,13 @@
       waves
     },
     props: {
+      showValueDate: {
+        default: true
+      },
       aptCol: {
+        default: false
+      },
+      aptCol1: {
         default: false
       },
       aptStatusCol: {
@@ -231,6 +237,11 @@
       },
       transcStatus: {
         default: false
+      },
+      dealHistory: {
+        default: () => {
+          return {}
+        }
       }
     },
     data() {
@@ -275,6 +286,25 @@
         'clientClass'
       ])
     },
+    filters: {
+      parseTime (time) {
+        if(!time) return
+        let date = new Date(time)
+        return parseTime(date)
+      },
+      turnText (val, list) {
+        return transformText1(val, list)
+      }
+    },
+    watch: {
+      dealHistory(curVal, oldVal) {
+        if(curVal) {
+          this.listLoading = false
+          this.list = curVal.records
+          this.total = curVal.total
+        }
+      }
+    },
     created() {
       this.getList()
       // this.getAppointList()
@@ -288,7 +318,7 @@
       })
       Bus.$on('searchRecords', listQuery => {
         this.listQuery = listQuery
-        this.getHistory()
+        // this.getHistory()
       })
       Bus.$on('queryAppoints', listQuery => {
         // console.log('数据发送过来了')
@@ -314,23 +344,23 @@
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
-            this.list.forEach(item => {
-              item.statusText = transformText(this.appointmentStatus, item.status)
-              // item.clientClass = transformText(this.clientClass, item.clientClass)
-              item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
-            })
-            console.log(this.list)
+            // this.list.forEach(item => {
+            //   item.statusText = transformText(this.appointmentStatus, item.status)
+            //   item.clientClass = transformText(this.clientClass, item.clientClass)
+            //   item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
+            // })
+            // console.log(this.list)
           })
         } else if(this.orderStatus == '2') { // 预约列表
           fetchAppointList(this.listQuery).then(response => {
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
-            this.list.forEach(item => {
-              item.statusText = transformText(this.appointmentStatus, item.status)
-              // item.clientClass = transformText(this.clientClass, item.clientClass)
-              item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
-            })
+            // this.list.forEach(item => {
+            //   item.statusText = transformText(this.appointmentStatus, item.status)
+            //   item.clientClass = transformText(this.clientClass, item.clientClass)
+            //   item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
+            // })
           })
 
         } else if(this.orderStatus == '3') { // 打款列表
@@ -338,11 +368,11 @@
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
-            this.list.forEach(item => {
-              item.statusText = transformText(this.appointmentStatus, item.status)
-              // item.clientClass = transformText(this.clientClass, item.clientClass)
-              item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
-            })
+            // this.list.forEach(item => {
+            //   item.statusText = transformText(this.appointmentStatus, item.status)
+            //   item.clientClass = transformText(this.clientClass, item.clientClass)
+            //   item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
+            // })
           })
 
         } else if(this.orderStatus == '4') { // 合同列表
@@ -350,11 +380,11 @@
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
-            this.list.forEach(item => {
-              item.statusText = transformText(this.appointmentStatus, item.status)
-              // item.clientClass = transformText(this.clientClass, item.clientClass)
-              item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
-            })
+            // this.list.forEach(item => {
+            //   item.statusText = transformText(this.appointmentStatus, item.status)
+            //   item.clientClass = transformText(this.clientClass, item.clientClass)
+            //   item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
+            // })
           })
 
         } else if(this.orderStatus == '5') { // 退款列表
@@ -362,30 +392,30 @@
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
-            this.list.forEach(item => {
-              item.statusText = transformText(this.appointmentStatus, item.status)
-              item.refundStatusText = transformText(this.refundStatus, item.refundStatus)
-              // item.clientClass = transformText(this.clientClass, item.clientClass)
-              item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
-            })
+            // this.list.forEach(item => {
+            //   item.statusText = transformText(this.appointmentStatus, item.status)
+            //   item.refundStatusText = transformText(this.refundStatus, item.refundStatus)
+            //   item.clientClass = transformText(this.clientClass, item.clientClass)
+            //   item.clientClass = (item.clientClass !== null && item.clientClass === 0 ? '潜客' : '客户')
+            // })
           })
         }
       },
-      getHistory() {
-        this.queryId = 2
-        // if(this.historyStatus) {
-        // console.log(this.historyStatus)
-        fetchRecords(this.listQuery).then(response => {
-          this.list = response.data.records
-          this.total = response.data.total
-          this.listLoading = false
-          this.list.forEach(item => {
-            item.statusText = transformText(this.appointmentStatus, item.status)
-            item.valueDate = item.valueDate ? parseTime(item.valueDate, '{y}-{m}-{d}') : ''
-          })
-        })
-        // }
-      },
+      // getHistory() {
+      //   this.queryId = 2
+      //   // if(this.historyStatus) {
+      //   // console.log(this.historyStatus)
+      //   fetchRecords(this.listQuery).then(response => {
+      //     this.list = response.data.records
+      //     this.total = response.data.total
+      //     this.listLoading = false
+      //     this.list.forEach(item => {
+      //       item.statusText = transformText(this.appointmentStatus, item.status)
+      //       item.valueDate = item.valueDate ? parseTime(item.valueDate, '{y}-{m}-{d}') : ''
+      //     })
+      //   })
+      //   // }
+      // },
       getAppointList() { // 产品模块交易人数表
         this.queryId = 3
         let params = {
@@ -413,7 +443,7 @@
           this.getList()
         } else if(this.queryId === 2) {
           console.log('222')
-          this.getHistory()
+          // this.getHistory()
         } else {
           console.log('333')
           this.getAppointList()
@@ -424,7 +454,7 @@
         if(this.queryId === 1) {
           this.getList()
         } else if(this.queryId === 2) {
-          this.getHistory()
+          // this.getHistory()
         } else {
           this.getAppointList()
         }
