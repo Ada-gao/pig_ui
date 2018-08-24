@@ -448,19 +448,19 @@
           role: undefined
         }
       },
-      resetFilter() { // 重置搜索条件
-        this.listQuery = {
-          page: 1,
-          limit: 20,
-          username: '',
-          positionId: '',
-          // delFlag: '',
-          deptId: ''
-        },
-        this.deptId = []
-        this.entryDate = []
-        // this.handleFilter()
-      },
+      // resetFilter() { // 重置搜索条件
+      //   this.listQuery = {
+      //     page: 1,
+      //     limit: 20,
+      //     username: '',
+      //     positionId: '',
+      //     // delFlag: '',
+      //     deptId: ''
+      //   },
+      //   this.deptId = []
+      //   this.entryDate = []
+      //   // this.handleFilter()
+      // },
       
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`);
