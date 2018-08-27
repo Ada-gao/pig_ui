@@ -147,7 +147,7 @@
                 <img :src="clientStatus.idFrontUrl"
                      ref="cardImg"
                      alt=""
-                     @click="previewImg1"
+                     @click.stop="previewImg1(0)"
                      style="height: 100px; width: 160px">
               <!--</el-card>-->
             </el-col>
@@ -155,7 +155,7 @@
               <!--<el-card>-->
                 <img :src="clientStatus.idBackUrl"
                      alt=""
-                     @click="previewImg1"
+                     @click.stop="previewImg1(1)"
                      style="height: 100px; width: 160px">
               <!--</el-card>-->
             </el-col>
@@ -239,6 +239,7 @@
       <!--<img width="100%" :src="dialogImageUrl" alt="">-->
       <el-carousel arrow="always"
                    indicator-position="none"
+                   ref="carousel"
                    style="width:100%;text-align:center"
                    @change="carouselChange"
                    :autoplay="false">
@@ -545,8 +546,16 @@
         this.dialogImgVisible = true
         this.dialogImageUrl = url.split('!160x100')[0]
       },
-      previewImg1() {
+      setActive(index) {
+        this.$refs.carousel.setActiveItem(index)
+      },
+      previewImg1(index) {
         this.dialogImgVisible1 = true
+        let timer = setTimeout(() => {
+          this.setActive(index)
+          clearTimeout(timer)
+          timer = null
+        }, 10)
       },
       carouselChange(value) {
         this.rotateCnt = 0
