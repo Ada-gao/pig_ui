@@ -121,9 +121,10 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :sm="12" :lg="8" v-if="listQuery.nationality && searchCity">
+        <el-col :sm="12" :lg="8" v-if="listQuery.nationality != 1 && listQuery.nationality !== '' && listQuery.nationality != null && searchCity">
           <el-form-item label="地区">
             <el-cascader
+              style="width: 100%"
               size="large"
               :options="options"
               :props="defaultProps2"
