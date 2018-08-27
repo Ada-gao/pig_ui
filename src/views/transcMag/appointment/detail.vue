@@ -40,7 +40,7 @@
           </el-row>
 
           <div class="split-line"></div>
-          
+
           <h5>预约信息</h5>
           <el-row :gutter="20">
             <el-col :span="11">
@@ -116,7 +116,7 @@
 
           <div class="bankCard" v-if="orderStatus != 2 && statusH">
             <div class="split-line"></div>
-          
+
             <h5>客户银行卡信息</h5>
             <el-row>
               <el-col :span="11">
@@ -198,7 +198,7 @@
           :visible.sync="dialogVisible"
           width="30%">
           <div style="margin-bottom: 30px;">确认审核通过吗？</div>
-          
+
           <span class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
             <el-button type="primary" @click="submitCheck">确 定</el-button>
@@ -255,7 +255,7 @@
               </el-select>
             </el-tab-pane>
           </el-tabs>
-          
+
           <span class="dialog-footer">
             <el-button @click="dialogReject = false">取 消</el-button>
             <el-button type="primary" @click="submitCheck">确 定</el-button>
@@ -274,6 +274,7 @@
             <transc-table-component
               :orderStatus="2"
               :aptCol="true"
+              :aptCol1="true"
               :aptStatusCol="true">
             </transc-table-component>
           </div>
@@ -288,6 +289,7 @@
             <transc-table-component
               :orderStatus="1"
               :statusCol="true"
+              :aptCol1="true"
               :aptCol="true">
             </transc-table-component>
           </div>
@@ -474,7 +476,7 @@
           // console.log(this.dealFiles)
           // console.log(this.remitFiles)
         })
-        
+
       },
       handleDept() {
         console.log('产品状态')

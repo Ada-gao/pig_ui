@@ -10,6 +10,7 @@
         :showValueDate="true"
         :dealHistory="data"
         :aptCol="true"
+        :aptCol1="true"
         :aptStatusCol="true">
       </transc-table-component>
     </div>
@@ -28,6 +29,7 @@
         :showValueDate="true"
         :dealHistory="data"
         :statusCol="true"
+        :aptCol1="true"
         :aptCol="true">
       </transc-table-component>
     </div>

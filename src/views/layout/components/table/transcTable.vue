@@ -46,7 +46,7 @@
       </el-table-column>
       <el-table-column align="center" label="客户性别" v-if="clientGenderCol">
         <template slot-scope="scope">
-          <span>{{scope.row.clientGender}}</span>
+          <span>{{scope.row.clientGender === '0' ? '男' : '女'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="国籍（常住地区）" v-if="cityCol">
@@ -66,7 +66,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="预约时间" v-if="aptCol">
+      <el-table-column align="center" label="预约时间" v-if="aptCol1">
         <template slot-scope="scope">
           <span>{{scope.row.appointmentDate|parseTime('{y}-{m}-{d}')}}</span>
         </template>
@@ -182,6 +182,9 @@
         default: true
       },
       aptCol: {
+        default: false
+      },
+      aptCol1: {
         default: false
       },
       aptStatusCol: {

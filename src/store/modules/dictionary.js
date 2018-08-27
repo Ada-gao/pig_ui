@@ -174,7 +174,7 @@ const dictionary = {
           let preserveExpiredList = []
           let maskCodeList = []
           let dataScopeList = []
-          
+
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
               idTypeList.push(data[i])
@@ -220,7 +220,7 @@ const dictionary = {
 
             } else if(data[i].type === 'client_type') {
               clientTypeList.push(data[i])
-              
+
             } else if(data[i].type === 'client_from') {
               clientFromList.push(data[i])
 

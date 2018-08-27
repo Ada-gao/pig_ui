@@ -7,6 +7,7 @@
       :searchCity="false"
       :searchClientType="false"
       :searchRealNameStatus="true"
+      :searchCertificationStatus="false"
       >
     </search-bar-component>
 
@@ -112,7 +113,7 @@
         listQuery: {
           page: 1,
           limit: 20,
-          // realNameStatus: 1 // 待审核
+//          realNameStatus: 1 // 待审核
         },
         role: undefined,
         dialogFormVisible: false,
@@ -253,7 +254,7 @@
       },
       serachList(data) {
         this.listQuery = data
-        // this.listQuery.realNameStatus = 1
+        this.listQuery.realNameStatus = 1
         this.getList()
       }
     }

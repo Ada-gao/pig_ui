@@ -3,7 +3,7 @@
     <div class="flex">
       <el-button v-if="editSelf" @click="onCancel">取消</el-button>
       <el-button class="filter-item add_btn" v-if="editSelf" type="primary" @click="sava">保存</el-button>
-      <el-button class="filter-item add_btn" type="primary" v-if="!editSelf && deptManager_btn_edit" @click="edit"><i class="el-icon-setting">&nbsp&nbsp</i>子公司管理</el-button>
+      <el-button class="filter-item add_btn" type="primary" v-if="!editSelf" @click="edit"><i class="el-icon-setting">&nbsp&nbsp</i>子公司管理</el-button>
     </div>
   <el-table
     :data="rootList"
@@ -41,9 +41,7 @@
     },
     created() {
       this.getList()
-      this.deptManager_btn_add = this.permissions['sys_dept_add']
-      this.deptManager_btn_edit = this.permissions['sys_dept_edit']
-      this.deptManager_btn_del = this.permissions['sys_dept_del']
+        this.subcompany_update = this.permissions['subcompany_update'];
     },
     computed: {
       ...mapGetters([
@@ -83,7 +81,7 @@
             });
             this.onCancel()
           }
-          
+
         })
       }
     }
