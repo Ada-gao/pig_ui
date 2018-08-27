@@ -2,9 +2,11 @@
   <div class="app-container calendar-list-container">
     <search-bar-component
       @search-list="serachList"
-      :searchPreserveExpired="true"
+      :searchPreserveExpired="false"
       :searchClientType="false"
-      :searchIdNo="false"></search-bar-component>
+      :searchIdNo="false"
+      :searchCertificationStatus="false"
+    ></search-bar-component>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
@@ -69,6 +71,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" label="实名认证状态" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{scope.row.realnameStatus}}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" label="国籍（常住地区）" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.nationality}}</span>
@@ -129,7 +137,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-      </el-form> 
+      </el-form>
 
       <div slot="footer" class="dialog-footer">
         <el-button class="search_btn" @click="changeCancel(modal)">取 消</el-button>
@@ -311,6 +319,7 @@
         'certificationType',
         'permissions',
         'idTypeOptions',
+        'realnameStatus',
         // 'delFlagOptions',
         'nationality',
         'clientClass'
@@ -334,7 +343,7 @@
         // let amountStart = this.listQuery.amountStart || -1
         // let amountEnd = this.listQuery.amountEnd || -1
         // this.listQuery.amount = [amountStart, amountEnd]
-        
+
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
@@ -344,6 +353,7 @@
             item.clientClass = transformText(this.clientClass, item.clientClass)
             item.nationality = transformText(this.nationality, item.nationality)
             item.idType = transformText(this.idTypeOptions, item.idType)
+            item.realnameStatus = transformText(this.realnameStatus, item.realnameStatus)
           })
         })
       },
@@ -403,7 +413,7 @@
         //     this.role = row.roleList[0].roleDesc
         //     this.dialogFormVisible = true
         //     this.dialogStatus = 'update'
-            
+
         //   })
       },
       changeDept(val) {
@@ -448,6 +458,7 @@
           role: undefined
         }
       },
+
       // resetFilter() { // 重置搜索条件
       //   this.listQuery = {
       //     page: 1,
@@ -461,7 +472,8 @@
       //   this.entryDate = []
       //   // this.handleFilter()
       // },
-      
+
+
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`);
       // },
