@@ -7,58 +7,70 @@
         <el-button :class="{add_btn:labelButton=='checkinAccount'}" @click="changeButton('checkinAccount')">签到帐号</el-button>
       </el-button-group>
     </nav>
-    <el-form  label-width="100px" class="demo-ruleForm">
+    <el-form  label-width="100px" style="width: 90%">
       <p class="title">活动基本信息</p>
       <article class="">
-
         <el-row type="flex" class="row-bg" justify="space-between">
           <el-col :span="11">
-            <el-form-item label="活动名称" >
+            <el-form-item label="活动名称">
               <el-input ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-             <el-form-item label="活动名称" >
+             <el-form-item label="活动类型">
               <el-input ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-between">
           <el-col :span="11">
-            <el-form-item label="活动名称" >
+            <el-form-item label="活动负责人">
               <el-input ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-             <el-form-item label="活动名称" >
+             <el-form-item label="活动人数(人)">
               <el-input ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-between">
           <el-col :span="11">
-            <el-form-item label="活动名称" >
+            <el-form-item label="活动时间" >
               <el-input ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-             <el-form-item label="活动名称" >
+             <el-form-item label="报名时间" >
               <el-input ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-between">
           <el-col :span="11">
-            <el-form-item label="活动名称" >
+            <el-form-item label="活动地址" >
               <el-input ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-             <el-form-item label="活动名称" >
+             <el-form-item label="主办部门" >
               <el-input ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row >
+          <el-col :span="24">
+            <el-form-item label="活动简介" >
+              <el-input
+                type="textarea"
+                :rows="4"
+                placeholder="请输入内容">
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-button class="search_btn" style="float: right;">
+          <svg-icon icon-class="add"></svg-icon>新增属性</el-button>
       </article>
 
     </el-form>
