@@ -54,7 +54,7 @@
       <el-form :model="form" :rules="rules" ref="form" label-width="100px">
 
         <el-form-item label="模板名称" prop="templateName">
-          <el-input v-model="form.templateName" :maxlength="20"></el-input>
+          <el-input v-model="form.templateName" :maxlength="40"></el-input>
         </el-form-item>
 
       </el-form>
@@ -154,7 +154,7 @@
         tableKey: 0,
         rules: {
           templateName: [
-            {required: true, trigger: 'blur', message: '请输入模板名称'}
+            {required: true, trigger: 'blur', message: '请输入40位以内的模板名称'}
           ]
         },
         data: [],

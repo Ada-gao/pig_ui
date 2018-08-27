@@ -351,6 +351,10 @@
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
+            const len = this.form.deptIds
+            if(len.length) {
+              this.form.roleDeptId = len[len.length - 1]
+            }
             this.form.maskCode = this.form.maskCode.join(',')
             addObj(this.form)
               .then(() => {

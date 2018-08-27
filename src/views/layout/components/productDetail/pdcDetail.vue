@@ -660,7 +660,8 @@
               })
             } else {
               // this.form.productStatus = this.productStatusNo
-              putObj(this.productId, this.form).then(() => {
+              putObj(this.productId, this.form).then((res) => {
+                if(res.status !== 200) return
                 this.$notify({
                   title: '成功',
                   message: '保存成功',
