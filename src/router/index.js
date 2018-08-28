@@ -209,6 +209,37 @@ export const constantRouterMap = [
         hidden: true
       }
     ]
+  },
+  {
+    menuId: 280,
+    path: '/market',
+    component: Layout,
+    name: '市场活动管理详情',
+    redirect: '/market/eventsList',
+    hidden: true,
+    children:[
+      {
+        path: 'eventsList/add',
+        component: _import('market/eventsList/detail'),
+        name: '市场活动添加',
+        meta: { title: '市场活动添加', icon: '', noCache: true },
+        hidden: true
+      },
+      {
+        path: 'eventsList/view',
+        component: _import('market/eventsList/detail'),
+        name: '市场活动查看',
+        meta: { title: '市场活动查看', icon: '', noCache: true },
+        hidden: true
+      },
+      {
+        path: 'eventsList/edit',
+        component: _import('market/eventsList/detail'),
+        name: '市场活动编辑',
+        meta: { title: '市场活动编辑', icon: '', noCache: true },
+        hidden: true
+      }
+    ]
   }
 ]
 
@@ -336,7 +367,7 @@ export const asyncRouterMap = [
     ]
   },
   {
-    menuId: 282,
+    menuId: 280,
     path: '/market',
     component: Layout,
     name: '市场活动管理',
@@ -348,9 +379,9 @@ export const asyncRouterMap = [
       icon: 'market'
     },
     children: [
-      // { menuId: 314, path: 'eventsList', component: _import('market/eventsList/index'), name: '市场活动列表', meta: { title: '市场活动列表', icon: 'eventsList' }},
-      // { menuId: 314, path: 'customerPool', component: _import('market/customerPool/index'), name: '市场部客户池', meta: { title: '市场部客户池', icon: 'customerPool' }},
-      // { menuId: 314, path: 'setting', component: _import('market/setting/index'), name: '活动相关设置', meta: { title: '活动相关设置', icon: 'activitySetting' }}
+      { menuId: 314, path: 'eventsList', component: _import('market/eventsList/index'), name: '市场活动列表', meta: { title: '市场活动列表', icon: 'eventsList' }},
+      { menuId: 314, path: 'customerPool', component: _import('market/customerPool/index'), name: '市场部客户池', meta: { title: '市场部客户池', icon: 'customerPool' }},
+      { menuId: 314, path: 'setting', component: _import('market/setting/index'), name: '活动相关设置', meta: { title: '活动相关设置', icon: 'activitySetting' }}
     ]
   },
   {

@@ -35,9 +35,11 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="活动状态">
-              <el-button class="add_btn">未发布</el-button>
-              <el-button class="">成功按钮</el-button>
-              <el-button class="add_btn">信息按钮</el-button>
+              <el-row type="flex" class="row-bg" justify="space-between">
+               <el-button :class="{add_btn:releaseSelection == 1}" @click="changeReleaseSelection(1)">未发布</el-button>
+               <el-button :class="{add_btn:releaseSelection == 2}" @click="changeReleaseSelection(2)">已发布</el-button>
+               <el-button :class="{add_btn:releaseSelection == 3}" @click="changeReleaseSelection(3)">已结束</el-button>
+              </el-row>
             </el-form-item>
           </el-col>
         </el-row>
@@ -49,7 +51,7 @@
     </div>
 
     <div style="text-align: right">
-      <el-button v-if="sys_user_add" class="add_btn" @click="handleCreate">
+      <el-button v-if="sys_user_add" class="add_btn" @click="handleUpdate('add')">
         <svg-icon icon-class="add"></svg-icon> 新增活动</el-button>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -110,11 +112,11 @@
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
           <a size="small" class="common_btn"
-                     @click="handleUpdate(scope.row, 'view')">查看
+                     @click="handleUpdate('view',scope.row)">查看
           </a>
           <span class="space_line"> | </span>
           <a v-if="sys_user_upd" size="small" class="common_btn"
-                     @click="handleUpdate(scope.row, 'edit')">编辑
+                     @click="handleUpdate('edit',scope.row)">编辑
           </a>
           <el-button  size="small" type="danger"
                      @click="deletes(scope.row)">删除
@@ -133,7 +135,7 @@
     </div>
 
     <el-dialog :visible.sync="dialogVisible" width="20%">
-      <article>    
+      <article>
         <div class="title-code">解码未来“2018年独角兽企业投资经济论坛</div>
         <time>时间：2018-4-1 14:00-16:00</time>
         <p>地点：陆家嘴软件园</p>
@@ -141,7 +143,7 @@
       <section>
         <p>报名请扫描二维码</p>
 
-      </section> 
+      </section>
     </el-dialog>
 
   </div>
@@ -180,6 +182,7 @@
     },
     data() {
       return {
+        releaseSelection:1,
         dialogVisible:false,
         list: null,
         total: null,
@@ -233,8 +236,13 @@
       this.sys_user_del = this.permissions['sys_user_del']
     },
     methods: {
+      //二维码预览
       modelCode(){
-
+        this.dialogVisible = true;
+      },
+      // 选择发布状态
+      changeReleaseSelection(index){
+        this.releaseSelection = index;
       },
       getList() {
         this.listLoading = true
@@ -266,32 +274,12 @@
           })
         })
       },
-      // getNodeData(data) { // 部门查询
-      //   // this.dialogDeptVisible = false
-      //   this.form.deptId = data.id
-      //   this.form.deptName = data.name
-      //   deptRoleList(data.id)
-      //     .then(response => {
-      //       this.rolesOptions = response.data
-      //       this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
-      //     })
-      // },
+
       handlePosition() {
         getAllPositon().then(res => {
           this.positionsOptions = res.data
         })
       },
-      // handleDept() {
-      //   fetchDeptTree()
-      //     .then(response => {
-      //       this.treeDeptData = response.data
-      //       // this.dialogDeptVisible = true
-      //     })
-      // },
-      // changeDept() {
-      //   this.role = ''
-      //   this.form.role = ''
-      // },
       handleFilter() {
         this.listQuery.page = 1
         this.getList()
@@ -304,15 +292,9 @@
         this.listQuery.page = val
         this.getList()
       },
-      handleCreate() { // 新增
-        this.resetTemp()
-        // this.dialogStatus = 'create'
-        this.$router.push('/admin/user-detail')
-        Bus.$emit('activeIndex', '/admin/user')
-      },
-      handleUpdate(row, state) { // 编辑查询（查看）
-        this.$router.push('/admin/user-detail/' + row.userId + '/' + state)
-        Bus.$emit('activeIndex', '/admin/user')
+      // 编辑查询（查看）新增 页面跳转
+      handleUpdate(state,row) {
+        this.$router.push(`/market/eventsList/${state}`)
       },
       deletes(row) {
         this.$confirm('此操作将永久删除该活动，是否继续？', '提示', {

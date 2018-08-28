@@ -243,3 +243,21 @@ $leave_status: #FF4C4C;
     white-space: nowrap;
   }
 }
+// 市场活动 样式重写
+.events-detail{
+  .el-tag{
+    color: #0299CC;
+    background: rgba(0,193,223,0.10);
+    border: 1px solid rgba(32,160,255,0.20);
+    border-radius: 4px;
+    .el-tag__close.el-icon-close{
+      color: #0299CC;
+        background: rgba(0,193,223,0.10);
+      border-radius: 100px;
+      &:hover{
+          background: #0299CC;
+          color: #fff;
+      }
+    }
+  }
+}
