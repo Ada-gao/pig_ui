@@ -1,115 +1,29 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <el-form label-position="right" label-width="100px">
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="搜索">
-              <el-input
-                placeholder="输入客户姓名、编号"
-                prefix-icon="el-icon-search"
-                v-model="listQuery.searchParams">
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="手机号">
-              <el-input
-                placeholder="搜索客户手机号"
-                prefix-icon="el-icon-search"
-                v-model="listQuery.searchParams">
-              </el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row style="text-align: center;">
-          <el-button class="search_btn" @click="resetFilter"><svg-icon icon-class="reset"></svg-icon> 重置</el-button>
-          <el-button class="search_btn" @click="handleFilter"><svg-icon icon-class="search"></svg-icon> 查询</el-button>
-        </el-row>
-      </el-form>
-    </div>
+  
 
     <div style="text-align: right">
       <el-button v-if="sys_user_add" class="add_btn" @click="handleCreate">
-        <svg-icon icon-class="add"></svg-icon> 批量分配到个人</el-button>
-        <el-button v-if="sys_user_add" class="add_btn" @click="handleCreate">
-        <svg-icon icon-class="add"></svg-icon> 批量分配到部门</el-button>
+        <svg-icon icon-class="add"></svg-icon> 添加</el-button>
     </div>
+  
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
-      <el-table-column align="center" type="selection" label="全选" width="50">
-      </el-table-column>
+    
 
-      <el-table-column align="center" label="客户编号" class-name="left">
-        <template slot-scope="scope">
-          <span>
-            <img v-if="scope.row.avatar" class="user-avatar" style="width: 20px; height: 20px; border-radius: 50%;" :src="scope.row.avatar+'?imageView2/1/w/20/h/20'">
-            {{scope.row.username}}
-          </span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="客户姓名" show-overflow-tooltip>
+      <el-table-column align="center" label="活动类型">
         <template slot-scope="scope">
         <span>{{scope.row.deptName}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="证件类型" class-name="toggle">
-        <template slot-scope="scope">
-          <span>{{scope.row.positionId}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="证件号码">
-        <template slot-scope="scope">
-          <span>{{scope.row.roleDesc}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="客户类型">
-        <template slot-scope="scope">
-          <span>{{scope.row.employeeDate|parseTime('{y}-{m}-{d}')}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" class-name="status-col" label="手机号">
-        <template slot-scope="scope">
-          <!-- <el-tag :class="'leave': scope.row.statusNum == 0,
-                          'normal': scope.row.statusNum == 1,
-                          'unusual': scope.row.statusNum == 2"
-          >{{scope.row.status}}</el-tag> -->
-          <el-tag v-if="scope.row.statusNum == 0" class="normal">{{scope.row.status|turnText(workStatus)}}</el-tag>
-          <el-tag v-if="scope.row.statusNum == 1" class="leave">{{scope.row.status|turnText(workStatus)}}</el-tag>
-          <el-tag v-if="scope.row.statusNum == 2" class="unusual">{{scope.row.status|turnText(workStatus)}}</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="邮箱" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <span>{{scope.row.lock|turnText(lockStatus)}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="国籍（常住地区）" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <span>{{scope.row.mobile}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="操作" fixed="right" width="150">
+      <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <a size="small" class="common_btn"
                      @click="handleUpdate(scope.row, 'view')">查看
           </a>
-          <span class="space_line"> | </span>
-          <a v-if="sys_user_upd" size="small" class="common_btn"
-                     @click="handleUpdate(scope.row, 'edit')">分配
-          </a>
-          <!-- <el-button v-if="sys_user_del" size="small" type="danger"
-                     @click="deletes(scope.row)">删除
-          </el-button> -->
+        <a size="small" class="danger_btn">删除</a>
         </template>
       </el-table-column>
 
@@ -123,32 +37,20 @@
       </el-pagination>
     </div>
 
-    <el-dialog
-          title="分配到部门"
+      <el-dialog
+          title="新增部门logo"
           :visible.sync="dialogVisible"
           width="30%">
           <el-form  ref="newAddClient" label-width="100px" class="demo-ruleForm">
 
-          <el-form-item  label="子公司">
-            <el-input placeholder="请选择部门" style="width:90%;"></el-input>
+          <el-form-item  label="部门名称">
+            <el-input placeholder="签到人部门" style="width:90%;"></el-input>
           </el-form-item>
 
-        </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button  class="search_btn" @click="cancel('newAddClient')">取 消</el-button>
-            <el-button  class="add_btn" @click="clientDetermine('newAddClient')">确 定</el-button>
-          </div>
-        </el-dialog>
-            <el-dialog
-          title="分配到个人"
-          :visible.sync="dialogVisible"
-          width="30%">
-          <el-form  ref="newAddClient" label-width="100px" class="demo-ruleForm">
-
-          <el-form-item  label="姓名">
-            <el-input placeholder="请选择人员" style="width:90%;"></el-input>
+          <el-form-item label="部门logo">
+           
           </el-form-item>
-
+        
         </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button  class="search_btn" @click="cancel('newAddClient')">取 消</el-button>
@@ -185,13 +87,14 @@
         return parseTime(date)
       }
     },
-    name: 'table_user',
+    name: 'activityType',
     directives: {
       waves
     },
     data() {
       return {
-      dialogVisible: false,
+        dialogVisible:false,
+        step:1,
         list: null,
         total: null,
         listLoading: true,
@@ -375,3 +278,4 @@
   width: 100%;
 }
 </style>
+

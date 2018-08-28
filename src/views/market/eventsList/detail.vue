@@ -4,10 +4,14 @@
       <el-button-group>
         <el-button :class="{add_btn:labelButton=='eventDetails'}" @click="changeButton('eventDetails')">活动详情</el-button>
         <el-button :class="{add_btn:labelButton=='eventPoster'}" @click="changeButton('eventPoster')">活动海报</el-button>
+        <el-button :class="{add_btn:labelButton=='registrationCheck'}" @click="changeButton('registrationCheck')">报名/签到</el-button>
         <el-button :class="{add_btn:labelButton=='checkinAccount'}" @click="changeButton('checkinAccount')">签到帐号</el-button>
+        <el-button :class="{add_btn:labelButton=='signingRecord'}" @click="changeButton('signingRecord')">签单记录</el-button>
+        <el-button :class="{add_btn:labelButton=='operationLog'}" @click="changeButton('operationLog')">操作日志</el-button>
       </el-button-group>
     </nav>
-    <el-form  label-width="100px" style="width: 90%" class="events-detail">
+    <!-- 活动详情 -->
+    <el-form v-if="labelButton == 'eventDetails' "  label-width="100px" style="width: 90%" class="events-detail">
       <!-- 活动基本信息 -->
       <article>
         <p class="title">活动基本信息</p>
@@ -158,6 +162,14 @@
             </el-row>
           </el-form-item>
       </article>
+    
+        <div  style="text-align: center;">
+          <el-button class="search_btn">上一步</el-button>
+          <el-button class="add_btn" >发布活动</el-button>
+          <el-button class="add_btn" >保 存</el-button>
+          <el-button class="search_btn">取 消</el-button>
+        </div>
+      
     </el-form>
     <!-- 选择部门对话框 -->
     <el-dialog
@@ -191,17 +203,40 @@
         <el-button class="add_btn"  @click="update">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 活动海报 -->
+    <event-poster v-if= " labelButton =='eventPoster' "></event-poster>
+    <!-- 报名/签到 -->
+    <registration-check v-if= " labelButton =='registrationCheck' "></registration-check>
+    <!-- 签到账号 -->
+    <checkin-account v-if= " labelButton =='checkinAccount' "></checkin-account>
+    <!--  签单记录-->
+    <signing-record v-if= " labelButton =='signingRecord' "></signing-record>
+    <!-- 操作日志 -->
+    <operation-log v-if= " labelButton =='operationLog' "></operation-log>
+
+
   </div>
 </template>
-
 <script>
   import { mapGetters } from 'vuex'
+  import eventPoster  from './components/eventPoster.vue'
+  import registrationCheck  from './components/registrationCheck.vue'
+  import checkinAccount  from './components/checkinAccount.vue'
+  import signingRecord  from './components/signingRecord.vue'
+  import operationLog  from './components/operationLog.vue'
   export default {
     name: 'eventsDetail',
+    components:{
+      eventPoster,
+      registrationCheck,
+      checkinAccount,
+      signingRecord,
+      operationLog
+    },
     data() {
       return {
         shuttleList:[],
-        dialogFormVisible:true,
+        dialogFormVisible:false,
         labelButton:'eventDetails',
         radio2:1,
         checkList: [],
