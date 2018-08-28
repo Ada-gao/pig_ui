@@ -262,9 +262,9 @@
     methods: {
       getList() {
         this.listLoading = true
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.records
-          this.total = response.data.total
+        fetchList(this.listQuery).then(res => {
+          this.list = res.data.records
+          this.total = res.data.total
           this.listLoading = false
         })
       },
@@ -283,8 +283,8 @@
       },
       handleUpdate(row) {
         getObj(row.roleId)
-          .then(response => {
-            this.form = response.data
+          .then(res => {
+            this.form = res.data
             const listStr = this.form.maskCode
             let arr = []
             if(listStr) {
@@ -304,12 +304,12 @@
           })
       },
       handlePermission(row) {
-        fetchRoleTree(row.roleCode).then(response => {
-          this.checkedKeys = response.data
+        fetchRoleTree(row.roleCode).then(res => {
+          this.checkedKeys = res.data
         })
         fetchTree()
-          .then(response => {
-            this.treeData = response.data
+          .then(res => {
+            this.treeData = res.data
             this.dialogStatus = 'permission'
             this.dialogPermissionVisible = true
             this.roleId = row.roleId
@@ -318,8 +318,8 @@
       },
       handleDept() {
         fetchDeptTree()
-          .then(response => {
-            this.treeDeptData = response.data
+          .then(res => {
+            this.treeDeptData = res.data
             this.dialogDeptVisible = true
           })
       },
@@ -331,20 +331,25 @@
         this.dialogDeptVisible = false
         this.form.roleDeptId = data.id
         this.form.deptName = data.name
-        // console.log(data)
       },
       handleDelete(row) {
-        delObj(row.roleId).then(response => {
-          if (response.status === 200) {
-            this.dialogFormVisible = false
-            this.getList()
-            this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
-              duration: 2000
-            })
-          }
+        this.$confirm('此操作将永久删除该角色( ' + row.roleDesc + ' ), 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delObj(row.roleId).then(res => {
+            if (res.status === 200) {
+              this.dialogFormVisible = false
+              this.getList()
+              this.$notify({
+                title: '成功',
+                message: '删除成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
+          })
         })
       },
       create(formName) {
@@ -355,9 +360,12 @@
             if(len.length) {
               this.form.roleDeptId = len[len.length - 1]
             }
-            this.form.maskCode = this.form.maskCode.join(',')
+            if(this.form.maskCode) {
+              this.form.maskCode = this.form.maskCode.join(',')
+            }
             addObj(this.form)
-              .then(() => {
+              .then((res) => {
+                if (res.status !== 200) return
                 this.dialogFormVisible = false
                 this.getList()
                 this.$notify({
@@ -380,10 +388,13 @@
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
-            this.form.maskCode = this.form.maskCode.join(',')
+            if(this.form.maskCode) {
+              this.form.maskCode = this.form.maskCode.join(',')
+            }
             this.form.roleDeptId = this.form.deptIds[this.form.deptIds.length - 1]
             // this.dialogFormVisible = false
-            putObj(this.form).then(() => {
+            putObj(this.form).then((res) => {
+              if (res.status !== 200) return
               this.dialogFormVisible = false
               this.getList()
               this.$notify({
@@ -403,11 +414,11 @@
           .then(() => {
             this.dialogPermissionVisible = false
             fetchTree()
-              .then(response => {
-                this.treeData = response.data
+              .then(res => {
+                this.treeData = res.data
               })
-            fetchRoleTree(roleCode).then(response => {
-              this.checkedKeys = response.data
+            fetchRoleTree(roleCode).then(res => {
+              this.checkedKeys = res.data
             })
             this.$notify({
               title: '成功',
