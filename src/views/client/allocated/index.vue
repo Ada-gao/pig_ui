@@ -125,7 +125,7 @@
           <el-col :span="11">
             <el-form-item label="理财师" prop="name" >
               <el-select class="filter-item" v-model="modal.name" placeholder="请选择" @change="changetest">
-                <el-option v-for="item in plannerList" :key="item.userId" :label="item.name" :value="item"> </el-option>
+                <el-option v-for="item in plannerList" :key="item.userId" :label="item.name" :value="item.userId"> </el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -140,7 +140,7 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button class="search_btn" @click="changeCancel(modal)">取 消</el-button>
+        <el-button class="search_btn" @click="changeCancel('modal')">取 消</el-button>
         <el-button class="add_btn" @click="changePlanner()">确 定</el-button>
       </div>
     </el-dialog>
@@ -430,10 +430,11 @@
         })
       },
       changePlanner() {
+        const user = this.plannerList.find(item => item.userId === this.modal.name)
         let params = {
-          plannerId: this.modal.name.userId,
+          plannerId: this.modal.name,
           reason: this.modal.reason,
-          deptId: this.deptId
+          deptId: user.deptId
         }
         putPlanner(this.modal.clientId, params).then(res => {
           this.$notify({
@@ -481,8 +482,6 @@
       //   console.log(value)
       // },
       changetest(val) {
-        console.log(val)
-        this.deptId = val.deptId
         this.plannerList = this.plannerList.slice(0)
       }
     }
