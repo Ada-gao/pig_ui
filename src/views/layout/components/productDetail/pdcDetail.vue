@@ -84,10 +84,18 @@
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}</span>
             <el-input v-else v-model="form.investmentHorizon" style="width: 30%;"></el-input>
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
-            <el-select v-else v-model="form.investmentHorizonUnit" style="width: 23%;">
-              <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
-              </el-option>
-            </el-select>
+            <el-form-item v-else label=""
+              prop="investmentHorizonUnit"
+              style="display: inline-block; width: 110px;"
+              :rules="[
+                {required: true, message: '请选择产品期限单位', trigger: 'change'}
+              ]">
+              <el-select v-model="form.investmentHorizonUnit">
+                <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            
             <span style="width: 40%">产品折后系数：{{investRatio|turnNum}}</span>
           </el-form-item>
         </el-col>
