@@ -7,83 +7,78 @@
       :searchIdNo="false"
       :searchCertificationStatus="false"
     ></search-bar-component>
-
+    <div style="text-align: right;">
+      <el-button class="add_btn" @click="batchHandle">
+        <svg-icon icon-class="import" style="margin-right: 5px;"></svg-icon>批量分配
+      </el-button>
+    </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
-              highlight-current-row style="width: 100%">
-
+              highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
+      <el-table-column
+        type="selection"
+        width="55">
+      </el-table-column>
       <el-table-column align="center" label="客户编号">
         <template slot-scope="scope">
           <span>{{scope.row.clientNo}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="客户姓名">
         <template slot-scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="手机号">
         <template slot-scope="scope">
           <span>{{scope.row.mobile}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="客户邮箱">
         <template slot-scope="scope">
           <span>{{scope.row.email}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="证件类型">
         <template slot-scope="scope">
           <span>{{scope.row.idType }}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="证件号码">
         <template slot-scope="scope">
           <span>{{scope.row.idNo}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="客户类型">
         <template slot-scope="scope">
           <span>{{scope.row.clientClass}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="资产管理规模">
         <template slot-scope="scope">
           <span>{{scope.row.assetAmount}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="理财师">
         <template slot-scope="scope">
           <span>{{scope.row.userName}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="部门" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.userDeptName}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="实名认证状态" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{scope.row.realnameStatus}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="国籍（常住地区）" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.nationality}}</span>
         <span>{{scope.row.city}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
           <a size="small" class="common_btn"
@@ -95,7 +90,6 @@
           </a>
         </template>
       </el-table-column>
-
     </el-table>
 
     <div v-show="!listLoading" class="pagination-container">
@@ -150,7 +144,7 @@
 <script>
   import searchBarComponent from 'components/searchBar'
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/client'
-  import { putPlanner } from '@/api/client/planner'
+  import { putPlanner, batchPutPlanner } from '@/api/client/planner'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getAllPositon } from '@/api/queryConditions'
   import { getPlannerList } from '@/api/user'
@@ -259,19 +253,6 @@
           email: [
             {required: true, trigger: 'blur'}
           ],
-          // password: [
-          //   {
-          //     required: true,
-          //     message: '请输入密码',
-          //     trigger: 'blur'
-          //   },
-          //   {
-          //     min: 5,
-          //     max: 20,
-          //     message: '长度在 5 到 20 个字符',
-          //     trigger: 'blur'
-          //   }
-          // ],
           mobile: [
             {required: true, trigger: 'blur, change', validator: validMobile}
           ]
@@ -310,7 +291,9 @@
         deptName: [],
         deptId: '',
         modal: {},
-        plannerList: []
+        plannerList: [],
+        clientIds: [],
+        isBatch: false
       }
     },
     computed: {
@@ -436,16 +419,31 @@
           reason: this.modal.reason,
           deptId: user.deptId
         }
-        putPlanner(this.modal.clientId, params).then(res => {
-          this.$notify({
-                title: '成功',
-                message: '分配成功',
-                type: 'success',
-                duration: 2000
-              })
-          this.getList()
-          this.dialogFormVisible = false
-        })
+        if (this.isBatch) {
+          batchPutPlanner({clientIds: this.modal.clientId}, params).then(res => {
+            if (res.status !== 200) return
+            this.$notify({
+                  title: '成功',
+                  message: '分配成功',
+                  type: 'success',
+                  duration: 2000
+                })
+            this.getList()
+            this.dialogFormVisible = false
+          })
+        } else {
+          putPlanner(this.modal.clientId, params).then(res => {
+            if (res.status !== 200) return
+            this.$notify({
+                  title: '成功',
+                  message: '分配成功',
+                  type: 'success',
+                  duration: 2000
+                })
+            this.getList()
+            this.dialogFormVisible = false
+          })
+        }
       },
       changeCancel(formName) {
         this.$refs[formName].resetFields()
@@ -459,7 +457,6 @@
           role: undefined
         }
       },
-
       // resetFilter() { // 重置搜索条件
       //   this.listQuery = {
       //     page: 1,
@@ -473,8 +470,6 @@
       //   this.entryDate = []
       //   // this.handleFilter()
       // },
-
-
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`);
       // },
@@ -483,6 +478,17 @@
       // },
       changetest(val) {
         this.plannerList = this.plannerList.slice(0)
+      },
+      handleSelectionChange(val) {
+        this.clientSelects = val
+      },
+      batchHandle() {
+        this.isBatch = true
+        this.clientIds = []
+        this.clientSelects.forEach(item => {
+          this.clientIds.push(item.clientId)
+        })
+        this.handleUpdate(this.clientIds)
       }
     }
   }

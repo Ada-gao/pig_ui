@@ -84,10 +84,18 @@
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}</span>
             <el-input v-else v-model="form.investmentHorizon" style="width: 30%;"></el-input>
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
-            <el-select v-else v-model="form.investmentHorizonUnit" style="width: 23%;">
-              <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
-              </el-option>
-            </el-select>
+            <el-form-item v-else label=""
+              prop="investmentHorizonUnit"
+              style="display: inline-block; width: 110px;"
+              :rules="[
+                {required: true, message: '请选择产品期限单位', trigger: 'change'}
+              ]">
+              <el-select v-model="form.investmentHorizonUnit">
+                <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            
             <span style="width: 40%">产品折后系数：{{investRatio|turnNum}}</span>
           </el-form-item>
         </el-col>
@@ -178,7 +186,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="付息方式" prop="interestPayment">
-            <span v-if="detailDisabled">{{form.interestPayment}}</span>
+            <span v-if="detailDisabled">{{form.interestPayment|turnText(interestPayment)}}</span>
             <el-select v-else class="filter-item" v-model="form.interestPayment" placeholder="请选择">
               <el-option v-for="item in interestPayment" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -480,6 +488,7 @@
           this.currencyList = response.data
           this.form.currencyId = 1
           if(!this.stage) {
+            console.log('没有分期')
             this.getList()
           }
         })
@@ -507,7 +516,7 @@
           .then(response => {
             this.form = response.data
             this.userDefinedAttribute = JSON.parse(this.form.userDefinedAttribute)
-            console.log(JSON.parse(this.form.userDefinedAttribute))
+            // console.log(JSON.parse(this.form.userDefinedAttribute))
             this.form.subscribe = this.form.subscribe - 0
             if(this.userDefinedAttribute == 'null') {
               this.userNewAttr = false
@@ -531,8 +540,8 @@
             }
             this.$emit('listen', params) // 传递产品状态到父组件
             // this.$store.dispatch('SetProductStatus', this.productStatusNo)
-            this.form.currencyIdNo = this.form.currencyId
-            this.form.productTypeIdNo = this.form.productTypeId
+            // this.form.currencyIdNo = this.form.currencyId
+            // this.form.productTypeIdNo = this.form.productTypeId
             this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
             // this.form.productMixTypeIdNo = this.form.productMixTypeId
             // this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
@@ -576,6 +585,7 @@
         }
       },
       create(formName) { // 创建提交
+        console.log('创建')
         // this.$emit('productIdByDetail', '')
         const set = this.$refs
         if(!this.form.isFloat) {
@@ -616,6 +626,8 @@
         })
       },
       update(formName) { // 产品详情修改提交
+        console.log('修改保存')
+        console.log(this.form)
         const set = this.$refs
         // if(this.stageType==='0' || this.productStatusNo == '0') formName = 'form'
         if(!this.form.isFloat) {
@@ -623,8 +635,8 @@
           this.isDisabled = true
         }
         this.form.productStatus = this.productStatusNo
-        this.form.currencyId = this.form.currencyIdNo
-        this.form.productTypeId = this.form.productTypeIdNo
+        // this.form.currencyId = this.form.currencyIdNo
+        // this.form.productTypeId = this.form.productTypeIdNo
         // this.form.investmentHorizonUnit = this.form.investmentHorizonUnitNo
         // this.form.productMixTypeId = this.form.productMixTypeIdNo
         if(this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit!='1') {
