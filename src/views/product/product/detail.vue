@@ -370,7 +370,7 @@
       },
       step(val) {
         this.activeStep = val - 1
-        console.log(this.activeStep)
+        // console.log(this.activeStep)
       }
     },
     methods: {

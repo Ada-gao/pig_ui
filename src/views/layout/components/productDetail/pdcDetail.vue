@@ -480,6 +480,7 @@
           this.currencyList = response.data
           this.form.currencyId = 1
           if(!this.stage) {
+            console.log('没有分期')
             this.getList()
           }
         })
@@ -507,7 +508,7 @@
           .then(response => {
             this.form = response.data
             this.userDefinedAttribute = JSON.parse(this.form.userDefinedAttribute)
-            console.log(JSON.parse(this.form.userDefinedAttribute))
+            // console.log(JSON.parse(this.form.userDefinedAttribute))
             this.form.subscribe = this.form.subscribe - 0
             if(this.userDefinedAttribute == 'null') {
               this.userNewAttr = false
@@ -531,8 +532,8 @@
             }
             this.$emit('listen', params) // 传递产品状态到父组件
             // this.$store.dispatch('SetProductStatus', this.productStatusNo)
-            this.form.currencyIdNo = this.form.currencyId
-            this.form.productTypeIdNo = this.form.productTypeId
+            // this.form.currencyIdNo = this.form.currencyId
+            // this.form.productTypeIdNo = this.form.productTypeId
             this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
             // this.form.productMixTypeIdNo = this.form.productMixTypeId
             // this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
@@ -576,6 +577,7 @@
         }
       },
       create(formName) { // 创建提交
+        console.log('创建')
         // this.$emit('productIdByDetail', '')
         const set = this.$refs
         if(!this.form.isFloat) {
@@ -616,6 +618,8 @@
         })
       },
       update(formName) { // 产品详情修改提交
+        console.log('修改保存')
+        console.log(this.form)
         const set = this.$refs
         // if(this.stageType==='0' || this.productStatusNo == '0') formName = 'form'
         if(!this.form.isFloat) {
@@ -623,8 +627,8 @@
           this.isDisabled = true
         }
         this.form.productStatus = this.productStatusNo
-        this.form.currencyId = this.form.currencyIdNo
-        this.form.productTypeId = this.form.productTypeIdNo
+        // this.form.currencyId = this.form.currencyIdNo
+        // this.form.productTypeId = this.form.productTypeIdNo
         // this.form.investmentHorizonUnit = this.form.investmentHorizonUnitNo
         // this.form.productMixTypeId = this.form.productMixTypeIdNo
         if(this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit!='1') {
