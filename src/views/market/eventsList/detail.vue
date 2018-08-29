@@ -10,20 +10,30 @@
         <el-button :class="{add_btn:labelButton=='operationLog'}" @click="changeButton('operationLog')">操作日志</el-button>
       </el-button-group>
     </nav>
+     <!-- 活动海报 -->
+    <event-poster v-if= " labelButton =='eventPoster' "></event-poster>
+    <!-- 报名/签到 -->
+    <registration-check v-if= " labelButton =='registrationCheck' "></registration-check>
+    <!-- 签到账号 -->
+    <checkin-account v-if= " labelButton =='checkinAccount' "></checkin-account>
+    <!--  签单记录-->
+    <signing-record v-if= " labelButton =='signingRecord' "></signing-record>
+    <!-- 操作日志 -->
+    <operation-log v-if= " labelButton =='operationLog' "></operation-log>
     <!-- 活动详情 -->
-    <el-form v-if="labelButton == 'eventDetails' "  label-width="100px" style="width: 90%" class="events-detail">
+    <el-form v-if="labelButton == 'eventDetails' " :model="form" :rules="rules" ref="ruleForm" label-width="110px" style="width: 90%" class="events-detail">
       <!-- 活动基本信息 -->
       <article>
         <p class="title">活动基本信息</p>
         <el-row type="flex" class="row-bg" justify="space-between">
           <el-col :span="11">
-            <el-form-item label="活动名称">
-              <el-input ></el-input>
+            <el-form-item label="活动名称" prop="activityName">
+              <el-input  v-model="form.activityName"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-             <el-form-item label="活动类型">
-               <el-select v-model="value5" multiple placeholder="请选择" style="width: 100%;">
+             <el-form-item label="活动类型" prop="activityType">
+               <el-select  v-model="form.activityType" placeholder="请选择" style="width: 100%;">
                  <el-option
                    v-for="item in options"
                    :key="item.value"
@@ -36,8 +46,8 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-between">
           <el-col :span="11">
-            <el-form-item label="活动负责人">
-              <el-select v-model="value5" multiple placeholder="请选择" style="width: 100%;">
+            <el-form-item label="活动负责人" prop="activityPrincipalList">
+              <el-select  v-model="form.activityPrincipalList" multiple placeholder="请选择" style="width: 100%;">
                 <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -48,17 +58,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-             <el-form-item label="活动人数(人)">
-              <el-input ></el-input>
+             <el-form-item label="活动人数(人)" prop="activityActivitiesNumber">
+              <el-input  v-model="form.activityActivitiesNumber"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-between">
           <el-col :span="11">
-            <el-form-item label="活动时间" >
+            <el-form-item label="活动时间" prop="activityData">
               <el-date-picker
                 style="width:100%"
-                 v-model="value6"
+                 v-model="form.activityData"
                  type="daterange"
                  range-separator="-"
                  start-placeholder="开始日期"
@@ -67,10 +77,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-             <el-form-item label="报名时间" >
+             <el-form-item label="报名时间" prop="registrationData">
                <el-date-picker
                style="width:100%"
-                v-model="value6"
+                v-model="form.registrationData"
                 type="daterange"
                 range-separator="-"
                 start-placeholder="开始日期"
@@ -81,13 +91,13 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-between">
           <el-col :span="11">
-            <el-form-item label="活动地址" >
-              <el-input ></el-input>
+            <el-form-item label="活动地址" prop="activitySite">
+              <el-input  v-model="form.activitySite"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-             <el-form-item label="主办部门" >
-               <el-select v-model="value5" multiple placeholder="请选择" style="width: 100%;">
+             <el-form-item label="主办部门" prop="activityDept">
+               <el-select v-model="form.activityDept" multiple placeholder="请选择" style="width: 100%;">
                  <el-option
                    v-for="item in options"
                    :key="item.value"
@@ -102,6 +112,7 @@
           <el-col :span="24">
             <el-form-item label="活动简介" >
               <el-input
+               v-model="form.activityIntroduction"
                 type="textarea"
                 :rows="4"
                 placeholder="请输入内容">
@@ -109,23 +120,33 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row type="flex" justify="end">
+        <!-- <el-row type="flex" justify="end">
           <el-button class="search_btn"><svg-icon icon-class="add"></svg-icon>新增属性</el-button>
-        </el-row>
+        </el-row> -->
       </article>
       <!-- 活动可见范围（员工） -->
       <article  style="margin-top:40px">
         <p class="title">活动可见范围（员工）</p>
         <el-form-item>
-          <el-radio v-model="radio2" label="1">全部可见</el-radio>
-          <el-radio v-model="radio2" label="2">部分可见</el-radio>
+           <el-radio-group v-model="form.activityRangeType">
+            <el-radio :label="0">全部可见</el-radio>
+            <el-radio :label="1">部分可见</el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="参与部门">
+        <el-form-item label="参与部门" v-if="form.activityRangeType == 1">
         <el-row  type="flex" justify="space-between">
-          <div class="c-select">
-            <span class="c-select-list" v-for="item in 30">sss</span>
-          </div>
+          <el-col class="c-select">
+            <span class="c-select-list" v-for="item in form.activityRangeDeptList" >{{item}}</span>
+          </el-col>
             <el-button class="search_btn" style="height:40px;" @click="selectDepartment"></svg-icon>选择部门</el-button>
+          </el-row>
+        </el-form-item>
+        <el-form-item label="参与职位" v-if="form.activityRangeType == 1">
+        <el-row  type="flex" justify="space-between">
+          <el-col class="c-select">
+            <span class="c-select-list" v-for="item in form.activityRangePositionList" >{{item}}</span>
+          </el-col>
+            <el-button class="search_btn" style="height:40px;" @click="selectDepartment"></svg-icon>选择职位</el-button>
           </el-row>
         </el-form-item>
       </article>
@@ -133,18 +154,28 @@
       <article  style="margin-top:40px">
         <p class="title">活动可见范围（客户）</p>
           <el-form-item>
-            <el-radio v-model="radio2" label="1">全部可见</el-radio>
-            <el-radio v-model="radio2" label="2">部分可见</el-radio>
+            <el-radio-group v-model="form.activityClientLabelType">
+            <el-radio :label="0">全部可见</el-radio>
+            <el-radio :label="1">部分可见</el-radio>
+          </el-radio-group>
+          </el-form-item>
+          <el-form-item label="客户标签" v-if="form.activityClientLabelType == 1">
+          <el-row  type="flex" justify="space-between">
+            <el-col class="c-select">
+              <span class="c-select-list" v-for="item in form.activityClientLabelList" >{{item}}</span>
+            </el-col>
+              <el-button class="search_btn" style="height:40px;" @click="selectDepartment"></svg-icon>选择部门</el-button>
+            </el-row>
           </el-form-item>
       </article>
       <!--  活动分享渠道-->
       <article  style="margin-top:40px">
         <p class="title">活动分享渠道</p>
           <el-form-item>
-            <el-checkbox-group v-model="checkList">
-             <el-checkbox label="微信好友"></el-checkbox>
-             <el-checkbox label="微信朋友圈"></el-checkbox>
-             <el-checkbox label="QQ好友"></el-checkbox>
+            <el-checkbox-group v-model="form.activityShare">
+             <el-checkbox label="0">微信好友</el-checkbox>
+             <el-checkbox label="1">微信朋友圈</el-checkbox>
+             <el-checkbox label="2">QQ好友</el-checkbox>
            </el-checkbox-group>
           </el-form-item>
       </article>
@@ -166,7 +197,7 @@
         <div  style="text-align: center;">
           <el-button class="search_btn">上一步</el-button>
           <el-button class="add_btn" >发布活动</el-button>
-          <el-button class="add_btn" >保 存</el-button>
+          <el-button class="add_btn" @click="save('ruleForm')">保 存</el-button>
           <el-button class="search_btn">取 消</el-button>
         </div>
       
@@ -176,25 +207,26 @@
       title="提示"
       :visible.sync="dialogFormVisible"
       width="30%">
+        
         <table class="table-event">
           <thead class="thead">
             <tr>
               <th >所有部门</th>
-              <th >已选部门</th>
+              <!-- <th >已选部门</th> -->
               </tr>
             </thead>
             <tbody  class="tbody">
               <tr>
-                <td><el-tree
+                <td ><el-tree
                    show-checkbox
                    node-key="label"
                    :data="data"
                    ref="tree"
                   :props="defaultProps"
                   @check-change="shuttleAdd"></el-tree></td>
-                <td>
+                <!-- <td>
                     <p class="list" v-for="item in shuttleList"><el-row  type="flex" justify="space-between">{{item}}<span class="close" @click="shuttleDelete">x</span></el-row></p>
-                  </td>
+                  </td> -->
                 </tr>
             </tbody>
           </table>
@@ -203,16 +235,7 @@
         <el-button class="add_btn"  @click="update">确 定</el-button>
       </div>
     </el-dialog>
-    <!-- 活动海报 -->
-    <event-poster v-if= " labelButton =='eventPoster' "></event-poster>
-    <!-- 报名/签到 -->
-    <registration-check v-if= " labelButton =='registrationCheck' "></registration-check>
-    <!-- 签到账号 -->
-    <checkin-account v-if= " labelButton =='checkinAccount' "></checkin-account>
-    <!--  签单记录-->
-    <signing-record v-if= " labelButton =='signingRecord' "></signing-record>
-    <!-- 操作日志 -->
-    <operation-log v-if= " labelButton =='operationLog' "></operation-log>
+   
 
 
   </div>
@@ -235,10 +258,20 @@
     },
     data() {
       return {
+        rules:{
+            activityName:[ { required: true, message: '请输入活动名称', trigger: 'blur' }],
+            activityType:[ { required: true, message: '请输入活动类型', trigger: 'blur' }],
+            activityPrincipalList:[ { required: true, message: '请选择活动负责人', trigger: 'blur' }],
+            activityActivitiesNumber:[ { required: true, message: '请输入活动人数', trigger: 'blur' }],
+            activityData:[ { required: true, message: '请选择活动时间', trigger: 'blur' }],
+            registrationData:[ { required: true, message: '请选择报名时间', trigger: 'blur' }],
+            activitySite:[ { required: true, message: '请输入活动地址', trigger: 'blur' }],
+            activityDept:[ { required: true, message: '请选择主办部门', trigger: 'blur' }],
+        },
+        form:null,
         shuttleList:[],
         dialogFormVisible:false,
         labelButton:'eventDetails',
-        radio2:1,
         checkList: [],
          value6: '',
         options: [{
@@ -309,6 +342,7 @@
       ])
     },
     created() {
+      this.initialization();
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
@@ -316,12 +350,39 @@
     mount(){
       console.log(this.radio2)
     },
-    watch:{
-      radio2(val){
-        console.log(val)
-      }
-    },
+ 
     methods: {
+      // 表单数据初始化
+      initialization(){
+        this.form = {
+          activityName:'',//活动名称
+          activityType:'',//活动类型
+          activityPrincipalList:'',//活动负责人
+          activityActivitiesNumber:'',//活动人数
+          activityData:[],//活动时间
+          registrationData:[],//报名时间
+          activitySite:'',//活动地址
+          activityDept:'',//主办部门
+          activityRangeType:0,//活动可见范围（员工）
+          activityRangeDeptList:[],//参与部门(可见部门)
+          activityRangePositionList:[],//参与职位(可见职位)
+          activityClientLabelType:0,//活动可见范围（客户）
+          activityClientLabelList:[],//客户标签(可见客户标签)
+          activityShare:[],//活动分享渠道
+          activityForeendPictureList:'',//C端展示图
+        }  
+      },
+      //保存提交 
+      save(formName){
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            console.log(this.form)
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });  
+      },
       changeButton(state){
         this.labelButton = state
       },
@@ -333,14 +394,11 @@
         this.dialogFormVisible = false;
       },
       update(){
-
+        this.dialogFormVisible = false;
       },
        // 穿梭列表添加
       shuttleAdd(data) {
-       console.log(data);
-       this.shuttleList.push(data.label)
-       // console.log(this.$refs.tree.getCheckedNodes());
-       // console.log(this.$refs.tree.getCheckedKeys());
+        this.form.activityRangePositionList = this.$refs.tree.getCheckedKeys()
      },
      // 穿梭列表删除
      shuttleDelete(){

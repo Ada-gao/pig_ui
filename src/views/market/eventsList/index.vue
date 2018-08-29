@@ -35,11 +35,9 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="活动状态">
-              <el-row type="flex" class="row-bg" justify="space-between">
                <el-button :class="{add_btn:releaseSelection == 1}" @click="changeReleaseSelection(1)">未发布</el-button>
                <el-button :class="{add_btn:releaseSelection == 2}" @click="changeReleaseSelection(2)">已发布</el-button>
                <el-button :class="{add_btn:releaseSelection == 3}" @click="changeReleaseSelection(3)">已结束</el-button>
-              </el-row>
             </el-form-item>
           </el-col>
         </el-row>
