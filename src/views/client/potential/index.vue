@@ -7,6 +7,7 @@
       :searchNationality="false"
       :searchCity="false"
       :searchClientType="false"
+      :searchCertificationStatus="false"
       :searchValidate="true"
       >
     </search-bar-component>

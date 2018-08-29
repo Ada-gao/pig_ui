@@ -32,6 +32,7 @@
         <el-table-column align="center" label="材料名称">
           <template slot-scope="scope">
             <el-input
+              class="define-ipt"
               v-if="transcId===scope.row.transactionFileManageId"
               v-model="scope.row.name"
               @keyup.enter.native="$event.target.blur"
@@ -58,8 +59,8 @@
                       @click="transcId=scope.row.transactionFileManageId">编辑
                       <!-- @click="handleRouter(scope.row.clientId)">编辑 -->
             </a>
-            <span class="space_line"> | </span>
-            <a size="small" class="common_btn"
+            <!--<span class="space_line"> | </span>-->
+            <a size="small" class="danger_btn"
                       @click="deleteTransc(scope.row.transactionFileManageId)">删除
             </a>
           </template>
@@ -239,7 +240,7 @@
           // this.$message({
           //   type: 'info',
           //   message: '取消输入'
-          // });       
+          // });
         });
       },
       getTranscList() {
