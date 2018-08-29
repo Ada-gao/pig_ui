@@ -194,6 +194,16 @@
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
     },
+    mounted(){
+        // 点击页面其他位置，使得可编辑框失去焦点
+        document.addEventListener('mousedown', e =>{
+            if (e.target.parentNode && !e.target.parentNode.classList.contains('define-ipt')) {
+                if (document.querySelector('.define-ipt input') !== null) {
+                  this.transcId = ''
+                }
+            }
+        }, false)
+    },
     methods: {
       getListQuery(data) {
         console.log('data')
