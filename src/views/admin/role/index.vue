@@ -106,7 +106,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDeptVisible">
+    <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDeptVisible">
       <el-tree
         class="filter-tree"
         :data="treeDeptData"
@@ -121,14 +121,13 @@
         default-expand-all
       >
       </el-tree>
-    </el-dialog>
+    </el-dialog> -->
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogPermissionVisible">
       <el-tree
         class="filter-tree"
         :data="treeData"
         :default-checked-keys="checkedKeys"
-        check-strictly
         node-key="id"
         highlight-current
         :props="defaultProps"
@@ -146,7 +145,7 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj, permissionUpd, fetchRoleTree, fetchDeptTree } from '@/api/role'
+  import { fetchList, getObj, addObj, putObj, delObj, permissionUpd, fetchRoleTree } from '@/api/role'
   import { fetchTree } from '@/api/menu'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { mapGetters } from 'vuex'
@@ -163,7 +162,7 @@
     data() {
       return {
         treeData: [],
-        treeDeptData: [],
+        // treeDeptData: [],
         checkedKeys: [],
         defaultProps: {
           children: 'children',
@@ -235,7 +234,7 @@
         statusOptions: ['0', '1'],
         rolesOptions: undefined,
         dialogFormVisible: false,
-        dialogDeptVisible: false,
+        // dialogDeptVisible: false,
         dialogPermissionVisible: false,
         dialogStatus: '',
         textMap: {
@@ -316,22 +315,22 @@
             this.roleCode = row.roleCode
           })
       },
-      handleDept() {
-        fetchDeptTree()
-          .then(res => {
-            this.treeDeptData = res.data
-            this.dialogDeptVisible = true
-          })
-      },
+      // handleDept() {
+      //   fetchDeptTree()
+      //     .then(res => {
+      //       this.treeDeptData = res.data
+      //       this.dialogDeptVisible = true
+      //     })
+      // },
       filterNode(value, data) {
         if (!value) return true
         return data.label.indexOf(value) !== -1
       },
-      getNodeData(data) {
-        this.dialogDeptVisible = false
-        this.form.roleDeptId = data.id
-        this.form.deptName = data.name
-      },
+      // getNodeData(data) {
+      //   this.dialogDeptVisible = false
+      //   this.form.roleDeptId = data.id
+      //   this.form.deptName = data.name
+      // },
       handleDelete(row) {
         this.$confirm('此操作将永久删除该角色( ' + row.roleDesc + ' ), 是否继续?', '提示', {
           confirmButtonText: '确定',

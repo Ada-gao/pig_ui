@@ -178,7 +178,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="付息方式" prop="interestPayment">
-            <span v-if="detailDisabled">{{form.interestPayment}}</span>
+            <span v-if="detailDisabled">{{form.interestPayment|turnText(interestPayment)}}</span>
             <el-select v-else class="filter-item" v-model="form.interestPayment" placeholder="请选择">
               <el-option v-for="item in interestPayment" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
