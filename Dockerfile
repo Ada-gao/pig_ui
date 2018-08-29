@@ -1,11 +1,11 @@
-FROM nginx:1.13.12-alpine
+FROM openresty/openresty:alpine
+
+ENV GATEWAY_URL http://10.9.60.141:9999
 COPY dist /usr/share/nginx/html
 
 
-COPY nginx.conf /etc/nginx/
-
-ADD ./docker-run.sh /usr/share/nginx/
+COPY nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
 
 EXPOSE 80
 
-CMD ["sh", "/usr/share/nginx/docker-run.sh"]
+

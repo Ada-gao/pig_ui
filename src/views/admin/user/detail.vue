@@ -415,6 +415,13 @@
     directives: {
       waves
     },
+    watch: {
+      step(oldVal, newVal) {
+        if (newVal == 2){
+          this.initialization()
+        }
+      }
+    },
     data() {
       return {
         // treeDeptData: [],
@@ -566,14 +573,14 @@
       // this.handleDept()
     },
     mounted() {
-      this.initialization();
+      this.initialization()
     },
     methods: {
       // 员工基本信息初始化
-      initialization(){
+      initialization() {
         this.id = this.$route.params.id
         this.state = this.$route.params.state
-        if(this.id) {
+        if (this.id) {
           this.getList()
         } else {
           this.dialogStatus = 'create'
