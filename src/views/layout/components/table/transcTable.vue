@@ -30,7 +30,7 @@
 
       <el-table-column align="center" label="客户类型">
         <template slot-scope="scope">
-          <span>{{scope.row.clientClass|turnText(clientClass)}}</span>
+          <span>{{scope.row.clientType|turnText(clientType)}}</span>
         </template>
       </el-table-column>
 
@@ -283,7 +283,8 @@
         'appointmentStatus',
         'refundStatus',
         'productRiskLevel',
-        'clientClass'
+        'clientClass',
+        'clientType'
       ])
     },
     filters: {

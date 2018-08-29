@@ -362,7 +362,7 @@
       </el-row>
     </el-form>
     <!-- 直属变更 -->
-    <direct-change v-show="step==='2'"></direct-change>
+    <direct-change v-if="step==='2'"></direct-change>
   </div>
 </template>
 
@@ -414,6 +414,13 @@
     name: 'table_user',
     directives: {
       waves
+    },
+    watch: {
+      step(oldVal, newVal) {
+        if (newVal == 2){
+          this.initialization()
+        }
+      }
     },
     data() {
       return {
@@ -528,6 +535,13 @@
         curPrevId: ''
       }
     },
+    watch:{
+      step(oldVal,newVal){
+        if(newVal == 2){
+          this.initialization();
+        }
+      }
+    },
     computed: {
       ...mapGetters([
         'permissions',
@@ -559,16 +573,20 @@
       // this.handleDept()
     },
     mounted() {
-      this.id = this.$route.params.id
-      this.state = this.$route.params.state
-      if(this.id) {
-        this.getList()
-      } else {
-        this.dialogStatus = 'create'
-        this.state = this.dialogStatus
-      }
+      this.initialization()
     },
     methods: {
+      // 员工基本信息初始化
+      initialization() {
+        this.id = this.$route.params.id
+        this.state = this.$route.params.state
+        if (this.id) {
+          this.getList()
+        } else {
+          this.dialogStatus = 'create'
+          this.state = this.dialogStatus
+        }
+      },
       getList() { // 编辑查询（查看）
         getObj(this.id)
           .then(response => {
@@ -778,4 +796,3 @@
   width: 100%;
 }
 </style>
-

@@ -7,6 +7,7 @@
       <!--<img width="100%" :src="dialogImageUrl" alt="">-->
       <el-carousel arrow="always"
                    indicator-position="none"
+                   ref="carousel"
                    style="width:100%;text-align:center"
                    @change="carouselChange"
                    :autoplay="false">
@@ -179,7 +180,7 @@
             <h5>打款凭证</h5>
             <div class="split-line"></div>
             <div class="imgs">
-              <img :src="item.pictureUrl" alt="" @click="previewImg1('remit')" v-for="item in remitFiles">
+              <img :src="item.pictureUrl" alt="" @click="previewImg1('remit', index)" v-for="(item, index) in remitFiles">
             </div>
           </div>
 
@@ -187,7 +188,7 @@
             <h5>交易所需材料</h5>
             <div class="split-line"></div>
             <div class="imgs">
-              <img :src="item.pictureUrl" alt="" @click="previewImg1('deal')" v-for="item in dealFiles">
+              <img :src="item.pictureUrl" alt="" @click="previewImg1('deal', index)" v-for="(item, index) in dealFiles">
             </div>
           </div>
 
@@ -195,7 +196,7 @@
             <h5>退款申请书</h5>
             <div class="split-line"></div>
             <div class="imgs">
-              <img :src="item.pictureUrl" alt="" @click="previewImg1('refund')" v-for="item in refundFiles">
+              <img :src="item.pictureUrl" alt="" @click="previewImg1('refund', index)" v-for="(item, index) in refundFiles">
             </div>
           </div>
 
@@ -544,7 +545,10 @@
       // console.log(this.$route.params)
     },
     methods: {
-      previewImg1(flag) {
+      setActive(index) {
+        this.$refs.carousel.setActiveItem(index)
+      },
+      previewImg1(flag, index) {
         switch (flag) {
           case 'remit':
             this.idcardImgs = [...this.remitImgArr]
@@ -556,6 +560,11 @@
             this.idcardImgs = [...this.refundImgArr]
             break
         }
+        let timer = setTimeout(() => {
+          this.setActive(index)
+          clearTimeout(timer)
+          timer = null
+        }, 10)
         this.dialogImgVisible1 = true
       },
       carouselChange(value) {

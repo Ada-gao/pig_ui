@@ -2,7 +2,7 @@
   <div class="app-container calendar-list-container">
 	 <div class="filter-container">
         <el-button v-if="sys_currency_add" class="filter-item add_btn" style="margin-left: 10px; float: right" @click="handleCreate" type="primary" icon="edit">
-          <svg-icon icon-class="add"></svg-icon> 新增汇率</el-button> 
+          <svg-icon icon-class="add"></svg-icon> 新增汇率</el-button>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
@@ -24,7 +24,7 @@
 
     </el-table>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="cancel('form')">
       <el-form :model="form" ref="form" label-width="100px" :rules="rules">
         <el-form-item label="币种名称" prop="name">
           <el-input v-model="form.name" :disabled="true"></el-input>
@@ -66,7 +66,7 @@
       let checkNumber = (rule, value, callback)=>{
         let check = /^[1-9]\d{0,4}(\.\d{1,2})?$|^0\.0[1-9]$|^0\.[1-9][0-9]$/;
         if(!check.test(value)){
-          callback(new Error('请输入正确的汇率格式'));
+         return callback(new Error('请输入正确的汇率格式'));
         }
       }
       return {
@@ -203,7 +203,7 @@
               });
               return false;
             }
-         
+
             addExchangeRate(this.form)
               .then((res) => {
                 if(res.data){
@@ -227,7 +227,6 @@
         this.$refs[formName].resetFields();
         this.resetTemp();
       },
-
       resetTemp() {
         this.form = {
           exchangeRate: '',
@@ -235,7 +234,7 @@
         }
       },
       conversionTime(timestamp){
-      	
+
       }
     }
   }
