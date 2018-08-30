@@ -32,7 +32,8 @@
         <el-table-column align="center" label="材料名称">
           <template slot-scope="scope">
             <el-input
-              v-show="transcId===scope.row.transactionFileManageId"
+              class="define-ipt"
+              v-if="transcId===scope.row.transactionFileManageId"
               v-model="scope.row.name"
               @keyup.enter.native="$event.target.blur"
               @blur="updateTranscFile(scope.row)"></el-input>
@@ -58,8 +59,8 @@
                       @click="editHandle(scope.row)">编辑
                       <!-- @click="transcId=scope.row.transactionFileManageId">编辑 -->
             </a>
-            <span class="space_line"> | </span>
-            <a size="small" class="common_btn"
+            <!--<span class="space_line"> | </span>-->
+            <a size="small" class="danger_btn"
                       @click="deleteTransc(scope.row.transactionFileManageId)">删除
             </a>
           </template>
@@ -193,6 +194,16 @@
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
     },
+    mounted(){
+        // 点击页面其他位置，使得可编辑框失去焦点
+        document.addEventListener('mousedown', e =>{
+            if (e.target.parentNode && !e.target.parentNode.classList.contains('define-ipt')) {
+                if (document.querySelector('.define-ipt input') !== null) {
+                  this.transcId = ''
+                }
+            }
+        }, false)
+    },
     methods: {
       editHandle(row) {
         this.transcId = row.transactionFileManageId
@@ -242,7 +253,7 @@
           // this.$message({
           //   type: 'info',
           //   message: '取消输入'
-          // });       
+          // });
         });
       },
       getTranscList() {
