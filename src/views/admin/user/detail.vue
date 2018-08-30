@@ -546,7 +546,8 @@
         result: [],
         tempDeptIds: [],
         eachIndex: 0,
-        curPrevId: ''
+        curPrevId: '',
+        userId: ''
       }
     },
     watch:{

@@ -483,6 +483,15 @@
         this.clientSelects = val
       },
       batchHandle() {
+        if (!this.clientSelects || !this.clientSelects.length) {
+          this.$notify({
+            title: '提示',
+            message: '请选择至少一个待分配客户',
+            type: 'warning',
+            duration: 2000
+          })
+          return
+        }
         this.isBatch = true
         this.clientIds = []
         this.clientSelects.forEach(item => {
