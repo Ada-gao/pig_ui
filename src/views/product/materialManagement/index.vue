@@ -32,12 +32,12 @@
         <el-table-column align="center" label="材料名称">
           <template slot-scope="scope">
             <el-input
-              class="define-ipt"
               v-if="transcId===scope.row.transactionFileManageId"
+              v-autoFocus
               v-model="scope.row.name"
               @keyup.enter.native="$event.target.blur"
               @blur="updateTranscFile(scope.row)"></el-input>
-            <span v-show="transcId!==scope.row.transactionFileManageId">{{scope.row.name}}</span>
+            <span v-else>{{scope.row.name}}</span>
           </template>
         </el-table-column>
 
@@ -56,8 +56,8 @@
         <el-table-column align="center" label="操作" fixed="right" width="150">
           <template slot-scope="scope">
             <a size="small" class="common_btn"
-                      @click="editHandle(scope.row)">编辑
-                      <!-- @click="transcId=scope.row.transactionFileManageId">编辑 -->
+                      @click="transcId=scope.row.transactionFileManageId">编辑
+                      <!-- @click="editHandle(scope.row)">编辑 -->
             </a>
             <!--<span class="space_line"> | </span>-->
             <a size="small" class="danger_btn"
@@ -179,7 +179,8 @@
         step: 1,
         importUrl: 'zuul/product/productTransactionFileManage/',
         transcId: '',
-        data: {}
+        data: {},
+        focusStatus: false
       }
     },
     computed: {
@@ -206,6 +207,7 @@
     },
     methods: {
       editHandle(row) {
+        this.focusStatus = true
         this.transcId = row.transactionFileManageId
       },
       getListQuery(data) {
@@ -282,6 +284,7 @@
         }
         updTranscFile(item.transactionFileManageId, params).then(res => {
           this.transcId = ''
+          this.focusStatus = false
           this.getTranscList()
         })
       },
