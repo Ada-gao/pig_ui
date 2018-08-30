@@ -99,7 +99,7 @@
   import { fetchCurrency, getObjList } from '@/api/currency'
   import { getToken } from '@/utils/auth'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { transformText } from '@/utils'
+  import { transformText} from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -195,7 +195,6 @@
       this.sys_product_upd = this.permissions['sys_product_upd']
     },
     mounted(){
-        // 点击页面其他位置，使得可编辑框失去焦点
         document.addEventListener('mousedown', e =>{
             if (e.target.parentNode && !e.target.parentNode.classList.contains('define-ipt')) {
                 if (document.querySelector('.define-ipt input') !== null) {
