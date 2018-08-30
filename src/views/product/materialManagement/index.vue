@@ -32,11 +32,11 @@
         <el-table-column align="center" label="材料名称">
           <template slot-scope="scope">
             <el-input
-              v-if="transcId===scope.row.transactionFileManageId"
+              v-show="transcId===scope.row.transactionFileManageId"
               v-model="scope.row.name"
               @keyup.enter.native="$event.target.blur"
               @blur="updateTranscFile(scope.row)"></el-input>
-            <span v-else>{{scope.row.name}}</span>
+            <span v-show="transcId!==scope.row.transactionFileManageId">{{scope.row.name}}</span>
           </template>
         </el-table-column>
 
@@ -55,8 +55,8 @@
         <el-table-column align="center" label="操作" fixed="right" width="150">
           <template slot-scope="scope">
             <a size="small" class="common_btn"
-                      @click="transcId=scope.row.transactionFileManageId">编辑
-                      <!-- @click="handleRouter(scope.row.clientId)">编辑 -->
+                      @click="editHandle(scope.row)">编辑
+                      <!-- @click="transcId=scope.row.transactionFileManageId">编辑 -->
             </a>
             <span class="space_line"> | </span>
             <a size="small" class="common_btn"
@@ -194,6 +194,9 @@
       this.sys_product_upd = this.permissions['sys_product_upd']
     },
     methods: {
+      editHandle(row) {
+        this.transcId = row.transactionFileManageId
+      },
       getListQuery(data) {
         console.log('data')
         console.log(data)

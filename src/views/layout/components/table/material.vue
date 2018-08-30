@@ -7,23 +7,23 @@
         <el-table-column align="center" label="材料名称">
           <template slot-scope="scope">
             <el-input
-              v-show="transcId===scope.row.productClientFileId"
+              v-if="transcId===scope.row.productClientFileId||transcId===scope.row.productClientFileManageId"
               v-model="scope.row.fileName"
               @keyup.enter.native="$event.target.blur"
               @blur="updateClientFile(scope.row)"></el-input>
-            <span v-show="transcId!==scope.row.productClientFileId">{{scope.row.fileName}}</span>
+            <span v-else>{{scope.row.fileName}}</span>
           </template>
         </el-table-column>
 
         <el-table-column align="center" label="操作" v-if="operationEdit">
           <template slot-scope="scope">
             <a size="small" class="common_btn"
-                      @click="transcId=scope.row.productClientFileId">编辑
-                      <!-- @click="handleRouter(scope.row.clientId)">编辑 -->
+                      @click="editHandle(scope.row)">编辑
+                      <!-- @click="transcId=scope.row.productClientFileId||transcId=scope.row.productClientFileManageId">编辑 -->
             </a>
             <!-- <span class="space_line"> | </span> -->
             <a size="small" class="danger_btn"
-                      @click="deleteClient(scope.row.productClientFileId)">删除
+                      @click="deleteClient(scope.row.productClientFileId||scope.row.productClientFileManageId)">删除
             </a>
           </template>
         </el-table-column>
@@ -188,6 +188,9 @@
           //   message: '已取消删除'
           // })       
         })
+      },
+      editHandle(row) {
+        this.transcId = row.productClientFileId ? row.productClientFileId : row.productClientFileManageId
       }
     }
   }
