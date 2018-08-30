@@ -157,6 +157,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
+            <el-form-item label="职位" prop="positionId">
+              <el-select class="filter-item" v-model="form.positionId" placeholder="请选择" @focus="handlePosition" @change="handleChange">
+                <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId">
+                  <span style="float: left">{{ item.positionName }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
             <el-form-item label="是否营销岗" prop="isMarketing">
               <el-radio-group v-model="form.isMarketing">
                 <el-radio :label="1" style="display: inline-block">是</el-radio>
@@ -330,6 +339,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
+            <el-form-item label="职位：">
+              {{form.positionId|turnText(positionsOptions)}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
             <el-form-item label="是否营销岗：" prop="isMarketing">
               {{form.isMarketing==1?'是':'否'}}
               <!-- <el-radio-group v-model="form.isMarketing">
@@ -362,7 +376,7 @@
       </el-row>
     </el-form>
     <!-- 直属变更 -->
-    <direct-change v-if="step==='2'"></direct-change>
+    <direct-change v-if="step==='2'" :propUserId="userId"></direct-change>
   </div>
 </template>
 
@@ -469,9 +483,9 @@
           idNo: [
             {required: true, trigger: 'blur', validator: validID}
           ],
-          // deptName: [
-          //   {required: true, trigger: 'change', message: '请选择部门'}
-          // ],
+          employeeDate: [
+            {required: true, trigger: 'change', message: '请选择入职日期'}
+          ],
           role: [
             {required: true, trigger: 'change', message: '请选择角色'}
           ],
@@ -495,7 +509,7 @@
           ]
         },
         // statusOptions: ['0', '1', '2'],
-        // positionsOptions: [],
+        positionsOptions: [],
         rolesOptions: [],
         userAdd: false,
         userUpd: false,
@@ -565,7 +579,7 @@
       }
     },
     created() {
-      // this.handlePosition()
+      this.handlePosition()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
@@ -639,16 +653,15 @@
       //       // this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
       //     })
       // },
-      // handlePosition() {
-      //   getAllPositon().then(res => {
-      //     this.positionsOptions = res.data
-      //   })
-      // },
+      handlePosition() {
+        getAllPositon().then(res => {
+          this.positionsOptions = res.data
+        })
+      },
       handleChageRole(val) {
         this.rolesOptions = this.rolesOptions.slice(0)
       },
       changeDept(val) {
-        console.log(val)
         this.form.role = ''
         this.getNodeData(val[val.length - 1])
         // this.role = ''
@@ -677,6 +690,7 @@
                     duration: 2000
                   })
                   this.step = '2'
+                  this.userId = res.data.data
                 }
               })
           } else {

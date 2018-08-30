@@ -397,6 +397,7 @@
         return parseTime(date)
       }
     },
+    props: ['propUserId'],
     data() {
       return {
         tempDeptIds: [],
@@ -404,11 +405,11 @@
          eachIndex: 0,
         departs: [], // 部门
         listLoading: false,
-        rankNameSelf:false,
+        rankNameSelf: false,
         tableKey: 0,
         list: [],
         listQuery: {
-          userId:this.$route.params.id,
+          userId: this.$route.params.id || this.propUserId,
           page: 1,
           limit: 20
         },
