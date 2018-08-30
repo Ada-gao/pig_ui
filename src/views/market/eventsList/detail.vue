@@ -35,7 +35,7 @@
              <el-form-item label="活动类型" prop="activityType">
                <el-select  v-model="form.activityType" placeholder="请选择" style="width: 100%;">
                  <el-option
-                   v-for="item in options"
+                   v-for="item in activityType"
                    :key="item.value"
                    :label="item.label"
                    :value="item.value">
@@ -49,10 +49,10 @@
             <el-form-item label="活动负责人" prop="activityPrincipalList">
               <el-select  v-model="form.activityPrincipalList" multiple placeholder="请选择" style="width: 100%;">
                 <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                  v-for="item in activityLeader"
+                  :key="item.userId"
+                  :label="item.name"
+                  :value="item.userId">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -99,10 +99,10 @@
              <el-form-item label="主办部门" prop="activityDept">
                <el-select v-model="form.activityDept" multiple placeholder="请选择" style="width: 100%;">
                  <el-option
-                   v-for="item in options"
-                   :key="item.value"
-                   :label="item.label"
-                   :value="item.value">
+                   v-for="item in rootList"
+                   :key="item.id"
+                   :label="item.name"
+                   :value="item.id">
                  </el-option>
                </el-select>
             </el-form-item>
@@ -136,17 +136,17 @@
         <el-form-item label="参与部门" v-if="form.activityRangeType == 1">
         <el-row  type="flex" justify="space-between">
           <el-col class="c-select">
-            <span class="c-select-list" v-for="item in form.activityRangeDeptList" >{{item}}</span>
+            <span class="c-select-list" v-for="item in activityRangeDeptListLabel" >{{item}}</span>
           </el-col>
-            <el-button class="search_btn" style="height:40px;" @click="selectDepartment"></svg-icon>选择部门</el-button>
+            <el-button class="search_btn" style="height:40px;" @click="selectDepartment('activityRangeDeptList')"></svg-icon>选择部门</el-button>
           </el-row>
         </el-form-item>
         <el-form-item label="参与职位" v-if="form.activityRangeType == 1">
         <el-row  type="flex" justify="space-between">
           <el-col class="c-select">
-            <span class="c-select-list" v-for="item in form.activityRangePositionList" >{{item}}</span>
+            <span class="c-select-list" v-for="item in activityRangePositionListLabel" >{{item}}</span>
           </el-col>
-            <el-button class="search_btn" style="height:40px;" @click="selectDepartment"></svg-icon>选择职位</el-button>
+            <el-button class="search_btn" style="height:40px;" @click="selectDepartment('activityRangePositionList')"></svg-icon>选择职位</el-button>
           </el-row>
         </el-form-item>
       </article>
@@ -162,9 +162,9 @@
           <el-form-item label="客户标签" v-if="form.activityClientLabelType == 1">
           <el-row  type="flex" justify="space-between">
             <el-col class="c-select">
-              <span class="c-select-list" v-for="item in form.activityClientLabelList" >{{item}}</span>
+              <span class="c-select-list" v-for="item in activityClientLabelListLabel" >{{item}}</span>
             </el-col>
-              <el-button class="search_btn" style="height:40px;" @click="selectDepartment"></svg-icon>选择部门</el-button>
+              <el-button class="search_btn" style="height:40px;" @click="selectDepartment('activityClientLabelList')"></svg-icon>选择标签</el-button>
             </el-row>
           </el-form-item>
       </article>
@@ -207,29 +207,18 @@
       title="提示"
       :visible.sync="dialogFormVisible"
       width="30%">
-        
-        <table class="table-event">
-          <thead class="thead">
-            <tr>
-              <th >所有部门</th>
-              <!-- <th >已选部门</th> -->
-              </tr>
-            </thead>
-            <tbody  class="tbody">
-              <tr>
-                <td ><el-tree
+        <article class="table-event">
+          <div class="thead">所有部门</div>
+          <div   class="tbody">
+            <el-tree
                    show-checkbox
-                   node-key="label"
-                   :data="data"
+                   :node-key="nodeKey"
+                   :data="treeData"
                    ref="tree"
                   :props="defaultProps"
-                  @check-change="shuttleAdd"></el-tree></td>
-                <!-- <td>
-                    <p class="list" v-for="item in shuttleList"><el-row  type="flex" justify="space-between">{{item}}<span class="close" @click="shuttleDelete">x</span></el-row></p>
-                  </td> -->
-                </tr>
-            </tbody>
-          </table>
+                  ></el-tree>
+          </div>
+        </article>
       <div slot="footer" class="dialog-footer">
         <el-button class="search_btn" @click="cancel">取 消</el-button>
         <el-button class="add_btn"  @click="update">确 定</el-button>
@@ -241,7 +230,12 @@
   </div>
 </template>
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters,mapState } from 'vuex'
+  import {getDirectSupervisorList } from '@/api/user'
+  import { getDeptRoots} from '@/api/dept'
+  import { getAllPositon } from '@/api/queryConditions'
+   import {getAllDeparts} from '@/api/achievement/index'
+  import {getClientList} from '@/api/client/customerLabel'
   import eventPoster  from './components/eventPoster.vue'
   import registrationCheck  from './components/registrationCheck.vue'
   import checkinAccount  from './components/checkinAccount.vue'
@@ -268,87 +262,47 @@
             activitySite:[ { required: true, message: '请输入活动地址', trigger: 'blur' }],
             activityDept:[ { required: true, message: '请选择主办部门', trigger: 'blur' }],
         },
+        selectIdentification:'',
         form:null,
         shuttleList:[],
+        activityLeader:[],
+        jobList:[],
+        rootList:[],
         dialogFormVisible:false,
         labelButton:'eventDetails',
-        checkList: [],
-         value6: '',
-        options: [{
-         value: '选项1',
-         label: '黄金糕'
-       }, {
-         value: '选项2',
-         label: '双皮奶'
-       }, {
-         value: '选项3',
-         label: '蚵仔煎'
-       }, {
-         value: '选项4',
-         label: '龙须面'
-       }, {
-         value: '选项5',
-         label: '北京烤鸭'
-       }],
-       value5: [],
-       value11: [],
-       data: [{
-         label: '一级 1',
-         children: [{
-           label: '二级 1-1',
-           children: [{
-             label: '三级 1-1-1'
-           }]
-         }]
-       }, {
-         label: '一级 2',
-         children: [{
-           label: '二级 2-1',
-           children: [{
-             label: '三级 2-1-1'
-           }]
-         }, {
-           label: '二级 2-2',
-           children: [{
-             label: '三级 2-2-1'
-           }]
-         }]
-       }, {
-         label: '一级 3',
-         children: [{
-           label: '二级 3-1',
-           children: [{
-             label: '三级 3-1-1'
-           }]
-         }, {
-           label: '二级 3-2',
-           children: [{
-             label: '三级 3-2-1'
-           }]
-         }]
-       }],
-       defaultProps: {
-         children: 'children',
-         label: 'label',
-         id:1
-       }
+        treeData:[],
+        activityRangeDeptListLabel:[],
+        activityRangePositionListLabel:[],
+        activityClientLabelListLabel:[],
+        nodeKey:'',
+        defaultProps: {
+          children: 'children',
+          label: '',
+          id:''
+        }
       }
     },
     computed: {
       ...mapGetters([
         'permissions',
-        'workStatus',
-        'lockStatus'
+        'activityType'
       ])
     },
     created() {
+      // 初始化 form
       this.initialization();
+
+      // 获取 所有用户
+      this.getDirectSupervisorList();
+
+      // 获取一级部门及子公司列表
+      this.getDeptRoots();
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
     },
-    mount(){
-      console.log(this.radio2)
+    mounted(){
+     
     },
  
     methods: {
@@ -383,27 +337,102 @@
           }
         });  
       },
+       // 查询所有用户
+      getDirectSupervisorList(){
+        getDirectSupervisorList().then(res => {
+          if(res.status == 200){
+            this.activityLeader = res.data
+          }
+        })
+      },
+       //获取一级部门及子公司列表
+      getDeptRoots() {
+        getDeptRoots().then(response => {
+          if(response.status == 200){
+            this.rootList = response.data;
+          }
+        })
+      },
+        // 获取所有  部门
+      getAllDeparts(){
+        getAllDeparts().then(res => {
+          if(res.status == 200){
+            this.treeData = res.data;
+          }
+        })
+      },
+      // 查询全部职位
+      getAllPositon(){
+        getAllPositon().then(res => {
+          if(res.status == 200){
+            this.treeData = res.data;
+          }
+        })
+      },
+      //获取客户标签列表
+      getClientList() {
+        getClientList().then(res => {
+          if(res.status == 200){
+            this.treeData = res.data;
+          }
+        })
+      },
       changeButton(state){
         this.labelButton = state
       },
-      // 选择部门
-      selectDepartment(){
-          this.dialogFormVisible = true;
+      // 选择 部门 职位 客户标签  对话框
+      selectDepartment(select){
+        console.log(select)
+        this.selectIdentification = select;
+          if(this.selectIdentification == 'activityRangeDeptList'){
+            this.getAllDeparts(); //  获取所有  部门
+            this.defaultProps ={
+              children: 'children',
+              label: 'name',
+              id:'id'
+            }
+          }
+          if(this.selectIdentification == 'activityRangePositionList'){
+            this.getAllPositon();// 查询全部职位
+            this.defaultProps ={
+              label: 'positionName',
+              id:'positionId'
+            }
+          } 
+          if(this.selectIdentification == 'activityClientLabelList'){
+             this.getClientList();//获取客户标签列表
+            this.defaultProps ={
+              label: 'labelName',
+              id:'clientLabelId'
+            }
+          }
+          this.nodeKey = this.defaultProps.id;
+         
+           this.$nextTick(()=>{
+              console.log(this.treeData)
+               this.$refs.tree.setCheckedKeys(this.form[select])
+            })
+           
+           this.selectIdentification && (this.dialogFormVisible = true);
       },
       cancel(formName) {
         this.dialogFormVisible = false;
       },
+      // 穿梭列表添加
       update(){
+        let obj = null;
+        let select = this.selectIdentification;
+        let checkedNodes = this.$refs.tree.getCheckedNodes();
+          if(select == 'activityRangeDeptList')  obj = {id:'id',label: 'name',}
+          if(select == 'activityRangePositionList') obj = {id:'positionId', label: 'positionName',}
+          if(select == 'activityClientLabelList') obj = {id:'clientLabelId',label: 'labelName',}
+        checkedNodes.forEach(item=>{
+          this.form[this.selectIdentification].push(item[obj.id]);
+          this[this.selectIdentification+'Label'].push(item[obj.label]);
+        })
         this.dialogFormVisible = false;
+        this.$refs.tree.setCheckedKeys([]);
       },
-       // 穿梭列表添加
-      shuttleAdd(data) {
-        this.form.activityRangePositionList = this.$refs.tree.getCheckedKeys()
-     },
-     // 穿梭列表删除
-     shuttleDelete(){
-
-     }
     }
   }
 </script>
@@ -465,38 +494,19 @@
   width: 100%;
   text-align: left;
   .thead{
-    th{
       background: #F7F8FA;
-      border: 1px solid #C8C8C8;
+      border-bottom: 1px solid #C8C8C8;
       font-family: PingFangSC-Medium;
       font-size: 13px;
       color: #475669;
       letter-spacing: 0;
       font-weight: inherit;
       padding: 6px;
-    }
   }
-  td{
-    border: 1px solid #C8C8C8;
-    padding: 6px;
-    width: 50%;
-    .list{
-      margin: 0;
-      padding: 4px 8px;
-      border-radius: 2px;
-      &:hover{
-          background: rgba(0,193,223,0.10);
-          .close{
-            display: block;
-            cursor: pointer;
-          }
-      }
-      .close{
-        padding:0 6px;
-        color: #0299CC;
-        display: none;
-      }
-    }
+  .tbody{
+    padding: 6px;   
+    height: 400px;
+    overflow: auto;
   }
 }
 </style>
