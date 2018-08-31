@@ -532,7 +532,7 @@
       ])
     },
     created() {   
-      if(listQuery.userId){
+      if(this.listQuery.userId){
      //初始化直属变更列表 
      this.handlePosition(this.listQuery)
       // 查询直属上级
