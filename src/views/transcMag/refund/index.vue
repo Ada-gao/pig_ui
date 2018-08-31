@@ -4,7 +4,8 @@
 
     <transc-search-component
       :searchTranscStatus="false"
-      :searchDate="false">
+      :searchDate="false"
+      :searchContract="false">
     </transc-search-component>
 
     <transc-table-component

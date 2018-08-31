@@ -60,7 +60,7 @@
       <el-form :model="form" :rules="rules" ref="form" label-width="150px">
 
         <el-form-item :label="tabcard === 'first' ? '产品收益类型名称' : '产品结构类型名称'" prop="name">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.name" :maxlength="20"></el-input>
         </el-form-item>
 
       </el-form>
@@ -135,7 +135,8 @@
         tableKey: 0,
         rules: {
           name: [
-            { required: true, trigger: 'blur', message: '请输入产品类型' }
+            { required: true, trigger: 'blur', message: '请输入产品类型' },
+            { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
           ]
         }
       }
