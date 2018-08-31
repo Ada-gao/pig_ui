@@ -162,9 +162,9 @@
           </el-form-item>
         </el-row>
 
-      <div class="split-line"></div>
+      <div v-if="realnameStatus" class="split-line"></div>
 
-      <h5>客户银行卡信息</h5>
+      <h5 v-if="realnameStatus">客户银行卡信息</h5>
       <el-table :data="bankcardList" element-loading-text="给我一点时间" border fit
         highlight-current-row style="width: 100%"
         v-if="realnameStatus">

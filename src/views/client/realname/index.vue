@@ -6,7 +6,7 @@
       :searchNationality="false"
       :searchCity="false"
       :searchClientType="false"
-      :searchRealNameStatus="true"
+      :searchRealNameStatus="false"
       :searchCertificationStatus="false"
       >
     </search-bar-component>
@@ -113,7 +113,7 @@
         listQuery: {
           page: 1,
           limit: 20,
-//          realNameStatus: 1 // 待审核
+          realNameStatus: 1 // 待审核
         },
         role: undefined,
         dialogFormVisible: false,
