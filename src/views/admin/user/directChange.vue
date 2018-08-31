@@ -532,6 +532,7 @@
       ])
     },
     created() {   
+      if(listQuery.userId){
      //初始化直属变更列表 
      this.handlePosition(this.listQuery)
       // 查询直属上级
@@ -541,6 +542,7 @@
     
       // 返回树形菜单集合  部门管理
       this.getAllDeparts()
+      }
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
