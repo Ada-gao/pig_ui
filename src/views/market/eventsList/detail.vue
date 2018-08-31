@@ -183,14 +183,19 @@
       <article class="image-display" style="margin-top:40px">
         <p class="title">C端展示图</p>
           <el-form-item>
-            <el-row>
-               <el-col :span="4" class="add-img-btn">
-                 <svg-icon icon-class="add" class="common_btn"></svg-icon>
+                 <el-upload
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    list-type="picture-card"
+                    :on-preview="handlePictureCardPreview"
+                    :on-remove="handleRemove">
+                    <svg-icon icon-class="add" class="common_btn"></svg-icon>
                  <p class="img-title">点击添加图片</p>
                  <p class="img-text">jpg/png文件，尺寸750x1334px</p>
                  <p class="img-text">小于1M，最多9张</p>
-               </el-col>
-            </el-row>
+                  </el-upload>
+                  <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                  </el-dialog>
           </el-form-item>
       </article>
     
@@ -202,10 +207,10 @@
         </div>
       
     </el-form>
-    <!-- 选择部门对话框 -->
+    <!-- 参与部门对话框 -->
     <el-dialog
       title="提示"
-      :visible.sync="dialogFormVisible"
+      :visible.sync="dialogDepartment"
       width="30%">
         <article class="table-event">
           <div class="thead">所有部门</div>
@@ -213,8 +218,8 @@
             <el-tree
                    show-checkbox
                    :node-key="nodeKey"
-                   :data="treeData"
-                   ref="tree"
+                   :data="treeDepartmentData"
+                   ref="activityRangeDeptList"
                   :props="defaultProps"
                   ></el-tree>
           </div>
@@ -224,8 +229,50 @@
         <el-button class="add_btn"  @click="update">确 定</el-button>
       </div>
     </el-dialog>
-   
-
+       <!-- 参与职位对话框 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogPosition"
+      width="30%">
+        <article class="table-event">
+          <div class="thead">所有部门</div>
+          <div   class="tbody">
+            <el-tree
+                   show-checkbox
+                   :node-key="nodeKey"
+                   :data="treePositionData"
+                   ref="activityRangePositionList"
+                  :props="defaultProps"
+                  ></el-tree>
+          </div>
+        </article>
+      <div slot="footer" class="dialog-footer">
+        <el-button class="search_btn" @click="cancel">取 消</el-button>
+        <el-button class="add_btn"  @click="update">确 定</el-button>
+      </div>
+    </el-dialog>
+      <!-- 客户标签对话框 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogCustomerLabel"
+      width="30%">
+        <article class="table-event">
+          <div class="thead">所有部门</div>
+          <div   class="tbody">
+            <el-tree
+                   show-checkbox
+                   :node-key="nodeKey"
+                   :data="treeCustomerLabelData"
+                   ref="activityClientLabelList"
+                  :props="defaultProps"
+                  ></el-tree>
+          </div>
+        </article>
+      <div slot="footer" class="dialog-footer">
+        <el-button class="search_btn" @click="cancel">取 消</el-button>
+        <el-button class="add_btn"  @click="update">确 定</el-button>
+      </div>
+    </el-dialog>
 
   </div>
 </template>
@@ -268,9 +315,13 @@
         activityLeader:[],
         jobList:[],
         rootList:[],
-        dialogFormVisible:false,
+        dialogDepartment:false,
+        dialogPosition:false,
+        dialogCustomerLabel:false,
+        treeDepartmentData:[],
+        treePositionData:[],
+        treeCustomerLabelData:[],
         labelButton:'eventDetails',
-        treeData:[],
         activityRangeDeptListLabel:[],
         activityRangePositionListLabel:[],
         activityClientLabelListLabel:[],
@@ -279,7 +330,9 @@
           children: 'children',
           label: '',
           id:''
-        }
+        },
+        dialogImageUrl: '',
+        dialogVisible: false
       }
     },
     computed: {
@@ -304,7 +357,12 @@
     mounted(){
      
     },
- 
+    watch:{
+      
+        treeCustomerLabelData(){
+
+        }
+    },
     methods: {
       // 表单数据初始化
       initialization(){
@@ -354,26 +412,41 @@
         })
       },
         // 获取所有  部门
-      getAllDeparts(){
+      getAllDeparts(select){
         getAllDeparts().then(res => {
           if(res.status == 200){
-            this.treeData = res.data;
+            this.treeDepartmentData = res.data;
+            this.dialogDepartment = true;
+            this.$nextTick(()=>{
+              this.$refs[select].setCheckedKeys(this.form[select])
+            })
+            
           }
         })
       },
       // 查询全部职位
-      getAllPositon(){
+      getAllPositon(select){
         getAllPositon().then(res => {
           if(res.status == 200){
-            this.treeData = res.data;
+            console.log(this.$refs.treePosition)
+            this.treePositionData = res.data;
+            this.dialogPosition = true;
+             this.$nextTick(()=>{
+              this.$refs[select].setCheckedKeys(this.form[select])
+            })
+            
           }
         })
       },
       //获取客户标签列表
-      getClientList() {
+      getClientList(select) {
         getClientList().then(res => {
           if(res.status == 200){
-            this.treeData = res.data;
+            this.treeCustomerLabelData = res.data;
+            this.dialogCustomerLabel = true;
+            this.$nextTick(()=>{
+               this.$refs[select].setCheckedKeys(this.form[select])
+            })
           }
         })
       },
@@ -382,10 +455,9 @@
       },
       // 选择 部门 职位 客户标签  对话框
       selectDepartment(select){
-        console.log(select)
         this.selectIdentification = select;
           if(this.selectIdentification == 'activityRangeDeptList'){
-            this.getAllDeparts(); //  获取所有  部门
+            this.getAllDeparts(select); //  获取所有  部门
             this.defaultProps ={
               children: 'children',
               label: 'name',
@@ -393,14 +465,14 @@
             }
           }
           if(this.selectIdentification == 'activityRangePositionList'){
-            this.getAllPositon();// 查询全部职位
+            this.getAllPositon(select);// 查询全部职位
             this.defaultProps ={
               label: 'positionName',
               id:'positionId'
             }
           } 
           if(this.selectIdentification == 'activityClientLabelList'){
-             this.getClientList();//获取客户标签列表
+             this.getClientList(select);//获取客户标签列表
             this.defaultProps ={
               label: 'labelName',
               id:'clientLabelId'
@@ -408,31 +480,38 @@
           }
           this.nodeKey = this.defaultProps.id;
          
-           this.$nextTick(()=>{
-              console.log(this.treeData)
-               this.$refs.tree.setCheckedKeys(this.form[select])
-            })
            
-           this.selectIdentification && (this.dialogFormVisible = true);
+          //  this.selectIdentification && (this.dialogFormVisible = true);
       },
-      cancel(formName) {
-        this.dialogFormVisible = false;
+      cancel() {
+        this.dialogDepartment = false;
+        this.dialogPosition = false;
+        this.dialogCustomerLabel = false;
       },
       // 穿梭列表添加
       update(){
         let obj = null;
         let select = this.selectIdentification;
-        let checkedNodes = this.$refs.tree.getCheckedNodes();
-          if(select == 'activityRangeDeptList')  obj = {id:'id',label: 'name',}
-          if(select == 'activityRangePositionList') obj = {id:'positionId', label: 'positionName',}
-          if(select == 'activityClientLabelList') obj = {id:'clientLabelId',label: 'labelName',}
+        let  checkedNodes = this.$refs[select].getCheckedNodes();
+
+        if(select == 'activityRangeDeptList') obj = {id:'id',label: 'name'}
+        if(select == 'activityRangePositionList') obj = {id:'positionId', label: 'positionName'}
+        if(select == 'activityClientLabelList') obj = {id:'clientLabelId',label: 'labelName'}
+         
         checkedNodes.forEach(item=>{
-          this.form[this.selectIdentification].push(item[obj.id]);
-          this[this.selectIdentification+'Label'].push(item[obj.label]);
+          this.form[select].push(item[obj.id]);
+          this[select+'Label'].push(item[obj.label]);
         })
-        this.dialogFormVisible = false;
-        this.$refs.tree.setCheckedKeys([]);
+        this.$refs[select].setCheckedKeys([]);
+        this.cancel()
       },
+         handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePictureCardPreview(file) {
+        this.dialogImageUrl = file.url;
+        this.dialogVisible = true;
+      }
     }
   }
 </script>
@@ -449,22 +528,9 @@
 
 .image-display{
   .add-img-btn{
-    font-family: PingFangSC-Regular;
-    letter-spacing: 0;
-    background: #FAFAFA;
-    cursor:pointer;
-    color: #A1A1A1;
-    border: 1px solid #C8C8C8;
-    border-radius: 2px;
-    text-align: center;
-    .img-title{
-      font-size: 13px;
-      line-height: 20px;
-    }
-    .img-text{
-      font-size: 7px;
-      line-height: 10px;
-    }
+    
+    
+
   }
 }
 .c-select{
