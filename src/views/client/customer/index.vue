@@ -3,6 +3,7 @@
     <search-bar-component @search-list="searchList"
       :searchClientClass="false"
       :searchRealNameStatus="false"
+      :searchCertificationStatus="false"
       >
     </search-bar-component>
 

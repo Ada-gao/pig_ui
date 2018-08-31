@@ -157,8 +157,8 @@
             {required: true, trigger: 'blur', message: '请输入40位以内的模板名称'}
           ]
         },
-        data: [],
         value1: [],
+        data: [],
         renderFunc(createElement, option) {
           return createElement(
             'span', option.fieldsName

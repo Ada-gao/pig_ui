@@ -195,15 +195,15 @@
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
     },
-    mounted(){
-        document.addEventListener('mousedown', e =>{
-            if (e.target.parentNode && !e.target.parentNode.classList.contains('define-ipt')) {
-                if (document.querySelector('.define-ipt input') !== null) {
-                  this.transcId = ''
-                }
-            }
-        }, false)
-    },
+//    mounted(){
+//        document.addEventListener('mousedown', e =>{
+//            if (e.target.parentNode && !e.target.parentNode.classList.contains('define-ipt')) {
+//                if (document.querySelector('.define-ipt input') !== null) {
+//                  this.transcId = ''
+//                }
+//            }
+//        }, false)
+//    },
     methods: {
       editHandle(row) {
         this.focusStatus = true

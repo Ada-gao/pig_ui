@@ -8,6 +8,7 @@
           <template slot-scope="scope">
             <el-input
               v-if="transcId===scope.row.productClientFileId||transcId===scope.row.productClientFileManageId"
+              v-autoFocus
               v-model="scope.row.fileName"
               @keyup.enter.native="$event.target.blur"
               @blur="updateClientFile(scope.row)"></el-input>
@@ -186,7 +187,7 @@
           // this.$message({
           //   type: 'info',
           //   message: '已取消删除'
-          // })       
+          // })
         })
       },
       editHandle(row) {
