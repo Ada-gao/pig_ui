@@ -505,7 +505,7 @@
             { required: true, trigger: 'change', message: '请选择状态' }
           ],
           deptIds: [
-            { required: true, trigger: 'change', message: '请选择部门' }
+            { required: true, trigger: 'blur', message: '请选择部门' }
           ]
         },
         // statusOptions: ['0', '1', '2'],

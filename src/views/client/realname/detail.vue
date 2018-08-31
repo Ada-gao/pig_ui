@@ -196,7 +196,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="22">
+        <!-- <el-col :span="8">
           <el-form-item label="备注" prop="bankName">
             <el-input
               type="textarea"
@@ -464,20 +464,42 @@
       // handleDept() {
       //   // console.log('产品状态')
       // },
-      submitResult(result) { //
-        // if(result == 3 && !this.failReason) {
-        //   this.tip = true
-        //   return
-        // }
-        this.tip = false
-        let params = {
-          // failId: this.form.clientId,
-          failReason: this.failReason,
-          result: result,
-          crowds: this.form.crowds
+      submitResult(result) {
+        if(result == 3) {
+          this.$prompt('请输入原因', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            inputPattern: /.+/,
+            inputErrorMessage: '请输入原因'
+          }).then(({ value }) => {
+            let params = {
+              failReason: value,
+              result: result,
+              crowds: this.form.crowds
+            }
+            this.putObjHandle(params)
+          }).catch(() => {
+            // this.$message({
+            //   type: 'info',
+            //   message: '取消输入'
+            // })       
+          })
+        } else {
+          let params = {
+            // failReason: '',
+            result: result,
+            crowds: this.form.crowds
+          }
+          this.putObjHandle(params)
         }
+      },
+      putObjHandle(params) {
         putObj(this.form.clientId, params).then(response => {
           if(response.status == 200) {
+            // this.$message({
+            //   type: 'success',
+            //   message: '审核完成'
+            // })
             this.$notify({
               title: '成功',
               message: '审核完成',
@@ -487,26 +509,6 @@
             this.$router.push({path: '/client/realname'})
           }
         })
-        // this.nextToUpdate = true
-        // const set = this.$refs
-        // this.form.role = this.role
-        // set[formName].validate(valid => {
-        //   if (valid) {
-        //     addObj(this.form)
-        //       .then(() => {
-        //         this.nextToUpdate = true
-        //         this.getList()
-        //         this.$notify({
-        //           title: '成功',
-        //           message: '创建成功',
-        //           type: 'success',
-        //           duration: 2000
-        //         })
-        //       })
-        //   } else {
-        //     return false
-        //   }
-        // })
       },
       cancel(formName) {
         this.dialogFormVisible = false
