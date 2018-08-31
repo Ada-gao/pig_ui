@@ -40,7 +40,7 @@
       </el-table-column>
       <el-table-column align="center" label="证件类型">
         <template slot-scope="scope">
-          <span>{{scope.row.idType }}</span>
+          <span>{{scope.row.idType|turnText1(idTypeOptions)}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="证件号码">
@@ -50,7 +50,7 @@
       </el-table-column>
       <el-table-column align="center" label="客户类型">
         <template slot-scope="scope">
-          <span>{{scope.row.clientClass}}</span>
+          <span>{{scope.row.clientClass|turnText1(clientClass)}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="资产管理规模">
@@ -70,12 +70,12 @@
       </el-table-column>
       <el-table-column align="center" label="实名认证状态" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{scope.row.realnameStatus}}</span>
+          <span>{{scope.row.realnameStatus|turnText1(realnameStatus)}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="国籍（常住地区）" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.nationality}}</span>
+        <span>{{scope.row.nationality|turnText1(nationality)}}</span>
         <span>{{scope.row.city}}</span>
         </template>
       </el-table-column>
@@ -105,15 +105,7 @@
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="部门">
-              <el-cascader
-                style="width: 100%"
-                :options="treeDeptData"
-                :props="defaultProps"
-                :show-all-levels="false"
-                @change="changeDept"
-                change-on-select
-                v-model="modal.deptId"
-              ></el-cascader>
+              <dept v-model="modal.deptIds" @change="changeDept"></dept>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -149,13 +141,14 @@
   import { getAllPositon } from '@/api/queryConditions'
   import { getPlannerList } from '@/api/user'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime, transformText, eachChildren } from '@/utils'
+  import { parseTime, eachChildren } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
   import { isvalidMobile, isvalidID } from '@/utils/validate'
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
   import Bus from '@/assets/js/bus'
+  import Dept from 'components/dept'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
@@ -181,7 +174,8 @@
     components: {
       ElOption,
       ElRadioGroup,
-      searchBarComponent
+      searchBarComponent,
+      Dept
     },
     name: 'table_user',
     directives: {
@@ -189,16 +183,15 @@
     },
     data() {
       return {
-        treeDeptData: [],
         checkedKeys: [],
-        defaultProps: {
-          children: 'children',
-          label: 'name',
-          value: 'id'
-        },
-        defaultProps2: {
-          value: 'label'
-        },
+        // defaultProps: {
+        //   children: 'children',
+        //   label: 'name',
+        //   value: 'id'
+        // },
+        // defaultProps2: {
+        //   value: 'label'
+        // },
         list: null,
         total: null,
         listLoading: true,
@@ -318,7 +311,7 @@
         this.listLoading = true
         // this.listQuery.orderByField = 'create_time'
         // this.listQuery.isAsc = false
-        this.handleDept()
+        // this.handleDept()
         // if(this.deptId.length) {
         //   this.listQuery.deptId = this.deptId[this.deptId.length - 1]
         // }
@@ -331,13 +324,6 @@
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
-          this.list.forEach(item => {
-
-            item.clientClass = transformText(this.clientClass, item.clientClass)
-            item.nationality = transformText(this.nationality, item.nationality)
-            item.idType = transformText(this.idTypeOptions, item.idType)
-            item.realnameStatus = transformText(this.realnameStatus, item.realnameStatus)
-          })
         })
       },
       // handlePosition() {
@@ -349,14 +335,6 @@
         this.listQuery = data
         this.listQuery.plannerStatus = 1
         this.getList()
-      },
-      handleDept() {
-        fetchDeptTree()
-          .then(response => {
-            this.treeDeptData = response.data
-            eachChildren(this.treeDeptData)
-            this.dialogDeptVisible = true
-          })
       },
       // handleFilter() {
       //   this.listQuery.page = 1
@@ -405,7 +383,7 @@
       },
       getPlannerList(deptId = '') {
         let params = {
-          deptId: deptId[deptId.length-1],
+          deptId: deptId[deptId.length - 1],
           status: 0
         }
         getPlannerList(params).then(response => {
@@ -413,7 +391,13 @@
         })
       },
       changePlanner() {
-        const user = this.plannerList.find(item => item.userId === this.modal.name)
+        const list = this.modal.deptIds
+        let user = {}
+        if (list) {
+          user.deptId = list[list.length - 1]
+        } else {
+          user = this.plannerList.find(item => item.userId === this.modal.name)
+        }
         let params = {
           plannerId: this.modal.name,
           reason: this.modal.reason,
@@ -447,6 +431,7 @@
       },
       changeCancel(formName) {
         this.$refs[formName].resetFields()
+        this.modal.deptIds = []
         this.dialogFormVisible = false
       },
       resetTemp() {
@@ -483,6 +468,15 @@
         this.clientSelects = val
       },
       batchHandle() {
+        if (!this.clientSelects || !this.clientSelects.length) {
+          this.$notify({
+            title: '提示',
+            message: '请选择至少一个待分配客户',
+            type: 'warning',
+            duration: 2000
+          })
+          return
+        }
         this.isBatch = true
         this.clientIds = []
         this.clientSelects.forEach(item => {

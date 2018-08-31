@@ -356,7 +356,7 @@
         set[formName].validate(valid => {
           if (valid) {
             const len = this.form.deptIds
-            if(len.length) {
+            if(len && len.length) {
               this.form.roleDeptId = len[len.length - 1]
             }
             if(this.form.maskCode) {

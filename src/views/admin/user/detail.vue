@@ -275,7 +275,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="性别：" prop="gender">
-              {{form.gender|turnText(genderType)}}
+              {{form.gender|turnText1(genderType)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -285,7 +285,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="证件类型：" prop="idType">
-              {{form.idType|turnText(idTypeOptions)}}
+              {{form.idType|turnText1(idTypeOptions)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -310,7 +310,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="状态：" prop="status">
-              {{form.status|turnText(workStatus)}}
+              {{form.status|turnText1(workStatus)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -320,12 +320,12 @@
           </el-col>
           <el-col :span="10" v-show="form.status=='1'">
             <el-form-item label="离职原因：" prop="dimissionReason">
-              {{form.dimissionReason|turnText(dimissionReason)}}
+              {{form.dimissionReason|turnText1(dimissionReason)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="学历：" prop="education">
-              {{form.education|turnText(educationType)}}
+              {{form.education|turnText1(educationType)}}
             </el-form-item>
           </el-col>
           <el-col :span="10" v-show="form.status=='1'">
@@ -335,12 +335,12 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="婚姻状况：" prop="marriageStatus">
-              {{form.marriageStatus|turnText(marriageStatusOptions)}}
+              {{form.marriageStatus|turnText1(marriageStatusOptions)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="职位：">
-              {{form.positionId|turnText(positionsOptions)}}
+              {{form.positionId|turnText1(positionsOptions)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -354,7 +354,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="账户锁定状态：" prop="lock">
-              {{form.lock|turnText(lockStatus)}}
+              {{form.lock|turnText1(lockStatus)}}
               <!-- <el-radio-group v-model="form.lock">
                 <el-radio :label="1" style="display: inline-block">锁定</el-radio>
                 <el-radio :label="0" style="display: inline-block">正常</el-radio>
@@ -546,7 +546,8 @@
         result: [],
         tempDeptIds: [],
         eachIndex: 0,
-        curPrevId: ''
+        curPrevId: '',
+        userId: ''
       }
     },
     watch:{
@@ -569,9 +570,6 @@
       ])
     },
     filters: {
-      turnText (val, list) {
-        return transformText1(val, list)
-      },
       parseTime (time) {
         if(!time) return
         let date = new Date(time)
