@@ -300,14 +300,14 @@
     data() {
       return {
         rules:{
-            activityName:[ { required: true, message: '请输入活动名称', trigger: 'blur' }],
-            activityType:[ { required: true, message: '请输入活动类型', trigger: 'blur' }],
-            activityPrincipalList:[ { required: true, message: '请选择活动负责人', trigger: 'blur' }],
-            activityActivitiesNumber:[ { required: true, message: '请输入活动人数', trigger: 'blur' }],
-            activityData:[ { required: true, message: '请选择活动时间', trigger: 'blur' }],
-            registrationData:[ { required: true, message: '请选择报名时间', trigger: 'blur' }],
-            activitySite:[ { required: true, message: '请输入活动地址', trigger: 'blur' }],
-            activityDept:[ { required: true, message: '请选择主办部门', trigger: 'blur' }],
+            activityName:[ { required: true, message: '请输入活动名称'}],
+            activityType:[ { required: true, message: '请输入活动类型', }],
+            activityPrincipalList:[ { required: true, message: '请选择活动负责人'}],
+            activityActivitiesNumber:[ { required: true, message: '请输入活动人数'}],
+            activityData:[ { required: true, message: '请选择活动时间'}],
+            registrationData:[ { required: true, message: '请选择报名时间'}],
+            activitySite:[ { required: true, message: '请输入活动地址'}],
+            activityDept:[ { required: true, message: '请选择主办部门'}]
         },
         selectIdentification:'',
         form:null,
