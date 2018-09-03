@@ -90,6 +90,7 @@
     },
     data() {
       return {
+        tempObj: null,
         list: null,
         total: null,
         listLoading: false,
@@ -157,6 +158,10 @@
         localStorage.setItem('activeUrl', this.activeUrl)
       },
       updateClientFile(item) {
+        if (item.fileName === this.tempObj.fileName) {
+              this.transcId = ''
+              return
+        }
         this.$emit('upd-client-file', item)
       },
       deleteClient(id) {
@@ -192,6 +197,7 @@
       },
       editHandle(row) {
         this.transcId = row.productClientFileId ? row.productClientFileId : row.productClientFileManageId
+        this.tempObj = Object.assign({}, row)
       }
     }
   }
