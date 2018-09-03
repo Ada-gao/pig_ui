@@ -17,11 +17,11 @@
     <!-- 签到账号 checkinAccount -->
     <checkin-account v-if= " labelButton =='checkinAccount' "></checkin-account>
     <!--  签单记录 signingRecord-->
-    <signing-record v-if= " labelButton =='eventDetails' "></signing-record>
+    <signing-record v-if= " labelButton =='signingRecord' "></signing-record>
     <!-- 操作日志 operationLog-->
     <operation-log v-if= " labelButton =='operationLog' "></operation-log>
     <!-- 活动详情 eventDetails-->
-    <el-form v-if="labelButton == 'eventDetails1' " :model="form" :rules="rules" ref="ruleForm" label-width="110px" style="width: 90%" class="events-detail">
+    <el-form v-if="labelButton == 'eventDetails' " :model="form" :rules="rules" ref="ruleForm" label-width="110px" style="width: 90%" class="events-detail">
       <!-- 活动基本信息 -->
       <article>
         <p class="title">活动基本信息</p>
@@ -186,6 +186,7 @@
                  <el-upload
                     action="/activity/file/upload"
                     list-type="picture-card"
+                    :before-upload = "(res)=>{return beforeAvatarUpload(res,{width:750,height:1334,size:1,type:'same'})}"
                     :on-preview="handlePictureCardPreview"
                     :on-error = "upfileError"
                     :on-remove="handleRemove">
@@ -520,6 +521,45 @@
       upfileError(file, fileList){
         console.log(file)
         console.log(fileList)
+      },
+      beforeAvatarUpload(file,json){
+        let self = true;
+        const isJPG = file.type === 'image/jpeg' || file.type ==='image/png';
+        const isLt2M = file.size / 1024 / 1024 < json.size;
+        if (!isJPG) {
+          this.$notify({
+            title: '警告',
+            message: '上传头像图片只能是 jpg/png 格式!',
+            type: 'warning'
+          });
+          self = false;
+        }
+        if (!isLt2M) {
+          this.$notify({
+            title: '警告',
+            message: '上传头像图片大小不能超过 1MB!',
+            type: 'warning'
+          });
+         self = false;
+        }
+        const isSize = new Promise(function(resolve, reject) {
+            let width = 100;
+            let height = 100;
+            let _URL = window.URL || window.webkitURL;
+            let img = new Image();
+            img.onload = function() {
+                let valid = img.width >= width && img.height >= height;
+                valid ? resolve() : reject();
+            }
+            img.src = _URL.createObjectURL(file);
+        }).then(() => {
+            return file;
+        }, () => {
+            this.$message.error('上传的icon必须是等于或大于100*100!');
+            return Promise.reject();
+        });
+        return isJPG && isLt2M && isSize;
+
       }
     }
   }

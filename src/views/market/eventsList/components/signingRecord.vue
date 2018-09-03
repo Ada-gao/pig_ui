@@ -6,7 +6,7 @@
           <el-button class="search_btn" ><svg-icon icon-class="search"></svg-icon> 查询</el-button>
         </el-row>
        <div style="text-align: right;">
-          <el-button class="search_btn">
+          <el-button class="search_btn" @click="handleExport">
             <svg-icon icon-class="export"></svg-icon>批量导出
           </el-button>
         </div>
@@ -81,7 +81,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import {getContract} from '@/api/market/eventsList'
+  import {getContract,exportcontract} from '@/api/market/eventsList'
   export default {
     name: 'checkinAccount',
     data() {
@@ -95,23 +95,7 @@
           trackMonth : ''
         },
         total: null,
- tableData: [{
-            date: '2016-05-02',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1518 弄'
-          }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1517 弄'
-          }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1519 弄'
-          }, {
-            date: '2016-05-03',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1516 弄'
-          }]
+
        
       }
     },
@@ -146,6 +130,18 @@
       handleCurrentChange(val) {
         this.listQuery.page = val
         this.getList()
+      },
+       // 导出
+      handleExport() {
+        exportcontract(this.listQuery).then(res => {
+          if (res.status === 200) {
+            console.log(res)
+            const fileName = decodeURI(res.headers['content-disposition'].split('=')[1]) // 导出时要decodeURI
+            const blob = new Blob([res.data], { type: 'blob' })
+            const objectUrl = URL.createObjectURL(blob)
+            this.forceDownload(objectUrl, fileName)
+          }
+        })
       },
     }
   }

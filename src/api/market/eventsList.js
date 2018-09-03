@@ -16,7 +16,14 @@ export function getActivityClient(obj) {
     params: obj
   })
 }
-
+// 查询签到账户
+export function getSigninaccount(obj) {
+    return request({
+      url: '/activityClient/signinaccount/',
+      method: 'get',
+      params: obj
+    })
+}
 // 查询签单记录
 export function getContract(obj) {
     return request({
@@ -32,6 +39,17 @@ export function getContract(obj) {
 export function exportPf(params) {
     return request({
       url: '/activityClient/export/',
+      method: 'get',
+      params,
+      responseType: 'blob'
+    })
+  }
+  /**
+ * 导出签单记录
+ */
+export function exportcontract(params) {
+    return request({
+      url: '/activityClient/exportcontract',
       method: 'get',
       params,
       responseType: 'blob'
