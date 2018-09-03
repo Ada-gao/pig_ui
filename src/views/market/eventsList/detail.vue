@@ -10,18 +10,18 @@
         <el-button :class="{add_btn:labelButton=='operationLog'}" @click="changeButton('operationLog')">操作日志</el-button>
       </el-button-group>
     </nav>
-     <!-- 活动海报 -->
+     <!-- 活动海报 eventPoster-->
     <event-poster v-if= " labelButton =='eventPoster' "></event-poster>
-    <!-- 报名/签到 -->
+    <!-- 报名/签到 registrationCheck -->
     <registration-check v-if= " labelButton =='registrationCheck' "></registration-check>
-    <!-- 签到账号 -->
+    <!-- 签到账号 checkinAccount -->
     <checkin-account v-if= " labelButton =='checkinAccount' "></checkin-account>
-    <!--  签单记录-->
-    <signing-record v-if= " labelButton =='signingRecord' "></signing-record>
-    <!-- 操作日志 -->
+    <!--  签单记录 signingRecord-->
+    <signing-record v-if= " labelButton =='eventDetails' "></signing-record>
+    <!-- 操作日志 operationLog-->
     <operation-log v-if= " labelButton =='operationLog' "></operation-log>
-    <!-- 活动详情 -->
-    <el-form v-if="labelButton == 'eventDetails' " :model="form" :rules="rules" ref="ruleForm" label-width="110px" style="width: 90%" class="events-detail">
+    <!-- 活动详情 eventDetails-->
+    <el-form v-if="labelButton == 'eventDetails1' " :model="form" :rules="rules" ref="ruleForm" label-width="110px" style="width: 90%" class="events-detail">
       <!-- 活动基本信息 -->
       <article>
         <p class="title">活动基本信息</p>
@@ -184,9 +184,10 @@
         <p class="title">C端展示图</p>
           <el-form-item>
                  <el-upload
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    action="/activity/file/upload"
                     list-type="picture-card"
                     :on-preview="handlePictureCardPreview"
+                    :on-error = "upfileError"
                     :on-remove="handleRemove">
                     <svg-icon icon-class="add" class="common_btn"></svg-icon>
                  <p class="img-title">点击添加图片</p>
@@ -283,6 +284,7 @@
   import { getAllPositon } from '@/api/queryConditions'
    import {getAllDeparts} from '@/api/achievement/index'
   import {getClientList} from '@/api/client/customerLabel'
+  import {addActivity} from '@/api/market/eventsList'
   import eventPoster  from './components/eventPoster.vue'
   import registrationCheck  from './components/registrationCheck.vue'
   import checkinAccount  from './components/checkinAccount.vue'
@@ -389,6 +391,9 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             console.log(this.form)
+            addActivity(this.form).then(res=>{
+              console.log(res)
+            })
           } else {
             console.log('error submit!!');
             return false;
@@ -511,6 +516,10 @@
       handlePictureCardPreview(file) {
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
+      },
+      upfileError(file, fileList){
+        console.log(file)
+        console.log(fileList)
       }
     }
   }

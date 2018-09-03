@@ -78,6 +78,13 @@ module.exports = {
         pathRewrite: {
           '^/sharing' : '/sharing'
         }
+      },
+      '/activity': {
+        target: url.BASE_API,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/activity' : '/activity'
+        }
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

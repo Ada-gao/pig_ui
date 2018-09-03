@@ -2,7 +2,7 @@
   <article class="checkin-account">
          <el-row type="flex" align="middle" :gutter="10">
            跟踪时间(月)
-          <el-col :span="2"><el-input  placeholder="请输入跟踪时间"></el-input></el-col>
+          <el-col :span="2"><el-input v-model="listQuery.trackMonth" placeholder="请输入跟踪时间"></el-input></el-col>
           <el-button class="search_btn" ><svg-icon icon-class="search"></svg-icon> 查询</el-button>
         </el-row>
        <div style="text-align: right;">
@@ -81,6 +81,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
+  import {getContract} from '@/api/market/eventsList'
   export default {
     name: 'checkinAccount',
     data() {
@@ -89,7 +90,9 @@
         dialogVisible: true,
         listQuery: {
           page: 1,
-          limit: 20
+          limit: 20,
+          activityId :1,
+          trackMonth : ''
         },
         total: null,
  tableData: [{
@@ -120,14 +123,17 @@
       ])
     },
     created() {
+      this.getContract()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
     },
 
     methods: {
-      handleCreate(){
+      getContract(){
+        getContract(this.listQuery).then(res=>{
 
+        })
       },
          // 取消 关闭对话框
       cancel(formName){
