@@ -114,15 +114,15 @@
                           'normal': scope.row.statusNum == 1,
                           'unusual': scope.row.statusNum == 2"
           >{{scope.row.status}}</el-tag> -->
-          <el-tag v-if="scope.row.statusNum == 0" class="normal">{{scope.row.status|turnText(workStatus)}}</el-tag>
-          <el-tag v-if="scope.row.statusNum == 1" class="leave">{{scope.row.status|turnText(workStatus)}}</el-tag>
-          <el-tag v-if="scope.row.statusNum == 2" class="unusual">{{scope.row.status|turnText(workStatus)}}</el-tag>
+          <el-tag v-if="scope.row.statusNum == 0" class="normal">{{scope.row.status|turnText1(workStatus)}}</el-tag>
+          <el-tag v-if="scope.row.statusNum == 1" class="leave">{{scope.row.status|turnText1(workStatus)}}</el-tag>
+          <el-tag v-if="scope.row.statusNum == 2" class="unusual">{{scope.row.status|turnText1(workStatus)}}</el-tag>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="账户锁定状态" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.lock|turnText(lockStatus)}}</span>
+        <span>{{scope.row.lock|turnText1(lockStatus)}}</span>
         </template>
       </el-table-column>
 
@@ -194,7 +194,7 @@
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime, transformText, transformText1 } from '@/utils'
+  import { parseTime, transformText } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -206,9 +206,6 @@
       ElRadioGroup
     },
     filters: {
-      turnText (val, list) {
-        return transformText1(val, list)
-      },
       parseTime (time) {
         if(!time) return
         let date = new Date(time)
