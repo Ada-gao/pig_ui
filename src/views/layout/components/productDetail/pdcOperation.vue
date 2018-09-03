@@ -14,8 +14,9 @@
           <template slot-scope="scope">
             <el-input v-model="scope.row.name"
                       v-if="productFileId===scope.row.productFileId"
+                      v-autoFocus
                       @keyup.enter.native="$event.target.blur"
-                      @blur="updateFileName(scope.row, 'transaction')"></el-input>
+                      @blur="updateFileName(scope.row, 'transaction', 'productFileId')"></el-input>
             <span v-else>{{scope.row.name}}</span>
           </template>
         </el-table-column>
@@ -36,7 +37,8 @@
           align="center"
           v-if="!operationDisabled">
           <template slot-scope="scope">
-            <a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>
+            <!--<a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>-->
+            <a class="common_btn" size="small" @click="handlerEdit($data, scope.row, 'productFileId')">编辑</a>
             <a class="danger_btn" size="small" @click="delfiles(scope.row, 'transaction')">删除</a>
           </template>
         </el-table-column>
@@ -90,8 +92,9 @@
           <template slot-scope="scope">
             <el-input v-model="scope.row.name"
                       v-if="productFileId===scope.row.productFileId"
+                      v-autoFocus
                       @keyup.enter.native="$event.target.blur"
-                      @blur="updateFileName(scope.row, 'product')"></el-input>
+                      @blur="updateFileName(scope.row, 'product', 'productFileId')"></el-input>
             <span v-else>{{scope.row.name}}</span>
           </template>
         </el-table-column>
@@ -112,7 +115,8 @@
           align="center"
           v-if="!operationDisabled">
           <template slot-scope="scope">
-            <a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>
+            <!--<a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>-->
+            <a class="common_btn" size="small" @click="handlerEdit($data, scope.row, 'productFileId')">编辑</a>
             <a class="danger_btn" size="small" @click="delfiles(scope.row, 'product')">删除</a>
           </template>
         </el-table-column>
@@ -146,8 +150,10 @@
           align="center">
           <template slot-scope="scope">
             <el-input v-model="scope.row.name"
+                      v-autoFocus
                       v-if="productFileId===scope.row.productFileId"
-                      @keyup.enter.native="updateFileName(scope.row, 'announcement')"></el-input>
+                      @keyup.enter.native="$event.target.blur"
+                      @blur="updateFileName(scope.row, 'announcement', 'productFileId')"></el-input>
             <span v-else>{{scope.row.name}}</span>
           </template>
         </el-table-column>
@@ -168,7 +174,8 @@
           align="center"
           v-if="!operationDisabled">
           <template slot-scope="scope">
-            <a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>
+            <!--<a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>-->
+            <a class="common_btn" size="small" @click="handlerEdit($data, scope.row, 'productFileId')">编辑</a>
             <a class="danger_btn" size="small" @click="delfiles(scope.row, 'announcement')">删除</a>
           </template>
         </el-table-column>
@@ -614,7 +621,7 @@
     updCustFile, updProductDisplay, updProductPause, getProductStage, addOperationObj, updProductType,
     updToCollect, cancelToCollect } from '@/api/product/product'
   import { mapGetters } from 'vuex'
-  import { transformText, sortKey } from '@/utils'
+  import { transformText, sortKey, transferEdit } from '@/utils'
   // import { parseTime } from '@/utils'
   // import { decimals, isNumber } from '@/utils/validate'
   import Bus from '@/assets/js/bus'
@@ -660,6 +667,7 @@
 
       };
       return {
+        tempObj: null,
         activeDateList:[],
         fileList1: [],
         fileList2: [],
@@ -1544,11 +1552,21 @@
           this.getFiles4(this.productId)
         })
       },
-      updateFileName(item, fileType) { // 编辑材料名称
+      handlerEdit (p0, p1, p2) {
+          this.tempObj = transferEdit(p0, p1, p2)
+        console.log('tempObj', this.tempObj)
+      },
+      updateFileName(item, fileType, id) { // 编辑材料名称
+        console.log('id', id)
         let params = {
           id: item.productFileId,
           name: item.name,
           fileType: fileType
+        }
+        console.log('params', params)
+        if (params.name === this.tempObj.name) {
+          this[id] = ''
+          return
         }
         putFileObj(params).then(res => {
           this.productFileId = 0
