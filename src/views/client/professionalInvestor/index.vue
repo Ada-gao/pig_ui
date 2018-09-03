@@ -7,12 +7,9 @@
       :searchCity="false"
       :searchClientType="false"
       :searchRealNameStatus="false"
+      :searchCertificationStatus="false"
       >
     </search-bar-component>
-
-    <!-- <div style="text-align: right">
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
-    </div> -->
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 

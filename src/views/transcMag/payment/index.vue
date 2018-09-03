@@ -5,7 +5,8 @@
     <transc-search-component
       :searchTranscStatus="false"
       :searchRefund="false"
-      :status="status">
+      :status="status"
+      :searchContract="false">
     </transc-search-component>
 
     <transc-table-component

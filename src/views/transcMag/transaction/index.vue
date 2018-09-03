@@ -55,7 +55,8 @@
         </el-card>
       </el-col>
     </el-row>
-    <transc-search-component></transc-search-component>
+    <transc-search-component
+      :searchContract="false"></transc-search-component>
 
     <transc-table-component
       :orderStatus="1"

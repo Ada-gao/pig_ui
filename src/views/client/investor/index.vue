@@ -7,7 +7,7 @@
       :searchCity="false"
       :searchClientType="false"
       :searchRealNameStatus="false"
-      :searchCertificationStatus="true"
+      :searchCertificationStatus="false"
       >
     </search-bar-component>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
