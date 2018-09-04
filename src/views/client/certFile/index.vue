@@ -39,8 +39,8 @@
           <a size="small" class="common_btn"
                     :href="scope.row.fileUrl"><a :href="scope.row.fileUrl" target="_blank">查看</a>
           </a>
-          <span v-if="ssys_cert_material_del" class="space_line"> | </span>
-          <a v-if="ssys_cert_material_del" size="small" class="danger_btn"
+          <!-- <span v-if="sys_cert_material_del" class="space_line"> | </span> -->
+          <a v-if="sys_cert_material_del" size="small" class="danger_btn"
                      @click="deletes(scope.row.certFileId)">删除
           </a>
         </template>
@@ -165,7 +165,7 @@
     created() {
       // this.handlePosition()
       this.getList()
-      this.ssys_cert_material_del = this.permissions['ssys_cert_material_del']
+      this.sys_cert_material_del = this.permissions['sys_cert_material_del']
     },
     methods: {
       getList() {
