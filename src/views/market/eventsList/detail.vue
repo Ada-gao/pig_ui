@@ -183,10 +183,11 @@
       <article class="image-display" style="margin-top:40px">
         <p class="title">C端展示图</p>
           <el-form-item>
-                 <el-upload
+                 <el-upload 
                     action="/activity/file/upload"
                     list-type="picture-card"
-                    :before-upload = "(res)=>{return beforeAvatarUpload(res,{width:750,height:1334,size:1,type:'same'})}"
+                    :before-upload = "beforeAvatarUpload"
+                    :on-success = "handlePictureSuccess"
                     :on-preview="handlePictureCardPreview"
                     :on-error = "upfileError"
                     :on-remove="handleRemove">
@@ -384,7 +385,7 @@
           activityClientLabelType:0,//活动可见范围（客户）
           activityClientLabelList:[],//客户标签(可见客户标签)
           activityShare:[],//活动分享渠道
-          activityForeendPictureList:'',//C端展示图
+          activityForeendPictureList:[],//C端展示图
         }  
       },
       //保存提交 
@@ -511,28 +512,35 @@
         this.$refs[select].setCheckedKeys([]);
         this.cancel()
       },
-         handleRemove(file, fileList) {
-        console.log(file, fileList);
+      handlePictureSuccess(file, fileList){
+         this.form.activityForeendPictureList.push(file.url);
+      },
+      handleRemove(file, fileList) {
+        
+        console.log(file.url);
+        let index =  this.form.activityForeendPictureList.indexOf(file.url);
+        if (index > -1) this.form.activityForeendPictureList.splice(index, 1);
+        console.log(this.form.activityForeendPictureList)
       },
       handlePictureCardPreview(file) {
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
       },
       upfileError(file, fileList){
+        
         console.log(file)
         console.log(fileList)
       },
       beforeAvatarUpload(file,json){
-        let self = true;
         const isJPG = file.type === 'image/jpeg' || file.type ==='image/png';
-        const isLt2M = file.size / 1024 / 1024 < json.size;
+        const isLt2M = file.size / 1024 / 1024 < 1;
         if (!isJPG) {
           this.$notify({
             title: '警告',
             message: '上传头像图片只能是 jpg/png 格式!',
             type: 'warning'
           });
-          self = false;
+          return false;
         }
         if (!isLt2M) {
           this.$notify({
@@ -540,27 +548,32 @@
             message: '上传头像图片大小不能超过 1MB!',
             type: 'warning'
           });
-         self = false;
+           return false;
         }
         const isSize = new Promise(function(resolve, reject) {
-            let width = 100;
-            let height = 100;
-            let _URL = window.URL || window.webkitURL;
-            let img = new Image();
-            img.onload = function() {
-                let valid = img.width >= width && img.height >= height;
-                valid ? resolve() : reject();
-            }
-            img.src = _URL.createObjectURL(file);
-        }).then(() => {
-            return file;
-        }, () => {
-            this.$message.error('上传的icon必须是等于或大于100*100!');
-            return Promise.reject();
-        });
-        return isJPG && isLt2M && isSize;
+        let width = 750;
+        let height = 1334;
+        let _URL = window.URL || window.webkitURL;
+        let img = new Image();
+        img.onload = function() {
+            let valid = (img.width == width) && (img.height == height);
+            valid ?  resolve() : reject();
+        }
+        img.src = _URL.createObjectURL(file);
+    }).then(() => {
+        return file;
+    }, () => {
+          this.$notify({
+            title: '警告',
+            message: '上传头像图片必须是750*1334',
+            type: 'warning'
+          });
+        return Promise.reject();
+    });
+    return isJPG && isLt2M && isSize;
 
-      }
+    },
+      
     }
   }
 </script>

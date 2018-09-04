@@ -4,17 +4,17 @@
         <el-form  label-width="100px">
             <!-- 活动封面（用于app端展示） -->
             <p class="title">活动封面<span class="title-app">（用于app端展示）</span></p>
-            <el-row type="flex" class="row-bg" justify="space-around" align="middle">
+            <el-row type="flex"  class="row-bg" justify="space-between" align="middle">
                 <el-col>
                       <el-form-item label="封面">
                         <el-button class="add_btn" size="small">上传封面</el-button>
                         <span class="upload-description">只能上传 jpg/png 文件，尺寸750x335px,大小不超过 2M</span>
                     </el-form-item>
                 </el-col>
-                <el-col style="text-align: center;">
+                <!-- <el-col style="text-align: center;">
                     <el-button class="add_btn">生成预览</el-button>
-                </el-col>
-                <el-col >
+                </el-col> -->
+                <el-col :span="16">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSD4-LcA2kyEAFHE3_YI-U3Dw2xYc_JS6BVVkmJhANV9D53iBIt">
                 </el-col>
             </el-row>
@@ -44,10 +44,10 @@
                         <span class="upload-description">只能上传 jpg/png文件,尺寸750x1334px，大小不超过 2M</span>
                     </el-form-item>
                 </el-col>
-                <el-col style="text-align: center;">
+                <!-- <el-col style="text-align: center;">
                     <el-button class="add_btn">生成预览</el-button>
-                </el-col>
-                <el-col >
+                </el-col> -->
+                <el-col :span="16">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSD4-LcA2kyEAFHE3_YI-U3Dw2xYc_JS6BVVkmJhANV9D53iBIt">
                 </el-col>
             </el-row>
