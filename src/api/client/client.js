@@ -123,3 +123,26 @@ export function importClientPd(file) {
     }
   })
 }
+
+/**
+ * 查询风险测评表
+ * @param query
+ */
+export function getRiskEvalList(query) {
+  return request({
+    url: '/client/client/riskTest/',
+    method: 'get',
+    params: query
+  })
+}
+
+/**
+ * 查询风险测评题目详情
+ * @param query
+ */
+export function getRiskEval(riskId) {
+  return request({
+    url: '/client/client/riskTest/' + riskId,
+    method: 'get'
+  })
+}

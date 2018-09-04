@@ -69,7 +69,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="证件类型" prop="idType">
-              <el-select class="filter-item" v-model="form.idType" placeholder="请选择">
+              <el-select class="filter-item" v-model="form.idType" @change="validHandle(form.idNo, form.idType)" placeholder="请选择">
                 <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
@@ -88,7 +88,12 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="证件号码" prop="idNo">
-              <el-input v-model="form.idNo" :maxlength="18" placeholder="请输入证件号码"></el-input>
+              <el-input
+                v-model="form.idNo"
+                @change="validHandle(form.idNo, form.idType)"
+                @blur="validHandle(form.idNo, form.idType)"
+                placeholder="请输入证件号码"></el-input>
+              <div class="el-form-item__error" v-show="errorMsg.length">{{errorMsg}}</div>
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -409,6 +414,7 @@
 
   const validID = (rule, value, callback) => {
     if (!value) {
+      // console.log(this.form.idType)
       callback(new Error('请输入证件号码'))
     } else if (!isvalidID(value)) {
       callback(new Error('请输入正确的证件号码'))
@@ -469,20 +475,20 @@
             {required: true, trigger: 'blur', message: '请输入工号'}
           ],
           gender: [
-            {required: true, trigger: 'change', message: '请选择性别'}
+            {required: false, trigger: 'change', message: '请选择性别'}
           ],
           education: [
-            {required: true, trigger: 'change', message: '请选择学历'}
+            {required: false, trigger: 'change', message: '请选择学历'}
           ],
           idType: [
-            {required: true, trigger: 'change', message: '请选择证件类型'}
+            {required: false, trigger: 'change', message: '请选择证件类型'}
           ],
           marriageStatus: [
             {required: false, trigger: 'change', message: '请选择婚姻状况'}
           ],
-          idNo: [
-            {required: true, trigger: 'blur', validator: validID}
-          ],
+          // idNo: [
+          //   {required: false, trigger: 'blur', validator: validID}
+          // ],
           employeeDate: [
             {required: true, trigger: 'change', message: '请选择入职日期'}
           ],
@@ -493,7 +499,7 @@
             {required: true, trigger: 'change', message: '请选择职位'}
           ],
           email: [
-            {required: true, trigger: 'blur', message: '请输入邮箱'}
+            {required: false, trigger: 'blur', message: '请输入邮箱'}
           ],
           mobile: [
             {required: true, trigger: 'blur', validator: validMobile}
@@ -547,7 +553,8 @@
         tempDeptIds: [],
         eachIndex: 0,
         curPrevId: '',
-        userId: ''
+        userId: '',
+        errorMsg: ''
       }
     },
     watch:{
@@ -651,6 +658,74 @@
       //       // this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
       //     })
       // },
+      validHandle(val, type) {
+        if (!val) {
+          this.errorMsg = ''
+          return false
+        }
+        if (type == '0') {
+          // 身份证
+          let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+          if (reg.test(val) === false) {
+            this.errorMsg = '请输入正确的身份证号码'
+            return false
+          } else {
+            this.errorMsg = ''
+            return true
+          }
+        } else if (type == '1') {
+          // 护照
+          let reg = /^1[45][0-9]{7}|([P|p|S|s]\d{7})|([S|s|G|g]\d{8})|([Gg|Tt|Ss|Ll|Qq|Dd|Aa|Ff]\d{8})|([H|h|M|m]\d{8，10})$/
+          if (reg.test(val) === false) {
+            this.errorMsg = '请输入正确的护照号码'
+            return false
+          } else {
+            this.errorMsg = ''
+            return true
+          }
+        } else if (type == '2') {
+          // 军官证
+          let reg = /[\u4e00-\u9fa5](字第){1}(\d{4,8})(号?)$/
+          if (reg.test(val) === false) {
+            this.errorMsg = '请输入正确的军官证号码'
+            return false
+          } else {
+            this.errorMsg = ''
+            return true
+          }
+        } else if (type == '3') {
+          // 台胞证
+          let reg = /[A-Z][0-9]{9}/
+          if (reg.test(val) === false) {
+            this.errorMsg = '请输入正确的台胞证号码'
+            return false
+          } else {
+            this.errorMsg = ''
+            return true
+          }
+        } else if (type == '4') {
+          // 港澳通行证
+          let reg = /^[a-zA-Z0-9]{5,21}$/
+          if (reg.test(val) === false) {
+            this.errorMsg = '请输入正确的港澳通行证号码'
+            return false
+          } else {
+            this.errorMsg = ''
+            return true
+          }
+        } else if (type == '5') {
+          // 其他
+          let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+          if (reg.test(val) === false) {
+            this.errorMsg = '请输入正确的证件号码'
+            return false
+          } else {
+            this.errorMsg = ''
+            return true
+          }
+        }
+        this.errorMsg = ''
+      },
       handlePosition() {
         getAllPositon().then(res => {
           this.positionsOptions = res.data
