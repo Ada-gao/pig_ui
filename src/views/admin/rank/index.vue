@@ -54,14 +54,14 @@
                :rules="rules"
                label-width="100px">
         <el-form-item label="职位"
-                      prop="positionName"
+                      prop="positionId"
                       style="width:95%">
           <el-select class="filter-item"
                      placeholder="请选择职位"
                      style="width:100%"
-                     v-model="form.positionName">
+                     v-model="form.positionId">
             <el-option v-for="item in positions"
-                       :value="item.positionName"
+                       :value="item.positionId"
                        :label="item.positionName"
                        :key="item.positionId">
               <span style="float: left;">{{item.positionName}}</span>
@@ -94,6 +94,7 @@
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
+  import { transformText1 } from '@/utils'
 
   export default {
     components: {
@@ -113,7 +114,7 @@
           limit: 20
         },
         rules: {
-          positionName: [
+          positionId: [
             { required: true, trigger: 'blur', message: '请选择职位' }
           ],
           rankName: [
@@ -185,36 +186,13 @@
         this.dialogFormVisible = true
         this.dialogStatus = 'update'
       },
-      transferNameById(id) {
-        let tempId = ''
-        switch (id) {
-          case '区域总':
-            tempId = 1
-            break
-          case '城市总':
-            tempId = 2
-            break
-          case '网店总':
-            tempId = 3
-            break
-          case '理财师':
-            tempId = 4
-            break
-          case '产品经理':
-            tempId = 7
-            break
-          case '高级理财师':
-            tempId = 8
-            break
-        }
-        return tempId
-      },
       create(formName) {
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
             this.dialogFormVisible = false
-            this.form.positionId = this.transferNameById(this.form.positionName)
+            // this.form.positionId
+            this.form.positionName = transformText1(this.form.positionId, this.positions)
             addRank(this.form).then(res => {
               if (res.status === 200) {
                 this.getList()

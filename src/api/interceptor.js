@@ -10,7 +10,8 @@ export default {
         // 没有退款申请书
       },
       '/admin/user/uploadExcel': {
-        1: '上传的 Excel 格式有误，请按照模板上传'
+        1: '上传的 Excel 格式有误，请按照模板上传',
+        1000: '上传的 Excel 格式有误，请按照模板上传',
       },
       '/auth/oauth/token': {
         888: '用户名或密码不存在' // 接口无返回code
