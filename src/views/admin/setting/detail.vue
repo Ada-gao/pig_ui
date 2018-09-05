@@ -67,6 +67,8 @@
         let check = /^[1-9]\d{0,4}(\.\d{1,2})?$|^0\.0[1-9]$|^0\.[1-9][0-9]$/;
         if(!check.test(value)){
          return callback(new Error('请输入正确的汇率格式'));
+        }else{
+           callback();
         }
       }
       return {

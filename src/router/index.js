@@ -295,6 +295,7 @@ export const asyncRouterMap = [
       { menuId: 324, path: 'customerLabel', component: _import('client/customerLabel/index'), name: '客户标签设置', meta: { title: '客户标签设置', icon: 'label' }},
       { menuId: 25, path: 'customerBatch', component: _import('client/batch/index'), name: '客户导入', meta: { title: '客户导入', icon: 'upload' }},
       { menuId: 347, path: 'customerBuyPdBatch', component: _import('client/pdbatch/index'), name: '已购买导入', meta: { title: '已购买导入', icon: 'upload' }},
+      { menuId: 352, path: 'riskEvaluation', component: _import('client/riskEvaluation/index'), name: '风险测评表', meta: { title: '风险测评表', icon: 'upload' }}
     ]
   },
   {
@@ -321,7 +322,7 @@ export const asyncRouterMap = [
       { menuId: 140, path: 'payCompletion', component: _import('product/payCompletion/index'), name: '兑付完成列表', meta: { title: '兑付完成列表', icon: 'shutDown' }},
       { menuId: 144, path: 'material', component: _import('product/materialManagement/index'), name: '材料管理', meta: { title: '材料管理', icon: 'file' }},
       { menuId: 348, path: 'productBatch', component: _import('product/batch/index'), name: '批量导入', meta: { title: '批量导入', icon: 'product' }},
-      { menuId: 49, path: 'productType', component: _import('product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'productType' }},
+      { menuId: 49, path: 'productType', component: _import('product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'productType' }}
     ]
   },
   {
@@ -342,7 +343,7 @@ export const asyncRouterMap = [
       { menuId: 95, path: 'payment', component: _import('transcMag/payment/index'), name: '打款列表', meta: { title: '打款列表', icon: 'product' }},
       { menuId: 96, path: 'refund', component: _import('transcMag/refund/index'), name: '退款列表', meta: { title: '退款列表', icon: 'productType' }},
       { menuId: 97, path: 'contract', component: _import('transcMag/contract/index'), name: '合同管理', meta: { title: '合同管理', icon: 'productType' }},
-      { menuId: 128, path: 'result', component: _import('transcMag/result/index'), name: '审核原因管理', meta: { title: '审核原因管理', icon: 'productType' }},
+      { menuId: 128, path: 'result', component: _import('transcMag/result/index'), name: '审核原因管理', meta: { title: '审核原因管理', icon: 'productType' }}
     ]
   },
   {
