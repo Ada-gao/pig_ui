@@ -425,7 +425,9 @@
         oldForm:{},
         newForm:{},
         listBox:{
-          rankList:null
+          rankList:null,
+          employeeList:[],
+          jobList:[]
         },
         disabledChange:{},
         rules: {
