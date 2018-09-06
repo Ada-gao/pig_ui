@@ -363,6 +363,9 @@
             this.$store.dispatch('Login', this.loginForm).then(() => {
               this.loading = false
               this.$router.push({path: '/'})
+              if (this.loginForm.password == '123456') {
+                this.$message.success('请尽快重置密码')
+              }
             }).catch(() => {
               this.loading = false
               this.refreshCode()

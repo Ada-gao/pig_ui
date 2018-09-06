@@ -1254,8 +1254,8 @@
           })
           // return false
           // if(this.createStatus = 'create') {}
-          this.$router.push({path: '/product/productList'})
-          Bus.$emit('activeIndex', '/product/productList')
+          // this.$router.push({path: '/product/productList'})
+          // Bus.$emit('activeIndex', '/product/productList')
         })
       },
       updateProductDisplay() { // 显示/隐藏
