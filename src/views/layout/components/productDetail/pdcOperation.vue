@@ -1683,6 +1683,7 @@
   }
   .color-0299CC{
     color: #0299CC;
+    cursor: pointer;
   }
   .border-0299CC{
     border: 1px solid #0299CC;

@@ -95,7 +95,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            
+
             <span style="width: 40%">产品折后系数：{{investRatio|turnNum}}</span>
           </el-form-item>
         </el-col>
@@ -165,8 +165,8 @@
             <el-input v-else v-model="form.custodianBank" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="渠道打款金额">
+        <el-col :span="11" class="define_col" style="padding-left: 25px;">
+          <el-form-item label="渠道打款金额（万）"  prop="channelAmount" style="white-space: nowrap">
             <span v-if="detailDisabled">{{form.channelAmount}}</span>
             <el-input v-else v-model="form.channelAmount" placeholder="请输入"></el-input>
           </el-form-item>
@@ -732,4 +732,9 @@
 .filter-item {
   display: block;
 }
+  .define_col .el-form-item__content span,
+  .define_col .el-form-item__content .el-input {
+    margin-left: 20px;
+  }
+
 </style>
