@@ -85,8 +85,9 @@
         this.formData = JSON.parse(JSON.stringify(this.tableData))
         const kepMap = {
           '行号': 'lineNo',
-          '客户姓名': 'clientName',
-          '客户编号': 'clientNo',
+          // '客户姓名': 'clientName',
+          // '客户编号': 'clientNo',
+          '客户身份证号码': 'id_no',
           '绑定理财师姓名': 'name',
           '绑定理财师编号': 'empNo',
           '理财师部门': 'deptName',
