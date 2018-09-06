@@ -78,11 +78,6 @@
         <span>{{scope.row.userDeptName}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="认证状态" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{scope.row.certificationStatus}}</span>
-        </template>
-      </el-table-column>
 
       <el-table-column align="center" label="国籍（常住地区）" show-overflow-tooltip>
         <template slot-scope="scope">
