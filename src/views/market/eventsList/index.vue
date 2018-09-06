@@ -55,47 +55,35 @@
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
-      <el-table-column align="center" label="活动名称">
+      <el-table-column align="center" label="活动名称" prop="activityName">
       </el-table-column>
 
-      <el-table-column align="center" label="活动编号" class-name="left">
-        <template slot-scope="scope">
-          <span>
-            <img v-if="scope.row.avatar" class="user-avatar" style="width: 20px; height: 20px; border-radius: 50%;" :src="scope.row.avatar+'?imageView2/1/w/20/h/20'">
-            {{scope.row.username}}
-          </span>
+      <el-table-column align="center" label="活动编号" prop="activityCode">
+      </el-table-column>
+
+      <el-table-column align="center" label="活动开始时间">
+          <template slot-scope="scope">
+          <span>{{ scope.row.activityStart | parseTime('{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="活动开始时间" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+      <el-table-column align="center" label="活动结束时间">
+       <template slot-scope="scope">
+          <span>{{ scope.row.activityEnd | parseTime('{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="活动结束时间" class-name="toggle">
-        <template slot-scope="scope">
-          <span>{{scope.row.positionId}}</span>
-        </template>
+      <el-table-column align="center" label="活动负责人" prop="activityPrincipal">
       </el-table-column>
 
-      <el-table-column align="center" label="活动负责人">
-        <template slot-scope="scope">
-          <span>{{scope.row.roleDesc}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="活动部门">
-        <template slot-scope="scope">
-          <span>{{scope.row.employeeDate|parseTime('{y}-{m}-{d}')}}</span>
-        </template>
+      <el-table-column align="center" label="活动部门" prop="activityDept">
       </el-table-column>
 
       <el-table-column align="center" class-name="status-col" label="活动状态">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.statusNum == 0" class="normal">{{scope.row.status|turnText(workStatus)}}</el-tag>
-          <el-tag v-if="scope.row.statusNum == 1" class="leave">{{scope.row.status|turnText(workStatus)}}</el-tag>
-          <el-tag v-if="scope.row.statusNum == 2" class="unusual">{{scope.row.status|turnText(workStatus)}}</el-tag>
+          <el-tag v-if="scope.row.activityStatusId == 0" class="unusual">{{scope.row.activityStatusId|turnText(workStatus)}}</el-tag>
+          <el-tag v-if="scope.row.activityStatusId == 1" class="normal">{{scope.row.activityStatusId|turnText(workStatus)}}</el-tag>
+          <el-tag v-if="scope.row.activityStatusId == 2" class="leave">{{scope.row.activityStatusId|turnText(workStatus)}}</el-tag>
         </template>
       </el-table-column>
 
@@ -116,9 +104,9 @@
           <a v-if="sys_user_upd" size="small" class="common_btn"
                      @click="handleUpdate('edit',scope.row)">编辑
           </a>
-          <el-button  size="small" type="danger"
-                     @click="deletes(scope.row)">删除
-          </el-button>
+          <a size="small"
+             class="danger_btn"
+             @click="deletes(scope.row)">删除</a>
         </template>
       </el-table-column>
 
@@ -147,26 +135,23 @@
   </div>
 </template>
 
-<script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/user'
-  import { deptRoleList, fetchDeptTree } from '@/api/role'
-  import { getPositionName } from '@/api/posi'
-  import { getAllPositon } from '@/api/queryConditions'
+<script>  
+  import {getActiveList} from '@/api/market/eventsList'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { parseTime, transformText, transformText1 } from '@/utils'
   import { mapGetters } from 'vuex'
-  import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
-  import ElOption from "element-ui/packages/select/src/option"
-  import Bus from '@/assets/js/bus'
 
   export default {
     components: {
-      ElOption,
-      ElRadioGroup
     },
     filters: {
       turnText (val, list) {
-        return transformText1(val, list)
+        // 0 未发布 1 已发布 2 已结束
+        let self;
+        if(val== 0) self = '未发布'
+        if(val== 1) self = '已发布'
+        if(val== 2) self = '已结束'
+        return self
       },
       parseTime (time) {
         if(!time) return
@@ -227,8 +212,7 @@
       ])
     },
     created() {
-      // this.handlePosition()
-      this.getList()
+      this.getActiveList()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
@@ -242,41 +226,14 @@
       changeReleaseSelection(index){
         this.releaseSelection = index;
       },
-      getList() {
-        this.listLoading = true
-        this.listQuery.orderByField = '`user`.create_time'
-        this.listQuery.isAsc = false
-        if(this.entryDate.length > 0) {
-          this.listQuery.startTime = parseTime(this.entryDate[0], '{y}-{m}-{d}')
-          this.listQuery.endTime = parseTime(this.entryDate[1], '{y}-{m}-{d}')
-        } else {
-          this.listQuery.startTime = ''
-          this.listQuery.endTime = ''
-        }
-        // this.handlePosition()
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.records
-          // console.log(this.list)
-          this.list.map(item => {
-            item.roleDesc = item.roleList.length > 0 ? item.roleList[0].roleDesc : ''
+      getActiveList() {
+          this.listLoading = true;
+          getActiveList(this.listQuery).then(res => {
+            if(res.status == 200){
+              this.list = res.data.records;
+              this.listLoading = false;
+            }
           })
-          this.total = response.data.total
-          this.listLoading = false
-          getAllPositon().then(res => {
-            this.positionsOptions = res.data
-            this.list.forEach(item => {
-              item.positionId = transformText(this.positionsOptions, item.positionId)
-              item.statusNum = item.status
-              // item.status = transformText(this.workStatus, item.status)
-            })
-          })
-        })
-      },
-
-      handlePosition() {
-        getAllPositon().then(res => {
-          this.positionsOptions = res.data
-        })
       },
       handleFilter() {
         this.listQuery.page = 1
@@ -329,10 +286,7 @@
       resetFilter() { // 重置搜索条件
         this.listQuery = {
           page: 1,
-          limit: 20,
-          username: '',
-          positionId: '',
-          status: ''
+          limit: 20
         },
         this.entryDate = []
         this.handleFilter()

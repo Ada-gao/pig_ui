@@ -44,7 +44,8 @@
             <!-- <el-button class="add_btn" size="small">上传封面</el-button>
             <span class="upload-description">只能上传 jpg/png文件,尺寸750x1334px，大小不超过 2M</span> -->
             <el-upload class="upload-demo" action="/activity/file/upload" :before-upload="beforeUpload" :on-success='afterSuccess' :on-error='handlError'>
-              <el-button size="small" class="add_btn" type="primary">上传封面</el-button>
+              <el-button size="small" class="add_btn" type="primary">上传海报</el-button>
+              <a href="">ss</a>
               <div slot="tip" class="el-upload__tip">只能上传 jpg/png文件,尺寸750x1334px，大小不超过 2M</div>
             </el-upload>
           </el-form-item>
@@ -74,8 +75,9 @@ export default {
   name: 'eventPoster',
   data() {
     return {
-      coverImgUrl: '',
-      backImgUrl: '',
+      coverImgUrl: 'static/img/activity/banner.png',
+      backImgUrl: 'static/img/activity/poster.png',
+      downloadUrl:'static/img/activity/poster.psd'
     }
   },
   methods: {
