@@ -173,13 +173,13 @@
         // this.listQuery.orderByField = '`user`.create_time'
         // this.listQuery.isAsc = false
         if (this.tabcard === 'first') {
-          getProductTypeList().then(response => {
+          getProductTypeList(this.listQuery).then(response => {
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
           })
         } else if (this.tabcard === 'second') {
-          getProductMixList().then(response => {
+          getProductMixList(this.listQuery).then(response => {
             this.list = response.data.records
             this.total = response.data.total
             this.listLoading = false
