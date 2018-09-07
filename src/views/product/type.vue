@@ -9,12 +9,12 @@
         <el-tab-pane label="产品收益类型" name="first"></el-tab-pane>
         <el-tab-pane label="产品结构类型" name="second"></el-tab-pane>
       </el-tabs> -->
-     
+
       <el-radio-group v-model="tabcard">
         <el-radio-button label="first">产品收益类型</el-radio-button>
         <el-radio-button label="second">产品结构类型</el-radio-button>
       </el-radio-group>
-    
+
       <el-button v-if="sys_prd_type_add" class="filter-item add_btn" style="margin-bottom: 0;text-align: right" @click="handleCreate" type="primary" icon="edit">
         <svg-icon icon-class="add"></svg-icon> 新增</el-button>
     </el-row>
@@ -238,28 +238,33 @@
             if (this.tabcard === 'first') {
               addObj(this.form)
                 .then((res) => {
-                  console.log(res)
-                  if(res.code !== 200) return
+                  if(res.status !== 200) return
                   this.dialogFormVisible = false
                   this.getList()
-                  this.$notify({
-                    title: '成功',
-                    message: '创建成功',
-                    type: 'success',
-                    duration: 2000
-                  })
+                  this.$refs[formName].resetFields()
+                  if (res.status === 200) {
+                    this.$notify({
+                      title: '成功',
+                      message: '修改成功',
+                      type: 'success',
+                      duration: 2000
+                    })
+                  }
                 })
             } else if (this.tabcard === 'second') {
               postProductMix(this.form).then(res => {
-                if(res.code !== 200) return
+                if(res.status !== 200) return
                 this.dialogFormVisible = false
                 this.getList()
-                this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
+                this.$refs[formName].resetFields()
+                if (res.status === 200) {
+                  this.$notify({
+                    title: '成功',
+                    message: '修改成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                }
               })
             }
           } else {
@@ -277,26 +282,32 @@
           if (valid) {
             this.dialogFormVisible = false
             if (this.tabcard === 'first') {
-              putObj(this.form).then(() => {
+              putObj(this.form).then(res => {
                 this.dialogFormVisible = false
                 this.getList()
-                this.$notify({
-                  title: '成功',
-                  message: '修改成功',
-                  type: 'success',
-                  duration: 2000
-                })
+                this.$refs[formName].resetFields()
+                if (res.status === 200) {
+                  this.$notify({
+                    title: '成功',
+                    message: '修改成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                }
               })
             } else if (this.tabcard === 'second') {
               postProductMix(this.form).then(res => {
                 this.dialogFormVisible = false
                 this.getList()
-                this.$notify({
-                  title: '成功',
-                  message: '修改成功',
-                  type: 'success',
-                  duration: 2000
-                })
+                this.$refs[formName].resetFields()
+                if (res.status === 200) {
+                  this.$notify({
+                    title: '成功',
+                    message: '修改成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                }
               })
             }
           } else {

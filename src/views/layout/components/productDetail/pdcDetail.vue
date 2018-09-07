@@ -82,7 +82,7 @@
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon">
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}</span>
-            <el-input v-else v-model="form.investmentHorizon" style="width: 30%;"></el-input>
+            <el-input v-else v-model.number="form.investmentHorizon" type="number" style="width: 30%;"></el-input>
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
             <el-form-item v-else label=""
               prop="investmentHorizonUnit"
@@ -423,7 +423,8 @@
             // { type: 'number', message: '金额必须为数字值', validator: certNumber }
           ],
           investmentHorizon: [
-            { required: true, message: '请输入产品期限', trigger: 'blur' }
+            { required: true, message: '请输入产品期限', trigger: 'blur' },
+//            { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
           ],
           buyingCrowds: [
             { required: true, message: '请选择购买人群', trigger: 'change' }
