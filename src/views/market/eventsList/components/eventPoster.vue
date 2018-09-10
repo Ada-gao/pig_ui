@@ -11,11 +11,11 @@
             <el-upload class="upload-demo" 
               action="/activity/file/upload"
                :show-file-list="false"
-             :before-upload="(res)=>{return beforeAvatarUpload(res,{width:750,height:335})}" 
-             :on-success='handleSuccess' 
+             :before-upload="(res)=>{return beforeAvatarUpload(res,{width:750,height:310,name:'Cover'})}" 
+             :on-success='coverSuccess' 
              :on-error='handlError'>
               <el-button size="small" class="add_btn" type="primary">上传封面</el-button>
-              <div slot="tip" class="el-upload__tip">只能上传 jpg/png 文件,尺寸750x335px,大小不超过 2M</div>
+              <div slot="tip" class="el-upload__tip">只能上传 jpg/png 文件,尺寸750x310px,大小不超过 2M</div>
             </el-upload>
           </el-form-item>
         </el-col>
@@ -28,9 +28,7 @@
             <el-col :span="8" class="img-title">封面预览</el-col>
             <el-col :span="8" class="line"></el-col>
           </el-row>
-          <img :src="coverImgUrl"></el-col>
-        <el-col :span="16" class='img'>
-          <img :src="coverImgUrl">
+          <img class="img-url" :src="coverImgUrl">
         </el-col>
       </el-row>
       <!-- 活动海报（用于app端分享查看） -->
@@ -59,8 +57,9 @@
               <el-col >
                 <el-upload class="upload-demo"
                  action="/activity/file/upload" 
-                 :before-upload="(res)=>{return beforeAvatarUpload(res,{width:750,height:1334})}"
-                  :on-success='afterSuccess'
+                    :show-file-list="false"
+                 :before-upload="(res)=>{return beforeAvatarUpload(res,{width:750,height:1334,name:'Poster'})}"
+                  :on-success='posterSuccess'
                    :on-error='handlError'>
                   <el-button size="small" class="add_btn" type="primary">上传海报</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传 jpg/png文件,尺寸750x1334px，大小不超过 2M</div>
@@ -82,7 +81,12 @@
             <el-col :span="8" class="img-title">海报预览</el-col>
             <el-col :span="8" class="line"></el-col>
           </el-row>
-          <img :src="backImgUrl"></el-col>
+            <el-row>
+            <el-col><img class="img-loge" :src="logImgUrl"></el-col> 
+           <el-col> <img class="img-url" :src="backImgUrl"></el-col> 
+           <el-col><img class="img-code" :src="codeImgUrl"></el-col> 
+          </el-row>
+         </el-col>
       </el-row>
       <div style="height:20px;"></div>
       <div style="text-align: center;">
@@ -107,8 +111,11 @@ export default {
       coverImgUrl: 'static/img/activity/banner.png',
       backImgUrl: 'static/img/activity/poster.png',
       downloadUrl:'static/img/activity/poster.psd',
+      logImgUrl:null,
+      codeImgUrl:null,
       loadingCover:false,
       loadingPoster:false
+     
 
     }
   },
@@ -126,6 +133,12 @@ export default {
       let height = obj.height;
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
       const isLt2M = file.size / 1024 / 1024 < 2;
+       if (obj.name == 'Cover'){
+          this.loadingCover = true
+       }else{
+          this.loadingPoster = true
+       }
+     
       if (!isJPG) {
         this.$notify({
           title: '警告',
@@ -158,15 +171,27 @@ export default {
           message: `上传头像图片必须是${width}*${height}`,
           type: 'warning'
         });
+         this.loadingClose()
         return Promise.reject();
       });
+      if(!(isJPG && isLt2M))  this.loadingClose()
       return isJPG && isLt2M && isSize;
     },
-    handleSuccess(file) {
-      console.log(file.url)
-      this.coverImgUrl = file.url
+    loadingClose(){
+       this.loadingCover = false
+        this.loadingPoster = false
     },
-    afterSuccess(file) {
+    // 封面上传成功
+    coverSuccess(file) {
+      
+      this.coverImgUrl = file.url
+      this.$nextTick(()=>{
+         this.loadingClose()
+      })
+    },
+    // 海报上传成功
+    posterSuccess(file) {
+       this.loadingClose()
       this.backImgUrl = file.url
     }
   },
@@ -210,9 +235,23 @@ export default {
         line-height: 14px;
     }
     .img {
-      img{
+      position: relative;
+      .img-url{
         width: 50%;
         height: 50%;
+      }
+      .img-loge{
+        position: absolute;
+        max-height: 35px;
+        top: 16px;
+        left: 16px;
+      }
+      .img-code{
+        position: absolute;
+        height: 50px;
+        bottom: 50px;
+        left: 25%;
+        margin-left: -25px;
       }
     .row-bg{
         width: 50%;

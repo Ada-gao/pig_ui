@@ -11,7 +11,7 @@
     </el-button-group>
   </nav>
   <!-- 活动海报 eventPoster-->
-  <event-poster v-if=" labelButton =='eventDetails' "></event-poster>
+  <event-poster v-if=" labelButton =='eventPoster' "></event-poster>
   <!-- 报名/签到 registrationCheck -->
   <registration-check v-if=" labelButton =='registrationCheck' "></registration-check>
   <!-- 签到账号 checkinAccount -->
@@ -21,7 +21,7 @@
   <!-- 操作日志 operationLog-->
   <operation-log v-if=" labelButton =='operationLog' "></operation-log>
   <!-- 活动详情 eventDetails-->
-  <el-form v-if="labelButton == 'eventDetails1' " :model="form" :rules="rules" ref="ruleForm" label-width="110px" style="width: 90%" class="events-detail">
+  <el-form v-if="labelButton == 'eventDetails' " :model="form" :rules="rules" ref="ruleForm" label-width="110px" style="width: 90%" class="events-detail">
     <!-- 活动基本信息 -->
     <article>
       <p class="title">活动基本信息</p>
@@ -76,8 +76,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="主办部门" prop="activityDept">
-            <el-select v-model="form.activityDept" multiple placeholder="请选择" style="width: 100%;">
+          <el-form-item label="主办部门" prop="activityDeptList">
+            <el-select v-model="form.activityDeptList" multiple placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in rootList" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
@@ -108,19 +108,17 @@
       <el-form-item label="参与部门" v-if="form.activityRangeType == 1">
         <el-row type="flex" justify="space-between">
           <el-col class="c-select">
-            <span class="c-select-list" v-for="item in activityRangeDeptListLabel" >{{item}}</span>
+            <span class="c-select-list" v-for="(item,index) in activityRangeDeptListLabel" :key="index">{{item}}</span>
           </el-col>
-          <el-button class="search_btn" style="height:40px;" @click="selectDepartment('activityRangeDeptList')">
-            </svg-icon>选择部门</el-button>
+          <el-button class="search_btn" style="height:40px;" @click="selectDepartment('activityRangeDeptList')">选择部门</el-button>
         </el-row>
       </el-form-item>
       <el-form-item label="参与职位" v-if="form.activityRangeType == 1">
         <el-row type="flex" justify="space-between">
           <el-col class="c-select">
-            <span class="c-select-list" v-for="item in activityRangePositionListLabel" >{{item}}</span>
+            <span class="c-select-list" v-for="(item,index) in activityRangePositionListLabel" :key="index">{{item}}</span>
           </el-col>
-          <el-button class="search_btn" style="height:40px;" @click="selectDepartment('activityRangePositionList')">
-            </svg-icon>选择职位</el-button>
+          <el-button class="search_btn" style="height:40px;" @click="selectDepartment('activityRangePositionList')">选择职位</el-button>
         </el-row>
       </el-form-item>
     </article>
@@ -136,10 +134,9 @@
       <el-form-item label="客户标签" v-if="form.activityClientLabelType == 1">
         <el-row type="flex" justify="space-between">
           <el-col class="c-select">
-            <span class="c-select-list" v-for="item in activityClientLabelListLabel" >{{item}}</span>
+            <span class="c-select-list" v-for="(item,index) in activityClientLabelListLabel" :key="index">{{item}}</span>
           </el-col>
-          <el-button class="search_btn" style="height:40px;" @click="selectDepartment('activityClientLabelList')">
-            </svg-icon>选择标签</el-button>
+          <el-button class="search_btn" style="height:40px;" @click="selectDepartment('activityClientLabelList')">选择标签</el-button>
         </el-row>
       </el-form-item>
     </article>
@@ -158,7 +155,16 @@
     <article class="image-display" style="margin-top:40px">
       <p class="title">C端展示图</p>
       <el-form-item>
-        <el-upload action="/activity/file/upload" list-type="picture-card" :before-upload="beforeAvatarUpload" :on-success="handlePictureSuccess" :on-preview="handlePictureCardPreview" :on-error="upfileError" :on-remove="handleRemove">
+        <el-upload
+          :limit="9"
+          :on-exceed="handleExceed"
+         action="/activity/file/upload"
+         list-type="picture-card"
+          :before-upload="beforeAvatarUpload"
+          :on-success="handlePictureSuccess"
+          :on-preview="handlePictureCardPreview" 
+          :on-error="upfileError"
+          :on-remove="handleRemove">
           <svg-icon icon-class="add" class="common_btn"></svg-icon>
           <p class="img-title">点击添加图片</p>
           <p class="img-text">jpg/png文件，尺寸750x1334px</p>
@@ -166,10 +172,7 @@
         </el-upload>
         <el-dialog :visible.sync="dialogVisible">
           <img width="100%" :src="dialogImageUrl" alt="">
-
-
-
-                  </el-dialog>
+        </el-dialog>
       </el-form-item>
     </article>
 
@@ -224,28 +227,13 @@
 </div>
 </template>
 <script>
-import {
-  mapGetters,
-  mapState
-} from 'vuex'
-import {
-  getDirectSupervisorList
-} from '@/api/user'
-import {
-  getDeptRoots
-} from '@/api/dept'
-import {
-  getAllPositon
-} from '@/api/queryConditions'
-import {
-  getAllDeparts
-} from '@/api/achievement/index'
-import {
-  getClientList
-} from '@/api/client/customerLabel'
-import {
-  addActivity
-} from '@/api/market/eventsList'
+import {mapGetters,mapState} from 'vuex'
+import {getDirectSupervisorList} from '@/api/user'
+import {getDeptRoots} from '@/api/dept'
+import { getAllPositon} from '@/api/queryConditions'
+import {getAllDeparts} from '@/api/achievement/index'
+import {getClientList} from '@/api/client/customerLabel'
+import {addActivity,editActivity} from '@/api/market/eventsList'
 import eventPoster from './components/eventPoster.vue'
 import registrationCheck from './components/registrationCheck.vue'
 import checkinAccount from './components/checkinAccount.vue'
@@ -291,7 +279,7 @@ export default {
           required: true,
           message: '请输入活动地址'
         }],
-        activityDept: [{
+        activityDeptList: [{
           required: true,
           message: '请选择主办部门'
         }]
@@ -329,6 +317,7 @@ export default {
     ])
   },
   created() {
+    //  this.editActivity()
     // 初始化 form
     this.initialization();
 
@@ -361,7 +350,7 @@ export default {
         activityData: [], //活动时间
         registrationData: [], //报名时间
         activitySite: '', //活动地址
-        activityDept: '', //主办部门
+        activityDeptList: '', //主办部门
         activityRangeType: 0, //活动可见范围（员工）
         activityRangeDeptList: [], //参与部门(可见部门)
         activityRangePositionList: [], //参与职位(可见职位)
@@ -369,14 +358,31 @@ export default {
         activityClientLabelList: [], //客户标签(可见客户标签)
         activityShare: [], //活动分享渠道
         activityForeendPictureList: [], //C端展示图
+        activityStatusId:0
       }
+    },
+    //我为数组添加键值id
+    arrayId(arr){
+      let array = []
+      arr.forEach(item=>{
+        array.push({"vid":item})
+      })
+      return array
     },
     //保存提交
     save(formName) {
+     
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(this.form)
-          addActivity(this.form).then(res => {
+           const newObj = {}
+          Object.assign(newObj,this.form)
+          newObj.activityPrincipalList = this.arrayId(newObj.activityPrincipalList)
+           newObj.activityDeptList = this.arrayId(newObj.activityDeptList)
+          newObj.activityRangeDeptList = this.arrayId(newObj.activityRangeDeptList)
+          newObj.activityRangePositionList = this.arrayId(newObj.activityRangePositionList)
+          newObj.activityClientLabelList = this.arrayId(newObj.activityClientLabelList)
+          newObj.activityShare = newObj.activityShare.join('|')
+          addActivity(newObj).then(res => {
             console.log(res)
           })
         } else {
@@ -384,6 +390,18 @@ export default {
           return false;
         }
       });
+    },
+    // 通过id查询活动信息
+    editActivity(){
+      editActivity(8).then(res=>{
+        if(res.status == 200){
+          const newObj = {}
+          Object.assign(newObj,res.data)
+          console.log(newObj.activityPrincipalList) 
+           this.form =newObj
+        }
+        console.log(this.form)
+      })
     },
     // 查询所有用户
     getDirectSupervisorList() {
@@ -505,14 +523,11 @@ export default {
       this.cancel()
     },
     handlePictureSuccess(file, fileList) {
-      this.form.activityForeendPictureList.push(file.url);
+      this.form.activityForeendPictureList.push(file.url)
     },
     handleRemove(file, fileList) {
-
-      console.log(file.url);
-      let index = this.form.activityForeendPictureList.indexOf(file.url);
+      let index = this.form.activityForeendPictureList.indexOf(file.response.url);
       if (index > -1) this.form.activityForeendPictureList.splice(index, 1);
-      console.log(this.form.activityForeendPictureList)
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
@@ -523,9 +538,17 @@ export default {
       console.log(file)
       console.log(fileList)
     },
+    handleExceed(files, fileList){
+        this.$notify({
+          title: '警告',
+          message: `当前限制选择 9 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`,
+          type: 'warning'
+        });
+    },
     beforeAvatarUpload(file, json) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
       const isLt2M = file.size / 1024 / 1024 < 1;
+    
       if (!isJPG) {
         this.$notify({
           title: '警告',
