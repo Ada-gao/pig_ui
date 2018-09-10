@@ -7,7 +7,12 @@
       <el-row type="flex" class="row-bg" justify="space-between" align="middle">
         <el-col>
           <el-form-item label="封面">
-            <el-upload class="upload-demo" action="/activity/file/upload" :before-upload="beforeUpload" :on-success='handleSuccess' :on-error='handlError'>
+            <el-upload class="upload-demo" 
+              action="/activity/file/upload"
+               :show-file-list="false"
+             :before-upload="beforeUpload" 
+             :on-success='handleSuccess' 
+             :on-error='handlError'>
               <el-button size="small" class="add_btn" type="primary">上传封面</el-button>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件,尺寸750x335px,大小不超过 2M</div>
             </el-upload>
@@ -16,7 +21,12 @@
         <!-- <el-col style="text-align: center;">
                     <el-button class="add_btn">生成预览</el-button>
                 </el-col> -->
-        <el-col :span="16">
+        <el-col :span="16" class="img" v-loading="loadingCover">
+          <el-row type="flex" class="row-bg" justify="space-between" align="middle">
+            <el-col :span="8" class="line"></el-col>
+            <el-col :span="8" class="img-title">封面预览</el-col>
+            <el-col :span="8" class="line"></el-col>
+          </el-row>
           <img :src="coverImgUrl"></el-col>
       </el-row>
       <!-- 活动海报（用于app端分享查看） -->
@@ -41,21 +51,31 @@
             <span>欢迎大家来到我们美丽的xxx</span>
           </el-form-item>
           <el-form-item label="背景图">
-            <!-- <el-button class="add_btn" size="small">上传封面</el-button>
-            <span class="upload-description">只能上传 jpg/png文件,尺寸750x1334px，大小不超过 2M</span> -->
-            <el-upload class="upload-demo" action="/activity/file/upload" :before-upload="beforeUpload" :on-success='afterSuccess' :on-error='handlError'>
-              <el-button size="small" class="add_btn" type="primary">上传海报</el-button>
-              <a href="">ss</a>
-              <div slot="tip" class="el-upload__tip">只能上传 jpg/png文件,尺寸750x1334px，大小不超过 2M</div>
-            </el-upload>
+            <el-row  type="flex">
+              <el-col >
+                <el-upload class="upload-demo" action="/activity/file/upload" :before-upload="beforeUpload" :on-success='afterSuccess' :on-error='handlError'>
+                  <el-button size="small" class="add_btn" type="primary">上传海报</el-button>
+                  <div slot="tip" class="el-upload__tip">只能上传 jpg/png文件,尺寸750x1334px，大小不超过 2M</div>
+                </el-upload>
+            </el-col>
+            <el-col >
+              <a size="small" class="common_btn" :href="downloadUrl">下载模板</a>
+            </el-col>
+          </el-row>
           </el-form-item>
         </el-col>
         <!-- <el-col style="text-align: center;">
                     <el-button class="add_btn">生成预览</el-button>
                 </el-col> -->
-        <el-col :span="16">
+        <el-col :span="16" class="img" v-loading="loadingPoster">
+          <el-row type="flex" class="row-bg" justify="space-between" align="middle">
+            <el-col :span="8" class="line"></el-col>
+            <el-col :span="8" class="img-title">海报预览</el-col>
+            <el-col :span="8" class="line"></el-col>
+          </el-row>
           <img :src="backImgUrl"></el-col>
       </el-row>
+      <div style="height:20px;"></div>
       <div style="text-align: center;">
         <el-button class="search_btn">上一步</el-button>
         <el-button class="add_btn">发布活动</el-button>
@@ -77,7 +97,9 @@ export default {
     return {
       coverImgUrl: 'static/img/activity/banner.png',
       backImgUrl: 'static/img/activity/poster.png',
-      downloadUrl:'static/img/activity/poster.psd'
+      downloadUrl:'static/img/activity/poster.psd',
+      loadingCover:false,
+      loadingPoster:false
     }
   },
   methods: {
@@ -89,24 +111,45 @@ export default {
       });
     },
     beforeUpload(file) {
-      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isJPG) {
-        this.$notify({
-          title: '警告',
-          message: '上传头像图片只能是 jpg/png 格式!',
-          type: 'warning'
-        });
-        return false;
-      }
-      if (!isLt2M) {
-        this.$notify({
-          title: '警告',
-          message: '上传头像图片大小不能超过 2MB!',
-          type: 'warning'
-        });
-        return false;
-      }
+       const isJPG = file.type === 'image/jpeg' || file.type ==='image/png';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isJPG) {
+          this.$notify({
+            title: '警告',
+            message: '上传头像图片只能是 jpg/png 格式!',
+            type: 'warning'
+          });
+          return false;
+        }
+        if (!isLt2M) {
+          this.$notify({
+            title: '警告',
+            message: '上传头像图片大小不能超过 1MB!',
+            type: 'warning'
+          });
+           return false;
+        }
+        const isSize = new Promise(function(resolve, reject) {
+        let width = 750;
+        let height = 1334;
+        let _URL = window.URL || window.webkitURL;
+        let img = new Image();
+        img.onload = function() {
+            let valid = (img.width == width) && (img.height == height);
+            valid ?  resolve() : reject();
+        }
+        img.src = _URL.createObjectURL(file);
+    }).then(() => {
+        return file;
+    }, () => {
+          this.$notify({
+            title: '警告',
+            message: '上传头像图片必须是750*1334',
+            type: 'warning'
+          });
+        return Promise.reject();
+    });
+    return isJPG && isLt2M && isSize;
     },
     handleSuccess(file) {
       this.coverImgUrl = file.url
@@ -153,6 +196,27 @@ export default {
         color: #BABBBB;
         letter-spacing: 0;
         line-height: 14px;
+    }
+    .img {
+      img{
+        width: 50%;
+        height: 50%;
+      }
+    .row-bg{
+        width: 50%;
+       margin: 20px 0;
+        .line{
+        height: 1px;
+        background-color: #D1D1D1;
+        }
+        .img-title{
+          font-family: PingFangSC-Regular;
+          font-size: 16px;
+          color: #767676;
+          letter-spacing: 0;
+          text-align: center;
+        }
+      }
     }
 }
 </style>
