@@ -7,14 +7,15 @@
       <el-row type="flex" class="row-bg" justify="space-between" align="middle">
         <el-col>
           <el-form-item label="封面">
+
             <el-upload class="upload-demo" 
               action="/activity/file/upload"
                :show-file-list="false"
-             :before-upload="beforeUpload" 
+             :before-upload="(res)=>{return beforeAvatarUpload(res,{width:750,height:335})}" 
              :on-success='handleSuccess' 
              :on-error='handlError'>
               <el-button size="small" class="add_btn" type="primary">上传封面</el-button>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件,尺寸750x335px,大小不超过 2M</div>
+              <div slot="tip" class="el-upload__tip">只能上传 jpg/png 文件,尺寸750x335px,大小不超过 2M</div>
             </el-upload>
           </el-form-item>
         </el-col>
@@ -28,6 +29,9 @@
             <el-col :span="8" class="line"></el-col>
           </el-row>
           <img :src="coverImgUrl"></el-col>
+        <el-col :span="16" class='img'>
+          <img :src="coverImgUrl">
+        </el-col>
       </el-row>
       <!-- 活动海报（用于app端分享查看） -->
       <p class="title">活动海报<span class="title-app">（用于app端分享查看）</span></p>
@@ -53,7 +57,11 @@
           <el-form-item label="背景图">
             <el-row  type="flex">
               <el-col >
-                <el-upload class="upload-demo" action="/activity/file/upload" :before-upload="beforeUpload" :on-success='afterSuccess' :on-error='handlError'>
+                <el-upload class="upload-demo"
+                 action="/activity/file/upload" 
+                 :before-upload="(res)=>{return beforeAvatarUpload(res,{width:750,height:1334})}"
+                  :on-success='afterSuccess'
+                   :on-error='handlError'>
                   <el-button size="small" class="add_btn" type="primary">上传海报</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传 jpg/png文件,尺寸750x1334px，大小不超过 2M</div>
                 </el-upload>
@@ -62,6 +70,7 @@
               <a size="small" class="common_btn" :href="downloadUrl">下载模板</a>
             </el-col>
           </el-row>
+
           </el-form-item>
         </el-col>
         <!-- <el-col style="text-align: center;">
@@ -100,6 +109,7 @@ export default {
       downloadUrl:'static/img/activity/poster.psd',
       loadingCover:false,
       loadingPoster:false
+
     }
   },
   methods: {
@@ -110,48 +120,50 @@ export default {
         type: 'warning'
       });
     },
-    beforeUpload(file) {
-       const isJPG = file.type === 'image/jpeg' || file.type ==='image/png';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isJPG) {
-          this.$notify({
-            title: '警告',
-            message: '上传头像图片只能是 jpg/png 格式!',
-            type: 'warning'
-          });
-          return false;
-        }
-        if (!isLt2M) {
-          this.$notify({
-            title: '警告',
-            message: '上传头像图片大小不能超过 1MB!',
-            type: 'warning'
-          });
-           return false;
-        }
-        const isSize = new Promise(function(resolve, reject) {
-        let width = 750;
-        let height = 1334;
+
+    beforeAvatarUpload(file, obj) {
+      let width = obj.width;
+      let height = obj.height;
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG) {
+        this.$notify({
+          title: '警告',
+          message: '上传头像图片只能是 jpg/png 格式!',
+          type: 'warning'
+        });
+        return false;
+      }
+      if (!isLt2M) {
+        this.$notify({
+          title: '警告',
+          message: '上传头像图片大小不能超过 2MB!',
+          type: 'warning'
+        });
+        return false;
+      }
+      const isSize = new Promise(function(resolve, reject) {
         let _URL = window.URL || window.webkitURL;
         let img = new Image();
         img.onload = function() {
-            let valid = (img.width == width) && (img.height == height);
-            valid ?  resolve() : reject();
+          let valid = (img.width == width) && (img.height == height);
+          valid ? resolve() : reject();
         }
         img.src = _URL.createObjectURL(file);
-    }).then(() => {
+      }).then(() => {
         return file;
-    }, () => {
-          this.$notify({
-            title: '警告',
-            message: '上传头像图片必须是750*1334',
-            type: 'warning'
-          });
+      }, () => {
+        this.$notify({
+          title: '警告',
+          message: `上传头像图片必须是${width}*${height}`,
+          type: 'warning'
+        });
         return Promise.reject();
-    });
-    return isJPG && isLt2M && isSize;
+      });
+      return isJPG && isLt2M && isSize;
     },
     handleSuccess(file) {
+      console.log(file.url)
       this.coverImgUrl = file.url
     },
     afterSuccess(file) {
@@ -217,6 +229,7 @@ export default {
           text-align: center;
         }
       }
+
     }
 }
 </style>
