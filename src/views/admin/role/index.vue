@@ -409,16 +409,18 @@
         })
       },
       updatePermession(roleId, roleCode) {
-        permissionUpd(roleId, this.$refs.menuTree.getCheckedKeys())
+        let menuIds = this.$refs.menuTree.getCheckedKeys()
+        let menuIds1 = this.$refs.menuTree.getHalfCheckedKeys()
+        permissionUpd(roleId, [...menuIds, ...menuIds1])
           .then(() => {
             this.dialogPermissionVisible = false
-            fetchTree()
-              .then(res => {
-                this.treeData = res.data
-              })
-            fetchRoleTree(roleCode).then(res => {
-              this.checkedKeys = res.data
-            })
+            // fetchTree()
+            //   .then(res => {
+            //     this.treeData = res.data
+            //   })
+            // fetchRoleTree(roleCode).then(res => {
+            //   this.checkedKeys = res.data
+            // })
             this.$notify({
               title: '成功',
               message: '修改成功',

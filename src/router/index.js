@@ -211,10 +211,10 @@ export const constantRouterMap = [
     ]
   },
   {
-    menuId: 280,
+    menuId: 356,
     path: '/market',
     component: Layout,
-    name: '市场活动管理详情',
+    name: '市场活动管理1',
     redirect: '/market/eventsList',
     hidden: true,
     children:[
@@ -368,7 +368,7 @@ export const asyncRouterMap = [
     ]
   },
   {
-    menuId: 280,
+    menuId: 356,
     path: '/market',
     component: Layout,
     name: '市场活动管理',
@@ -380,9 +380,9 @@ export const asyncRouterMap = [
       icon: 'market'
     },
     children: [
-      { menuId: 314, path: 'eventsList', component: _import('market/eventsList/index'), name: '市场活动列表', meta: { title: '市场活动列表', icon: 'eventsList' }},
-      { menuId: 314, path: 'customerPool', component: _import('market/customerPool/index'), name: '市场部客户池', meta: { title: '市场部客户池', icon: 'customerPool' }},
-      { menuId: 314, path: 'setting', component: _import('market/setting/index'), name: '活动相关设置', meta: { title: '活动相关设置', icon: 'activitySetting' }}
+      { menuId: 357, path: 'eventsList', component: _import('market/eventsList/index'), name: '市场活动列表', meta: { title: '市场活动列表', icon: 'eventsList' }},
+      { menuId: 369, path: 'customerPool', component: _import('market/customerPool/index'), name: '市场部客户池', meta: { title: '市场部客户池', icon: 'customerPool' }},
+      { menuId: 358, path: 'setting', component: _import('market/setting/index'), name: '活动相关设置', meta: { title: '活动相关设置', icon: 'activitySetting' }}
     ]
   },
   {
