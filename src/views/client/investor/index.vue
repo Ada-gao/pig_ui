@@ -88,10 +88,10 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <a size="small" class="common_btn"
+          <!-- <a size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId, '0')">查看
           </a>
-          <span v-if="sys_cert_comm_upd" class="space_line"> | </span>
+          <span v-if="sys_cert_comm_upd" class="space_line"> | </span> -->
           <a v-if="sys_cert_comm_upd" size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId, '1')">审核
           </a>

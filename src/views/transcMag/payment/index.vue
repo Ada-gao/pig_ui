@@ -3,6 +3,7 @@
   <div class="app-container calendar-list-container">
 
     <transc-search-component
+      :searchDate="false"
       :searchTranscStatus="false"
       :searchRefund="false"
       :status="status"
