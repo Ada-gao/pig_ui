@@ -101,8 +101,8 @@
       <p class="title">活动可见范围（员工）</p>
       <el-form-item>
         <el-radio-group v-model="form.activityRangeType">
-          <el-radio :label="0">全部可见</el-radio>
-          <el-radio :label="1">部分可见</el-radio>
+          <el-radio :label="'0'">全部可见</el-radio>
+          <el-radio :label="'1'">部分可见</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="参与部门" v-if="form.activityRangeType == 1">
@@ -127,8 +127,8 @@
       <p class="title">活动可见范围（客户）</p>
       <el-form-item>
         <el-radio-group v-model="form.activityClientLabelType">
-          <el-radio :label="0">全部可见</el-radio>
-          <el-radio :label="1">部分可见</el-radio>
+          <el-radio :label="'0'">全部可见</el-radio>
+          <el-radio :label="'1'">部分可见</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="客户标签" v-if="form.activityClientLabelType == 1">
@@ -160,6 +160,7 @@
           :on-exceed="handleExceed"
          action="/activity/file/upload"
          list-type="picture-card"
+         :file-list="fileList"
           :before-upload="beforeAvatarUpload"
           :on-success="handlePictureSuccess"
           :on-preview="handlePictureCardPreview" 
@@ -250,6 +251,7 @@ export default {
   },
   data() {
     return {
+      fileList: [],
       rules: {
         activityName: [{
           required: true,
@@ -307,7 +309,9 @@ export default {
         id: ''
       },
       dialogImageUrl: '',
-      dialogVisible: false
+      dialogVisible: false,
+      url : this.$route.path.split('/')[3],
+      activityId:this.$route.params.activityId
     }
   },
   computed: {
@@ -317,7 +321,7 @@ export default {
     ])
   },
   created() {
-    //  this.editActivity()
+    if(this.url == 'edit')  this.editActivity()
     // 初始化 form
     this.initialization();
 
@@ -382,8 +386,21 @@ export default {
           newObj.activityRangePositionList = this.arrayId(newObj.activityRangePositionList)
           newObj.activityClientLabelList = this.arrayId(newObj.activityClientLabelList)
           newObj.activityShare = newObj.activityShare.join('|')
+          newObj.activityStart = newObj.activityData[0]
+          newObj.activityEnd = newObj.activityData[1]
+          newObj.registrationStart = newObj.registrationData[0]
+          newObj.registrationEnd = newObj.registrationData[1]
           addActivity(newObj).then(res => {
+           if(res.status ==200){
+            this.$notify({
+              title: '成功',
+              message: '添加成功',
+              type: 'success'
+            });
             console.log(res)
+            this.$router.push(`/market/eventsList/edit/${res.data.data}`)
+           }
+         
           })
         } else {
           console.log('error submit!!');
@@ -393,15 +410,29 @@ export default {
     },
     // 通过id查询活动信息
     editActivity(){
-      editActivity(8).then(res=>{
+      editActivity(this.activityId).then(res=>{
         if(res.status == 200){
-          const newObj = {}
-          Object.assign(newObj,res.data)
-          console.log(newObj.activityPrincipalList) 
-           this.form =newObj
+          this.form = this.editProcess(res.data)
+          this.form.activityClientLabelType = '1'
         }
-        console.log(this.form)
       })
+    },
+    // 通过id查询活动信息 转成可现实的数据
+    editProcess(data){
+         const activityPrincipalList = []
+         const activityDeptList = []
+          data.activityData = [data.activityStart,data.activityEnd]
+          data.registrationData = [data.registrationStart,data.registrationEnd]
+          data.activityShare = data.activityShare.split('|')
+          data.activityPrincipalList.forEach(item=>{
+            activityPrincipalList.push(item.vid)
+          })
+          data.activityDeptList.forEach(item=>{
+            activityDeptList.push(item.vid)
+          })
+          data.activityPrincipalList = activityPrincipalList
+          data.activityDeptList = activityDeptList
+          return data
     },
     // 查询所有用户
     getDirectSupervisorList() {
@@ -522,22 +553,31 @@ export default {
       this.$refs[select].setCheckedKeys([]);
       this.cancel()
     },
+    // 文件上传成功时的钩子
     handlePictureSuccess(file, fileList) {
-      this.form.activityForeendPictureList.push(file.url)
+      this.form.activityForeendPictureList.push({val:file.url})
     },
+    // 文件列表移除文件时的钩子
     handleRemove(file, fileList) {
-      let index = this.form.activityForeendPictureList.indexOf(file.response.url);
-      if (index > -1) this.form.activityForeendPictureList.splice(index, 1);
+      // let index = this.form.activityForeendPictureList.indexOf(file.response.url);
+      // if (index > -1) this.form.activityForeendPictureList.splice(index, 1);
+      this.form.activityForeendPictureList.forEach((item,index)=>{
+        if(item.pictureUrl == file.response.url) this.form.activityForeendPictureList.splice(index, 1);
+      })
+      console.log(this.form.activityForeendPictureList)
+
     },
+    // 点击文件列表中已上传的文件时的钩子
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
+    // 文件上传失败时的钩子
     upfileError(file, fileList) {
-
       console.log(file)
       console.log(fileList)
     },
+    // 文件超出个数限制时的钩子
     handleExceed(files, fileList){
         this.$notify({
           title: '警告',
@@ -545,6 +585,7 @@ export default {
           type: 'warning'
         });
     },
+    // 上传文件之前的钩子
     beforeAvatarUpload(file, json) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
       const isLt2M = file.size / 1024 / 1024 < 1;

@@ -1,4 +1,19 @@
 import request from '@/utils/request'
+// 查询活动信息(带分页查询)
+export function getActivityList(obj) {
+  return request({
+    url: '/activity/activity',
+    method: 'get',
+    params: obj
+  })
+}
+// 删除活动信息
+export function deleteActivity(id) {
+  return request({
+    url: `/activity/activity/${id}`,
+    method: 'delete'
+  })
+}
 // 新增活动信息
 export function addActivity(obj) {
   return request({
