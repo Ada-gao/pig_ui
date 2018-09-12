@@ -347,11 +347,11 @@
   }
 
   const pdExpire = (rule, value, callback) => {
-      // const exp = /^\d{1,5}$/
-      const exp = /^[1-9][0-9]{0,5}\+{0,1}[0-9]{0,5}$/
+      // const Reg = /^\d{1,5}$/
+      const Reg = /^[1-9][0-9]{0,5}\+{0,1}[0-9]{0,5}$/
       if (!value) {
         callback('请输入产品期限')
-      } else if (!exp.test(value)) {
+      } else if (!Reg.test(value)) {
         callback('请输入有效的产品期限')
       } else {
         callback()

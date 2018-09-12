@@ -287,7 +287,7 @@
         getObj(row.roleId)
           .then(res => {
             this.form = res.data
-            this.checkedKeys1 = this.form.deptIds.split(',').map(Number)
+            this.checkedKeys1 = this.form.deptIds? this.form.deptIds.split(',').map(Number) : []
             const listStr = this.form.maskCode
             let arr = []
             if (listStr) {
