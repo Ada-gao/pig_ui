@@ -715,14 +715,14 @@
           }
         } else if (type == '5') {
           // 其他
-          let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
-          if (reg.test(val) === false) {
-            this.errorMsg = '请输入正确的证件号码'
-            return false
-          } else {
-            this.errorMsg = ''
-            return true
-          }
+          // let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+          // if (reg.test(val) === false) {
+          //   this.errorMsg = '请输入正确的证件号码'
+          //   return false
+          // } else {
+          //   this.errorMsg = ''
+          //   return true
+          // }
         }
         this.errorMsg = ''
       },

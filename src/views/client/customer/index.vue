@@ -100,6 +100,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" label="保护期是否过期" show-overflow-tooltip>
+        <template slot-scope="scope">
+        <span>{{scope.row.preserveExpired|turnText1(preserveExpired)}}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
           <a size="small" class="common_btn"
@@ -299,7 +305,7 @@
         'permissions',
         'genderType',
         'idTypeOptions',
-        // 'delFlagOptions',
+        'preserveExpired',
         'nationality'
       ])
     },

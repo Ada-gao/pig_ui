@@ -211,10 +211,10 @@ export const constantRouterMap = [
     ]
   },
   {
-    menuId: 280,
+    menuId: 356,
     path: '/market',
     component: Layout,
-    name: '市场活动管理详情',
+    name: '市场活动管理1',
     redirect: '/market/eventsList',
     hidden: true,
     children:[
@@ -293,6 +293,7 @@ export const asyncRouterMap = [
       { menuId: 82, path: 'allocated', component: _import('client/allocated/index'), name: '待分配客户', meta: { title: '待分配客户', icon: 'allocated' }},
       { menuId: 70, path: 'certFile', component: _import('client/certFile/index'), name: '认证资料管理', meta: { title: '认证资料管理', icon: 'certFile' }},
       { menuId: 324, path: 'customerLabel', component: _import('client/customerLabel/index'), name: '客户标签设置', meta: { title: '客户标签设置', icon: 'label' }},
+      { menuId: 369, path: 'customerPool', component: _import('client/customerPool/index'), name: '客户池', meta: { title: '客户池', icon: 'customerPool' }},
       { menuId: 25, path: 'customerBatch', component: _import('client/batch/index'), name: '客户导入', meta: { title: '客户导入', icon: 'upload' }},
       { menuId: 347, path: 'customerBuyPdBatch', component: _import('client/pdbatch/index'), name: '已购买导入', meta: { title: '已购买导入', icon: 'upload' }},
       { menuId: 352, path: 'riskEvaluation', component: _import('client/riskEvaluation/index'), name: '风险测评表', meta: { title: '风险测评表', icon: 'upload' }}
@@ -368,7 +369,7 @@ export const asyncRouterMap = [
     ]
   },
   {
-    menuId: 280,
+    menuId: 356,
     path: '/market',
     component: Layout,
     name: '市场活动管理',
@@ -380,9 +381,9 @@ export const asyncRouterMap = [
       icon: 'market'
     },
     children: [
-      { menuId: 314, path: 'eventsList', component: _import('market/eventsList/index'), name: '市场活动列表', meta: { title: '市场活动列表', icon: 'eventsList' }},
-      { menuId: 314, path: 'customerPool', component: _import('market/customerPool/index'), name: '市场部客户池', meta: { title: '市场部客户池', icon: 'customerPool' }},
-      { menuId: 314, path: 'setting', component: _import('market/setting/index'), name: '活动相关设置', meta: { title: '活动相关设置', icon: 'activitySetting' }}
+      { menuId: 357, path: 'eventsList', component: _import('market/eventsList/index'), name: '市场活动列表', meta: { title: '市场活动列表', icon: 'eventsList' }},
+      // { menuId: 369, path: 'customerPool', component: _import('market/customerPool/index'), name: '市场部客户池', meta: { title: '市场部客户池', icon: 'customerPool' }},
+      { menuId: 358, path: 'setting', component: _import('market/setting/index'), name: '活动相关设置', meta: { title: '活动相关设置', icon: 'activitySetting' }}
     ]
   },
   {

@@ -347,10 +347,11 @@
   }
 
   const pdExpire = (rule, value, callback) => {
-      const exp = /^\d{1,10}$/
+      // const Reg = /^\d{1,5}$/
+      const Reg = /^[1-9][0-9]{0,5}\+{0,1}[0-9]{0,5}$/
       if (!value) {
         callback('请输入产品期限')
-      } else if (!exp.test(Number(value))) {
+      } else if (!Reg.test(value)) {
         callback('请输入有效的产品期限')
       } else {
         callback()
@@ -530,7 +531,7 @@
           this.currencyList = response.data
           this.form.currencyId = 1
           if(!this.stage) {
-            console.log('没有分期')
+            // console.log('没有分期')
             this.getList()
           }
         })
@@ -546,6 +547,9 @@
           // 产品分期
           this.detailDisabled = false
           // this.stage = true
+        } else if (this.stageType === '1') {
+          // 募集分期
+          this.detailDisabled = true
         }
         this.stage = true
       }
@@ -594,6 +598,7 @@
 
             this.detailDisabled = true
             if(this.productStatusNo === 0) {
+              // 所有项都可编辑
               this.detailDisabled = false
             }
             if(this.productStatusNo === 6) {
@@ -627,7 +632,7 @@
         }
       },
       create(formName) { // 创建提交
-        console.log('创建')
+        // console.log('创建')
         // this.$emit('productIdByDetail', '')
         const set = this.$refs
         if(!this.form.isFloat) {
@@ -668,8 +673,7 @@
         })
       },
       update(formName) { // 产品详情修改提交
-        console.log('修改保存')
-        console.log(this.form)
+        // console.log(this.form)
         const set = this.$refs
         // if(this.stageType==='0' || this.productStatusNo == '0') formName = 'form'
         if(!this.form.isFloat) {

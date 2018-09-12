@@ -206,7 +206,7 @@
         // this.getList()
       },
       handleUpdate(row) { // 查看
-        this.$router.push({path: '/product/productDetail/' + row.productId})
+        this.$router.push({path: '/product/productDetail/' + row.productId, query: {productStatus: row.productStatus}})
         Bus.$emit('activeIndex', this.activeUrl)
         localStorage.setItem('activeUrl', this.activeUrl)
       },

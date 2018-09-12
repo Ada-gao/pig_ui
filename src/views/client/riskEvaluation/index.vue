@@ -66,7 +66,8 @@
 
       <el-table-column align="center" label="风险等级">
         <template slot-scope="scope">
-          <span>{{scope.row.riskTestGrade|turnText1(customerRiskLevel)}}</span>
+          <span>{{scope.row.riskTestGrade}}</span>
+          <!-- <span>{{scope.row.riskTestGrade|turnText1(customerRiskLevel)}}</span> -->
         </template>
       </el-table-column>
       <!-- <el-table-column align="center" label="操作" fixed="right" width="150">

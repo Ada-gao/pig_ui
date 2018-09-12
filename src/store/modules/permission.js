@@ -9,8 +9,12 @@ import { fetchUserTree } from '@/api/menu'
  */
 function hasPermission(menuIds, route) {
   let result = false
+  // let num = 0
   menuIds.filter(menuId => {
+    // console.log(menuId + '==' + route.menuId)
     if (menuId === route.menuId) {
+      // num ++
+      // console.log(num + ' ')
       result = true
     }
   })

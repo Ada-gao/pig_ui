@@ -217,6 +217,12 @@ input[type="number"]{
     margin-left: 0!important;
   }
 }
+// 业绩指标修改弹窗
+.perform_dialog {
+  .el-dialog__body {
+    padding-bottom: 0;
+  }
+}
 // 缩略图旋转
 .rotate-dialog .el-carousel__item {
   height: 94%;

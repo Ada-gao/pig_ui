@@ -54,7 +54,7 @@
       <el-form :model="form" :rules="rules" ref="form" label-width="100px">
 
         <el-form-item label="模板名称" prop="templateName">
-          <el-input v-model="form.templateName" :maxlength="40"></el-input>
+          <el-input v-model="form.templateName" :maxlength="20"></el-input>
         </el-form-item>
 
       </el-form>
@@ -71,7 +71,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="导出模板" :visible.sync="dialogTempVisible">
+    <el-dialog title="导出模板" :visible.sync="dialogTempVisible" @close="handleClose">
       <el-form :model="form1" ref="form1" label-width="100px">
 
         <el-form-item
@@ -254,6 +254,7 @@
               let objectUrl = URL.createObjectURL(new Blob([res.data]))
               this.forceDownload(objectUrl, fileName)
               this.dialogTempVisible = false
+              this.form1.date = []
             })
           } else {
             return false
@@ -361,7 +362,10 @@
       },
       updateData(data) { // 将组件内部的变化值传送到外面(确保拖拽的顺序)
         this.value1 = data
-
+      },
+      handleClose() {
+        this.form1.date = []
+        this.dialogTempVisible = false
       }
     }
   }

@@ -71,7 +71,7 @@
                      layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="closeDialogHandle">
       <el-form :model="form" :rules="rules" ref="form" label-width="100px">
         <el-input type="hidden" v-model="form.roleDeptId"></el-input>
         <el-form-item label="角色名称" prop="roleName">
@@ -83,8 +83,8 @@
         <el-form-item label="描述" prop="roleDesc">
           <el-input v-model="form.roleDesc" placeholder="描述"></el-input>
         </el-form-item>
-        <el-form-item label="所属部门" prop="deptIds">
-          <dept v-model="form.deptIds"></dept>
+        <el-form-item label="所属部门" prop="roleDeptIds">
+          <dept v-model="form.roleDeptIds" @change="deptIdChangeHandle"></dept>
         </el-form-item>
         <el-form-item label="脱敏显示" prop="maskCode">
           <el-checkbox-group v-model="form.maskCode">
@@ -92,11 +92,27 @@
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="数据权限" prop="dataScope">
-          <el-radio-group v-model="form.dataScope">
+          <el-radio-group v-model="form.dataScope" @change="scopeChangeHandle">
             <el-radio
               style="display: inline-block"
               v-for="item in dataScope" :label="item.value" :key="item.value">{{item.label}}</el-radio>
           </el-radio-group>
+        </el-form-item>
+        <el-form-item v-show="dialogDeptVisible">
+            <!-- check-strictly: 父子不关联 -->
+          <el-tree
+            class="filter-tree"
+            :data="treeDeptData"
+            :default-checked-keys="checkedKeys1"
+            show-checkbox
+            node-key="id"
+            highlight-current
+            ref="deptTree"
+            @node-click="getNodeData"
+            :props="defaultProps"
+            :filter-node-method="filterNode"
+          >
+          </el-tree>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -124,6 +140,7 @@
     </el-dialog> -->
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogPermissionVisible">
+        <!-- default-expand-all:默认展开所有 -->
       <el-tree
         class="filter-tree"
         :data="treeData"
@@ -134,7 +151,6 @@
         show-checkbox
         ref="menuTree"
         :filter-node-method="filterNode"
-        default-expand-all
       >
       </el-tree>
       <div slot="footer" class="dialog-footer">
@@ -147,6 +163,7 @@
 <script>
   import { fetchList, getObj, addObj, putObj, delObj, permissionUpd, fetchRoleTree } from '@/api/role'
   import { fetchTree } from '@/api/menu'
+  import { getBelongsDept } from '@/api/dept'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { mapGetters } from 'vuex'
   import Dept from 'components/dept'
@@ -162,8 +179,9 @@
     data() {
       return {
         treeData: [],
-        // treeDeptData: [],
+        treeDeptData: [],
         checkedKeys: [],
+        checkedKeys1: [],
         defaultProps: {
           children: 'children',
           label: 'name'
@@ -183,58 +201,34 @@
           deptName: undefined,
           roleDeptId: undefined,
           dataScope: '',
-          deptIds: []
+          roleDeptIds: []
         },
         roleId: undefined,
         roleCode: undefined,
         rules: {
           roleName: [
-            {
-              required: true,
-              message: '角色名称',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 40,
-              message: '长度在 3 到 20 个字符',
-              trigger: 'blur'
-            }
+            { required: true, message: '角色名称', trigger: 'blur' },
+            { min: 3, max: 40, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           roleCode: [
-            {
-              required: true,
-              message: '角色标识',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 40,
-              message: '长度在 3 到 20 个字符',
-              trigger: 'blur'
-            }
+            { required: true, message: '角色标识', trigger: 'blur' },
+            { min: 3, max: 40, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           roleDesc: [
-            {
-              required: true,
-              message: '角色标识',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 20,
-              message: '长度在 3 到 20 个字符',
-              trigger: 'blur'
-            }
+            { required: true, message: '角色标识', trigger: 'blur' },
+            { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           dataScope: [
             { required: true, message: '请选择数据', trigger: 'blur' }
+          ],
+          roleDeptIds: [
+            { required: true, message: '请选择所属部门', trigger: 'blur' }
           ]
         },
         statusOptions: ['0', '1'],
         rolesOptions: undefined,
         dialogFormVisible: false,
-        // dialogDeptVisible: false,
+        dialogDeptVisible: false,
         dialogPermissionVisible: false,
         dialogStatus: '',
         textMap: {
@@ -242,7 +236,8 @@
           create: '创建',
           permission: '分配权限',
         },
-        tableKey: 0
+        tableKey: 0,
+        tempVal: undefined
       }
     },
     computed: {
@@ -257,6 +252,14 @@
       this.sys_role_add = this.permissions['sys_role_add']
       this.sys_role_upd = this.permissions['sys_role_upd']
       this.sys_role_del = this.permissions['sys_role_del']
+    },
+    watch: {
+      tempVal(newVal, oldVal) {
+        console.log(newVal !== oldVal)
+        if (newVal !== oldVal && this.form.dataScope - 0 === 3) {
+          this.handleDept(newVal[newVal.length - 1])
+        }
+      }
     },
     methods: {
       getList() {
@@ -284,20 +287,26 @@
         getObj(row.roleId)
           .then(res => {
             this.form = res.data
+            this.checkedKeys1 = this.form.deptIds? this.form.deptIds.split(',').map(Number) : []
             const listStr = this.form.maskCode
             let arr = []
-            if(listStr) {
+            if (listStr) {
               arr.push(listStr)
               this.form.maskCode = listStr.length > 1 ? listStr.split(',') : arr
             } else {
               this.form.maskCode = []
             }
+            if (this.form.dataScope === '3') {
+              // this.dialogDeptVisible = true
+              this.handleDept(row.roleDeptId)
+            }
             this.form.deptName = row.deptName
-            this.form.roleDeptId = row.roleDeptId
-            let deptIds = []
-            deptIds.push(this.form.roleDeptId)
-            this.form.deptIds = deptIds
-            // console.log(this.form.deptIds)
+            this.form.roleDeptIds = [row.roleDeptId]
+            // this.form.roleDeptId = row.roleDeptId
+            // let roleDeptIds = []
+            // roleDeptIds.push(this.form.roleDeptId)
+            // this.form.roleDeptIds = roleDeptIds
+            // console.log(this.form.roleDeptIds)
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
           })
@@ -315,22 +324,16 @@
             this.roleCode = row.roleCode
           })
       },
-      // handleDept() {
-      //   fetchDeptTree()
-      //     .then(res => {
-      //       this.treeDeptData = res.data
-      //       this.dialogDeptVisible = true
-      //     })
-      // },
       filterNode(value, data) {
         if (!value) return true
         return data.label.indexOf(value) !== -1
       },
-      // getNodeData(data) {
-      //   this.dialogDeptVisible = false
-      //   this.form.roleDeptId = data.id
-      //   this.form.deptName = data.name
-      // },
+      getNodeData(data) {
+        // this.dialogDeptVisible = false
+        // this.form.roleDeptId = data.id
+        // this.form.deptName = data.name
+        console.log(data)
+      },
       handleDelete(row) {
         this.$confirm('此操作将永久删除该角色( ' + row.roleDesc + ' ), 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -355,13 +358,16 @@
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
-            const len = this.form.deptIds
+            const len = this.form.roleDeptIds
             if(len && len.length) {
               this.form.roleDeptId = len[len.length - 1]
             }
             if(this.form.maskCode) {
               this.form.maskCode = this.form.maskCode.join(',')
             }
+            let menuIds = this.$refs.deptTree.getCheckedKeys()
+            let menuIds1 = this.$refs.deptTree.getHalfCheckedKeys()
+            this.form.deptIds = [...menuIds, ...menuIds1].join()
             addObj(this.form)
               .then((res) => {
                 if (res.status !== 200) return
@@ -390,7 +396,10 @@
             if(this.form.maskCode) {
               this.form.maskCode = this.form.maskCode.join(',')
             }
-            this.form.roleDeptId = this.form.deptIds[this.form.deptIds.length - 1]
+            this.form.roleDeptId = this.form.roleDeptIds[this.form.roleDeptIds.length - 1]
+            let menuIds = this.$refs.deptTree.getCheckedKeys()
+            let menuIds1 = this.$refs.deptTree.getHalfCheckedKeys()
+            this.form.deptIds = [...menuIds, ...menuIds1].join()
             // this.dialogFormVisible = false
             putObj(this.form).then((res) => {
               if (res.status !== 200) return
@@ -409,16 +418,18 @@
         })
       },
       updatePermession(roleId, roleCode) {
-        permissionUpd(roleId, this.$refs.menuTree.getCheckedKeys())
+        let menuIds = this.$refs.menuTree.getCheckedKeys()
+        let menuIds1 = this.$refs.menuTree.getHalfCheckedKeys()
+        permissionUpd(roleId, [...menuIds, ...menuIds1])
           .then(() => {
             this.dialogPermissionVisible = false
-            fetchTree()
-              .then(res => {
-                this.treeData = res.data
-              })
-            fetchRoleTree(roleCode).then(res => {
-              this.checkedKeys = res.data
-            })
+            // fetchTree()
+            //   .then(res => {
+            //     this.treeData = res.data
+            //   })
+            // fetchRoleTree(roleCode).then(res => {
+            //   this.checkedKeys = res.data
+            // })
             this.$notify({
               title: '成功',
               message: '修改成功',
@@ -436,6 +447,30 @@
           maskCode: [],
           dataScope: ''
         }
+      },
+      handleDept(roleDeptId) { // 获取自定义部门
+        this.dialogDeptVisible = true
+        getBelongsDept(roleDeptId)
+          .then(res => {
+            this.treeDeptData = res.data
+          })
+      },
+      scopeChangeHandle(val) {
+        // 自定义部门
+        if (val - 0 === 3 && this.form.roleDeptIds) {
+          // this.dialogDeptVisible = true
+          this.handleDept(this.form.roleDeptIds[this.form.roleDeptIds.length - 1])
+        } else {
+          this.dialogDeptVisible = false
+          this.checkedKeys1 = []
+        }
+      },
+      deptIdChangeHandle(val) {
+        this.tempVal = val
+      },
+      closeDialogHandle() { // dialog 关闭清除表单数据
+        this.$refs['form'].resetFields()
+        this.treeDeptData = []
       }
     }
   }
