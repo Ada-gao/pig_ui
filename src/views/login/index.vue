@@ -391,6 +391,7 @@
         clearInterval(this.verifyTimer)
         this.verifyTimer = null
         this.timeFlag = false
+        this.$refs['loginForm1'].resetFields()
       },
       handleNext(formName) {
         this.$refs[formName].validate(valid => {
@@ -447,6 +448,7 @@
       handleForget() {
         this.pwdStep = 2
         this.activeStep = 0
+        // this.$refs.loginForm.resetFields()
       },
       handleMobileLogin() {
         if(!this.loginForm.mobile) {

@@ -255,6 +255,7 @@
     },
     watch: {
       tempVal(newVal, oldVal) {
+        console.log(newVal !== oldVal)
         if (newVal !== oldVal && this.form.dataScope - 0 === 3) {
           this.handleDept(newVal[newVal.length - 1])
         }
@@ -296,7 +297,7 @@
               this.form.maskCode = []
             }
             if (this.form.dataScope === '3') {
-              this.dialogDeptVisible = true
+              // this.dialogDeptVisible = true
               this.handleDept(row.roleDeptId)
             }
             this.form.deptName = row.deptName
@@ -448,6 +449,7 @@
         }
       },
       handleDept(roleDeptId) { // 获取自定义部门
+        this.dialogDeptVisible = true
         getBelongsDept(roleDeptId)
           .then(res => {
             this.treeDeptData = res.data
@@ -455,9 +457,12 @@
       },
       scopeChangeHandle(val) {
         // 自定义部门
-        if (val - 0 === 3) {
-          this.dialogDeptVisible = true
+        if (val - 0 === 3 && this.form.roleDeptIds) {
+          // this.dialogDeptVisible = true
           this.handleDept(this.form.roleDeptIds[this.form.roleDeptIds.length - 1])
+        } else {
+          this.dialogDeptVisible = false
+          this.checkedKeys1 = []
         }
       },
       deptIdChangeHandle(val) {
