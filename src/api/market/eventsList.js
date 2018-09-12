@@ -40,7 +40,7 @@ export function getActivityClient(obj) {
 // 查询签到账户
 export function getSigninaccount(obj) {
   return request({
-    url: '/activityClient/signinaccount/',
+    url: '/activity/activityClient/signinaccount/',
     method: 'get',
     params: obj
   })
