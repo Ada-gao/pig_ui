@@ -14,12 +14,20 @@ export function deleteActivity(id) {
     method: 'delete'
   })
 }
-// 新增活动信息
-export function addActivity(obj) {
+// 新增(编辑)活动信息
+export function addActivity(data,method) {
   return request({
     url: '/activity/activity',
-    method: 'post',
-    data: obj
+    method,
+    data
+  })
+}
+// 新增(编辑)活动海报
+export function activityPoster(data) {
+  return request({
+    url: '/activity/activity/poster',
+    method:'put',
+    data
   })
 }
 // 通过id查询活动信息
@@ -46,11 +54,11 @@ export function getSigninaccount(obj) {
   })
 }
 // 查询签单记录
-export function getContract(obj) {
+export function getContract(params) {
   return request({
-    url: '/activityClient/contract',
+    url: '/activity/activityClient/contract',
     method: 'get',
-    params: obj
+    params
   })
 }
 
@@ -74,5 +82,14 @@ export function exportcontract(params) {
     method: 'get',
     params,
     responseType: 'blob'
+  })
+}
+/**
+ * 发布活动信息
+ */
+export function releaseEvent(activityId ) {
+  return request({
+    url: `/activity/activity/release/${activityId}`,
+    method: 'put',
   })
 }

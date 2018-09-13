@@ -8,7 +8,7 @@
       border
       v-loading="listLoading"
       element-loading-text="给我一点时间"
-      :data="tableData"
+      :data="records"
       style="width: 100%">
       <el-table-column
        align="center"
@@ -38,13 +38,13 @@
       </template>
       </el-table-column>
     </el-table>
-    <!-- <div v-show="!listLoading" class="pagination-container">
+    <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                      :current-page.sync="listQuery.page"
                      :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
                      layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
-    </div> -->
+    </div>
         <el-dialog
           title="新增签到"
           :visible.sync="dialogVisible"
@@ -86,8 +86,10 @@
         listQuery: {
           page: 1,
           limit: 20,
-          activityId :1,
+          activityId:this.$route.params.activityId,
         },
+        total:null,
+        records:null
       }
     },
     computed: {
@@ -107,8 +109,19 @@
     methods: {
       getSigninaccount(){
         getSigninaccount(this.listQuery).then(res=>{
-
+          if(status == 200){
+            this.records = res.data.records
+            this.total = res.data.total
+          }
         })
+      },
+      handleSizeChange(val) {
+        this.listQuery.limit = val
+        this.getSigninaccount()
+      },
+      handleCurrentChange(val) {
+        this.listQuery.page = val
+        this.getSigninaccount()
       },
       // 添加
       handleCreate(){

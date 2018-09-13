@@ -1,10 +1,20 @@
 <template>
   <article class="checkin-account">
          <el-row type="flex" align="middle" :gutter="10">
-           跟踪时间(月)
-          <el-col :span="2"><el-input v-model="listQuery.trackMonth" placeholder="请输入跟踪时间"></el-input></el-col>
-          <el-button class="search_btn" ><svg-icon icon-class="search"></svg-icon> 查询</el-button>
+         <el-form :model="listQuery" ref="listQuery" label-width="120px" class="demo-dynamic">
+            <el-form-item
+                prop="trackMonth"
+                label=" 跟踪时间(月)"
+                :rules="[
+                  { required: true, message: '请输入跟踪时间', trigger: 'blur' }
+                ]"
+              >
+                <el-col :span="20"><el-input v-model="listQuery.trackMonth" placeholder="请输入跟踪时间"></el-input></el-col>
+                <el-col :span="4"><el-button class="search_btn" @click="submitForm('listQuery')"><svg-icon icon-class="search"></svg-icon> 查询</el-button></el-col>
+              </el-form-item>
+          </el-form>
         </el-row>
+
        <div style="text-align: right;">
           <el-button class="search_btn" @click="handleExport">
             <svg-icon icon-class="export"></svg-icon>批量导出
@@ -14,7 +24,7 @@
       border
       v-loading="listLoading"
       element-loading-text="给我一点时间"
-      :data="tableData"
+      :data="records"
       style="width: 100%">
       <el-table-column
        align="center"
@@ -67,13 +77,13 @@
         label="打款金额(万）">
       </el-table-column>
     </el-table>
-    <!-- <div v-show="!listLoading" class="pagination-container">
+    <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                      :current-page.sync="listQuery.page"
                      :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
                      layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
-    </div> -->
+    </div>
     
   </article>
 
@@ -91,11 +101,11 @@
         listQuery: {
           page: 1,
           limit: 20,
-          activityId :1,
-          trackMonth : ''
+          activityId :this.$route.params.activityId,
+          trackMonth : 6
         },
         total: null,
-
+        records:null
        
       }
     },
@@ -116,20 +126,30 @@
     methods: {
       getContract(){
         getContract(this.listQuery).then(res=>{
-
+          if(res.statu == 200){
+            this.records = res.data.records
+            this.total = res.data.total
+          }
         })
+     
       },
-         // 取消 关闭对话框
-      cancel(formName){
-        this.$refs[formName].resetFields();
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+           this.getContract()
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       },
       handleSizeChange(val) {
 			  this.listQuery.limit = val
-			  this.getList()
+			  this.getContract()
       },
       handleCurrentChange(val) {
         this.listQuery.page = val
-        this.getList()
+        this.getContract()
       },
        // 导出
       handleExport() {

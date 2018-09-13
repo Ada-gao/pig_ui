@@ -3,15 +3,15 @@
   <nav class="filter-container">
     <el-button-group>
       <el-button :class="{add_btn:labelButton=='eventDetails'}" @click="changeButton('eventDetails')">活动详情</el-button>
-      <el-button :class="{add_btn:labelButton=='eventPoster'}" @click="changeButton('eventPoster')">活动海报</el-button>
-      <el-button :class="{add_btn:labelButton=='registrationCheck'}" @click="changeButton('registrationCheck')">报名/签到</el-button>
-      <el-button :class="{add_btn:labelButton=='checkinAccount'}" @click="changeButton('checkinAccount')">签到帐号</el-button>
-      <el-button :class="{add_btn:labelButton=='signingRecord'}" @click="changeButton('signingRecord')">签单记录</el-button>
-      <el-button :class="{add_btn:labelButton=='operationLog'}" @click="changeButton('operationLog')">操作日志</el-button>
+      <el-button v-if="!(url == 'add')" v-on:childByValue="childByValue" :class="{add_btn:labelButton=='eventPoster'}" @click="changeButton('eventPoster')">活动海报</el-button>
+      <el-button v-if="!(url == 'add') && activityStatusId == 1" :class="{add_btn:labelButton=='registrationCheck'}" @click="changeButton('registrationCheck')">报名/签到</el-button>
+      <el-button v-if="!(url == 'add')" :class="{add_btn:labelButton=='checkinAccount'}" @click="changeButton('checkinAccount')">签到帐号</el-button>
+      <el-button v-if="!(url == 'add') && activityStatusId == 1" :class="{add_btn:labelButton=='signingRecord'}" @click="changeButton('signingRecord')">签单记录</el-button>
+      <el-button v-if="!(url == 'add') " :class="{add_btn:labelButton=='operationLog'}" @click="changeButton('operationLog')">操作日志</el-button>
     </el-button-group>
   </nav>
   <!-- 活动海报 eventPoster-->
-  <event-poster v-if=" labelButton =='eventPoster' "></event-poster>
+  <event-poster v-if=" labelButton =='eventPoster' " :form="childrenForm"></event-poster>
   <!-- 报名/签到 registrationCheck -->
   <registration-check v-if=" labelButton =='registrationCheck' "></registration-check>
   <!-- 签到账号 checkinAccount -->
@@ -20,75 +20,93 @@
   <signing-record v-if=" labelButton =='signingRecord' "></signing-record>
   <!-- 操作日志 operationLog-->
   <operation-log v-if=" labelButton =='operationLog' "></operation-log>
+
   <!-- 活动详情 eventDetails-->
   <el-form v-if="labelButton == 'eventDetails' " :model="form" :rules="rules" ref="ruleForm" label-width="110px" style="width: 90%" class="events-detail">
     <!-- 活动基本信息 -->
     <article>
       <p class="title">活动基本信息</p>
+       <el-row v-if="!(url == 'add') " type="flex" class="row-bg" justify="space-between">
+        <el-col :span="11">
+          <el-form-item label="活动编号">
+            <el-input v-if="url == 'edit'" v-model="form.activityCode" disabled></el-input>
+            <span v-if="url == 'view'">{{form.activityCode}}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="11">
           <el-form-item label="活动名称" prop="activityName">
-            <el-input v-model="form.activityName"></el-input>
+            <el-input v-if="url == 'edit'" v-model="form.activityName"></el-input>
+            <span v-if="url == 'view'">{{form.activityName}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="活动类型" prop="activityType">
-            <el-select v-model="form.activityType" placeholder="请选择" style="width: 100%;">
+            <el-select v-if="url == 'edit'" v-model="form.activityType" placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in activityType" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
+            <span v-if="url == 'view'">{{form.activityType}}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="11">
           <el-form-item label="活动负责人" prop="activityPrincipalList">
-            <el-select v-model="form.activityPrincipalList" multiple placeholder="请选择" style="width: 100%;">
+            <el-select v-if="url == 'edit'" v-model="form.activityPrincipalList" multiple placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in activityLeader" :key="item.userId" :label="item.name" :value="item.userId">
               </el-option>
             </el-select>
+            <span v-if="url == 'view'">{{form.activityPrincipalList}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="活动人数(人)" prop="activityActivitiesNumber">
-            <el-input v-model="form.activityActivitiesNumber"></el-input>
+            <el-input v-if="url == 'edit'" v-model="form.activityActivitiesNumber"></el-input>
+            <span v-if="url == 'view'">{{form.activityActivitiesNumber}}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="11">
           <el-form-item label="活动时间" prop="activityData">
-            <el-date-picker style="width:100%" v-model="form.activityData" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
+            <el-date-picker v-if="url == 'edit'" style="width:100%" v-model="form.activityData" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
+            <span v-if="url == 'view'">{{form.activityData}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="报名时间" prop="registrationData">
-            <el-date-picker style="width:100%" v-model="form.registrationData" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
+            <el-date-picker v-if="url == 'edit'" style="width:100%" v-model="form.registrationData" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
+            <span v-if="url == 'view'">{{form.registrationData}}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="11">
           <el-form-item label="活动地址" prop="activitySite">
-            <el-input v-model="form.activitySite"></el-input>
+            <el-input v-if="url == 'edit'" v-model="form.activitySite"></el-input>
+            <span v-if="url == 'view'">{{form.activitySite}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="主办部门" prop="activityDeptList">
-            <el-select v-model="form.activityDeptList" multiple placeholder="请选择" style="width: 100%;">
+            <el-select v-if="url == 'edit'" v-model="form.activityDeptList" multiple placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in rootList" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
+              <span v-if="url == 'view'">{{form.activityDeptList}}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item label="活动简介">
-            <el-input v-model="form.activityIntroduction" type="textarea" :rows="4" placeholder="请输入内容">
+            <el-input v-if="url == 'edit'" v-model="form.activityIntroduction" type="textarea" :rows="4" placeholder="请输入内容">
             </el-input>
+            <span v-if="url == 'view'">{{form.activityIntroduction}}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -177,14 +195,15 @@
       </el-form-item>
     </article>
 
-    <div style="text-align: center;">
-      <el-button class="search_btn">上一步</el-button>
-      <el-button class="add_btn">发布活动</el-button>
+     <div style="text-align: center;">
+      <!-- <el-button class="search_btn">上一步</el-button> -->
+      <el-button  v-if="!(url == 'add')" class="add_btn" @click="releaseEvent">发布活动</el-button>
       <el-button class="add_btn" @click="save('ruleForm')">保 存</el-button>
-      <el-button class="search_btn">取 消</el-button>
+      <el-button class="search_btn" @click="cancelSava">取 消</el-button>
+      <!-- <router-link class="el-button search_btn el-button--default" to="/market/eventsList" >取 消</router-link> -->
     </div>
-
   </el-form>
+
   <!-- 参与部门对话框 -->
   <el-dialog title="提示" :visible.sync="dialogDepartment" width="30%">
     <article class="table-event">
@@ -234,7 +253,7 @@ import {getDeptRoots} from '@/api/dept'
 import { getAllPositon} from '@/api/queryConditions'
 import {getAllDeparts} from '@/api/achievement/index'
 import {getClientList} from '@/api/client/customerLabel'
-import {addActivity,editActivity} from '@/api/market/eventsList'
+import {addActivity,editActivity,releaseEvent} from '@/api/market/eventsList'
 import eventPoster from './components/eventPoster.vue'
 import registrationCheck from './components/registrationCheck.vue'
 import checkinAccount from './components/checkinAccount.vue'
@@ -288,6 +307,7 @@ export default {
       },
       selectIdentification: '',
       form: null,
+      childrenForm:null,
       shuttleList: [],
       activityLeader: [],
       jobList: [],
@@ -311,7 +331,8 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       url : this.$route.path.split('/')[3],
-      activityId:this.$route.params.activityId
+      activityId:this.$route.params.activityId,
+      activityStatusId:''
     }
   },
   computed: {
@@ -321,7 +342,7 @@ export default {
     ])
   },
   created() {
-    if(this.url == 'edit')  this.editActivity()
+    if(this.url != 'add')  this.editActivity()
     // 初始化 form
     this.initialization();
 
@@ -344,6 +365,10 @@ export default {
     }
   },
   methods: {
+      childByValue: function (childValue) {
+        // childValue就是子组件传过来的值
+        console.log(childValue)
+      },
     // 表单数据初始化
     initialization() {
       this.form = {
@@ -369,8 +394,9 @@ export default {
     arrayId(arr){
       let array = []
       arr.forEach(item=>{
-        array.push({"vid":item})
+        array.push({"vid":item.vid || item})
       })
+
       return array
     },
     //保存提交
@@ -379,6 +405,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
            const newObj = {}
+           let method
           Object.assign(newObj,this.form)
           newObj.activityPrincipalList = this.arrayId(newObj.activityPrincipalList)
            newObj.activityDeptList = this.arrayId(newObj.activityDeptList)
@@ -390,14 +417,19 @@ export default {
           newObj.activityEnd = newObj.activityData[1]
           newObj.registrationStart = newObj.registrationData[0]
           newObj.registrationEnd = newObj.registrationData[1]
-          addActivity(newObj).then(res => {
+          if(this.url == 'add'){
+            method = "post"
+          }else{
+            method = "put"
+            newObj.activityId = this.activityId
+          }
+          addActivity(newObj,method).then(res => {
            if(res.status ==200){
             this.$notify({
               title: '成功',
-              message: '添加成功',
+              message: '保存成功',
               type: 'success'
             });
-            console.log(res)
             this.$router.push(`/market/eventsList/edit/${res.data.data}`)
            }
          
@@ -412,8 +444,9 @@ export default {
     editActivity(){
       editActivity(this.activityId).then(res=>{
         if(res.status == 200){
+          // Object.assign(this.childrenForm ,res.data)
           this.form = this.editProcess(res.data)
-          this.form.activityClientLabelType = '1'
+          this.activityStatusId = this.form.activityStatusId
         }
       })
     },
@@ -629,7 +662,43 @@ export default {
       return isJPG && isLt2M && isSize;
 
     },
-
+    // 取消保存
+    cancelSava(){
+      this.$confirm('确认取消后不保存数据！', '取消提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+         this.$router.push('/market/eventsList')
+        })
+      
+    },
+    // 发布活动
+    releaseEvent(){
+         if(this.activityStatusId == 0){
+      releaseEvent(this.activityId).then(res=>{
+        if(res.status == 200){
+          this.$confirm('确认发布活动后，活动将在app端展示！', '发布活动', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '发布成功',
+                type: 'success'
+              });
+            })
+        }
+      })
+    }else{
+       this.$notify({
+          title: '警告',
+          message: '该活动已经发布',
+          type: 'warning'
+        });
+    }
+    },
   }
 }
 </script>

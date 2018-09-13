@@ -142,8 +142,8 @@ export default {
   filters: {
     turnText(val, list) {
       let self
-      if(val == 0) self = "已发布"
-      if(val == 1) self = "未发布"
+      if(val == 0) self = "未发布"
+      if(val == 1) self = "已发布"
       if(val == 2) self = "已结束"
       return self
     },

@@ -28,7 +28,7 @@
             <el-col :span="8" class="img-title">封面预览</el-col>
             <el-col :span="8" class="line"></el-col>
           </el-row>
-          <img class="img-url" :src="coverImgUrl">
+          <img class="img-url" :src="activityBannerUrl">
         </el-col>
       </el-row>
       <!-- 活动海报（用于app端分享查看） -->
@@ -36,8 +36,7 @@
       <el-row type="flex" class="row-bg" justify="space-around" align="middle">
         <el-col>
           <el-form-item label="部门">
-            <span>财富部</span>
-            <span>市场部</span>
+            <!-- <span v-for="item in form.activityDeptList">{{item}}</span> -->
           </el-form-item>
           <el-form-item label="活动名称">
             <span>市场活动</span>
@@ -83,43 +82,54 @@
           </el-row>
             <el-row>
             <el-col><img class="img-loge" :src="logImgUrl"></el-col> 
-           <el-col> <img class="img-url" :src="backImgUrl"></el-col> 
+           <el-col> <img class="img-url" :src="activityPosterUrl"></el-col> 
            <el-col><img class="img-code" :src="codeImgUrl"></el-col> 
           </el-row>
          </el-col>
       </el-row>
       <div style="height:20px;"></div>
-      <div style="text-align: center;">
-        <el-button class="search_btn">上一步</el-button>
-        <el-button class="add_btn">发布活动</el-button>
-        <el-button class="add_btn">保 存</el-button>
-        <el-button class="search_btn">取 消</el-button>
-      </div>
+        <div style="text-align: center;">
+      <el-button  v-if="!(url == 'add')" class="add_btn" @click="releaseEvent">发布活动</el-button>
+      <el-button class="add_btn" @click="save('ruleForm')">保 存</el-button>
+      <el-button class="search_btn" @click="cancelSava">取 消</el-button>
+    </div>
     </el-form>
   </el-row>
 </article>
 </template>
 
 <script>
-import {
-  mapGetters
-} from 'vuex'
+import {activityPoster} from '@/api/market/eventsList'
+import {mapGetters} from 'vuex'
 export default {
   name: 'eventPoster',
+  props:['form'],
   data() {
     return {
-      coverImgUrl: 'static/img/activity/banner.png',
-      backImgUrl: 'static/img/activity/poster.png',
+      activityBannerUrl: 'static/img/activity/banner.png',
+      activityPosterUrl: 'static/img/activity/poster.png',
       downloadUrl:'static/img/activity/poster.psd',
       logImgUrl:null,
       codeImgUrl:null,
       loadingCover:false,
-      loadingPoster:false
-     
-
+      loadingPoster:false,
+       url : this.$route.path.split('/')[3],
+      activityId:this.$route.params.activityId,
+      posterList:{}
     }
   },
   methods: {
+
+    activityPoster(){
+       this.posterList = {
+          activityBannerUrl: this.activityBannerUrl,
+          activityPosterUrl: this.activityPosterUrl,
+          activityId:  this.activityId
+        }
+        activityPoster(this.posterList).then(res=>{
+
+        })
+    },
     handlError(file, fileList) {
       this.$notify({
         title: '警告',
@@ -184,16 +194,58 @@ export default {
     // 封面上传成功
     coverSuccess(file) {
       
-      this.coverImgUrl = file.url
+      this.activityBannerUrl = file.url
       this.$nextTick(()=>{
          this.loadingClose()
       })
     },
     // 海报上传成功
     posterSuccess(file) {
-       this.loadingClose()
-      this.backImgUrl = file.url
+      this.activityPosterUrl = file.url
+       this.$nextTick(()=>{
+         this.loadingClose()
+      })
+    },
+    // 保存
+    save(){
+      this.activityPoster()
+    },
+    // 取消保存
+    cancelSava(){
+      this.$confirm('确认取消后不保存数据！', '取消提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+         this.$router.push('/market/eventsList')
+        })
+    },
+    // 发布活动
+    releaseEvent(){
+      if(this.form.activityStatusId == 0){
+      releaseEvent(this.activityId).then(res=>{
+        if(res.status == 200){
+          this.$confirm('确认发布活动后，活动将在app端展示！', '发布活动', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '发布成功',
+                type: 'success'
+              });
+            })
+        }
+      })
+    }else{
+       this.$notify({
+          title: '警告',
+          message: '该活动已经发布',
+          type: 'warning'
+        });
     }
+    },
   },
   computed: {
     ...mapGetters([
