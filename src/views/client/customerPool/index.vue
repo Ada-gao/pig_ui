@@ -44,9 +44,9 @@
 
     <div style="text-align: right">
       <el-button v-if="sys_user_add" class="add_btn" @click="distributionPersonal">
-        <svg-icon icon-class="add"></svg-icon>分配到个人</el-button>
+        <svg-icon icon-class="personal"></svg-icon>分配到个人</el-button>
         <el-button v-if="sys_user_add" class="add_btn" @click="distributionDepartment">
-        <svg-icon icon-class="add"></svg-icon>分配到部门</el-button>
+        <svg-icon icon-class="department"></svg-icon>分配到部门</el-button>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
@@ -73,6 +73,9 @@
       </el-table-column>
 
       <el-table-column align="center" label="邮箱" prop="email">
+      </el-table-column>
+
+      <el-table-column align="center" label="客户来源" prop="clientFrom">
       </el-table-column>
 
       <el-table-column align="center" label="国籍（常住地区）">
@@ -110,7 +113,7 @@
        :rules="[
            { required: true, message: '请选择姓名', trigger: 'change'}
         ]">
-         <el-select v-model="personalForm.personal" placeholder="请选择人员">
+         <el-select v-model="personalForm.personal" placeholder="请选择人员" >
             <el-option
               v-for="item in plannerList"
               :key="item.userId"
@@ -241,6 +244,7 @@
             item.clientType = transformText(this.certificationType, item.clientType)
             item.idType = transformText(this.idTypeOptions, item.idType)
             item.nationality = transformText(this.nationality, item.nationality)
+            item.clientFrom = transformText(this.clientFrom, item.clientFrom)
           })
       
         })
@@ -271,13 +275,29 @@
       },
       // 分配到部门
       distributionDepartment(){
-        this.dialogDepartment = true
-        this.getDeptRoots()
+        if(this.multipleSelection.length>0){
+          this.dialogDepartment = true
+          this.getDeptRoots()
+        }else{
+          this.$notify({
+            title: '警告',
+            message: '清选择至少一条数据',
+            type: 'warning'
+          });
+        }
       },
       // 分配到个人
       distributionPersonal(){
+        if(this.multipleSelection.length>0){
         this.dialogPersonal = true
         this.getUserLists()
+        }else{
+          this.$notify({
+            title: '警告',
+            message: '清选择至少一条数据',
+            type: 'warning'
+          });
+        }
       },
       //获取理财师列表
       getUserLists() {
@@ -291,7 +311,17 @@
       personalDetermine(formName){
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            allocationPlanners({clientIds:this.multipleSelection},{deptId:this.departmentForm.department}).then(res=>{
+            let PlannerChangeReq = {}
+            this.plannerList.forEach(item=>{
+              if(item.userId == this.personalForm.personal){
+                PlannerChangeReq = {
+                  deptId:item.deptId,
+                  plannerId:item.userId,
+                  reason:'正常更换'
+                }
+              }
+            })
+            allocationPlanners({clientIds:this.multipleSelection},PlannerChangeReq).then(res=>{
              if(res.status == 200){
               this.sallocationSuccess('dialogPersonal')
                }
@@ -324,9 +354,9 @@
               message: '分配成功',
               type: 'success'
             });
+          this.getClientPoolList()
            this[dialog] = false
            this.multipleSelection = []
-       
       },
         //获取部门列表
       getDeptRoots() {
