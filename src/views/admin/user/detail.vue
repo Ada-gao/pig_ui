@@ -512,6 +512,10 @@
           ],
           deptIds: [
             { required: true, trigger: 'blur', message: '请选择部门' }
+          ],
+          email: [
+            // { required: false, trigger: 'blur', message: '请输入邮箱' },
+            { type: 'email', trigger: ['blur', 'change'], message: '请输入正确的邮箱' }
           ]
         },
         // statusOptions: ['0', '1', '2'],
