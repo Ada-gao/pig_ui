@@ -1505,6 +1505,7 @@
       },
       changeSecStep(val) {
         this.secStep = val
+        this.setTables()
       },
       chooseClientFile() { // 下拉框选择材料提交
         this.dialogComVisible = false
@@ -1656,6 +1657,16 @@
           // this.clientFiles = response.data || []
           this.data2 = response.data
         })
+      },
+      setTables() { // 设置table宽度100% (客户所需材料表格)
+        const tables=document.querySelectorAll('table')
+        for(let i = 0; i < tables.length; i++) {
+          tables[i].style.width='100%'
+        };
+        const elHeaders=document.querySelectorAll('.el-table__header')
+        for(let j = 0; j < elHeaders.length; j++) {
+          elHeaders[j].style.tableLayout='inherit'
+        }
       }
     }
   }

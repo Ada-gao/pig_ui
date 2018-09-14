@@ -1,5 +1,5 @@
 <template>
-  <div class="product-table">
+  <div class="product-table" v-cloak>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
@@ -203,44 +203,6 @@
   }
 </script>
 
-<style lang="scss" scoped>
-@import "src/styles/mixin.scss";
-.el-select,
-.el-date-editor {
-  width: 100%;
-}
-.filter-container {
-  .query-title {
-    white-space: nowrap;
-    min-width: 85px;
-    padding: 0;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    vertical-align: center;
-  }
-  .el-checkbox-button:hover {
-    color: #00C1DF;
-  }
-  .el-checkbox-button__inner:hover {
-    color: #00C1DF;
-  }
-  .el-checkbox-button__inner:active {
-    background-color: #00C1DF;
-    color: #fff;
-  }
-  .el-checkbox-button.is-checked .el-checkbox-button__inner {
-    background-color: #00C1DF;
-  }
-}
-.btn-padding {
-  @include padding;
-}
-.query-color {
-  @include mainColor;
-}
-.operate-col {
-  text-align: left;
-}
+<style lang="scss">
 </style>
 
