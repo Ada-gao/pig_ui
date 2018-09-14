@@ -28,9 +28,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="产品简称" prop="productShortName">
+          <el-form-item label="产品简称" prop="productShortName" style="margin-bottom: 21px;">
             <span v-if="shortNameDisabled">{{form.productShortName}}</span>
-            <el-input v-else v-model="form.productShortName" placeholder="请输入产品名称"></el-input>
+            <el-input v-else v-model="form.productShortName" placeholder="请输入产品名称" style="line-height: 39px;"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -80,7 +80,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="产品期限" prop="investmentHorizon">
+          <el-form-item label="产品期限" prop="investmentHorizon" style="margin-bottom: 21px;">
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}</span>
             <el-input v-else v-model="form.investmentHorizon" style="width: 30%;"></el-input>
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
@@ -232,7 +232,7 @@
         <el-col :span="11">
           <el-form-item label="账号" prop="cardNo">
             <span v-if="detailDisabled">{{form.cardNo}}</span>
-            <el-input v-else type="number" v-model.number="form.cardNo" placeholder="请输入"></el-input>
+            <el-input v-else v-model="form.cardNo" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -244,7 +244,7 @@
         <el-col :span="11">
           <el-form-item label="大额支付行号" prop="paymentNumber">
             <span v-if="detailDisabled">{{form.paymentNumber}}</span>
-            <el-input v-else type="number" v-model.number="form.paymentNumber" placeholder="请输入"></el-input>
+            <el-input v-else v-model="form.paymentNumber" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -358,6 +358,17 @@
       }
   }
 
+  const pdAcount = (rule, value, callback) => {
+    const exp = /^\d{1,20}$/
+    if (!value) {
+      callback('请输入账号')
+    } else if (!exp.test(Number(value))) {
+      callback('请输入正确的账号')
+    } else {
+      callback()
+    }
+  }
+
   const twoDecimals = (rule, value, callback) => {
     if (!value) {
       return null
@@ -366,6 +377,17 @@
     } else {
       callback()
     }
+  }
+  // 收益对标基准校验
+  const pdAnnualizedReturn = (rule, value, callback) => {
+      const exp = /^(\d+|\d+\.\d{1,2})$/
+      if (!value) {
+          callback('请打入收益对标基准')
+      } else if (!exp.test(value)) {
+          callback('请输入正确的收益对标基准')
+      } else {
+          callback()
+      }
   }
 
   export default {
@@ -402,7 +424,10 @@
             { required: true, message: '请输入支行名称', rigger: 'blur' }
           ],
           cardNo: [
-            { required: true, message: '请输入打款帐号', trigger: 'blur' }
+            { required: true, validator: pdAcount, trigger: 'blur' }
+          ],
+          paymentNumber: [
+            { required: true, validator: pdAcount, trigger: 'blur' }
           ],
           productCode: [
             { required: true, message: '请输入产品名称', trigger: 'blur' },
@@ -441,6 +466,10 @@
           ],
           buyingCrowds: [
             { required: true, message: '请选择购买人群', trigger: 'change' }
+          ],
+          annualizedReturn: [
+            { required: true, validator: pdAnnualizedReturn, trigger: 'blur'}
+
           ]
         },
         createStatus: 'create',
