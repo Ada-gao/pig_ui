@@ -344,6 +344,7 @@
             item.clientClass = transformText(this.clientClass, item.clientClass)
             item.nationality = transformText(this.nationality, item.nationality)
             item.idType = transformText(this.idTypeOptions, item.idType)
+            console.log(item.idType, this.idTypeOptions)
           })
         })
       },
