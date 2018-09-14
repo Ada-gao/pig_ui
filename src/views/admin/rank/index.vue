@@ -171,10 +171,7 @@
       handleCreate() {
         this.dialogStatus = 'create'
         if (!this.posiFlag) {
-          getAllPositon().then(res => {
-            this.posiFlag = true
-            this.positions = res.data
-          })
+          this.getPosition()
         }
         this.dialogFormVisible = true
       },
@@ -185,6 +182,9 @@
         this.form = row
         this.dialogFormVisible = true
         this.dialogStatus = 'update'
+        if (!this.posiFlag) {
+          this.getPosition()
+        }
       },
       create(formName) {
         const set = this.$refs
@@ -282,6 +282,12 @@
           postionId: undefined,
           positionName: ''
         }
+      },
+      getPosition() {
+        getAllPositon().then(res => {
+          this.posiFlag = true
+          this.positions = res.data
+        })
       }
     }
   }
