@@ -43,9 +43,9 @@
     </div>
 
     <div style="text-align: right">
-      <el-button v-if="sys_user_add" class="add_btn" @click="distributionPersonal">
+      <el-button v-if="activity_client_user_batch" class="add_btn" @click="distributionPersonal">
         <svg-icon icon-class="personal"></svg-icon>分配到个人</el-button>
-        <el-button v-if="sys_user_add" class="add_btn" @click="distributionDepartment">
+        <el-button v-if="activity_client_dept_batch" class="add_btn" @click="distributionDepartment">
         <svg-icon icon-class="department"></svg-icon>分配到部门</el-button>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -87,10 +87,9 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <a size="small" class="common_btn"
-                     @click="handleUpdate(scope.row, 'view')">查看
+           <a v-if="activity_client_query" size="small" class="common_btn"
+                     @click="handleRouter(scope.row.clientId)">查看
           </a>
-        
         </template>
       </el-table-column>
 
@@ -228,9 +227,9 @@
     },
     created() {
       this.getClientPoolList()
-      this.sys_user_add = this.permissions['sys_user_add']
-      this.sys_user_upd = this.permissions['sys_user_upd']
-      this.sys_user_del = this.permissions['sys_user_del']
+      this.activity_client_query = this.permissions['activity_client_query']
+      this.activity_client_user_batch = this.permissions['activity_client_user_batch']
+      this.activity_client_dept_batch = this.permissions['activity_client_dept_batch']
     },
     methods: {
       getClientPoolList() {
@@ -262,7 +261,11 @@
         this.listQuery.page = val
         this.getClientPoolList()
       },
-        
+       handleRouter(id) { // 查看跳转详情
+        this.$router.push({
+          path: '/client/readDetail/' + id + '/0'
+        })
+      },
       resetFilter() { // 重置搜索条件
         this.listQuery = {
           page: 1,
