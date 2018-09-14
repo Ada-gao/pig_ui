@@ -16,24 +16,23 @@
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
-    
 
       <el-table-column align="center" label="部门名称">
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="部门logo" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.logo}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <a size="small" class="common_btn"
-                     @click="handleUpdate(scope.row, 'view')">查看
+                     @click="handleUpdate(scope.row, 'view')">编辑
           </a>
         <a size="small" class="danger_btn">删除</a>
         </template>
@@ -75,16 +74,12 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/user'
-  import { deptRoleList, fetchDeptTree } from '@/api/role'
-  import { getPositionName } from '@/api/posi'
-  import { getAllPositon } from '@/api/queryConditions'
+import {getSubcompany} from '@/api/market/setting'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { parseTime, transformText, transformText1 } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
-  import Bus from '@/assets/js/bus'
   import activityType from './activityType.vue'
 
   export default {
@@ -93,24 +88,15 @@
       ElRadioGroup,
       activityType
     },
-    filters: {
-      turnText (val, list) {
-        return transformText1(val, list)
-      },
-      parseTime (time) {
-        if(!time) return
-        let date = new Date(time)
-        return parseTime(date)
-      }
-    },
+ 
     name: 'table_user',
     directives: {
       waves
     },
     data() {
       return {
-        dialogVisible:false,
         step:1,
+        dialogVisible:false,
         list: null,
         total: null,
         listLoading: true,
@@ -118,45 +104,15 @@
           page: 1,
           limit: 20
         },
-        role: undefined,
-        form: {
-          name: 'rank',
-          username: undefined,
-          password: undefined,
-          status: undefined,
-          deptId: undefined
-        },
-        // statusOptions: ['0', '1', '2'],
-        positionsOptions: [],
-        // dialogDeptVisible: false,
-        userAdd: false,
-        userUpd: false,
-        userDel: false,
-        // dialogStatus: '',
         tableKey: 0,
-        // value13: '',
-        eduOptions: [],
-        // IDType: '',
-        // employeeDate: '',
-        // maritalStatus: '',
-        positionId: '',
-        status: '',
-        // tableData: [],
-        // tableHeader: [],
-        entryDate: [],
-        // positionName: '',
-        // isReadonly: false
       }
     },
     computed: {
       ...mapGetters([
         'permissions',
-        'workStatus',
-        'lockStatus'
       ])
     },
     created() {
-      // this.handlePosition()
       this.getList()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
@@ -165,64 +121,13 @@
     methods: {
       getList() {
         this.listLoading = true
-        this.listQuery.orderByField = '`user`.create_time'
-        this.listQuery.isAsc = false
-        if(this.entryDate.length > 0) {
-          this.listQuery.startTime = parseTime(this.entryDate[0], '{y}-{m}-{d}')
-          this.listQuery.endTime = parseTime(this.entryDate[1], '{y}-{m}-{d}')
-        } else {
-          this.listQuery.startTime = ''
-          this.listQuery.endTime = ''
-        }
-        // this.handlePosition()
-        fetchList(this.listQuery).then(response => {
+        getSubcompany(this.listQuery).then(response => {
           this.list = response.data.records
-          // console.log(this.list)
-          this.list.map(item => {
-            item.roleDesc = item.roleList.length > 0 ? item.roleList[0].roleDesc : ''
-          })
           this.total = response.data.total
           this.listLoading = false
-          getAllPositon().then(res => {
-            this.positionsOptions = res.data
-            this.list.forEach(item => {
-              item.positionId = transformText(this.positionsOptions, item.positionId)
-              item.statusNum = item.status
-              // item.status = transformText(this.workStatus, item.status)
-            })
-          })
         })
       },
-      // getNodeData(data) { // 部门查询
-      //   // this.dialogDeptVisible = false
-      //   this.form.deptId = data.id
-      //   this.form.deptName = data.name
-      //   deptRoleList(data.id)
-      //     .then(response => {
-      //       this.rolesOptions = response.data
-      //       this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
-      //     })
-      // },
-      handlePosition() {
-        getAllPositon().then(res => {
-          this.positionsOptions = res.data
-        })
-      },
-      // handleDept() {
-      //   fetchDeptTree()
-      //     .then(response => {
-      //       this.treeDeptData = response.data
-      //       // this.dialogDeptVisible = true
-      //     })
-      // },
-      // changeDept() {
-      //   this.role = ''
-      //   this.form.role = ''
-      // },
-      handleFilter() {
-        this.listQuery.page = 1
-        this.getList()
-      },
+ 
       handleSizeChange(val) {
         this.listQuery.limit = val
         this.getList()
@@ -235,10 +140,6 @@
         this.resetTemp()
         // this.dialogStatus = 'create'
         this.$router.push('/admin/user-detail')
-        Bus.$emit('activeIndex', '/admin/user')
-      },
-      handleUpdate(row, state) { // 编辑查询（查看）
-        this.$router.push('/admin/user-detail/' + row.userId + '/' + state)
         Bus.$emit('activeIndex', '/admin/user')
       },
       deletes(row) {
@@ -265,25 +166,7 @@
           })
         })
       },
-      resetTemp() {
-        this.form = {
-          id: undefined,
-          username: '',
-          password: '',
-          role: undefined
-        }
-      },
-      resetFilter() { // 重置搜索条件
-        this.listQuery = {
-          page: 1,
-          limit: 20,
-          username: '',
-          positionId: '',
-          status: ''
-        },
-        this.entryDate = []
-        this.handleFilter()
-      }
+ 
     }
   }
 </script>

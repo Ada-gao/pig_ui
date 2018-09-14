@@ -14,14 +14,14 @@
 
       <el-table-column align="center" label="活动类型">
         <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+        <span>{{scope.row.label}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <a size="small" class="common_btn"
-                     @click="handleUpdate(scope.row, 'view')">查看
+                     @click="handleUpdate(scope.row, 'view')">编辑
           </a>
         <a size="small" class="danger_btn">删除</a>
         </template>
@@ -61,10 +61,7 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/user'
-  import { deptRoleList, fetchDeptTree } from '@/api/role'
-  import { getPositionName } from '@/api/posi'
-  import { getAllPositon } from '@/api/queryConditions'
+import {getSysSelectValueList} from '@/api/market/setting'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { parseTime, transformText, transformText1 } from '@/utils'
   import { mapGetters } from 'vuex'
@@ -149,44 +146,14 @@
     methods: {
       getList() {
         this.listLoading = true
-        this.listQuery.orderByField = '`user`.create_time'
-        this.listQuery.isAsc = false
-        if(this.entryDate.length > 0) {
-          this.listQuery.startTime = parseTime(this.entryDate[0], '{y}-{m}-{d}')
-          this.listQuery.endTime = parseTime(this.entryDate[1], '{y}-{m}-{d}')
-        } else {
-          this.listQuery.startTime = ''
-          this.listQuery.endTime = ''
-        }
-        // this.handlePosition()
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.records
-          // console.log(this.list)
-          this.list.map(item => {
-            item.roleDesc = item.roleList.length > 0 ? item.roleList[0].roleDesc : ''
-          })
-          this.total = response.data.total
+        getSysSelectValueList('activity_type').then(response => {
+          if(response.status == 200){
+            this.list = response.data
           this.listLoading = false
-          getAllPositon().then(res => {
-            this.positionsOptions = res.data
-            this.list.forEach(item => {
-              item.positionId = transformText(this.positionsOptions, item.positionId)
-              item.statusNum = item.status
-              // item.status = transformText(this.workStatus, item.status)
-            })
-          })
+          }
         })
       },
-      // getNodeData(data) { // 部门查询
-      //   // this.dialogDeptVisible = false
-      //   this.form.deptId = data.id
-      //   this.form.deptName = data.name
-      //   deptRoleList(data.id)
-      //     .then(response => {
-      //       this.rolesOptions = response.data
-      //       this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
-      //     })
-      // },
+   
       handlePosition() {
         getAllPositon().then(res => {
           this.positionsOptions = res.data

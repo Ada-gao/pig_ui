@@ -28,7 +28,7 @@
             <el-col :span="8" class="img-title">封面预览</el-col>
             <el-col :span="8" class="line"></el-col>
           </el-row>
-          <img class="img-url" :src="activityBannerUrl">
+          <img class="img-url" :src="form.activityBannerUrl">
         </el-col>
       </el-row>
       <!-- 活动海报（用于app端分享查看） -->
@@ -36,20 +36,20 @@
       <el-row type="flex" class="row-bg" justify="space-around" align="middle">
         <el-col>
           <el-form-item label="部门">
-            <!-- <span v-for="item in form.activityDeptList">{{item}}</span> -->
+            <span v-for="item in form.activityDeptList" :key="item">{{item.val}}</span>
           </el-form-item>
           <el-form-item label="活动名称">
-            <span>市场活动</span>
+            <span>{{form.activityName}}</span>
           </el-form-item>
           <el-form-item label="活动时间">
-            <span>2018-8-21 14:00</span>
-            <span>2018-8-21 16:00</span>
+            <span>{{form.activityStart}}</span>
+            <span>{{form.activityEnd}}</span>
           </el-form-item>
           <el-form-item label="活动地址">
-            <span>陆家嘴软件园二号楼301室</span>
+            <span>{{form.activitySite}}</span>
           </el-form-item>
           <el-form-item label="活动简介">
-            <span>欢迎大家来到我们美丽的xxx</span>
+            <span>{{form.activityIntroduction}}</span>
           </el-form-item>
           <el-form-item label="背景图">
             <el-row  type="flex">
@@ -82,7 +82,7 @@
           </el-row>
             <el-row>
             <el-col><img class="img-loge" :src="logImgUrl"></el-col> 
-           <el-col> <img class="img-url" :src="activityPosterUrl"></el-col> 
+           <el-col> <img class="img-url" :src="form.activityPosterUrl"></el-col> 
            <el-col><img class="img-code" :src="codeImgUrl"></el-col> 
           </el-row>
          </el-col>
@@ -127,7 +127,13 @@ export default {
           activityId:  this.activityId
         }
         activityPoster(this.posterList).then(res=>{
-
+          if(res.status == 200){
+            this.$notify({
+              title: '成功',
+              message: '保存成功',
+              type: 'success'
+            });
+          }
         })
     },
     handlError(file, fileList) {
