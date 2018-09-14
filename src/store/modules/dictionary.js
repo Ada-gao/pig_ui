@@ -31,7 +31,9 @@ const dictionary = {
     buyingCrowds: [],
     dimissionReason: [],
     lockStatus: [],
-    preserveExpired: []
+    preserveExpired: [],
+    maskCode: [],
+    dataScope: []
   },
 
   mutations: {
@@ -124,6 +126,12 @@ const dictionary = {
     },
     SET_PRESERVE_EXPIRED: (state, preserveExpired) => {
       state.preserveExpired = preserveExpired
+    },
+    SET_MASK_CODE: (state, maskCode) => {
+      state.maskCode = maskCode
+    },
+    SET_DATA_SCOPE: (state, dataScope) => {
+      state.dataScope = dataScope
     }
   },
 
@@ -164,7 +172,9 @@ const dictionary = {
           let dimissionReasonList = []
           let lockStatusList = []
           let preserveExpiredList = []
-          
+          let maskCodeList = []
+          let dataScopeList = []
+
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
               idTypeList.push(data[i])
@@ -210,7 +220,7 @@ const dictionary = {
 
             } else if(data[i].type === 'client_type') {
               clientTypeList.push(data[i])
-              
+
             } else if(data[i].type === 'client_from') {
               clientFromList.push(data[i])
 
@@ -246,6 +256,12 @@ const dictionary = {
 
             } else if(data[i].type === 'preserve_expired') {
               preserveExpiredList.push(data[i])
+
+            } else if(data[i].type === 'mask_code') {
+              maskCodeList.push(data[i])
+
+            } else if(data[i].type === 'data_scope') {
+              dataScopeList.push(data[i])
             }
           }
 
@@ -289,6 +305,8 @@ const dictionary = {
           commit('SET_DIMISSION_REASON', dimissionReasonList)
           commit('SET_LOCK_STATUS', lockStatusList)
           commit('SET_PRESERVE_EXPIRED', preserveExpiredList)
+          commit('SET_MASK_CODE', maskCodeList)
+          commit('SET_DATA_SCOPE', dataScopeList)
           resolve()
         }).catch(error => {
           reject(error)

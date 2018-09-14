@@ -44,11 +44,18 @@ export function getDeptRoots() {
     method: 'get'
   })
 }
-//获取一级部门及子公司列表
+//更新一级部门及子公司列表
 export function editDeptRoots(data) {
   return request({
     url: '/admin/dept/roots',
     method: 'post',
     data
+  })
+}
+//获取指定部门的同级部门及其子部门
+export function getBelongsDept(deptId) {
+  return request({
+    url: '/admin/dept/' + deptId + '/tree',
+    method: 'get'
   })
 }

@@ -7,6 +7,7 @@
       :searchNationality="false"
       :searchCity="false"
       :searchClientType="false"
+      :searchCertificationStatus="false"
       :searchValidate="true"
       >
     </search-bar-component>
@@ -81,6 +82,12 @@
         <template slot-scope="scope">
           <span>{{scope.row.nationality}}</span>
           <span>{{scope.row.city}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="保护期是否过期" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{scope.row.preserveExpired|turnText1(preserveExpired)}}</span>
         </template>
       </el-table-column>
 
@@ -222,7 +229,7 @@
         'genderType',
         'idTypeOptions',
         'marriageStatusOptions',
-        // 'delFlagOptions',
+        'preserveExpired',
         'nationality',
         'realnameStatus'
       ])

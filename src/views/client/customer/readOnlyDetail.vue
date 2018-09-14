@@ -19,12 +19,12 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="性别：" prop="gender">
-            <span>{{form.gender|turnText(genderType)}}</span>
+            <span>{{form.gender|turnText1(genderType)}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="国籍：" prop="nationality">
-            <span>{{form.nationality|turnText(nationality)}}</span>
+            <span>{{form.nationality|turnText1(nationality)}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -64,7 +64,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="客户来源：" prop="clientFrom">
-            <span>{{form.clientFrom|turnText(clientFrom)}}</span>
+            <span>{{form.clientFrom|turnText1(clientFrom)}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -141,13 +141,13 @@
         <el-col :span="8">
           <el-form-item label="实名认证状态：" prop="username">
             <!-- <el-input v-model="form.realnameStatus" placeholder="" readonly></el-input> -->
-            <span>{{form.realnameStatus|turnText(certificationStatus)}}</span>
+            <span>{{form.realnameStatus|turnText1(certificationStatus)}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="realnameStatus">
           <el-form-item label="投资者类型：" prop="clientType">
             <!-- <el-input v-model="form.clientType" placeholder="" readonly></el-input> -->
-            <span>{{clientStatus.clientType|turnText(clientType)}}</span>
+            <span>{{clientStatus.clientType|turnText1(clientType)}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="realnameStatus">
@@ -159,7 +159,7 @@
         <el-col :span="8" v-if="realnameStatus">
           <el-form-item label="证件类型：" prop="idType">
             <!-- <el-input v-model="form.idType" placeholder="" readonly></el-input> -->
-            <span>{{clientStatus.idType|turnText(idTypeOptions)}}</span>
+            <span>{{clientStatus.idType|turnText1(idTypeOptions)}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="realnameStatus && idType">
@@ -189,7 +189,7 @@
         <el-col :span="8" v-if="realnameStatus && idType">
           <el-form-item label="人群划分：" prop="crowds">
             <!-- <el-input v-model="clientStatus.idExpiration" placeholder="" readonly></el-input> -->
-            <span>{{clientStatus.crowds|turnText(buyingCrowds)}}</span>
+            <span>{{clientStatus.crowds|turnText1(buyingCrowds)}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="isClientType && realnameStatus && idType">
@@ -201,7 +201,7 @@
         <el-col :span="8" v-if="isClientType && realnameStatus && idType" style="white-space: nowrap">
           <el-form-item label="风险评估表填写时间：" prop="riskLevel">
             <!-- <el-input v-model="clientStatus.riskLevel" placeholder="" readonly></el-input> -->
-            <span style="padding-left: 20px;">{{clientStatus.riskAuditTime}}</span>
+            <span style="padding-left: 20px;">{{clientStatus.riskAuditTime|parseTime('{y}-{m}-{d}')||'--'}}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -256,7 +256,7 @@
         </el-table-column>
         <el-table-column align="center" label="募集规模（万）">
           <template slot-scope="scope">
-            <span>{{scope.row.amount}}</span>
+            <span>{{scope.row.collectionAmount}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="购买金额（万）">
@@ -264,14 +264,14 @@
             <span>{{scope.row.amount}}</span>
           </template>
         </el-table-column>
-        <!-- <el-table-column align="center" label="起息日">
+         <el-table-column align="center" label="起息日">
           <template slot-scope="scope">
             <span>{{scope.row.valueDate|parseTime('{y}-{m}-{d}')}}</span>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column align="center" label="收益对标基准">
           <template slot-scope="scope">
-            <span>{{scope.row.productRiskLevel}}</span>
+            <span>{{scope.row.isFloat === 1 ? scope.row.annualizedReturn : '浮动收益'}}</span>
           </template>
         </el-table-column>
       </el-table>

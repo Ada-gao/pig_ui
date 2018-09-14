@@ -357,3 +357,15 @@ export function eachChildren (list) {
     }
   })
 }
+/**
+ * 页面编辑文件名字逻辑处理
+ * @param p0 当前的$data
+ * @param p1 当前的scope.row对象
+ * @param p2 传入对应的id
+ * @returns {*}
+ */
+export function transferEdit (p0, p1, p2) {
+  const tempP0 = Object.assign({}, p1)
+  p0[p2] = p1[p2]
+  return tempP0
+}

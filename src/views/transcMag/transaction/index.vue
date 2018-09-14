@@ -55,11 +55,14 @@
         </el-card>
       </el-col>
     </el-row>
-    <transc-search-component></transc-search-component>
+    <transc-search-component
+      :searchContract="false"></transc-search-component>
 
     <transc-table-component
       :orderStatus="1"
+      :showValueDate="false"
       :statusCol="true"
+      :aptCol1="true"
       :aptCol="true">
     </transc-table-component>
 

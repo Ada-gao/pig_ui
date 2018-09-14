@@ -291,6 +291,8 @@
              <el-col :span="18">
              <el-form-item prop="deptName">
               <el-cascader
+              :show-all-levels="false"
+               change-on-select
               style="width: 100%"
               :options="departs"
               v-model="form.deptName"
@@ -395,6 +397,7 @@
         return parseTime(date)
       }
     },
+    props: ['propUserId'],
     data() {
       return {
         tempDeptIds: [],
@@ -402,10 +405,11 @@
          eachIndex: 0,
         departs: [], // 部门
         listLoading: false,
-        rankNameSelf:false,
+        rankNameSelf: false,
         tableKey: 0,
         list: [],
         listQuery: {
+          userId: this.$route.params.id || this.propUserId,
           page: 1,
           limit: 20
         },
@@ -421,7 +425,9 @@
         oldForm:{},
         newForm:{},
         listBox:{
-          rankList:null
+          rankList:null,
+          employeeList:[],
+          jobList:[]
         },
         disabledChange:{},
         rules: {
@@ -528,6 +534,7 @@
       ])
     },
     created() {   
+      if(this.listQuery.userId){
      //初始化直属变更列表 
      this.handlePosition(this.listQuery)
       // 查询直属上级
@@ -537,6 +544,7 @@
     
       // 返回树形菜单集合  部门管理
       this.getAllDeparts()
+      }
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
@@ -585,13 +593,14 @@
       },
       //监听数据变化改变
       changeWatch(disabled,event){
-        this.disabledChange[disabled] = false; 
+        this.disabledChange[disabled] = this.selfChange()?true:false;
+      
         if(disabled == 'positionChangeDate'){ 
            this.getAllRank({positionId:event});
-            this.disabledChange.rankChangeDate = false; 
         } else if(disabled === 'rankChangeDate') {
           this.rankList = this.rankList.slice(0)
         }
+        
       },
       initializationForm(){
           this.form = {
@@ -665,7 +674,6 @@
       },
       // 通过id 转 名称
       idTurnName(){
-        console.log(this.form)
         this.listBox.employeeList.find(item=>{
           if(item.userId == this.form.directSupervisorId){
             this.newForm.directSupervisorId = item.userId
@@ -691,8 +699,8 @@
             this.newForm.cityViceManagerId = item.userId
             this.newForm.cityViceManagerName = item.name
           }
-          if(item.userId == this.form.cityViceManagerId){
-            this.newForm.cityViceManagerId = item.userId
+          if(item.userId == this.form.teamManagerId){
+            this.newForm.teamManagerId = item.userId
             this.newForm.teamManagerName = item.name
           }
         }) 
@@ -742,7 +750,8 @@
           if(res.status == 200){
             this.rankList = res.data; 
             this.rankNameSelf = false;
-            this.form.rankId = this.rankList[0] && this.rankList[0].rankId;
+            this.newForm.rankId = this.form.rankId = this.rankList[0] && this.rankList[0].rankId;
+            this.disabledChange.positionChangeDate = this.disabledChange.rankChangeDate = this.selfChange()?true:false;
           }
         })
       },
@@ -779,12 +788,12 @@
           if(item.id == this.form.deptName[0]){
            this.newForm.companyId =  item.id;
            this.newForm.companyName =  item.name;
-           if(item.children.length>=1){
+           if(this.form.deptName[1]){
            item.children.forEach(item=>{
               if(item.id == this.form.deptName[1]){
                 this.newForm.regionalId =  item.id;
                 this.newForm.regional =  item.name;
-                if(item.children.length>=1){
+                if(this.form.deptName[2]){
                   item.children.forEach(item=>{
                     if(item.id == this.form.deptName[2]){
                       this.newForm.deptId =  item.id;
@@ -792,19 +801,16 @@
                     }
                   })
                 }else{
-                  this.newForm.deptId =  '';
+                  this.newForm.deptId =  null;
                   this.newForm.deptName =  '';
-                  this.newForm.deptChangeDate = '';
                 }
               }
            })
          }else{
-          this.newForm.regionalId =  '';
+          this.newForm.regionalId =  null;
           this.newForm.regional =  '';
-          this.newForm.regionalChangeDate =  '';
-          this.newForm.deptId =  '';
+          this.newForm.deptId =  null;
           this.newForm.deptName =  '';
-          this.newForm.deptChangeDate = '';
          }
 
           }
@@ -820,16 +826,8 @@
          this.newForm.deptChangeDate = this.form.deptChangeDate;
         }
       },
-      update(formName) {
- 
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            if(this.list.length<1){
-              this.newForm =JSON.parse(JSON.stringify(this.form));
-              this.newForm.userId = this.$route.params.id;
-            }
-        
-            this.departmentchange();
+      selfChange(){
+        this.departmentchange();
             let cityLabel;
              if(this.form.city[1]){
                  cityLabel = this.form.city[1] == '市辖区'?this.form.city[0]:this.form.city[1]
@@ -837,19 +835,31 @@
                 cityLabel = '台湾省';
              } 
              this.newForm.city = cityLabel;
-             this.idTurnName()
+             // 物理职场重新赋值
+            this.newForm.workplace = this.form.workplace;
+             this.idTurnName();
              if(this.list.length>=1){
-              console.log(JSON.stringify(this.oldForm))
-              console.log(JSON.stringify(this.newForm))
               if(JSON.stringify(this.oldForm) == JSON.stringify(this.newForm)){
+                return true;
+              } else{
+                return false;
+              }
+             }
+      },
+      update(formName) {
+ 
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+              this.newForm =JSON.parse(JSON.stringify(this.form));
+              this.newForm.userId = this.$route.params.id;
+            if(this.selfChange()){
                 this.$notify({
                   title: '警告',
                   message: '数据没有做任何修改',
                   type: 'warning'
                 });
-                return false;
-              } 
-             }
+              return false;
+            } 
            
             delete this.newForm.changeId;
             addDirectChangeList(this.newForm).then(res => {
@@ -888,6 +898,8 @@
             this.getAllRank({positionId:this.form.positionId})
 
             this.form.deptName = [ this.form.companyId, this.form.regionalId,this.form.deptId ];
+            this.form.deptChangeDate = this.form.deptId&&this.form.deptChangeDate||this.form.regionalId&&this.form.regionalChangeDate||this.form.companyId&&this.form.companyChangeDate;
+
            // this.upperIds(this.result, this.tempDeptIds, this.form.deptId)
             let label = this.form.city;
             let newArr = [];

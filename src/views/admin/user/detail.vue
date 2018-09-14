@@ -20,7 +20,8 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="部门" prop="deptIds">
-              <dept @change="changeDept" :deptId="deptIds"></dept>
+              <!-- <my-cascader v-model="form.deptIds" @change="changeDept"></my-cascader> -->
+              <dept v-model="form.deptIds" @change="changeDept"></dept>
               <!-- <el-cascader
                 style="width: 100%"
                 :options="treeDeptData"
@@ -68,7 +69,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="证件类型" prop="idType">
-              <el-select class="filter-item" v-model="form.idType" placeholder="请选择">
+              <el-select class="filter-item" v-model="form.idType" @change="validHandle(form.idNo, form.idType)" placeholder="请选择">
                 <el-option v-for="item in idTypeOptions" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
                 </el-option>
@@ -87,7 +88,12 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="证件号码" prop="idNo">
-              <el-input v-model="form.idNo" :maxlength="18" placeholder="请输入证件号码"></el-input>
+              <el-input
+                v-model="form.idNo"
+                @change="validHandle(form.idNo, form.idType)"
+                @blur="validHandle(form.idNo, form.idType)"
+                placeholder="请输入证件号码"></el-input>
+              <div class="el-form-item__error" v-show="errorMsg.length">{{errorMsg}}</div>
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -151,6 +157,15 @@
               <el-select class="filter-item" v-model="form.marriageStatus" clearable placeholder="请选择">
                 <el-option v-for="item in marriageStatusOptions" :key="item.value" :value="item.value" :label="item.label">
                   <span style="float: left">{{ item.label }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="职位" prop="positionId">
+              <el-select class="filter-item" v-model="form.positionId" placeholder="请选择" @focus="handlePosition" @change="handleChange">
+                <el-option v-for="item in positionsOptions" :key="item.positionId" :label="item.positionName" :value="item.positionId">
+                  <span style="float: left">{{ item.positionName }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -265,7 +280,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="性别：" prop="gender">
-              {{form.gender|turnText(genderType)}}
+              {{form.gender|turnText1(genderType)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -275,7 +290,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="证件类型：" prop="idType">
-              {{form.idType|turnText(idTypeOptions)}}
+              {{form.idType|turnText1(idTypeOptions)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -300,7 +315,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="状态：" prop="status">
-              {{form.status|turnText(workStatus)}}
+              {{form.status|turnText1(workStatus)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -310,12 +325,12 @@
           </el-col>
           <el-col :span="10" v-show="form.status=='1'">
             <el-form-item label="离职原因：" prop="dimissionReason">
-              {{form.dimissionReason|turnText(dimissionReason)}}
+              {{form.dimissionReason|turnText1(dimissionReason)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="学历：" prop="education">
-              {{form.education|turnText(educationType)}}
+              {{form.education|turnText1(educationType)}}
             </el-form-item>
           </el-col>
           <el-col :span="10" v-show="form.status=='1'">
@@ -325,7 +340,12 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="婚姻状况：" prop="marriageStatus">
-              {{form.marriageStatus|turnText(marriageStatusOptions)}}
+              {{form.marriageStatus|turnText1(marriageStatusOptions)}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="职位：">
+              {{form.positionId|turnText1(positionsOptions)}}
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -339,7 +359,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="账户锁定状态：" prop="lock">
-              {{form.lock|turnText(lockStatus)}}
+              {{form.lock|turnText1(lockStatus)}}
               <!-- <el-radio-group v-model="form.lock">
                 <el-radio :label="1" style="display: inline-block">锁定</el-radio>
                 <el-radio :label="0" style="display: inline-block">正常</el-radio>
@@ -361,7 +381,7 @@
       </el-row>
     </el-form>
     <!-- 直属变更 -->
-    <direct-change v-show="step==='2'"></direct-change>
+    <direct-change v-if="step==='2'" :propUserId="userId"></direct-change>
   </div>
 </template>
 
@@ -380,6 +400,7 @@
   import { getToken } from '@/utils/auth'
   import DirectChange from './directChange.vue'
   import Dept from 'components/dept'
+  // import MyCascader from '@/components/MyCascader'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
@@ -393,6 +414,7 @@
 
   const validID = (rule, value, callback) => {
     if (!value) {
+      // console.log(this.form.idType)
       callback(new Error('请输入证件号码'))
     } else if (!isvalidID(value)) {
       callback(new Error('请输入正确的证件号码'))
@@ -406,11 +428,19 @@
       ElOption,
       ElRadioGroup,
       DirectChange,
+      // MyCascader
       Dept
     },
     name: 'table_user',
     directives: {
       waves
+    },
+    watch: {
+      step(oldVal, newVal) {
+        if (newVal == 2){
+          this.initialization()
+        }
+      }
     },
     data() {
       return {
@@ -445,47 +475,51 @@
             {required: true, trigger: 'blur', message: '请输入工号'}
           ],
           gender: [
-            {required: true, trigger: 'blur', message: '请选择性别'}
+            {required: false, trigger: 'change', message: '请选择性别'}
           ],
           education: [
-            {required: true, trigger: 'blur', message: '请选择学历'}
+            {required: false, trigger: 'change', message: '请选择学历'}
           ],
           idType: [
-            {required: true, trigger: 'blur', message: '请输入证件类型'}
+            {required: false, trigger: 'change', message: '请选择证件类型'}
           ],
           marriageStatus: [
-            {required: false, trigger: 'blur', message: '请选择婚姻状况'}
+            {required: false, trigger: 'change', message: '请选择婚姻状况'}
           ],
-          idNo: [
-            {required: true, trigger: 'blur', validator: validID}
-          ],
-          deptName: [
-            {required: true, trigger: 'change', message: '请选择部门'}
+          // idNo: [
+          //   {required: false, trigger: 'blur', validator: validID}
+          // ],
+          employeeDate: [
+            {required: true, trigger: 'change', message: '请选择入职日期'}
           ],
           role: [
-            {required: true, trigger: 'blur', message: '请选择角色'}
+            {required: true, trigger: 'change', message: '请选择角色'}
           ],
           positionName: [
             {required: true, trigger: 'change', message: '请选择职位'}
           ],
           email: [
-            {required: true, trigger: 'blur', message: '请输入邮箱'}
+            {required: false, trigger: 'blur', message: '请输入邮箱'}
           ],
           mobile: [
-            {required: true, trigger: 'change', validator: validMobile}
+            {required: true, trigger: 'blur', validator: validMobile}
           ],
           isMarketing: [
-            {required: true, trigger: 'change', message: '请选择是否是营销岗'}
+            { required: true, trigger: 'change', message: '请选择是否是营销岗' }
           ],
           status: [
-            {required: true, trigger: 'change', message: '请选择状态'}
+            { required: true, trigger: 'change', message: '请选择状态' }
           ],
           deptIds: [
-            {required: true, trigger: 'change', message: '请选择部门'}
+            { required: true, trigger: 'blur', message: '请选择部门' }
+          ],
+          email: [
+            // { required: false, trigger: 'blur', message: '请输入邮箱' },
+            { type: 'email', trigger: ['blur', 'change'], message: '请输入正确的邮箱' }
           ]
         },
         // statusOptions: ['0', '1', '2'],
-        // positionsOptions: [],
+        positionsOptions: [],
         rolesOptions: [],
         userAdd: false,
         userUpd: false,
@@ -522,7 +556,16 @@
         result: [],
         tempDeptIds: [],
         eachIndex: 0,
-        curPrevId: ''
+        curPrevId: '',
+        userId: '',
+        errorMsg: ''
+      }
+    },
+    watch:{
+      step(oldVal,newVal){
+        if(newVal == 2){
+          this.initialization();
+        }
       }
     },
     computed: {
@@ -538,9 +581,6 @@
       ])
     },
     filters: {
-      turnText (val, list) {
-        return transformText1(val, list)
-      },
       parseTime (time) {
         if(!time) return
         let date = new Date(time)
@@ -548,7 +588,7 @@
       }
     },
     created() {
-      // this.handlePosition()
+      this.handlePosition()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
@@ -556,16 +596,20 @@
       // this.handleDept()
     },
     mounted() {
-      this.id = this.$route.params.id
-      this.state = this.$route.params.state
-      if(this.id) {
-        this.getList()
-      } else {
-        this.dialogStatus = 'create'
-        this.state = this.dialogStatus
-      }
+      this.initialization()
     },
     methods: {
+      // 员工基本信息初始化
+      initialization() {
+        this.id = this.$route.params.id
+        this.state = this.$route.params.state
+        if (this.id) {
+          this.getList()
+        } else {
+          this.dialogStatus = 'create'
+          this.state = this.dialogStatus
+        }
+      },
       getList() { // 编辑查询（查看）
         getObj(this.id)
           .then(response => {
@@ -579,10 +623,7 @@
               this.form.role = ''
             }
             this.deptIds.push(this.form.deptId)
-
             this.form.deptIds = this.deptIds
-            console.log(this.deptIds)
-            // this.role = row.roleList[0].roleDesc
             if(this.state === 'view') {
               this.dialogStatus = 'view'
               // this.form.positionId = transformText(this.positionsOptions, this.form.positionId)
@@ -621,11 +662,79 @@
       //       // this.role = this.rolesOptions[0] ? this.rolesOptions[0].roleId : ''
       //     })
       // },
-      // handlePosition() {
-      //   getAllPositon().then(res => {
-      //     this.positionsOptions = res.data
-      //   })
-      // },
+      validHandle(val, type) {
+        if (!val) {
+          this.errorMsg = ''
+          return false
+        }
+        if (type == '0') {
+          // 身份证
+          let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+          if (reg.test(val) === false) {
+            this.errorMsg = '请输入正确的身份证号码'
+            return false
+          } else {
+            this.errorMsg = ''
+            return true
+          }
+        } else if (type == '1') {
+          // 护照
+          let reg = /^1[45][0-9]{7}|([P|p|S|s]\d{7})|([S|s|G|g]\d{8})|([Gg|Tt|Ss|Ll|Qq|Dd|Aa|Ff]\d{8})|([H|h|M|m]\d{8，10})$/
+          if (reg.test(val) === false) {
+            this.errorMsg = '请输入正确的护照号码'
+            return false
+          } else {
+            this.errorMsg = ''
+            return true
+          }
+        } else if (type == '2') {
+          // 军官证
+          let reg = /[\u4e00-\u9fa5](字第){1}(\d{4,8})(号?)$/
+          if (reg.test(val) === false) {
+            this.errorMsg = '请输入正确的军官证号码'
+            return false
+          } else {
+            this.errorMsg = ''
+            return true
+          }
+        } else if (type == '3') {
+          // 台胞证
+          let reg = /[A-Z][0-9]{9}/
+          if (reg.test(val) === false) {
+            this.errorMsg = '请输入正确的台胞证号码'
+            return false
+          } else {
+            this.errorMsg = ''
+            return true
+          }
+        } else if (type == '4') {
+          // 港澳通行证
+          let reg = /^[a-zA-Z0-9]{5,21}$/
+          if (reg.test(val) === false) {
+            this.errorMsg = '请输入正确的港澳通行证号码'
+            return false
+          } else {
+            this.errorMsg = ''
+            return true
+          }
+        } else if (type == '5') {
+          // 其他
+          // let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+          // if (reg.test(val) === false) {
+          //   this.errorMsg = '请输入正确的证件号码'
+          //   return false
+          // } else {
+          //   this.errorMsg = ''
+          //   return true
+          // }
+        }
+        this.errorMsg = ''
+      },
+      handlePosition() {
+        getAllPositon().then(res => {
+          this.positionsOptions = res.data
+        })
+      },
       handleChageRole(val) {
         this.rolesOptions = this.rolesOptions.slice(0)
       },
@@ -658,6 +767,7 @@
                     duration: 2000
                   })
                   this.step = '2'
+                  this.userId = res.data.data
                 }
               })
           } else {
@@ -777,4 +887,3 @@
   width: 100%;
 }
 </style>
-

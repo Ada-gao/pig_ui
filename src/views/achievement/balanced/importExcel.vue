@@ -12,7 +12,7 @@
     </el-dialog>
     <upload-excel-component @on-selected-file='selected' :downloadUrl="downloadUrl"></upload-excel-component>
     <div class="detail-title" style="margin-top:30px">
-      <el-button :class="tableData.length > 0 ? 'add_btn' : 'insert_btn'" @click="showDialog">
+      <el-button :class="tableData.length > 0 && !this.errorFlag ? 'add_btn' : 'insert_btn'" @click="showDialog">
         <svg-icon icon-class="upload" style="margin-right:10px;"></svg-icon>确认导入
       </el-button>
 
@@ -52,6 +52,7 @@
         tableHeader: [],
         formData: null,
         dialogVisible: false,
+        errorFlag: false,
         downloadUrl: 'static/excel/平衡计分卡系数模版.xlsx',
         errorList: [],
         spanArr: [],
@@ -70,7 +71,7 @@
         }
       },
       showDialog() {
-        if (this.tableData.length > 0) {
+        if (this.tableData.length > 0 && !this.errorFlag) {
           this.dialogVisible = true
         }
       },
@@ -102,6 +103,7 @@
           item.end = new Date(item.end).getTime()
           // delete item.time
         })
+        this.errorFlag = false
         document.getElementById('excel-upload-input').value = null
       },
       getSpanArr(data) {
@@ -150,6 +152,7 @@
               this.$router.push({ path: '/achievement/balanced' })
             } else {
               this.errorList = this.transferError(res.data)
+              this.errorFlag = true
               this.getSpanArr(this.errorList)
               this.dialogVisible = false
             }

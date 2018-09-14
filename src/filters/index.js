@@ -102,3 +102,33 @@ export function html2Text(val) {
 export function toThousandslsFilter(num) {
   return (+num || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
 }
+// code 转化为中文
+export function turnText1(k, source) {
+  if (!source && typeof source !== 'object') {
+    return '无'
+    throw new Error('error arguments', 'shallowClone')
+  }
+  let obj = {}
+  source.forEach((val) => {
+    let key = val.value ||
+              val.positionId ||
+              val.productTypeId ||
+              val.auditFailReasonId ||
+              val.currencyId ||
+              val.rankId ||
+              val.id ||
+              val.positionId ||
+              val.productMixTypeId ||
+              val.roleId
+    obj[key] = val.label ||
+               val.positionName ||
+               val.name ||
+               val.failAuditReason ||
+               val.deptName ||
+               val.rankName ||
+               val.positionName ||
+               val.roleDesc
+  })
+  k = obj[k]
+  return k
+}

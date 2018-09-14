@@ -27,7 +27,7 @@
           </el-form-item>
         </el-col>
         <el-col :sm="10" :lg="7" v-show="searchDate">
-          <el-form-item label="日期">
+          <el-form-item label="预约日期">
               <el-date-picker
                 style="width: 100%"
                 v-model="listQuery.date"

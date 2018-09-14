@@ -10,7 +10,8 @@
       <el-radio-group v-model="step" @change="changeStep" style="margin-bottom: 30px;">
         <el-radio-button label="1">产品详情</el-radio-button>
         <el-radio-button style="border-radius: 0" label="2">产品操作指南</el-radio-button>
-        <el-radio-button v-show="productStatusNo!==0&productStatusNo!==1&stageType!='0'" label="3">交易信息</el-radio-button>
+        <el-radio-button v-if="productTran&&stageType!='0'" label="3">交易信息</el-radio-button>
+        <!-- <el-radio-button v-if="productStatusNo!==0&&productStatusNo!==1&&stageType!='0'" label="3">交易信息</el-radio-button> -->
       </el-radio-group>
     </div>
     <el-steps v-else :active="activeStep" simple finish-status="success">
@@ -18,7 +19,7 @@
         <el-step title="产品操作指南" ></el-step>
       </el-steps>
     <div v-else class="tabs">
-      
+
       <!-- <div class="tab-item" :class="{'tab-active':step===1,'tab-done':step===2}">产品详情
         <b class="right"><i class="right-arrow1"></i><i class="right-arrow2"></i></b>
       </div>
@@ -48,7 +49,7 @@
         :productId="productId"
         :productInfo="productInfo"
         v-on:detailByOperation="listenDetail"></product-operation>
-      
+
     </div>
     <!-- 交易信息 -->
     <div v-if="step===3">
@@ -134,9 +135,11 @@
         :productNameCol="false"
         :clientNoCol="true"
         :clientGenderCol="true"
-        :paymentCol="true"
         :clientMobileCol="true"
         :cityCol="true"
+        :aptCol="showFlag"
+        :paymentCol="!showFlag"
+        :showValueDate="false"
         :transcStatus="true">
       </transc-table-component>
     </div>
@@ -203,6 +206,7 @@
     },
     data() {
       return {
+        showFlag: true, // 显示打款金额还是预约金额
         dialogVis: false,
         total: null,
         form: {
@@ -213,11 +217,7 @@
         },
         keyProRules: {
           keyProduct: [
-            {
-              required: true,
-              trigger: 'blur, change',
-              message: '请标注产品'
-            }
+            { required: true, trigger: 'blur, change', message: '请标注产品' }
           ]
         },
         rules2: {
@@ -319,7 +319,8 @@
         productStatus: '',
         formData: {},
         activeStep: 0,
-        productInfo: {}
+        productInfo: {},
+        productTran: false // 控制交易tab
       }
     },
     computed: {
@@ -337,8 +338,12 @@
     created() {
       this.listQuery.productId = this.$route.params.id
       this.productId = this.$route.params.id
+      const proStatusText = this.$route.query.productStatus
+      // 获取状态速度更快，提升用户体验
+      if (proStatusText.indexOf('在建') === -1 && proStatusText.indexOf('预热') === -1) {
+        this.productTran = true
+      }
       if(this.productId) {
-        // console.log('this.createStatus')
         this.createStatus = 'update'
       }
       fetchProductTypeList().then(res => { // 获取产品类型
@@ -353,7 +358,6 @@
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
       this.activeStep = this.step - 1
-      // this.productStatusNo = this.productStatusNum
     },
     mounted() {
       Bus.$on('activeRouter', activeRouter => {
@@ -367,7 +371,7 @@
       },
       step(val) {
         this.activeStep = val - 1
-        console.log(this.activeStep)
+        // console.log(this.activeStep)
       }
     },
     methods: {
@@ -458,7 +462,7 @@
         set[formName].validate(valid => {
           if (valid) {
             if (this.stage) { //分期
-              
+
               updProductStage(this.form).then(response => {
                 if(!response.data || response.status !== 200) {
                   return
@@ -736,6 +740,7 @@
       },
       handleAppoint(type) {
         this.listQuery.type = type
+        type === '0' ? this.showFlag = true : this.showFlag = false
         Bus.$emit('queryAppoints', this.listQuery)
       },
       batchExport() {

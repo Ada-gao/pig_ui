@@ -9,6 +9,7 @@ import * as filters from './filters' // 全局filter
 import '@/icons' // icon
 import '@/permission' // 权限
 import { Validate } from '@/utils/validate_rules'
+import autoFocus from './directive/focus'
 
 Vue.use(ElementUI, { locale })
 Vue.use(Validate)
@@ -17,6 +18,8 @@ Vue.use(Validate)
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
+// 全局自定义指令
+Vue.use(autoFocus)
 
 Vue.config.productionTip = false
 

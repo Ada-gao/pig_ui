@@ -1,5 +1,5 @@
 <template>
-  <div class="product-table">
+  <div class="product-table" v-cloak>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
@@ -7,23 +7,24 @@
         <el-table-column align="center" label="材料名称">
           <template slot-scope="scope">
             <el-input
-              v-show="transcId===scope.row.productClientFileId"
+              v-if="transcId===scope.row.productClientFileId||transcId===scope.row.productClientFileManageId"
+              v-autoFocus
               v-model="scope.row.fileName"
               @keyup.enter.native="$event.target.blur"
               @blur="updateClientFile(scope.row)"></el-input>
-            <span v-show="transcId!==scope.row.productClientFileId">{{scope.row.fileName}}</span>
+            <span v-else>{{scope.row.fileName}}</span>
           </template>
         </el-table-column>
 
         <el-table-column align="center" label="操作" v-if="operationEdit">
           <template slot-scope="scope">
             <a size="small" class="common_btn"
-                      @click="transcId=scope.row.productClientFileId">编辑
-                      <!-- @click="handleRouter(scope.row.clientId)">编辑 -->
+                      @click="editHandle(scope.row)">编辑
+                      <!-- @click="transcId=scope.row.productClientFileId||transcId=scope.row.productClientFileManageId">编辑 -->
             </a>
             <!-- <span class="space_line"> | </span> -->
             <a size="small" class="danger_btn"
-                      @click="deleteClient(scope.row.productClientFileId)">删除
+                      @click="deleteClient(scope.row.productClientFileId||scope.row.productClientFileManageId)">删除
             </a>
           </template>
         </el-table-column>
@@ -89,6 +90,7 @@
     },
     data() {
       return {
+        tempObj: null,
         list: null,
         total: null,
         listLoading: false,
@@ -156,6 +158,10 @@
         localStorage.setItem('activeUrl', this.activeUrl)
       },
       updateClientFile(item) {
+        if (item.fileName === this.tempObj.fileName) {
+              this.transcId = ''
+              return
+        }
         this.$emit('upd-client-file', item)
       },
       deleteClient(id) {
@@ -186,51 +192,17 @@
           // this.$message({
           //   type: 'info',
           //   message: '已取消删除'
-          // })       
+          // })
         })
+      },
+      editHandle(row) {
+        this.transcId = row.productClientFileId ? row.productClientFileId : row.productClientFileManageId
+        this.tempObj = Object.assign({}, row)
       }
     }
   }
 </script>
 
-<style lang="scss" scoped>
-@import "src/styles/mixin.scss";
-.el-select,
-.el-date-editor {
-  width: 100%;
-}
-.filter-container {
-  .query-title {
-    white-space: nowrap;
-    min-width: 85px;
-    padding: 0;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    vertical-align: center;
-  }
-  .el-checkbox-button:hover {
-    color: #00C1DF;
-  }
-  .el-checkbox-button__inner:hover {
-    color: #00C1DF;
-  }
-  .el-checkbox-button__inner:active {
-    background-color: #00C1DF;
-    color: #fff;
-  }
-  .el-checkbox-button.is-checked .el-checkbox-button__inner {
-    background-color: #00C1DF;
-  }
-}
-.btn-padding {
-  @include padding;
-}
-.query-color {
-  @include mainColor;
-}
-.operate-col {
-  text-align: left;
-}
+<style lang="scss">
 </style>
 

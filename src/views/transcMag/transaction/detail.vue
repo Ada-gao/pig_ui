@@ -7,6 +7,7 @@
       <!--<img width="100%" :src="dialogImageUrl" alt="">-->
       <el-carousel arrow="always"
                    indicator-position="none"
+                   ref="carousel"
                    style="width:100%;text-align:center"
                    @change="carouselChange"
                    :autoplay="false">
@@ -23,7 +24,8 @@
       </el-carousel>
       <el-button type="primary"
                  @click="handleRotate"
-                 style="display: block;margin:0 auto">顺时针翻转90度</el-button>
+                 style="display: block;margin:0 auto">
+        <svg-icon icon-class="rotate" style="vertical-align: bottom;margin-right: 5px;"></svg-icon>&nbsp;旋转图片</el-button>
     </el-dialog>
 
     <el-tabs v-model="activeName2" type="card" @tab-click="handleClick" class="transc">
@@ -178,7 +180,7 @@
             <h5>打款凭证</h5>
             <div class="split-line"></div>
             <div class="imgs">
-              <img :src="item.pictureUrl" alt="" @click="previewImg1('remit')" v-for="item in remitFiles">
+              <img :src="item.pictureUrl" alt="" @click="previewImg1('remit', index)" v-for="(item, index) in remitFiles">
             </div>
           </div>
 
@@ -186,7 +188,7 @@
             <h5>交易所需材料</h5>
             <div class="split-line"></div>
             <div class="imgs">
-              <img :src="item.pictureUrl" alt="" @click="previewImg1('deal')" v-for="item in dealFiles">
+              <img :src="item.pictureUrl" alt="" @click="previewImg1('deal', index)" v-for="(item, index) in dealFiles">
             </div>
           </div>
 
@@ -194,7 +196,7 @@
             <h5>退款申请书</h5>
             <div class="split-line"></div>
             <div class="imgs">
-              <img :src="item.pictureUrl" alt="" @click="previewImg1('refund')" v-for="item in refundFiles">
+              <img :src="item.pictureUrl" alt="" @click="previewImg1('refund', index)" v-for="(item, index) in refundFiles">
             </div>
           </div>
 
@@ -208,7 +210,8 @@
             </div>
             <el-button type="primary"
                        @click="handleRotate"
-                       style="display: block;margin:65px auto 0">顺时针翻转90度</el-button>
+                       style="display: block;margin:65px auto 0">
+              <svg-icon icon-class="rotate" style="vertical-align: bottom;margin-right: 5px;"></svg-icon>旋转图片</el-button>
           </el-dialog>
 
         </el-form>
@@ -384,7 +387,7 @@
       <el-tab-pane label="客户交易记录" name="second">
 
         <tab-transc-component
-          :clientId="clientId"></tab-transc-component>
+          :clientId="this.clientId"></tab-transc-component>
 
       </el-tab-pane>
       <el-tab-pane label="操作日志" name="third">
@@ -542,7 +545,10 @@
       // console.log(this.$route.params)
     },
     methods: {
-      previewImg1(flag) {
+      setActive(index) {
+        this.$refs.carousel.setActiveItem(index)
+      },
+      previewImg1(flag, index) {
         switch (flag) {
           case 'remit':
             this.idcardImgs = [...this.remitImgArr]
@@ -554,6 +560,11 @@
             this.idcardImgs = [...this.refundImgArr]
             break
         }
+        let timer = setTimeout(() => {
+          this.setActive(index)
+          clearTimeout(timer)
+          timer = null
+        }, 10)
         this.dialogImgVisible1 = true
       },
       carouselChange(value) {
@@ -570,7 +581,7 @@
 
         getObj(id).then(response => {
           this.form = response.data
-          // console.log(this.form)
+          console.log(this.form)
           this.status = this.form.status
           this.clientId = this.form.clientId
           this.statusH = this.status.indexOf('100') == -1 ? true : false
@@ -777,21 +788,23 @@
       handleClick(tab) {
         // console.log(tab)
         if(tab.name == 'second') {
-          this.listQuery.clientId = this.form.clientId
+          console.log('总要说点啥')
+          // this.clientId = this.form.clientId
+          // console.log(this.clientId)
           this.listQuery.status = 10
-          Bus.$emit('searchRecords', this.listQuery)
+          // Bus.$emit('searchRecords', this.listQuery)
         } else if(tab.name == 'third') {
           Bus.$emit('searchLog', this.listQuery)
         }
       },
-      handleSizeChange(val) {
-        this.listQuery.limit = val
-        this.getList()
-      },
-      handleCurrentChange(val) {
-        this.listQuery.page = val
-        this.getList()
-      },
+      // handleSizeChange(val) {
+      //   this.listQuery.limit = val
+      //   this.getList()
+      // },
+      // handleCurrentChange(val) {
+      //   this.listQuery.page = val
+      //   this.getList()
+      // },
       previewImg(url) {
         this.dialogImgVisible = true
         this.dialogImageUrl = url.split('!160x100')[0]

@@ -10,7 +10,7 @@
           </el-input>
           </el-form-item>
         </el-col>
-        <el-col :sm="10" :lg="8" v-if="searchDate">
+        <!-- <el-col :sm="10" :lg="8" v-if="searchDate">
           <el-form-item label="日期">
               <el-date-picker
                 v-model="entryDate"
@@ -20,7 +20,7 @@
                 :default-time="['00:00:00', '23:59:59']">
               </el-date-picker>
             </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :sm="3" :lg="3"
           class="query-color"
           style="text-align: right; float: right; cursor: pointer">

@@ -2,80 +2,83 @@
   <div class="app-container calendar-list-container">
     <search-bar-component
       @search-list="serachList"
-      :searchPreserveExpired="true"
+      :searchPreserveExpired="false"
       :searchClientType="false"
-      :searchIdNo="false"></search-bar-component>
-
+      :searchIdNo="false"
+      :searchCertificationStatus="false"
+    ></search-bar-component>
+    <div style="text-align: right;">
+      <el-button class="add_btn" @click="batchHandle">
+        <svg-icon icon-class="import" style="margin-right: 5px;"></svg-icon>批量分配
+      </el-button>
+    </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
-              highlight-current-row style="width: 100%">
-
+              highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
+      <el-table-column
+        type="selection"
+        width="55">
+      </el-table-column>
       <el-table-column align="center" label="客户编号">
         <template slot-scope="scope">
           <span>{{scope.row.clientNo}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="客户姓名">
         <template slot-scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="手机号">
         <template slot-scope="scope">
           <span>{{scope.row.mobile}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="客户邮箱">
         <template slot-scope="scope">
           <span>{{scope.row.email}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="证件类型">
         <template slot-scope="scope">
-          <span>{{scope.row.idType }}</span>
+          <span>{{scope.row.idType|turnText1(idTypeOptions)}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="证件号码">
         <template slot-scope="scope">
           <span>{{scope.row.idNo}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="客户类型">
         <template slot-scope="scope">
-          <span>{{scope.row.clientClass}}</span>
+          <span>{{scope.row.clientClass|turnText1(clientClass)}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="资产管理规模">
         <template slot-scope="scope">
           <span>{{scope.row.assetAmount}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="理财师">
         <template slot-scope="scope">
           <span>{{scope.row.userName}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="部门" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.userDeptName}}</span>
         </template>
       </el-table-column>
-
+      <el-table-column align="center" label="实名认证状态" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{scope.row.realnameStatus|turnText1(realnameStatus)}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="国籍（常住地区）" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.nationality}}</span>
+        <span>{{scope.row.nationality|turnText1(nationality)}}</span>
         <span>{{scope.row.city}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
           <a size="small" class="common_btn"
@@ -87,7 +90,6 @@
           </a>
         </template>
       </el-table-column>
-
     </el-table>
 
     <div v-show="!listLoading" class="pagination-container">
@@ -99,19 +101,11 @@
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :model="modal" label-width="100px">
+      <el-form :model="modal" ref="modal" label-width="100px">
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="部门">
-              <el-cascader
-                style="width: 100%"
-                :options="treeDeptData"
-                :props="defaultProps"
-                :show-all-levels="false"
-                @change="changeDept"
-                change-on-select
-                v-model="modal.deptId"
-              ></el-cascader>
+              <dept v-model="modal.deptIds" @change="changeDept"></dept>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -129,10 +123,10 @@
             </el-form-item>
           </el-col>
         </el-row>
-      </el-form> 
+      </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button class="search_btn" @click="changeCancle()">取 消</el-button>
+        <el-button class="search_btn" @click="changeCancel('modal')">取 消</el-button>
         <el-button class="add_btn" @click="changePlanner()">确 定</el-button>
       </div>
     </el-dialog>
@@ -142,18 +136,19 @@
 <script>
   import searchBarComponent from 'components/searchBar'
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/client/client'
-  import { putPlanner } from '@/api/client/planner'
+  import { putPlanner, batchPutPlanner } from '@/api/client/planner'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getAllPositon } from '@/api/queryConditions'
   import { getPlannerList } from '@/api/user'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime, transformText, eachChildren } from '@/utils'
+  import { parseTime, eachChildren } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
   import { isvalidMobile, isvalidID } from '@/utils/validate'
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
   import Bus from '@/assets/js/bus'
+  import Dept from 'components/dept'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
@@ -179,7 +174,8 @@
     components: {
       ElOption,
       ElRadioGroup,
-      searchBarComponent
+      searchBarComponent,
+      Dept
     },
     name: 'table_user',
     directives: {
@@ -187,16 +183,15 @@
     },
     data() {
       return {
-        treeDeptData: [],
         checkedKeys: [],
-        defaultProps: {
-          children: 'children',
-          label: 'name',
-          value: 'id'
-        },
-        defaultProps2: {
-          value: 'label'
-        },
+        // defaultProps: {
+        //   children: 'children',
+        //   label: 'name',
+        //   value: 'id'
+        // },
+        // defaultProps2: {
+        //   value: 'label'
+        // },
         list: null,
         total: null,
         listLoading: true,
@@ -251,19 +246,6 @@
           email: [
             {required: true, trigger: 'blur'}
           ],
-          // password: [
-          //   {
-          //     required: true,
-          //     message: '请输入密码',
-          //     trigger: 'blur'
-          //   },
-          //   {
-          //     min: 5,
-          //     max: 20,
-          //     message: '长度在 5 到 20 个字符',
-          //     trigger: 'blur'
-          //   }
-          // ],
           mobile: [
             {required: true, trigger: 'blur, change', validator: validMobile}
           ]
@@ -300,9 +282,11 @@
         options: provinceAndCityData,
         selectedOptions: [],
         deptName: [],
-        deptId: [],
+        deptId: '',
         modal: {},
-        plannerList: []
+        plannerList: [],
+        clientIds: [],
+        isBatch: false
       }
     },
     computed: {
@@ -311,6 +295,7 @@
         'certificationType',
         'permissions',
         'idTypeOptions',
+        'realnameStatus',
         // 'delFlagOptions',
         'nationality',
         'clientClass'
@@ -326,7 +311,7 @@
         this.listLoading = true
         // this.listQuery.orderByField = 'create_time'
         // this.listQuery.isAsc = false
-        this.handleDept()
+        // this.handleDept()
         // if(this.deptId.length) {
         //   this.listQuery.deptId = this.deptId[this.deptId.length - 1]
         // }
@@ -334,18 +319,11 @@
         // let amountStart = this.listQuery.amountStart || -1
         // let amountEnd = this.listQuery.amountEnd || -1
         // this.listQuery.amount = [amountStart, amountEnd]
-        
+
         fetchList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
-          this.list.forEach(item => {
-
-            item.clientClass = transformText(this.clientClass, item.clientClass)
-            item.nationality = transformText(this.nationality, item.nationality)
-            item.idType = transformText(this.idTypeOptions, item.idType)
-            console.log(item.idType, this.idTypeOptions)
-          })
         })
       },
       // handlePosition() {
@@ -357,14 +335,6 @@
         this.listQuery = data
         this.listQuery.plannerStatus = 1
         this.getList()
-      },
-      handleDept() {
-        fetchDeptTree()
-          .then(response => {
-            this.treeDeptData = response.data
-            eachChildren(this.treeDeptData)
-            this.dialogDeptVisible = true
-          })
       },
       // handleFilter() {
       //   this.listQuery.page = 1
@@ -404,7 +374,7 @@
         //     this.role = row.roleList[0].roleDesc
         //     this.dialogFormVisible = true
         //     this.dialogStatus = 'update'
-            
+
         //   })
       },
       changeDept(val) {
@@ -413,7 +383,7 @@
       },
       getPlannerList(deptId = '') {
         let params = {
-          deptId: deptId[deptId.length-1],
+          deptId: deptId[deptId.length - 1],
           status: 0
         }
         getPlannerList(params).then(response => {
@@ -421,23 +391,47 @@
         })
       },
       changePlanner() {
+        const list = this.modal.deptIds
+        let user = {}
+        if (list) {
+          user.deptId = list[list.length - 1]
+        } else {
+          user = this.plannerList.find(item => item.userId === this.modal.name)
+        }
         let params = {
           plannerId: this.modal.name,
-          reason: this.modal.reason
+          reason: this.modal.reason,
+          deptId: user.deptId
         }
-        putPlanner(this.modal.clientId, params).then(response => {
-          if(response.status === 200) {
+        if (this.isBatch) {
+          batchPutPlanner({clientIds: this.modal.clientId}, params).then(res => {
+            if (res.status !== 200) return
             this.$notify({
                   title: '成功',
                   message: '分配成功',
                   type: 'success',
                   duration: 2000
                 })
+            this.getList()
             this.dialogFormVisible = false
-          }
-        })
+          })
+        } else {
+          putPlanner(this.modal.clientId, params).then(res => {
+            if (res.status !== 200) return
+            this.$notify({
+                  title: '成功',
+                  message: '分配成功',
+                  type: 'success',
+                  duration: 2000
+                })
+            this.getList()
+            this.dialogFormVisible = false
+          })
+        }
       },
-      changeCancle() {
+      changeCancel(formName) {
+        this.$refs[formName].resetFields()
+        this.modal.deptIds = []
         this.dialogFormVisible = false
       },
       resetTemp() {
@@ -448,20 +442,19 @@
           role: undefined
         }
       },
-      resetFilter() { // 重置搜索条件
-        this.listQuery = {
-          page: 1,
-          limit: 20,
-          username: '',
-          positionId: '',
-          // delFlag: '',
-          deptId: ''
-        },
-        this.deptId = []
-        this.entryDate = []
-        // this.handleFilter()
-      },
-      
+      // resetFilter() { // 重置搜索条件
+      //   this.listQuery = {
+      //     page: 1,
+      //     limit: 20,
+      //     username: '',
+      //     positionId: '',
+      //     // delFlag: '',
+      //     deptId: ''
+      //   },
+      //   this.deptId = []
+      //   this.entryDate = []
+      //   // this.handleFilter()
+      // },
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`);
       // },
@@ -470,6 +463,26 @@
       // },
       changetest(val) {
         this.plannerList = this.plannerList.slice(0)
+      },
+      handleSelectionChange(val) {
+        this.clientSelects = val
+      },
+      batchHandle() {
+        if (!this.clientSelects || !this.clientSelects.length) {
+          this.$notify({
+            title: '提示',
+            message: '请选择至少一个待分配客户',
+            type: 'warning',
+            duration: 2000
+          })
+          return
+        }
+        this.isBatch = true
+        this.clientIds = []
+        this.clientSelects.forEach(item => {
+          this.clientIds.push(item.clientId)
+        })
+        this.handleUpdate(this.clientIds)
       }
     }
   }

@@ -174,7 +174,7 @@
             { required: true, message: '请选择职位', trigger: 'blur' }
           ],
           email: [
-            { required: true, validator: validEmail, trigger: 'blur' }
+            { required: false, validator: validEmail, trigger: 'blur' }
           ]
         },
         sex: '',

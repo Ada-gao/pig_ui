@@ -14,8 +14,9 @@
           <template slot-scope="scope">
             <el-input v-model="scope.row.name"
                       v-if="productFileId===scope.row.productFileId"
+                      v-autoFocus
                       @keyup.enter.native="$event.target.blur"
-                      @blur="updateFileName(scope.row, 'transaction')"></el-input>
+                      @blur="updateFileName(scope.row, 'transaction', 'productFileId')"></el-input>
             <span v-else>{{scope.row.name}}</span>
           </template>
         </el-table-column>
@@ -36,7 +37,8 @@
           align="center"
           v-if="!operationDisabled">
           <template slot-scope="scope">
-            <a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>
+            <!--<a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>-->
+            <a class="common_btn" size="small" @click="handlerEdit($data, scope.row, 'productFileId')">编辑</a>
             <a class="danger_btn" size="small" @click="delfiles(scope.row, 'transaction')">删除</a>
           </template>
         </el-table-column>
@@ -90,8 +92,9 @@
           <template slot-scope="scope">
             <el-input v-model="scope.row.name"
                       v-if="productFileId===scope.row.productFileId"
+                      v-autoFocus
                       @keyup.enter.native="$event.target.blur"
-                      @blur="updateFileName(scope.row, 'product')"></el-input>
+                      @blur="updateFileName(scope.row, 'product', 'productFileId')"></el-input>
             <span v-else>{{scope.row.name}}</span>
           </template>
         </el-table-column>
@@ -112,7 +115,8 @@
           align="center"
           v-if="!operationDisabled">
           <template slot-scope="scope">
-            <a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>
+            <!--<a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>-->
+            <a class="common_btn" size="small" @click="handlerEdit($data, scope.row, 'productFileId')">编辑</a>
             <a class="danger_btn" size="small" @click="delfiles(scope.row, 'product')">删除</a>
           </template>
         </el-table-column>
@@ -146,8 +150,10 @@
           align="center">
           <template slot-scope="scope">
             <el-input v-model="scope.row.name"
+                      v-autoFocus
                       v-if="productFileId===scope.row.productFileId"
-                      @keyup.enter.native="updateFileName(scope.row, 'announcement')"></el-input>
+                      @keyup.enter.native="$event.target.blur"
+                      @blur="updateFileName(scope.row, 'announcement', 'productFileId')"></el-input>
             <span v-else>{{scope.row.name}}</span>
           </template>
         </el-table-column>
@@ -168,7 +174,8 @@
           align="center"
           v-if="!operationDisabled">
           <template slot-scope="scope">
-            <a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>
+            <!--<a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>-->
+            <a class="common_btn" size="small" @click="handlerEdit($data, scope.row, 'productFileId')">编辑</a>
             <a class="danger_btn" size="small" @click="delfiles(scope.row, 'announcement')">删除</a>
           </template>
         </el-table-column>
@@ -259,7 +266,7 @@
                 <!--:default-time="['00:00:00', '23:59:59']">-->
               <!--</el-date-picker>-->
               <el-date-picker
-                      style="width: 40%"
+                      style="width: 45%"
                       v-model="importantStart"
                       :disabled="operationDisabled"
                       type="datetime"
@@ -267,7 +274,7 @@
                       :default-time="['00:00:00', '23:59:59']">
               </el-date-picker>
               <el-date-picker
-                style="width: 40%"
+                style="width: 45%"
                 v-model="importantEnd"
                 :disabled="operationDisabled"
                 type="datetime"
@@ -307,7 +314,7 @@
               <el-form-item :label="`第${Citem.hierarchy}层级(%)`" prop="coefficient">
                 <span class="el-input" v-if="operationDisabled">{{Citem.coefficient}}</span>
                 <el-input  v-else v-model="Citem.coefficient" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input>
-                    <svg-icon icon-class="add" @click="addProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0 && !operationDisabled" class="color-0299CC"></svg-icon>
+                    <span @click="addProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0 && !operationDisabled"><svg-icon icon-class="add" class="color-0299CC"></svg-icon></span>
                   <i  @click="deleteProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0 && !operationDisabled" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
                </el-form>
@@ -329,7 +336,8 @@
             <el-form-item label="活动时间段">
               <el-date-picker
               style="width:100%"
-                v-model="item.activeDate"
+              @change = "activeDateChange"
+                v-model="activeDateList[index]"
                 :disabled="operationDisabled"
                 type="daterange"
                 start-placeholder="开始日期"
@@ -354,14 +362,14 @@
                 <span style="line-height:41px;">活动时间产品佣金系数第{{Citem.age}}年</span>
                  <el-button class="search_btn" @click="addactivityTime(index)" v-if="Cindex == 0 && !operationDisabled">
                 <svg-icon icon-class="add"></svg-icon>新增</el-button>
-                <span @click="deleteActivityTime(index,Citem)" class="color-0299CC " v-if="Cindex != 0 && Cindex == item.activityBrokerageCoefficients.length-1 && !operationDisabled"><i class="el-icon-delete mr5"></i >删除</span>
+                <span @click="deleteActivityTime(index,Cindex)" class="color-0299CC " v-if="Cindex != 0 && Cindex == item.activityBrokerageCoefficients.length-1 && !operationDisabled"><i class="el-icon-delete mr5"></i >删除</span>
               </el-row>
                 <el-form :model="cvalue" ref="cvalue" :rules="rules2" class="demo-ruleForm" v-for="(cvalue,k) in Citem.brokerageCoefficientDTOList" :key="k" label-width="120px">
               <el-form-item :label="`第${cvalue.hierarchy}层级(%)`" prop="coefficient">
                 <span class="el-input" v-if="operationDisabled">{{cvalue.coefficient}}</span>
                 <el-input
                   v-model="cvalue.coefficient" v-else onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'   type="number"></el-input>
-                  <svg-icon icon-class="add"  @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0 && !operationDisabled" class="color-0299CC"></svg-icon>
+                  <span @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0 && !operationDisabled"><svg-icon icon-class="add" class="color-0299CC"></svg-icon></span>
                   <i  @click="deleteActivityTimeLevel(index,Cindex,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0 && !operationDisabled" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
               </el-form>
@@ -541,12 +549,12 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="已募集人数:" prop="minimalAmount" style="white-space: nowrap">
-              <span>{{productInfo.collectLP}}</span>
+              <span>{{statistic.remitNums||0}}</span>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="已募集额度:" prop="minimalAmount" style="white-space: nowrap">
-              <span>{{productInfo.collectAmount}}万</span>
+              <span>{{statistic.remitAmounts||0}}万</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -611,9 +619,9 @@
   import productMaterialComponent from 'components/table/material'
   import { putFileObj, delCustFile, fetchOperation, addCustFile, postTranscFile, getCustFile,
     updCustFile, updProductDisplay, updProductPause, getProductStage, addOperationObj, updProductType,
-    updToCollect, cancelToCollect } from '@/api/product/product'
+    updToCollect, cancelToCollect, getBriefReport } from '@/api/product/product'
   import { mapGetters } from 'vuex'
-  import { transformText, sortKey } from '@/utils'
+  import { transformText, sortKey, transferEdit } from '@/utils'
   // import { parseTime } from '@/utils'
   // import { decimals, isNumber } from '@/utils/validate'
   import Bus from '@/assets/js/bus'
@@ -659,6 +667,8 @@
 
       };
       return {
+        tempObj: null,
+        activeDateList:[],
         fileList1: [],
         fileList2: [],
         fileList3: [],
@@ -762,7 +772,8 @@
         data1: {},
         data2: {},
         collectVal: 1,
-        collectTime: ''
+        collectTime: '',
+        statistic: {}
         // form: {},
         // isDisabled: true,
         // stage: false,
@@ -807,12 +818,18 @@
       if(this.productId) {
         this.createStatus = 'update'
       }
+      document.documentElement.scrollTop = document.body.scrollTop = 0
     },
     mounted() {
       this.productStatusNo = this.proStatus
       this.url = localStorage.getItem('activeUrl')
     },
     methods: {
+      activeDateChange(){
+        this.activityData.forEach((item,index)=>{
+          item.activeDate = this.activeDateList[index]||['',''];
+        })
+      },
       judgeEmpty(){
         this.$notify({
           title: '警告',
@@ -820,10 +837,22 @@
           type: 'warning'
         });
       },
+      //折标业绩系数 为空提示
+      performanceCoefficient(){
+         this.$notify({
+          title: '警告',
+          message: '折标业绩系数不能为空',
+          type: 'warning'
+        });
+      },
       //筛选佣金业绩统计
       normalFilter(filter){
         let self = true;
-        if(!this.normalDTO.performanceCoefficient && filter) return false;
+        if(!this.normalDTO.performanceCoefficient && filter){
+          this.performanceCoefficient();
+          self = false;
+          return false;
+        }
         this.normalDTO.normalBrokerageCoefficients.forEach(item=>{
           item.brokerageCoefficientDTOList.forEach(item=>{
             if(!item.coefficient){
@@ -842,14 +871,13 @@
 
           //折标业绩系数
           if(!item.performanceCoefficient && filter){
-            this.judgeEmpty();
+            this.performanceCoefficient();
             self = false;
             return false;
           }
           // console.log(item.activeDate)
           //活动时间段
           if(!item.activeDate && filter){
-
               this.$notify({
                 title: '警告',
                 message: '活动时间段不能为空',
@@ -859,6 +887,17 @@
               return false;
           }
           item.activeDate.forEach(item=>{
+            if(!item && filter){
+              this.$notify({
+                title: '警告',
+                message: '活动时间段不能为空',
+                type: 'warning'
+              });
+              self = false;
+              return false;
+            }
+          })
+          this.activeDateList.forEach(item=>{
             if(!item && filter){
               this.$notify({
                 title: '警告',
@@ -999,22 +1038,6 @@
               })
             })
 
-        //  activityData: [
-        //   {
-        //     activeDate: ['', ''],
-        //     performanceCoefficient:'',
-        //     year:1,
-        //     activityTime:[{
-        //         age:1,
-        //         levelData:[{
-        //           coefficient:'',
-        //           hierarchy: ''
-        //         }]
-        //       }
-        //     ]
-        //   }
-        // ],
-
       },
        //删除活动时间产品佣金系数 - 层级
       deleteActivityTimeLevel(index,Cindex,k){
@@ -1050,6 +1073,7 @@
           this.importantEnd = this.form2.importantEnd
           this.normalData = this.form2.normalDTO
           this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
+
           if(!this.normalList) {
             this.normalList = [{
               age: '1'
@@ -1075,6 +1099,7 @@
               item.activeDate = []
               item.activeDate[0] = item.activityStart
               item.activeDate[1] = item.activityEnd
+              this.activeDateList.push(item.activeDate)
             })
           }
           // console.log(res)
@@ -1106,6 +1131,9 @@
       updateRouter() { // 操作指南新建或编辑提交
         // console.log(this.importantStart, 'start')
         // console.log(this.importantEnd, 'end')
+        this.activityData.forEach((item, index) => {
+          item.activeDate = this.activeDateList[index] || ['', '']
+        })
         this.activityList = this.activityList.concat(this.activityData)
         this.activityList.forEach(item => {
           item.activityEnd = item.activeDate[1]
@@ -1123,17 +1151,17 @@
           if (this.importantEnd) {
             this.form2.importantEnd = this.importantEnd
           } else {
-            this.form2.importantEnd = new Date('9999-01-01')
+            this.form2.importantEnd = new Date('2037-12-31')
           }
         } else {
           this.form2.importantStart = ''
           this.form2.importantEnd = ''
         }
-        if(this.productStatusNo == 2){
-         if(!this.activityFilter(true)) return false;
-         if(!this.normalFilter(true)) return false;
+        if (this.productStatusNo === 2) {
+         if (!this.activityFilter(true)) return false
+         if (!this.normalFilter(true)) return false
         }
-        if(this.normalDTO.performanceCoefficient>=100){
+        if(this.normalDTO.performanceCoefficient >= 100) {
           this.$notify({
             title: '失败',
             message: '输折标业绩系数应小于100',
@@ -1181,6 +1209,7 @@
          })
         this.form2.normalDTO = this.normalDTO
         // this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
+
         this.form2.activityDTO = this.activityData
         //this.form2.normalDTO.normalBrokerageCoefficients = this.normalList.concat(this.addNormList)
         // this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
@@ -1216,6 +1245,7 @@
           })
           return false
         }
+        console.log(this.form2)
         addOperationObj(this.form2).then(res => {
           this.$notify({
             title: '成功',
@@ -1223,10 +1253,10 @@
             type: 'success',
             duration: 2000
           })
-          return false
+          // return false
           // if(this.createStatus = 'create') {}
-          this.$router.push({path: '/product/productList'})
-          Bus.$emit('activeIndex', '/product/productList')
+          // this.$router.push({path: '/product/productList'})
+          // Bus.$emit('activeIndex', '/product/productList')
         })
       },
       updateProductDisplay() { // 显示/隐藏
@@ -1276,12 +1306,12 @@
           // this.stage = true
           this.formData = res.data
           // console.log(this.stage)
-          this.formData.currencyIdNo = this.formData.currencyId
-          this.formData.productTypeIdNo = this.formData.productTypeId
-          this.formData.investmentHorizonUnitNo = this.formData.investmentHorizonUnit
-          this.formData.productTypeId = transformText(this.productTypes, this.formData.productTypeId)
-          this.formData.currencyId = transformText(this.currencyList, this.formData.currencyId)
-          this.formData.investmentHorizonUnit = transformText(this.investHorizonUnit, this.formData.investmentHorizonUnit)
+          // this.formData.currencyIdNo = this.formData.currencyId
+          // this.formData.productTypeIdNo = this.formData.productTypeId
+          // this.formData.investmentHorizonUnitNo = this.formData.investmentHorizonUnit
+          // this.formData.productTypeId = transformText(this.productTypes, this.formData.productTypeId)
+          // this.formData.currencyId = transformText(this.currencyList, this.formData.currencyId)
+          // this.formData.investmentHorizonUnit = transformText(this.investHorizonUnit, this.formData.investmentHorizonUnit)
           let params = {
             data: this.formData,
             stageType: this.stageType
@@ -1321,10 +1351,13 @@
         this.dto.status = status
         this.productStatusText = transformText(this.productStatus, this.productStatusNo)
         this.msgText = transformText(this.productStatus, status)
-
+        if (status == 3) {
+          getBriefReport(this.productId).then(res => {
+            this.statistic = res.data
+          })
+        }
         if(status == 3 || status == 4) {
           this.dialogStVisible = true
-
         } else {
           this.$confirm('此产品现在为' + this.productStatusText + ', 确定进入' + this.msgText + '吗?', '提示', {
             confirmButtonText: '确定',
@@ -1472,6 +1505,7 @@
       },
       changeSecStep(val) {
         this.secStep = val
+        this.setTables()
       },
       chooseClientFile() { // 下拉框选择材料提交
         this.dialogComVisible = false
@@ -1523,11 +1557,21 @@
           this.getFiles4(this.productId)
         })
       },
-      updateFileName(item, fileType) { // 编辑材料名称
+      handlerEdit (p0, p1, p2) {
+          this.tempObj = transferEdit(p0, p1, p2)
+        console.log('tempObj', this.tempObj)
+      },
+      updateFileName(item, fileType, id) { // 编辑材料名称
+        console.log('id', id)
         let params = {
           id: item.productFileId,
           name: item.name,
           fileType: fileType
+        }
+        console.log('params', params)
+        if (params.name === this.tempObj.name) {
+          this[id] = ''
+          return
         }
         putFileObj(params).then(res => {
           this.productFileId = 0
@@ -1613,6 +1657,16 @@
           // this.clientFiles = response.data || []
           this.data2 = response.data
         })
+      },
+      setTables() { // 设置table宽度100% (客户所需材料表格)
+        const tables=document.querySelectorAll('table')
+        for(let i = 0; i < tables.length; i++) {
+          tables[i].style.width='100%'
+        };
+        const elHeaders=document.querySelectorAll('.el-table__header')
+        for(let j = 0; j < elHeaders.length; j++) {
+          elHeaders[j].style.tableLayout='inherit'
+        }
       }
     }
   }
@@ -1644,6 +1698,7 @@
   }
   .color-0299CC{
     color: #0299CC;
+    cursor: pointer;
   }
   .border-0299CC{
     border: 1px solid #0299CC;

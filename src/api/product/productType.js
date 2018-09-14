@@ -68,20 +68,22 @@ export function putObj(obj) {
 /**
  * 获取产品收益类型
  */
-export function getProductTypeList() {
+export function getProductTypeList(params) {
   return request({
     url: '/product/productType/',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 
 /**
  * 查询产品结构类型
  */
-export function getProductMixList() {
+export function getProductMixList(params) {
   return request({
     url: '/product/productMixType',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 

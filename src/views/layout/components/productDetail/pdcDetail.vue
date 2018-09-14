@@ -18,8 +18,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="产品结构类型" prop="productName">
-            <span v-if="detailDisabled">{{form.productMixTypeId}}</span>
+          <el-form-item label="产品结构类型" prop="productMixTypeId">
+            <span v-if="detailDisabled">{{form.productMixTypeId|turnText(productMixTypes)}}</span>
             <el-select v-else class="filter-item" v-model="form.productMixTypeId" placeholder="请选择">
               <el-option v-for="item in productMixTypes" :key="item.productMixTypeId" :value="item.productMixTypeId" :label="item.name">
                 <span style="float: left">{{ item.name }}</span>
@@ -28,9 +28,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="产品简称" prop="productShortName">
+          <el-form-item label="产品简称" prop="productShortName" style="margin-bottom: 21px;">
             <span v-if="shortNameDisabled">{{form.productShortName}}</span>
-            <el-input v-else v-model="form.productShortName" placeholder="请输入产品名称"></el-input>
+            <el-input v-else v-model="form.productShortName" placeholder="请输入产品名称" style="line-height: 39px;"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -70,7 +70,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="购买人群" prop="currencyId">
+          <el-form-item label="购买人群" prop="buyingCrowds">
             <span v-if="detailDisabled">{{form.buyingCrowds|turnText(buyingCrowds)}}</span>
             <el-select v-else class="filter-item" v-model="form.buyingCrowds" placeholder="请选择">
               <el-option v-for="item in buyingCrowds" :key="item.value" :value="item.value" :label="item.label">
@@ -80,14 +80,22 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="产品期限" prop="investmentHorizon">
-            <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
+          <el-form-item label="产品期限" prop="investmentHorizon" style="margin-bottom: 21px;">
+            <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}</span>
             <el-input v-else v-model="form.investmentHorizon" style="width: 30%;"></el-input>
-            <span v-if="detailDisabled||stageType=='0'"></span>
-            <el-select v-else v-model="form.investmentHorizonUnit" style="width: 23%;">
-              <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
-              </el-option>
-            </el-select>
+            <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
+            <el-form-item v-else label=""
+              prop="investmentHorizonUnit"
+              style="display: inline-block; width: 110px;"
+              :rules="[
+                {required: true, message: '请选择产品期限单位', trigger: 'change'}
+              ]">
+              <el-select v-model="form.investmentHorizonUnit">
+                <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
+                </el-option>
+              </el-select>
+            </el-form-item>
+
             <span style="width: 40%">产品折后系数：{{investRatio|turnNum}}</span>
           </el-form-item>
         </el-col>
@@ -124,7 +132,7 @@
         <el-col :span="11">
           <el-form-item label="募集人数" prop="productLp">
             <span v-if="collectDisabled">{{form.productLp}}</span>
-            <el-input v-else v-model.number="form.productLp" placeholder="请输入"></el-input>
+            <el-input v-else type="number" v-model.number="form.productLp" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -157,8 +165,8 @@
             <el-input v-else v-model="form.custodianBank" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="渠道打款金额">
+        <el-col :span="11" class="define_col" style="padding-left: 25px;">
+          <el-form-item label="渠道打款金额（万）"  prop="channelAmount" style="white-space: nowrap">
             <span v-if="detailDisabled">{{form.channelAmount}}</span>
             <el-input v-else v-model="form.channelAmount" placeholder="请输入"></el-input>
           </el-form-item>
@@ -178,7 +186,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="付息方式" prop="interestPayment">
-            <span v-if="detailDisabled">{{form.interestPayment}}</span>
+            <span v-if="detailDisabled">{{form.interestPayment|turnText(interestPayment)}}</span>
             <el-select v-else class="filter-item" v-model="form.interestPayment" placeholder="请选择">
               <el-option v-for="item in interestPayment" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -224,7 +232,7 @@
         <el-col :span="11">
           <el-form-item label="账号" prop="cardNo">
             <span v-if="detailDisabled">{{form.cardNo}}</span>
-            <el-input v-else type="number" v-model.number="form.cardNo" placeholder="请输入"></el-input>
+            <el-input v-else v-model="form.cardNo" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -236,7 +244,7 @@
         <el-col :span="11">
           <el-form-item label="大额支付行号" prop="paymentNumber">
             <span v-if="detailDisabled">{{form.paymentNumber}}</span>
-            <el-input v-else type="number" v-model.number="form.paymentNumber" placeholder="请输入"></el-input>
+            <el-input v-else v-model="form.paymentNumber" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -288,7 +296,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer" style="text-align: center;">
       <!-- 创建 -->
-      <el-button class="search_btn" v-if="createStatus=='create'" @click="cancel('form')">取 消</el-button>
+      <el-button class="search_btn" v-if="createStatus=='create'" @click="createCancel('form')">取 消</el-button>
       <el-button class="add_btn" v-if="createStatus=='create'" type="primary" @click="create('form')">保 存</el-button>
       <!-- 编辑 -->
       <el-button class="search_btn" v-if="createStatus=='update'" @click="cancel('form')">取 消</el-button>
@@ -337,6 +345,30 @@
       callback()
     }
   }
+
+  const pdExpire = (rule, value, callback) => {
+      // const Reg = /^\d{1,5}$/
+      const Reg = /^[1-9][0-9]{0,5}\+{0,1}[0-9]{0,5}$/
+      if (!value) {
+        callback('请输入产品期限')
+      } else if (!Reg.test(value)) {
+        callback('请输入有效的产品期限')
+      } else {
+        callback()
+      }
+  }
+
+  const pdAcount = (rule, value, callback) => {
+    const exp = /^\d{1,20}$/
+    if (!value) {
+      callback('请输入账号')
+    } else if (!exp.test(Number(value))) {
+      callback('请输入正确的账号')
+    } else {
+      callback()
+    }
+  }
+
   const twoDecimals = (rule, value, callback) => {
     if (!value) {
       return null
@@ -345,6 +377,17 @@
     } else {
       callback()
     }
+  }
+  // 收益对标基准校验
+  const pdAnnualizedReturn = (rule, value, callback) => {
+      const exp = /^(\d+|\d+\.\d{1,2})$/
+      if (!value) {
+          callback('请打入收益对标基准')
+      } else if (!exp.test(value)) {
+          callback('请输入正确的收益对标基准')
+      } else {
+          callback()
+      }
   }
 
   export default {
@@ -369,7 +412,7 @@
             { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           isFloat: [
-            { required: true, message: '请选择收益', trigger: 'blue' }
+            { required: true, message: '请选择收益', trigger: 'change' }
           ],
           accountName: [
             { required: true, message: '请输入账户名称', trigger: 'blur' }
@@ -381,17 +424,23 @@
             { required: true, message: '请输入支行名称', rigger: 'blur' }
           ],
           cardNo: [
-            { required: true, message: '请输入打款帐号', trigger: 'blur' }
+            { required: true, validator: pdAcount, trigger: 'blur' }
+          ],
+          paymentNumber: [
+            { required: true, validator: pdAcount, trigger: 'blur' }
           ],
           productCode: [
             { required: true, message: '请输入产品名称', trigger: 'blur' },
             { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           productTypeId: [
-            { required: true, message: '请选择产品类型', trigger: 'blur' }
+            { required: true, message: '请选择产品收益类型', trigger: 'change' }
+          ],
+          productMixTypeId: [
+            { required: true, message: '请选择产品结构类型', trigger: 'blur' }
           ],
           productRiskLevel: [
-            { required: true, message: '请选择产品风险级别', trigger: 'blur' }
+            { required: true, message: '请选择产品风险级别', trigger: 'change' }
           ],
           manager: [
             { required: true, message: '请输入基金管理人', trigger: 'blur' }
@@ -412,7 +461,15 @@
             // { type: 'number', message: '金额必须为数字值', validator: certNumber }
           ],
           investmentHorizon: [
-            { required: true, message: '请输入产品期限', trigger: 'blur' }
+            { required: true, validator: pdExpire, trigger: 'blur' },
+//            { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
+          ],
+          buyingCrowds: [
+            { required: true, message: '请选择购买人群', trigger: 'change' }
+          ],
+          annualizedReturn: [
+            { required: true, validator: pdAnnualizedReturn, trigger: 'blur'}
+
           ]
         },
         createStatus: 'create',
@@ -474,6 +531,7 @@
           this.currencyList = response.data
           this.form.currencyId = 1
           if(!this.stage) {
+            // console.log('没有分期')
             this.getList()
           }
         })
@@ -489,6 +547,9 @@
           // 产品分期
           this.detailDisabled = false
           // this.stage = true
+        } else if (this.stageType === '1') {
+          // 募集分期
+          this.detailDisabled = true
         }
         this.stage = true
       }
@@ -501,7 +562,7 @@
           .then(response => {
             this.form = response.data
             this.userDefinedAttribute = JSON.parse(this.form.userDefinedAttribute)
-            console.log(JSON.parse(this.form.userDefinedAttribute))
+            // console.log(JSON.parse(this.form.userDefinedAttribute))
             this.form.subscribe = this.form.subscribe - 0
             if(this.userDefinedAttribute == 'null') {
               this.userNewAttr = false
@@ -525,18 +586,19 @@
             }
             this.$emit('listen', params) // 传递产品状态到父组件
             // this.$store.dispatch('SetProductStatus', this.productStatusNo)
-            this.form.currencyIdNo = this.form.currencyId
-            this.form.productTypeIdNo = this.form.productTypeId
+            // this.form.currencyIdNo = this.form.currencyId
+            // this.form.productTypeIdNo = this.form.productTypeId
             this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
-            this.form.productMixTypeIdNo = this.form.productMixTypeId
+            // this.form.productMixTypeIdNo = this.form.productMixTypeId
             // this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
             // this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
             // this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
             this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
-            this.form.productMixTypeId = transformText(this.productMixTypes, this.form.productMixTypeId)
+            // this.form.productMixTypeId = transformText(this.productMixTypes, this.form.productMixTypeId)
 
             this.detailDisabled = true
             if(this.productStatusNo === 0) {
+              // 所有项都可编辑
               this.detailDisabled = false
             }
             if(this.productStatusNo === 6) {
@@ -570,6 +632,7 @@
         }
       },
       create(formName) { // 创建提交
+        // console.log('创建')
         // this.$emit('productIdByDetail', '')
         const set = this.$refs
         if(!this.form.isFloat) {
@@ -589,7 +652,7 @@
           if (valid) {
             this.form.discountCoefficient = this.investRatio
             this.form.userDefinedAttribute = JSON.stringify(this.userDefinedAttribute)
-            console.log(this.form.userDefinedAttribute)
+            // console.log(this.form.userDefinedAttribute)
             addObj(this.form)
               .then(response => {
                 if(response.status === 200) {
@@ -610,6 +673,7 @@
         })
       },
       update(formName) { // 产品详情修改提交
+        // console.log(this.form)
         const set = this.$refs
         // if(this.stageType==='0' || this.productStatusNo == '0') formName = 'form'
         if(!this.form.isFloat) {
@@ -617,10 +681,10 @@
           this.isDisabled = true
         }
         this.form.productStatus = this.productStatusNo
-        this.form.currencyId = this.form.currencyIdNo
-        this.form.productTypeId = this.form.productTypeIdNo
+        // this.form.currencyId = this.form.currencyIdNo
+        // this.form.productTypeId = this.form.productTypeIdNo
         // this.form.investmentHorizonUnit = this.form.investmentHorizonUnitNo
-        this.form.productMixTypeId = this.form.productMixTypeIdNo
+        // this.form.productMixTypeId = this.form.productMixTypeIdNo
         if(this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit!='1') {
           this.$notify({
             title: '提示',
@@ -654,7 +718,8 @@
               })
             } else {
               // this.form.productStatus = this.productStatusNo
-              putObj(this.productId, this.form).then(() => {
+              putObj(this.productId, this.form).then((res) => {
+                if(res.status !== 200) return
                 this.$notify({
                   title: '成功',
                   message: '保存成功',
@@ -680,6 +745,12 @@
         this.$refs[formName].resetFields()
         this.$router.push({path: this.backUrl})
         Bus.$emit('activeIndex', this.backUrl)
+      },
+      createCancel(formName){
+        this.$refs[formName].resetFields()
+        const backUrl = '/product/productList'
+        Bus.$emit('activeIndex', backUrl)
+        this.$router.push({path: backUrl})
       },
       handleAddProperty(formName) { // 新增属性
         this.$refs[formName].validate(valid => {
@@ -707,5 +778,9 @@
 .filter-item {
   display: block;
 }
-</style>
+  .define_col .el-form-item__content span,
+  .define_col .el-form-item__content .el-input {
+    margin-left: 20px;
+  }
 
+</style>

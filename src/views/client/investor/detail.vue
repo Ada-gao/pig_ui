@@ -18,8 +18,8 @@
             <template slot-scope="scope">
               </el-select>
               <el-select v-model="scope.row.riskLevel" @change="handleChange" style="width: 50%">
-                <el-option v-for="item in customerRiskLevel" :key="item.value" :label="item.label" :value="item.value">
-                  <span style="float: left">{{ item.label }}</span>
+                <el-option v-for="item in customerRiskLevel" :key="item.value" :label="item.value" :value="item.value">
+                  <!-- <span style="float: left">{{ item.value }}</span> -->
                 </el-option>
               </el-select>
               <div class="warn_msg" style="text-align: center;" v-show="selectMsg">
@@ -71,6 +71,7 @@
 
         <el-table-column align="center" label="投资者类型">
           <template slot-scope="scope">
+            <!-- <span>{{scope.row.certificationType}}</span> -->
             <span>{{scope.row.certificationType|turnText(certificationType)}}</span>
           </template>
         </el-table-column>
@@ -404,22 +405,38 @@
         console.log(val)
       },
       submitResult(result) {
-        if(this.investorType == 0 && !this.riskLevel) {
-          this.selectMsg = true
-          return
+        if(result == 3) {
+          this.$prompt('请输入原因', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            inputPattern: /.+/,
+            inputErrorMessage: '请输入原因'
+          }).then(({ value }) => {
+            const params = {
+              failReason: value,
+              result: result,
+              riskLevel: this.riskLevel
+            }
+            this.putObjHandle(params)
+          })
+        } else {
+          if(this.investorType == 0 && !this.riskLevel) {
+            this.selectMsg = true
+            return
+          }
+          this.selectMsg = false
+          // if(result == 3 && !this.failReason) {
+          //   this.tip = true
+          //   return
+          // }
+          const params = {
+            result: result,
+            riskLevel: this.riskLevel
+          }
+          this.putObjHandle(params)
         }
-        this.selectMsg = false
-        // if(result == 3 && !this.failReason) {
-        //   this.tip = true
-        //   return
-        // }
-        let params = {
-          // failId: this.form.clientId,
-          // failReason: this.failReason,
-          result: result,
-          riskLevel: this.riskLevel
-        }
-        
+      },
+      putObjHandle(params) {
         putObj(this.clientId, params).then(response => {
           if(response.status == 200) {
             this.$notify({

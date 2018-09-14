@@ -7,12 +7,9 @@
       :searchCity="false"
       :searchClientType="false"
       :searchRealNameStatus="false"
+      :searchCertificationStatus="false"
       >
     </search-bar-component>
-
-    <!-- <div style="text-align: right">
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
-    </div> -->
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
@@ -81,7 +78,6 @@
         <span>{{scope.row.userDeptName}}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="国籍（常住地区）" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.nationality}}</span>
@@ -91,10 +87,10 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <a size="small" class="common_btn"
+          <!-- <a size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId, '0')">查看
           </a>
-          <span v-if="sys_cert_prof_upd" class="space_line"> | </span>
+          <span v-if="sys_cert_prof_upd" class="space_line"> | </span> -->
           <a v-if="sys_cert_prof_upd" size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId, '1')">审核
           </a>
@@ -285,7 +281,7 @@
         this.listQuery = data
         // this.listQuery.type = 0
         this.listQuery.certificationType = 1, //0: 普通， 1: 专业
-        this.listQuery.certificationStatus = 1,
+//        this.listQuery.certificationStatus = 1,
         this.listQuery.realNameStatus = 2 // 实名认证
         this.getList()
       }

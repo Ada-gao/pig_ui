@@ -7,6 +7,7 @@
       :searchCity="false"
       :searchClientType="false"
       :searchRealNameStatus="false"
+      :searchCertificationStatus="false"
       >
     </search-bar-component>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -87,10 +88,10 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <a size="small" class="common_btn"
+          <!-- <a size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId, '0')">查看
           </a>
-          <span v-if="sys_cert_comm_upd" class="space_line"> | </span>
+          <span v-if="sys_cert_comm_upd" class="space_line"> | </span> -->
           <a v-if="sys_cert_comm_upd" size="small" class="common_btn"
                      @click="handleRouter(scope.row.clientId, '1')">审核
           </a>
@@ -172,8 +173,8 @@
           page: 1,
           limit: 20,
           // clientType: 0 // 1：专业，0：普通
-          certificationType: 0, //0: 普通， 1: 专业
-          certificationStatus: 1,
+          certificationType: 0, // 0: 普通， 1: 专业
+          certificationStatus: 1, // 待审核状态
           realNameStatus: 2 // 实名认证
         },
         role: undefined,
@@ -311,7 +312,7 @@
           this.total = response.data.total
           this.listLoading = false
           this.list.forEach(item => {
-            
+            item.certificationStatus = transformText(this.certificationStatus, item.certificationStatus)
             item.idType = transformText(this.idTypeOptions, item.idType)
             item.nationality = transformText(this.nationality, item.nationality)
             item.gender = transformText(this.genderType, item.gender)
@@ -353,7 +354,7 @@
           path: '/client/investorDetail/' + id + '/0/' + isView
         })
         Bus.$emit('activeIndex', '/client/investor')
-        
+
       },
       // handleUpdate(row) { // 编辑查询
       //   getObj(row.userId)
@@ -363,7 +364,7 @@
       //       this.role = row.roleList[0].roleDesc
       //       this.dialogFormVisible = true
       //       this.dialogStatus = 'update'
-            
+
       //     })
       // },
       resetTemp() {
@@ -393,7 +394,7 @@
         this.listQuery = data
         // this.listQuery.type = 0
         this.listQuery.certificationType = 0, //0: 普通， 1: 专业
-        this.listQuery.certificationStatus = 1,
+        // this.listQuery.certificationStatus = 1,
         this.listQuery.realNameStatus = 2 // 实名认证
         this.getList()
       }

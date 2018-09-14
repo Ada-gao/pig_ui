@@ -156,7 +156,8 @@
                :rules="rules1"
                :validate-on-rule-change="true"
                label-width="100px">
-        <el-row>
+
+        <el-row v-if="dialogStatus === 'create'">
           <el-col class="inline-col">
             <el-form-item label="周期" prop="start">
               <el-date-picker
@@ -175,7 +176,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row  v-if="dialogStatus === 'create'">
           <el-col>
             <el-form-item label="部门" prop="deptIds">
               <el-cascader
@@ -221,7 +222,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-if="dialogStatus === 'create'">
           <el-col>
             <el-form-item label="职位" prop="positionId">
               <el-select class="filter-item"
@@ -238,7 +239,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-if="dialogStatus === 'create'">
           <el-col>
             <el-form-item label="职级" prop="rankIds">
               <el-select class="filter-item"
@@ -267,6 +268,7 @@
             <!--</el-form-item>-->
           </el-col>
         </el-row>
+
         <el-row>
           <el-col>
             <el-form-item label="业绩指标" prop="performanceIndicator">
@@ -398,7 +400,7 @@
             this.cycleListId(item.children, this.curPrevId)
           }
           if (item.children && !item.children.length) {
-            console.log(this.result)
+            // console.log(this.result)
             this.result[this.eachIndex] = [...prevId, item.id]
             this.eachIndex++
           }
@@ -418,7 +420,7 @@
         this.form.deptIds.splice(index, 1)
       },
       upperIds(list1, list2, id) {
-        console.log(list1)
+        // console.log(list1)
         list1.map(item => {
           item.map((el, index) => {
             if (el === id) {
@@ -427,6 +429,7 @@
             }
           })
         })
+        console.log('list2')
         console.log(list2)
         this.form.deptIds = list2
       },

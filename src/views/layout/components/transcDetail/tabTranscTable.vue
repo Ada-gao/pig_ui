@@ -7,13 +7,18 @@
     <div class="tab-item" v-if="records == 1">
       <transc-table-component
         :id="clientId"
+        :showValueDate="true"
+        :dealHistory="data"
         :aptCol="true"
+        :aptCol1="true"
         :aptStatusCol="true">
       </transc-table-component>
     </div>
     <div class="tab-item" v-if="records == 2">
       <transc-table-component
         :id="clientId"
+        :showValueDate="true"
+        :dealHistory="data"
         :paymentCol="true"
         :payStatusCol="true">
       </transc-table-component>
@@ -21,7 +26,10 @@
     <div class="tab-item" v-if="records == 3">
       <transc-table-component
         :id="clientId"
+        :showValueDate="true"
+        :dealHistory="data"
         :statusCol="true"
+        :aptCol1="true"
         :aptCol="true">
       </transc-table-component>
     </div>
@@ -38,6 +46,7 @@
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
   import Bus from '@/assets/js/bus'
+  import { fetchRecords } from '@/api/transc/records'
 
   export default {
     components: {
@@ -78,6 +87,7 @@
           limit: 20,
           isFloat: null
         },
+        data: {}
       }
     },
     computed: {
@@ -86,24 +96,51 @@
         'appointmentStatus'
       ])
     },
+    watch: {
+      clientId(newVal, oldVal) {
+        console.log(newVal)
+        if(newVal) {
+          this.changeTab()
+        }
+      }
+    },
     created() {
+      // console.log(this.clientId)
       if(this.clientId) {
         this.changeTab()
       }
     },
     methods: {
-      changeTab(Num) {
+      changeTab(Num = 1) {
         this.records = Num
         this.listQuery.clientId = this.clientId
         if(Num == 1) {
           this.listQuery.status = 10
+          console.log('111')
         } else if(Num == 2) {
           this.listQuery.status = 20
         } else if(Num == 3) {
           this.listQuery.status = 3004
         }
-        // console.log(this.listQuery)
-        Bus.$emit('searchRecords', this.listQuery)
+        this.getHistory()
+        // Bus.$emit('searchRecords', this.listQuery)
+      },
+      getHistory() {
+        // this.queryId = 2
+        // if(this.historyStatus) {
+        // console.log(this.historyStatus)
+        fetchRecords(this.listQuery).then(response => {
+          this.data = response.data
+          // this.data.list = response.data.records
+          // this.data.total = response.data.total
+          this.listLoading = false
+          console.log(this.data.records)
+          this.data.records.forEach(item => {
+            item.statusText = transformText(this.appointmentStatus, item.status)
+            // item.valueDate = item.valueDate ? parseTime(item.valueDate, '{y}-{m}-{d}') : ''
+          })
+        })
+        // }
       }
     }
   }
@@ -123,6 +160,7 @@
 .tab-title {
   display: inline-block;
   padding: 0 18px;
+  cursor: pointer;
 }
 .active {
   @include mainColor;

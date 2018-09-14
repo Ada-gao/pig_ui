@@ -33,6 +33,7 @@
           <template slot-scope="scope">
             <el-input
               v-if="transcId===scope.row.transactionFileManageId"
+              v-autoFocus
               v-model="scope.row.name"
               @keyup.enter.native="$event.target.blur"
               @blur="updateTranscFile(scope.row)"></el-input>
@@ -56,10 +57,10 @@
           <template slot-scope="scope">
             <a size="small" class="common_btn"
                       @click="transcId=scope.row.transactionFileManageId">编辑
-                      <!-- @click="handleRouter(scope.row.clientId)">编辑 -->
+                      <!-- @click="editHandle(scope.row)">编辑 -->
             </a>
-            <span class="space_line"> | </span>
-            <a size="small" class="common_btn"
+            <!--<span class="space_line"> | </span>-->
+            <a size="small" class="danger_btn"
                       @click="deleteTransc(scope.row.transactionFileManageId)">删除
             </a>
           </template>
@@ -98,7 +99,7 @@
   import { fetchCurrency, getObjList } from '@/api/currency'
   import { getToken } from '@/utils/auth'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { transformText } from '@/utils'
+  import { transformText} from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -178,7 +179,8 @@
         step: 1,
         importUrl: 'zuul/product/productTransactionFileManage/',
         transcId: '',
-        data: {}
+        data: {},
+        focusStatus: false
       }
     },
     computed: {
@@ -193,7 +195,20 @@
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
     },
+//    mounted(){
+//        document.addEventListener('mousedown', e =>{
+//            if (e.target.parentNode && !e.target.parentNode.classList.contains('define-ipt')) {
+//                if (document.querySelector('.define-ipt input') !== null) {
+//                  this.transcId = ''
+//                }
+//            }
+//        }, false)
+//    },
     methods: {
+      editHandle(row) {
+        this.focusStatus = true
+        this.transcId = row.transactionFileManageId
+      },
       getListQuery(data) {
         console.log('data')
         console.log(data)
@@ -239,7 +254,7 @@
           // this.$message({
           //   type: 'info',
           //   message: '取消输入'
-          // });       
+          // });
         });
       },
       getTranscList() {
@@ -268,6 +283,7 @@
         }
         updTranscFile(item.transactionFileManageId, params).then(res => {
           this.transcId = ''
+          this.focusStatus = false
           this.getTranscList()
         })
       },

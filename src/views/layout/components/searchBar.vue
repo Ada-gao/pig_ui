@@ -38,6 +38,16 @@
             </el-select>
           </el-form-item>
         </el-col>
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="searchCertificationStatus">
+          <el-form-item label="认证状态">
+            <el-select v-model="listQuery.certificationStatus" style="width: 100%" placeholder="请选择">
+              <el-option v-for="item in certificationStatus" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+
         <el-col :sm="12" :lg="8" v-if="searchDeptId">
           <el-form-item label="部门">
             <el-cascader
@@ -111,9 +121,10 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :sm="12" :lg="8" v-if="listQuery.nationality == 0 && searchCity">
+        <el-col :sm="12" :lg="8" v-if="listQuery.nationality != 1 && listQuery.nationality !== '' && listQuery.nationality != null && searchCity">
           <el-form-item label="地区">
             <el-cascader
+              style="width: 100%"
               size="large"
               :options="options"
               :props="defaultProps2"
@@ -158,6 +169,9 @@ export default {
     },
     searchRealNameStatus: {
       default: true
+    },
+    searchCertificationStatus: {
+        default: true
     },
     searchDeptId: {
       default: true
@@ -220,6 +234,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'certificationStatus',
       'realnameStatus',
       'idTypeOptions',
       'nationality',
@@ -233,6 +248,7 @@ export default {
   },
   methods: {
     handleFilter() { // 搜索
+      console.log(this.listQuery)
       this.listQuery.page = 1
 
       let amountStart = this.listQuery.amountStart || -1
@@ -264,6 +280,7 @@ export default {
         nationality: '',
         city: ''
       },
+      console.log(this.listQuery.nationality)
       this.deptId = []
       this.city = []
       this.entryDate = []

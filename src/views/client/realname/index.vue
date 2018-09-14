@@ -7,6 +7,7 @@
       :searchCity="false"
       :searchClientType="false"
       :searchRealNameStatus="false"
+      :searchCertificationStatus="false"
       >
     </search-bar-component>
 
@@ -221,7 +222,7 @@
             this.role = row.roleList[0].roleDesc
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
-            
+
           })
       },
       resetTemp() {
@@ -244,7 +245,7 @@
       //   this.entryDate = []
       //   this.handleFilter()
       // },
-      
+
       // beforeRemove(file, fileList) {
       //   return this.$confirm(`确定移除 ${ file.name }？`);
       // },
