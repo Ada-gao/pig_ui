@@ -103,7 +103,7 @@
              label-width="0px"
              v-show="pwdStep === 1"
              class="card-box login-form">
-      <h3 class="title">智投CRM系统登录</h3>
+      <h3 class="title">智投CRM系统登录test</h3>
       <el-tabs v-model="activeName">
         <el-tab-pane label="账号/邮箱登录" name="first">
           <el-form-item prop="username">
@@ -391,6 +391,7 @@
         clearInterval(this.verifyTimer)
         this.verifyTimer = null
         this.timeFlag = false
+        this.$refs['loginForm1'].resetFields()
       },
       handleNext(formName) {
         this.$refs[formName].validate(valid => {
@@ -447,6 +448,7 @@
       handleForget() {
         this.pwdStep = 2
         this.activeStep = 0
+        // this.$refs.loginForm.resetFields()
       },
       handleMobileLogin() {
         if(!this.loginForm.mobile) {
