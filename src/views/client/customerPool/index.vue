@@ -26,9 +26,9 @@
               <el-select v-model="listQuery.clientFrom" placeholder="请选择客户来源">
                 <el-option
                   v-for="item in clientFrom"
-                  :key="item.id"
+                  :key="item.value"
                   :label="item.label"
-                  :value="item.id">
+                  :value="item.value">
                 </el-option>
               </el-select>
 
@@ -234,7 +234,6 @@
     methods: {
       getClientPoolList() {
         this.listLoading = true
-       console.log(this.listQuery)
         getClientPoolList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
