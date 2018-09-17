@@ -13,7 +13,7 @@
       </el-table-column>
       <el-table-column align="center" label="汇率时间">
         <template slot-scope="scope">
-          <span>{{scope.row.time | time }}</span>
+          <span>{{scope.row.time|parseTime('{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
             <el-table-column align="center" label="汇率（对人民币）">
@@ -131,27 +131,28 @@
           9: '锁定'
         }
         return statusMap[status]
-      },
-      time(time){
-      	let date = new Date(time);
-        let Y = date.getFullYear() + '-';
-        let M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
-        let D = date.getDate() + ' ';
-        return Y+M+D;
       }
+      // parseTime(time){
+      //   if (!time) return false
+      // 	let date = new Date(time);
+      //   let Y = date.getFullYear() + '-';
+      //   let M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+      //   let D = date.getDate() + ' ';
+      //   return Y+M+D;
+      // }
     },
     created() {
-      this.getList();
+      this.getList()
       this.sys_currency_add = this.permissions['sys_currency_add']
       this.sys_currency_upd = this.permissions['sys_currency_upd']
       this.sys_currency_del = this.permissions['sys_currency_del']
     },
     methods: {
       getList() {
-        this.listLoading = true;
+        this.listLoading = true
         getExchangeRateRnformation(this.$route.params.id).then(response => {
-          this.list = response.data;
-          this.listLoading = false;
+          this.list = response.data
+          this.listLoading = false
         })
       },
       // getNodeData(data) {
@@ -179,11 +180,11 @@
         this.getList()
       },
       handleCreate() {
-      	this.form.name = this.$route.params.name;
-      	this.form.currencyId = this.$route.params.id;
+      	this.form.name = this.$route.params.name
+      	this.form.currencyId = this.$route.params.id
         //this.resetTemp()
-        this.dialogStatus = 'create';
-        this.dialogFormVisible = true;
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
       },
       handleUpdate(row) {
         getObj(row.currencyId)
@@ -197,13 +198,13 @@
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
-            if(this.form.time<this.list[0].time){
+            if (this.list.length && this.form.time < this.list[0].time) {
               this.$notify({
                 title: '警告',
                 message: '汇率时间应大于已有时间',
                 type: 'warning'
-              });
-              return false;
+              })
+              return false
             }
 
             addExchangeRate(this.form)
@@ -225,9 +226,9 @@
         })
       },
       cancel(formName) {
-        this.dialogFormVisible = false;
-        this.$refs[formName].resetFields();
-        this.resetTemp();
+        this.dialogFormVisible = false
+        this.$refs[formName].resetFields()
+        this.resetTemp()
       },
       resetTemp() {
         this.form = {

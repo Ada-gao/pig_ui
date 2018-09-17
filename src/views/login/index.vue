@@ -103,7 +103,7 @@
              label-width="0px"
              v-show="pwdStep === 1"
              class="card-box login-form">
-      <h3 class="title">智投CRM系统登录test</h3>
+      <h3 class="title">智投CRM系统登录</h3>
       <el-tabs v-model="activeName">
         <el-tab-pane label="账号/邮箱登录" name="first">
           <el-form-item prop="username">
