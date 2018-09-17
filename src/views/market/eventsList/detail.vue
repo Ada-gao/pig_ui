@@ -11,7 +11,7 @@
     </el-button-group>
   </nav>
   <!-- 活动海报 eventPoster-->
-  <event-poster v-if=" labelButton =='eventDetails' " :form="childrenForm"></event-poster>
+  <event-poster v-if=" labelButton =='eventPoster' " :form="childrenForm"></event-poster>
   <!-- 报名/签到 registrationCheck -->
   <registration-check v-if=" labelButton =='registrationCheck' "></registration-check>
   <!-- 签到账号 checkinAccount -->
@@ -22,7 +22,7 @@
   <operation-log v-if=" labelButton =='operationLog' "></operation-log>
 
   <!-- 活动详情 eventDetails-->
-  <el-form v-if="labelButton == 'eventDetails1' " :model="form" :rules="rules" ref="ruleForm" label-width="110px" style="width: 90%" class="events-detail">
+  <el-form v-if="labelButton == 'eventDetails' " :model="form" :rules="rules" ref="ruleForm" label-width="110px" style="width: 90%" class="events-detail">
     <!-- 活动基本信息 -->
     <article>
       <p class="title">活动基本信息</p>

@@ -28,7 +28,7 @@
             <el-col :span="8" class="img-title">封面预览</el-col>
             <el-col :span="8" class="line"></el-col>
           </el-row>
-          <img class="img-url" :src="form.activityBannerUrl">
+          <img class="img-url" :src="activityBannerUrl">
         </el-col>
       </el-row>
       <!-- 活动海报（用于app端分享查看） -->
@@ -82,7 +82,7 @@
           </el-row>
             <el-row>
             <el-col><img class="img-loge" :src="logImgUrl"></el-col> 
-           <el-col> <img class="img-url" :src="form.activityPosterUrl"></el-col> 
+           <el-col> <img class="img-url" :src="activityPosterUrl"></el-col> 
            <el-col><img class="img-code" :src="codeImgUrl"></el-col> 
           </el-row>
          </el-col>
@@ -106,8 +106,8 @@ export default {
   props:['form'],
   data() {
     return {
-      activityBannerUrl: 'static/img/activity/banner.png',
-      activityPosterUrl: 'static/img/activity/poster.png',
+      activityBannerUrl: this.form.activityBannerUrl || 'static/img/activity/banner.png',
+      activityPosterUrl: this.form.activityPosterUrl || 'static/img/activity/poster.png',
       downloadUrl:'static/img/activity/poster.psd',
       logImgUrl:null,
       codeImgUrl:null,
