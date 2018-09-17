@@ -86,7 +86,7 @@
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
             <el-form-item v-else label=""
               prop="investmentHorizonUnit"
-              style="display: inline-block; width: 110px;"
+              style="display: inline-block; width: 70px;"
               :rules="[
                 {required: true, message: '请选择产品期限单位', trigger: 'change'}
               ]">

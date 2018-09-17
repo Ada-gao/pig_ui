@@ -30,7 +30,7 @@
         <el-form :model="form" :rules="rules" ref="form" label-width="150px">
 
           <el-form-item label="冷静期时间" prop="value">
-            <el-input v-model="form.value" style="width:90%"></el-input>小时
+            <el-input type="number" v-model.number="form.value" style="width:90%"></el-input>小时
           </el-form-item>
 
         </el-form>
@@ -56,11 +56,7 @@
         form: {},
         rules: {
           value: [
-            {
-              required: true,
-              trigger: 'blur',
-              message: '请输入冷静期时间'
-            }
+            { required: true, trigger: 'blur, change', message: '请输入冷静期时间' }
           ]
         }
       }

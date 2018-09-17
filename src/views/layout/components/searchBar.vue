@@ -103,7 +103,7 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="searchValidate">
+        <!-- <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="searchValidate">
           <el-form-item label="验证状态">
             <el-select v-model="listQuery.mobileValidated" style="width: 100%" placeholder="请选择">
               <el-option v-for="item in mobileValidatedArr" :key="item.value" :value="item.value" :label="item.label">
@@ -111,7 +111,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :sm="12" :lg="8" v-if="searchNationality">
           <el-form-item label="国籍" style="margin-bottom: 10px;">
             <el-select v-model="listQuery.nationality" @change="changeNation" style="width: 100%" placeholder="请选择">
@@ -185,9 +185,9 @@ export default {
     searchAmount: {
       default: true
     },
-    searchValidate: {
-      default: false
-    },
+    // searchValidate: {
+    //   default: false
+    // },
     searchEmail: {
       default: true
     },
