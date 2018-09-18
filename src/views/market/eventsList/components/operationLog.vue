@@ -1,19 +1,20 @@
 <template>
   <article class="checkin-account">
-      <div style="text-align: right">
+  <!--     <div style="text-align: right">
       <el-button  class="search_btn" @click="handleCreate">
         <svg-icon icon-class="add"></svg-icon> 添加</el-button>
-    </div>
+    </div> -->
       <el-table
       border
       v-loading="listLoading"
       element-loading-text="给我一点时间"
-      :data="tableData"
+      :data="list"
       style="width: 100%">
       <el-table-column
        align="center"
         prop="date"
         label="时间">
+        <template slot-scope="scope">{{scope.row.createTime | parseTime}}</template>
       </el-table-column>
       <el-table-column
        align="center"
@@ -22,17 +23,17 @@
       </el-table-column>
       <el-table-column
        align="center"
-        prop="address"
+        prop="title"
         label="操作内容">
       </el-table-column>
     </el-table>
-    <!-- <div v-show="!listLoading" class="pagination-container">
+    <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                      :current-page.sync="listQuery.page"
                      :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
                      layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
-    </div> -->
+    </div>
     
   </article>
 
@@ -53,31 +54,14 @@
           activityId:this.$route.params.activityId,
         },
         total: null,
- tableData: [{
-            date: '2016-05-02',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1518 弄'
-          }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1517 弄'
-          }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1519 弄'
-          }, {
-            date: '2016-05-03',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1516 弄'
-          }]
+        list: []
        
       }
     },
+    
     computed: {
       ...mapGetters([
         'permissions',
-        'workStatus',
-        'lockStatus'
       ])
     },
     created() {
@@ -89,8 +73,13 @@
 
     methods: {
       getOperationLog(){
-        getOperationLog(this.listQuery).the(res=>{
-
+        this.listLoading = true;
+        getOperationLog(this.listQuery).then(res=>{
+          if(res.status == 200){
+            this.total = res.data.total;
+            this.list = res.data.records;
+            this.listLoading = false;
+          }
         })
       },
          // 取消 关闭对话框

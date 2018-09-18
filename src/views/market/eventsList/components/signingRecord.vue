@@ -9,7 +9,7 @@
                   { required: true, message: '请输入跟踪时间', trigger: 'blur' }
                 ]"
               >
-                <el-col :span="20"><el-input v-model="listQuery.trackMonth" placeholder="请输入跟踪时间"></el-input></el-col>
+                <el-col :span="20"><el-input @change="trackMonthChange" v-model="listQuery.trackMonth" placeholder="请输入跟踪时间"></el-input></el-col>
                 <el-col :span="4"><el-button class="search_btn" @click="submitForm('listQuery')"><svg-icon icon-class="search"></svg-icon> 查询</el-button></el-col>
               </el-form-item>
           </el-form>
@@ -28,37 +28,40 @@
       style="width: 100%">
       <el-table-column
        align="center"
-        prop="date"
         label="打款时间">
+        <template slot-scope="scope">
+          {{scope.row.tradeDate | parseTime}}
+        </template>
+      </el-table-column>
       </el-table-column>
       <el-table-column
        align="center"
-        prop="name"
+        prop="appointmentCode"
         label="预约编号">
       </el-table-column>
       <el-table-column
        align="center"
-        prop="address"
+        prop="productCode"
         label="产品编号">
       </el-table-column>
       <el-table-column
        align="center"
-        prop="address"
+        prop="deptName"
         label="产品名称">
       </el-table-column>
         <el-table-column
        align="center"
-        prop="address"
+        prop="clientName"
         label="客户姓名">
       </el-table-column>
         <el-table-column
        align="center"
-        prop="address"
+        prop="clientCode"
         label="客户编号">
       </el-table-column>
         <el-table-column
        align="center"
-        prop="address"
+        prop="deptName"
         label="部门">
       </el-table-column>
         <el-table-column
@@ -73,7 +76,7 @@
       </el-table-column>
         <el-table-column
        align="center"
-        prop="address"
+        prop="amount"
         label="打款金额(万）">
       </el-table-column>
     </el-table>
@@ -105,8 +108,11 @@
           trackMonth : 6
         },
         total: null,
-        records:null
-       
+        records:null,
+        params:{
+        activityId:this.$route.params.activityId,
+        trackMonth:6
+       },
       }
     },
     computed: {
@@ -124,9 +130,15 @@
     },
 
     methods: {
+      // 跟踪时间变化
+      trackMonthChange(val){
+console.log(val)
+      },
+      // 获取列表
       getContract(){
         getContract(this.listQuery).then(res=>{
-          if(res.statu == 200){
+          if(res.status == 200){
+            this.params.trackMonth = this.listQuery.trackMonth
             this.records = res.data.records
             this.total = res.data.total
           }
@@ -153,15 +165,29 @@
       },
        // 导出
       handleExport() {
-        exportcontract(this.listQuery).then(res => {
-          if (res.status === 200) {
-            console.log(res)
-            const fileName = decodeURI(res.headers['content-disposition'].split('=')[1]) // 导出时要decodeURI
-            const blob = new Blob([res.data], { type: 'blob' })
-            const objectUrl = URL.createObjectURL(blob)
-            this.forceDownload(objectUrl, fileName)
+         if(this.records.length<1){
+              this.$notify({
+                title: '警告',
+                message: '暂无数据',
+                type: 'warning'
+              });
+            }else{
+              exportcontract(this.listQuery).then(res => {
+                if (res.status === 200) {
+                  console.log(res)
+                  const fileName = decodeURI(res.headers['content-disposition'].split('=')[1]) // 导出时要decodeURI
+                  const blob = new Blob([res.data], { type: 'blob' })
+                  const objectUrl = URL.createObjectURL(blob)
+                  this.forceDownload(objectUrl, fileName)
+                }
+              })
           }
-        })
+      },
+       forceDownload (url, name) {
+        const link = document.createElement('a')
+        link.href = url
+        link.download = name
+        link.click()
       },
     }
   }

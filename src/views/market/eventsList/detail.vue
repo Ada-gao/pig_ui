@@ -13,7 +13,7 @@
   <!-- 活动海报 eventPoster-->
   <event-poster v-if=" labelButton =='eventPoster' " :form="childrenForm"></event-poster>
   <!-- 报名/签到 registrationCheck -->
-  <registration-check v-if=" labelButton =='eventDetails' "></registration-check>
+  <registration-check v-if=" labelButton =='registrationCheck' "></registration-check>
   <!-- 签到账号 checkinAccount -->
   <checkin-account v-if=" labelButton =='checkinAccount' "></checkin-account>
   <!--  签单记录 signingRecord-->
@@ -22,7 +22,7 @@
   <operation-log v-if=" labelButton =='operationLog' "></operation-log>
 
   <!-- 活动详情 eventDetails-->
-  <el-form v-if="labelButton == 'eventDetails1' " :model="form" :rules="rules" ref="ruleForm" label-width="110px" style="width: 90%" class="events-detail">
+  <el-form v-if="labelButton == 'eventDetails' " :model="form" :rules="rules" ref="ruleForm" label-width="110px" style="width: 90%" class="events-detail">
     <!-- 活动基本信息 -->
     <article>
       <p class="title">活动基本信息</p>
@@ -58,7 +58,8 @@
               <el-option v-for="item in activityLeader" :key="item.userId" :label="item.name" :value="item.userId">
               </el-option>
             </el-select>
-            <span v-if="url == 'view'">{{form.activityPrincipalList}}</span>
+            <span v-if="url == 'view'" v-for="(item,index) in form.activityPrincipalList" :key="item.vid">
+            {{item.val}}<span v-if="index != form.activityPrincipalList.length-1">|</span></span>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -71,16 +72,16 @@
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="11">
           <el-form-item label="活动时间" prop="activityData">
-            <el-date-picker v-if="url == 'edit'" style="width:100%" v-model="form.activityData" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
+            <el-date-picker v-if="url == 'edit'" style="width:100%" v-model="form.activityData" type="datetimerange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
-            <span v-if="url == 'view'">{{form.activityData}}</span>
+            <span v-if="url == 'view'">{{form.activityData[0] | parseTime}} - {{form.activityData[1] | parseTime}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="报名时间" prop="registrationData">
-            <el-date-picker v-if="url == 'edit'" style="width:100%" v-model="form.registrationData" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
+            <el-date-picker v-if="url == 'edit'" style="width:100%" v-model="form.registrationData" type="datetimerange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
-            <span v-if="url == 'view'">{{form.registrationData}}</span>
+            <span v-if="url == 'view'">{{form.registrationData[0] | parseTime}} - {{form.registrationData[1] | parseTime}}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -97,7 +98,9 @@
               <el-option v-for="item in rootList" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
-              <span v-if="url == 'view'">{{form.activityDeptList}}</span>
+              <span v-if="url == 'view'" v-for="(item,index) in form.activityDeptList" :value="item.id">
+              {{item.val}}
+              <span v-if="index != form.activityDeptList.length-1">|</span></span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -195,9 +198,9 @@
       </el-form-item>
     </article>
 
-     <div style="text-align: center;">
+     <div style="text-align: center;" v-if="url != 'view'">
       <!-- <el-button class="search_btn">上一步</el-button> -->
-      <el-button  v-if="!(url == 'add')" class="add_btn" @click="releaseEvent">发布活动</el-button>
+      <el-button v-if="url == 'edit'" class="add_btn" @click="releaseEvent">发布活动</el-button>
       <el-button class="add_btn" @click="save('ruleForm')">保 存</el-button>
       <el-button class="search_btn" @click="cancelSava">取 消</el-button>
       <!-- <router-link class="el-button search_btn el-button--default" to="/market/eventsList" >取 消</router-link> -->
@@ -356,7 +359,7 @@ export default {
     this.sys_user_del = this.permissions['sys_user_del']
   },
   mounted() {
-
+    // document.querySelectorAll('el-upload-list el-upload-list--picture-card')[0].setAttribute('disabled', "none");
   },
   watch: {
 
@@ -459,14 +462,18 @@ export default {
           data.activityData = [data.activityStart,data.activityEnd]
           data.registrationData = [data.registrationStart,data.registrationEnd]
           data.activityShare = data.activityShare.split('|')
-          data.activityPrincipalList.forEach(item=>{
-            activityPrincipalList.push(item.vid)
-          })
-          data.activityDeptList.forEach(item=>{
-            activityDeptList.push(item.vid)
-          })
-          data.activityPrincipalList = activityPrincipalList
-          data.activityDeptList = activityDeptList
+          if(this.url == 'edit'){
+            data.activityPrincipalList.forEach(item=>{
+              activityPrincipalList.push(item.vid)
+            })
+            data.activityDeptList.forEach(item=>{
+              activityDeptList.push(item.vid)
+            })
+            data.activityPrincipalList = activityPrincipalList
+            data.activityDeptList = activityDeptList
+          }
+         
+         
           data.activityForeendPictureList.forEach(item=>{
             this.fileList.push({url:item.val})
           })

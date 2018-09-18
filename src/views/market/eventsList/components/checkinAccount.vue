@@ -198,7 +198,7 @@
                     type: 'success'
                   });
               this.cancel('SignInPerson')
-
+               this.getSigninaccount()
               }
             })
           } else {
