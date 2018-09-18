@@ -386,7 +386,7 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/user'
+  import { getObj, addObj, putObj, delObj } from '@/api/user'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
@@ -498,9 +498,9 @@
           positionName: [
             {required: true, trigger: 'change', message: '请选择职位'}
           ],
-          email: [
-            {required: false, trigger: 'blur', message: '请输入邮箱'}
-          ],
+          // email: [
+          //   {required: false, trigger: 'blur', message: '请输入邮箱'}
+          // ],
           mobile: [
             {required: true, trigger: 'blur', validator: validMobile}
           ],

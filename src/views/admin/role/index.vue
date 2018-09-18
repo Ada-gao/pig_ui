@@ -314,15 +314,18 @@
       handlePermission(row) {
         fetchRoleTree(row.roleCode).then(res => {
           this.checkedKeys = res.data
+          console.log(res.data)
+          this.dialogPermissionVisible = true
         })
         fetchTree()
           .then(res => {
             this.treeData = res.data
             this.dialogStatus = 'permission'
-            this.dialogPermissionVisible = true
+            // this.dialogPermissionVisible = true
             this.roleId = row.roleId
             this.roleCode = row.roleCode
           })
+        // this.$refs.deptTree.getHalfCheckedKeys(this.checkedKeys)
       },
       filterNode(value, data) {
         if (!value) return true
@@ -420,6 +423,7 @@
       updatePermession(roleId, roleCode) {
         let menuIds = this.$refs.menuTree.getCheckedKeys()
         let menuIds1 = this.$refs.menuTree.getHalfCheckedKeys()
+        console.log([...menuIds, ...menuIds1])
         permissionUpd(roleId, [...menuIds, ...menuIds1])
           .then(() => {
             this.dialogPermissionVisible = false

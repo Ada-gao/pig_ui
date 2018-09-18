@@ -380,7 +380,7 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj, getDirectSupervisorList } from '@/api/user'
+  import { getObj, addObj, putObj, delObj, getDirectSupervisorList } from '@/api/user'
   import { deptRoleList, fetchDeptTree ,getDirectChangeList,seeDirectChangeList,addDirectChangeList} from '@/api/role'
   import { getPositionName } from '@/api/posi'
   import { getAllRank,getAllDeparts} from '@/api/achievement/index'
