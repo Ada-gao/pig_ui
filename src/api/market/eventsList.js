@@ -67,7 +67,7 @@ export function getContract(params) {
  */
 export function exportPf(params) {
   return request({
-    url: '/activityClient/export/',
+    url: '/activity/activityClient/export/',
     method: 'get',
     params,
     responseType: 'blob'
@@ -91,5 +91,34 @@ export function releaseEvent(activityId ) {
   return request({
     url: `/activity/activity/release/${activityId}`,
     method: 'put',
+  })
+}
+/**
+ * 新增签到账户
+ */
+export function addSigninaccount(params) {
+  return request({
+    url: '/activity/activityClient/signinaccount/',
+    method: 'put',
+    params
+  })
+}
+/**
+ * 删除签到账户
+ */
+export function deleteSigninaccount(id) {
+  return request({
+    url: `/activity/activityClient/signinaccount/${id}`,
+    method: 'DELETE',
+  })
+}
+/**
+ * 删除签到账户
+ */
+export function getOperationLog(params) {
+  return request({
+    url: '/activity/operationLog',
+    method: 'get',
+    params
   })
 }

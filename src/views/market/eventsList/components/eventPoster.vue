@@ -36,7 +36,7 @@
       <el-row type="flex" class="row-bg" justify="space-around" align="middle">
         <el-col>
           <el-form-item label="部门">
-            <span v-for="item in form.activityDeptList" :key="item">{{item.val}}</span>
+            <span v-for="item in form.activityDeptList" :key="item.val">{{item.val}}</span>
           </el-form-item>
           <el-form-item label="活动名称">
             <span>{{form.activityName}}</span>
@@ -106,8 +106,8 @@ export default {
   props:['form'],
   data() {
     return {
-      activityBannerUrl: this.form.activityBannerUrl || 'static/img/activity/banner.png',
-      activityPosterUrl: this.form.activityPosterUrl || 'static/img/activity/poster.png',
+      activityBannerUrl:this.form.activityBannerUrl || 'static/img/activity/banner.png',
+      activityPosterUrl:this.form.activityPosterUrl ||  'static/img/activity/poster.png',
       downloadUrl:'static/img/activity/poster.psd',
       logImgUrl:null,
       codeImgUrl:null,
@@ -119,7 +119,7 @@ export default {
     }
   },
   methods: {
-
+    
     activityPoster(){
        this.posterList = {
           activityBannerUrl: this.activityBannerUrl,

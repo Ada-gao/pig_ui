@@ -13,7 +13,7 @@
   <!-- 活动海报 eventPoster-->
   <event-poster v-if=" labelButton =='eventPoster' " :form="childrenForm"></event-poster>
   <!-- 报名/签到 registrationCheck -->
-  <registration-check v-if=" labelButton =='registrationCheck' "></registration-check>
+  <registration-check v-if=" labelButton =='eventDetails' "></registration-check>
   <!-- 签到账号 checkinAccount -->
   <checkin-account v-if=" labelButton =='checkinAccount' "></checkin-account>
   <!--  签单记录 signingRecord-->
@@ -22,7 +22,7 @@
   <operation-log v-if=" labelButton =='operationLog' "></operation-log>
 
   <!-- 活动详情 eventDetails-->
-  <el-form v-if="labelButton == 'eventDetails' " :model="form" :rules="rules" ref="ruleForm" label-width="110px" style="width: 90%" class="events-detail">
+  <el-form v-if="labelButton == 'eventDetails1' " :model="form" :rules="rules" ref="ruleForm" label-width="110px" style="width: 90%" class="events-detail">
     <!-- 活动基本信息 -->
     <article>
       <p class="title">活动基本信息</p>
@@ -455,6 +455,7 @@ export default {
     editProcess(data){
          const activityPrincipalList = []
          const activityDeptList = []
+          this.fileList = []
           data.activityData = [data.activityStart,data.activityEnd]
           data.registrationData = [data.registrationStart,data.registrationEnd]
           data.activityShare = data.activityShare.split('|')
@@ -466,6 +467,9 @@ export default {
           })
           data.activityPrincipalList = activityPrincipalList
           data.activityDeptList = activityDeptList
+          data.activityForeendPictureList.forEach(item=>{
+            this.fileList.push({url:item.val})
+          })
           return data
     },
     // 查询所有用户
@@ -525,6 +529,7 @@ export default {
     },
     changeButton(state) {
       this.labelButton = state
+      if(state == 'eventDetails') this.editActivity()
     },
     // 选择 部门 职位 客户标签  对话框
     selectDepartment(select) {
@@ -596,13 +601,13 @@ export default {
       // let index = this.form.activityForeendPictureList.indexOf(file.response.url);
       // if (index > -1) this.form.activityForeendPictureList.splice(index, 1);
       this.form.activityForeendPictureList.forEach((item,index)=>{
-        if(item.pictureUrl == file.response.url) this.form.activityForeendPictureList.splice(index, 1);
+        if(item.pictureUrl == fileList.url) this.form.activityForeendPictureList.splice(index, 1);
       })
-      console.log(this.form.activityForeendPictureList)
 
     },
     // 点击文件列表中已上传的文件时的钩子
     handlePictureCardPreview(file) {
+      console.log(file)
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },

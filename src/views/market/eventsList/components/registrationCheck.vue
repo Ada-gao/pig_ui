@@ -1,5 +1,20 @@
 <template>
   <article class="checkin-account">
+    <el-row type="flex" align="middle" :gutter="10">
+         <el-form :model="params" ref="listQuery" label-width="100px" class="demo-dynamic">
+            <el-form-item label="签到状态" >
+                <el-select v-model="params.signinStatus" placeholder="请选择" @change="signinStatusChange">
+                 <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+          </el-form>
+        </el-row>
+  
     <div style="text-align: right;">
       <el-button class="search_btn" @click="handleExport">
         <svg-icon icon-class="export"></svg-icon>批量导出
@@ -13,8 +28,10 @@
       style="width: 100%">
       <el-table-column
        align="center"
-        prop="registrationTime"
         label="报名时间">
+        <template slot-scope="scope">
+          {{scope.row.registrationTime | parseTime}}
+        </template>
       </el-table-column>
       <el-table-column
        align="center"
@@ -86,10 +103,25 @@
         listQuery: {
           page: 1,
           limit: 20,
-          activityId:1
+          activityId:this.$route.params.activityId,
+          signinStatus:null
         },
         total: null,
-       list:[]
+       list:[],
+       params:{
+        activityId:this.$route.params.activityId,
+        signinStatus:null
+       },
+       options:[{
+        value: null,
+        label: '全部'
+        },{
+        value: '1',
+        label: '未签到'
+        },{
+          value: '2',
+          label: '已签到'
+        }]
       }
     },
     filters: {
@@ -118,6 +150,12 @@
     },
 
     methods: {
+      // 签到状态变化
+      signinStatusChange(val){
+        this.listQuery.signinStatus = val
+        this.params.signinStatus = val
+        this.getActivityClient()
+      },
       getActivityClient(){
         this.listLoading = true;
         getActivityClient(this.listQuery).then(res=>{
@@ -142,16 +180,29 @@
       },
       // 导出
       handleExport() {
-        exportPf(this.listQuery).then(res => {
-          if (res.status === 200) {
-            console.log(res)
-            const fileName = decodeURI(res.headers['content-disposition'].split('=')[1]) // 导出时要decodeURI
-            const blob = new Blob([res.data], { type: 'blob' })
-            const objectUrl = URL.createObjectURL(blob)
-            this.forceDownload(objectUrl, fileName)
-          }
-        })
+        if(this.list.length<1){
+          this.$notify({
+            title: '警告',
+            message: '暂无数据',
+            type: 'warning'
+          });
+        }else{
+          exportPf(this.params).then(res => {
+            if (res.status === 200) {
+              const fileName = decodeURI(res.headers['content-disposition'].split('=')[1]) // 导出时要decodeURI
+              const blob = new Blob([res.data], { type: 'blob' })
+              const objectUrl = URL.createObjectURL(blob)
+              this.forceDownload(objectUrl, fileName)
+            }
+          })
+        }
       },
+        forceDownload (url, name) {
+      const link = document.createElement('a')
+      link.href = url
+      link.download = name
+      link.click()
+    },
     }
   }
 </script>

@@ -39,6 +39,7 @@
 </template>
 
 <script>
+ import {getOperationLog} from '@/api/market/eventsList'
   import { mapGetters } from 'vuex'
   export default {
     name: 'checkinAccount',
@@ -48,7 +49,8 @@
         dialogVisible: true,
         listQuery: {
           page: 1,
-          limit: 20
+          limit: 20,
+          activityId:this.$route.params.activityId,
         },
         total: null,
  tableData: [{
@@ -79,14 +81,17 @@
       ])
     },
     created() {
+      this.getOperationLog()
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
     },
 
     methods: {
-      handleCreate(){
+      getOperationLog(){
+        getOperationLog(this.listQuery).the(res=>{
 
+        })
       },
          // 取消 关闭对话框
       cancel(formName){

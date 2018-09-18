@@ -12,29 +12,29 @@
       style="width: 100%">
       <el-table-column
        align="center"
-        prop="date"
+        prop="signinAccountName"
         label="签到人姓名">
       </el-table-column>
       <el-table-column
        align="center"
-        prop="name"
+        prop="signinAccountCode"
         label="签到人编号">
       </el-table-column>
       <el-table-column
        align="center"
-        prop="address"
+        prop="signinAccountDeptName"
         label="签到人部门">
       </el-table-column>
       <el-table-column
        align="center"
-        prop="address"
+        prop="signinAccountMobile"
         label="签到人手机号">
       </el-table-column>
        <el-table-column
         align="center"
         label="操作">
         <template slot-scope="scope">
-         <a class="red" size="small">删除</a>
+         <a class="red" size="small" @click="deleteAccountMobile(scope.row)">删除</a>
       </template>
       </el-table-column>
     </el-table>
@@ -49,25 +49,32 @@
           title="新增签到"
           :visible.sync="dialogVisible"
           width="30%">
-          <el-form  ref="newAddClient" label-width="100px" class="demo-ruleForm">
+          <el-form :model="SignInPersonForm" :rules="SignInPersonRules" ref="SignInPerson" label-width="100px" class="demo-ruleForm">
 
-          <el-form-item  label="标签名称">
-            <el-input placeholder="签到人部门" style="width:90%;"></el-input>
+          <el-form-item label="签到人姓名" prop="name">
+            <!-- <el-input  placeholder="清选择签到人姓名" style="width:90%;"></el-input> -->
+            <el-select filterable v-model="SignInPersonForm.name" placeholder="请选择" style="width:90%;" @change="selectChange">
+              <el-option v-for="item in activityLeader" :key="item.userId" :label="item.name" :value="item.userId">
+              </el-option>
+            </el-select>
           </el-form-item>
 
-          <el-form-item label="签到人姓名">
-            <el-input  placeholder="请输入标签解释" style="width:90%;"></el-input>
+          <el-form-item  label="签到人部门" prop="dept">
+            <el-input disabled style="width:90%;" v-model="SignInPersonForm.dept"></el-input>
           </el-form-item>
-             <el-form-item label="签到人编号">
-            <el-input  placeholder="请输入标签解释" style="width:90%;"></el-input>
+
+          <el-form-item label="签到人编号" prop="empNo">
+            <el-input style="width:90%;" disabled v-model="SignInPersonForm.empNo"></el-input>
           </el-form-item>
-               <el-form-item label="签到人手机">
-            <el-input  placeholder="请输入标签解释" style="width:90%;"></el-input>
+
+          <el-form-item label="签到人手机" prop="mobile">
+            <el-input style="width:90%;" disabled v-model="SignInPersonForm.mobile"></el-input>
           </el-form-item>
+
         </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button  class="search_btn" @click="cancel('newAddClient')">取 消</el-button>
-            <el-button  class="add_btn" @click="clientDetermine('newAddClient')">确 定</el-button>
+            <el-button  class="search_btn" @click="cancel('SignInPerson')">取 消</el-button>
+            <el-button  class="add_btn" @click="clientDetermine('SignInPerson')">确 定</el-button>
           </div>
         </el-dialog>
   </article>
@@ -76,7 +83,9 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import {getSigninaccount} from '@/api/market/eventsList'
+  import {getSigninaccount,addSigninaccount,deleteSigninaccount} from '@/api/market/eventsList'
+  import {getDirectSupervisorList} from '@/api/user'
+   import {  getObj } from '@/api/dept'
   export default {
     name: 'checkinAccount',
     data() {
@@ -89,7 +98,28 @@
           activityId:this.$route.params.activityId,
         },
         total:null,
-        records:null
+        records:null,
+        SignInPersonRules:{
+          dept: [
+            { required: true, message: '没有签到人部门'},
+          ],
+          name: [
+            { required: true, message: '清选择签到人姓名'},
+          ],
+
+          empNo: [
+            { required: true, message: '没有签到人编号'},
+          ],
+          mobile: [
+            { required: true, message: '没有签到人手机'},
+          ],
+        },
+        SignInPersonForm:{dept:''},
+        activityLeader:[],
+        params:{
+          activityId:this.$route.params.activityId,
+          accountid :''
+        }
       }
     },
     computed: {
@@ -109,7 +139,7 @@
     methods: {
       getSigninaccount(){
         getSigninaccount(this.listQuery).then(res=>{
-          if(status == 200){
+          if(res.status == 200){
             this.records = res.data.records
             this.total = res.data.total
           }
@@ -123,14 +153,80 @@
         this.listQuery.page = val
         this.getSigninaccount()
       },
+       // 查询所有用户
+    getDirectSupervisorList() {
+      getDirectSupervisorList().then(res => {
+        if (res.status == 200) {
+          this.activityLeader = res.data
+        }
+      })
+    },
+    selectChange(userId){
+      this.activityLeader.forEach(item=>{
+
+        if(item.userId == userId){
+          this.params.accountid = item.userId
+            getObj(item.deptId).then(response => {
+             this.SignInPersonForm.dept =  response.data.name
+            })
+          this.SignInPersonForm.empNo =  item.empNo
+          this.SignInPersonForm.mobile =  item.mobile
+        }
+      })
+     
+    },
       // 添加
       handleCreate(){
         this.dialogVisible = true;
+         // 获取 所有用户
+       this.getDirectSupervisorList();
       },
       // 取消 关闭对话框
       cancel(formName){
         this.$refs[formName].resetFields();
+        this.dialogVisible = false;
       },
+      // 保存
+      clientDetermine(formName){
+         this.$refs[formName].validate((valid) => {
+          if (valid) {
+            addSigninaccount(this.params).then(res=>{
+              if(res.status == 200){
+                 this.$notify({
+                    title: '成功',
+                    message: '添加成功',
+                    type: 'success'
+                  });
+              this.cancel('SignInPerson')
+
+              }
+            })
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      // 删除签到账户
+      deleteAccountMobile(id){
+        this.$confirm('此操作将永久删除该签到记录 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteSigninaccount(id.activityMulitSelectId).then(res=>{
+            if(res.status == 200){
+              this.getSigninaccount()
+               this.$notify({
+                  title: '成功',
+                  message: '删除成功',
+                  type: 'success'
+                });
+            }
+          })
+         
+        })
+      }
     }
   }
 </script>
