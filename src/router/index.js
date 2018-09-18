@@ -428,7 +428,7 @@ export const asyncRouterMap = [
       { menuId: 15, path: 'elk', component: _import('admin/monitor/elk'), name: 'ELK状态', meta: { title: 'ELK状态', icon: 'elk' }},
       { menuId: 16, path: 'swagger', component: _import('admin/monitor/swagger'), name: '接口文档', meta: { title: '接口文档', icon: 'swagger' }},
       { menuId: 17, path: 'daemon', component: _import('admin/monitor/daemon'), name: '任务监控', meta: { title: '任务监控', icon: 'daemon' }},
-      { menuId: 17, path: 'app', component: _import('admin/monitor/app'), name: 'app监控', meta: { title: 'app监控', icon: 'daemon' }}
+      { menuId: 86, path: 'app', component: _import('admin/monitor/app'), name: '密钥管理', meta: { title: '密钥管理', icon: 'daemon' }}
     ]
   }
 ]
