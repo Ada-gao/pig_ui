@@ -78,7 +78,7 @@ export function exportPf(params) {
  */
 export function exportcontract(params) {
   return request({
-    url: '/activityClient/exportcontract',
+    url: '/activity/activityClient/exportcontract',
     method: 'get',
     params,
     responseType: 'blob'
@@ -113,7 +113,7 @@ export function deleteSigninaccount(id) {
   })
 }
 /**
- * 删除签到账户
+ * 查询活动操作日志（分页）
  */
 export function getOperationLog(params) {
   return request({

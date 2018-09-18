@@ -55,12 +55,12 @@
       </el-table-column>
         <el-table-column
        align="center"
-        prop="plannerName"
+        prop="userName"
         label="理财师姓名">
       </el-table-column>
         <el-table-column
        align="center"
-        prop="address"
+        prop="userCode"
         label="理财师编号">
       </el-table-column>
         <el-table-column
@@ -74,8 +74,10 @@
       </el-table-column>
          <el-table-column
        align="center"
-        prop="singinTime"
         label="签到时间">
+         <template slot-scope="scope">
+          {{scope.row.singinTime | parseTime}}
+        </template>
       </el-table-column>
     </el-table>
     <div v-show="!listLoading" class="pagination-container">
@@ -93,7 +95,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import {getActivityClient,exportPf} from '@/api/market/eventsList'
-  import { parseTime, transformText, transformText1 } from '@/utils'
+  import { transformText, transformText1 } from '@/utils'
   export default {
     name: 'registrationCheck',
     data() {
@@ -126,20 +128,15 @@
     },
     filters: {
       turnText (val, list) {
-   
         return val == 1?'未签到':'已签到'
-      },
-      parseTime (time) {
-        if(!time) return
-        let date = new Date(time)
-        return parseTime(date)
       }
+     
     },
     computed: {
       ...mapGetters([
         'permissions',
+        'clientFrom',
         'workStatus',
-        'lockStatus'
       ])
     },
     created() {
@@ -162,6 +159,9 @@
           if(res.status == 200){
             this.total = res.data.total;
             this.list = res.data.records;
+            this.list.forEach(item => {
+              item.clientFrom = transformText(this.clientFrom, item.clientFrom)
+            })
             this.listLoading = false;
           }
         })
