@@ -29,87 +29,88 @@
        <el-row v-if="!(url == 'add') " type="flex" class="row-bg" justify="space-between">
         <el-col :span="11">
           <el-form-item label="活动编号">
-            <el-input v-if="url == 'edit'" v-model="form.activityCode" disabled></el-input>
             <span v-if="url == 'view'">{{form.activityCode}}</span>
+            <el-input v-else v-model="form.activityCode" disabled></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="11">
           <el-form-item label="活动名称" prop="activityName">
-            <el-input v-if="url == 'edit'" v-model="form.activityName"></el-input>
             <span v-if="url == 'view'">{{form.activityName}}</span>
+            <el-input v-else v-model="form.activityName"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="活动类型" prop="activityType">
-            <el-select v-if="url == 'edit'" v-model="form.activityType" placeholder="请选择" style="width: 100%;">
+            <span v-if="url == 'view'">{{form.activityType}}</span>
+            <el-select v-else v-model="form.activityType" placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in activityType" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
-            <span v-if="url == 'view'">{{form.activityType}}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="11">
           <el-form-item label="活动负责人" prop="activityPrincipalList">
-            <el-select v-if="url == 'edit'" v-model="form.activityPrincipalList" multiple placeholder="请选择" style="width: 100%;">
+            <span v-if="url == 'view'" v-for="(item,index) in form.activityPrincipalList" :key="item.vid">
+            {{item.val}}<span v-if="index != form.activityPrincipalList.length-1">|</span></span>
+            <el-select v-if="url != 'view'" v-model="form.activityPrincipalList" multiple placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in activityLeader" :key="item.userId" :label="item.name" :value="item.userId">
               </el-option>
             </el-select>
-            <span v-if="url == 'view'" v-for="(item,index) in form.activityPrincipalList" :key="item.vid">
-            {{item.val}}<span v-if="index != form.activityPrincipalList.length-1">|</span></span>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="活动人数(人)" prop="activityActivitiesNumber">
-            <el-input v-if="url == 'edit'" v-model="form.activityActivitiesNumber"></el-input>
             <span v-if="url == 'view'">{{form.activityActivitiesNumber}}</span>
+            <el-input v-else v-model="form.activityActivitiesNumber"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="11">
           <el-form-item label="活动时间" prop="activityData">
-            <el-date-picker v-if="url == 'edit'" style="width:100%" v-model="form.activityData" type="datetimerange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
+          <span v-if="url == 'view'">{{form.activityData[0] | parseTime}} - {{form.activityData[1] | parseTime}}</span>
+            <el-date-picker v-else style="width:100%" v-model="form.activityData" type="datetimerange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
-            <span v-if="url == 'view'">{{form.activityData[0] | parseTime}} - {{form.activityData[1] | parseTime}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="报名时间" prop="registrationData">
-            <el-date-picker v-if="url == 'edit'" style="width:100%" v-model="form.registrationData" type="datetimerange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
-            </el-date-picker>
             <span v-if="url == 'view'">{{form.registrationData[0] | parseTime}} - {{form.registrationData[1] | parseTime}}</span>
+            <el-date-picker v-else style="width:100%" v-model="form.registrationData" type="datetimerange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
+            </el-date-picker>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="11">
           <el-form-item label="活动地址" prop="activitySite">
-            <el-input v-if="url == 'edit'" v-model="form.activitySite"></el-input>
             <span v-if="url == 'view'">{{form.activitySite}}</span>
+            <el-input v-else v-model="form.activitySite"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="主办部门" prop="activityDeptList">
-            <el-select v-if="url == 'edit'" v-model="form.activityDeptList" multiple placeholder="请选择" style="width: 100%;">
+          <span v-if="url == 'view'" v-for="(item,index) in form.activityDeptList" :value="item.id">
+              {{item.val}}
+              <span v-if="index != form.activityDeptList.length-1">|</span></span>
+            <el-select  v-if="url != 'view'"  v-model="form.activityDeptList" multiple placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in rootList" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
-              <span v-if="url == 'view'" v-for="(item,index) in form.activityDeptList" :value="item.id">
-              {{item.val}}
-              <span v-if="index != form.activityDeptList.length-1">|</span></span>
+              
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item label="活动简介">
-            <el-input v-if="url == 'edit'" v-model="form.activityIntroduction" type="textarea" :rows="4" placeholder="请输入内容">
-            </el-input>
             <span v-if="url == 'view'">{{form.activityIntroduction}}</span>
+            <el-input v-else v-model="form.activityIntroduction" type="textarea" :rows="4" placeholder="请输入内容">
+            </el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -359,7 +360,7 @@ export default {
     this.sys_user_del = this.permissions['sys_user_del']
   },
   mounted() {
-    // document.querySelectorAll('el-upload-list el-upload-list--picture-card')[0].setAttribute('disabled', "none");
+
   },
   watch: {
 
@@ -451,6 +452,14 @@ export default {
            this.childrenForm = JSON.parse(JSON.stringify(res.data));
           this.form = this.editProcess(res.data)
           this.activityStatusId = this.form.activityStatusId
+          if(this.url == 'view'){
+            document.querySelectorAll('.events-detail .image-display .el-upload--picture-card')[0].style.display="none"
+            this.$nextTick(()=>{
+                document.querySelectorAll('.el-upload-list__item-delete')[0].style.display="none"
+            })
+             
+            }
+       
         }
       })
     },
@@ -458,6 +467,7 @@ export default {
     editProcess(data){
          const activityPrincipalList = []
          const activityDeptList = []
+         const activityRangeDeptListLabel = []
           this.fileList = []
           data.activityData = [data.activityStart,data.activityEnd]
           data.registrationData = [data.registrationStart,data.registrationEnd]
@@ -472,8 +482,11 @@ export default {
             data.activityPrincipalList = activityPrincipalList
             data.activityDeptList = activityDeptList
           }
-         
-         
+           data.activityRangeDeptList.forEach(item=>{
+              activityRangeDeptListLabel.push(item.val)
+            })
+          data.activityRangeDeptListLabel = activityRangeDeptListLabel
+
           data.activityForeendPictureList.forEach(item=>{
             this.fileList.push({url:item.val})
           })
