@@ -9,8 +9,16 @@ export function getSubcompany(obj) {
 }
 // 取得子公司列表
 export function getSysSelectValueList(type) {
-return request({
+  return request({
     url: `/admin/sysSelectValue/list/${type}`,
     method: 'get'
-})
+  })
+}
+// 新增子公司logo
+export function getLogo(obj) {
+  return request({
+    url: '/admin/dept/subcompany',
+    method: 'post',
+    data: obj
+  })
 }

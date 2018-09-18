@@ -4,7 +4,7 @@
 
     <div style="text-align: right">
       <el-button v-if="sys_user_add" class="add_btn" @click="handleCreate">
-        <svg-icon icon-class="add"></svg-icon> 添加</el-button>
+        <svg-icon icon-class="add"></svg-icon> 新增</el-button>
     </div>
   
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
