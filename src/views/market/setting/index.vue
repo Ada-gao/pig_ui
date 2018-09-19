@@ -6,14 +6,14 @@
         <el-radio-button label="2">活动类型设置</el-radio-button>
       </el-radio-group>
     </div>
-    <article v-if="step == 1"> 
+    <article v-if="step == 1">
     <!-- <div style="text-align: right">
       <el-button v-if="sys_user_add" class="add_btn" @click="handleCreate">
         <svg-icon icon-class="add"></svg-icon> 新增</el-button>
     </div> -->
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
                style="width: 100%">
-      <el-table-column align="center" label="部门名称">
+      <el-table-column  align="center" label="部门名称">
         <template slot-scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
@@ -21,18 +21,22 @@
 
       <el-table-column align="center" label="部门LOGO" show-overflow-tooltip>
         <template slot-scope="scope" >
-          <span class='img'>
+          <span class='img' v-if='scope.row.logo'>
             <img :src="scope.row.logo" alt="">
+          </span>
+          <span class='img' v-else>
+            <svg-icon icon-class="image"></svg-icon>
           </span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作">
+      <el-table-column  align="center" label="操作">
         <template slot-scope="scope">
           <el-upload
             class="upload-demo"
             action="/activity/file/upload"
             :show-file-list="false"
+            :before-upload='limitImg'
             :on-success="(res)=>{return afterSuccess(res,{deptId:scope.row.deptId})}">
             <el-button size="small" class='choose_button'>选择图片</el-button>
           </el-upload>
@@ -48,43 +52,6 @@
                      layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-
-      <!-- <el-dialog
-          title="新增部门logo"
-          :visible.sync="dialogVisible"
-          width="30%">
-          <el-form  ref="newAddClient" label-width="100px" class="demo-ruleForm">
-          <el-form-item  label="部门名称">
-            <template>
-              <el-input
-                placeholder=""
-                v-model="input1"
-                :disabled="true">
-              </el-input>
-          </template>
-          </el-form-item>
-
-          <el-form-item label="部门logo">
-            <el-upload
-              action="/activity/file/upload"
-              list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
-              :on-remove="handleRemove"
-              :on-success="afterSuccess">
-              <i class="el-icon-plus"></i>
-              <span class='add'>点击添加图片</span>
-            </el-upload>
-            <el-dialog :visible.sync="dialogVisibles">
-              <img width="100%" :src="dialogImageUrl" alt="">
-            </el-dialog>
-          </el-form-item>
-        
-        </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button  class="search_btn" @click="cancel('newAddClient')">取 消</el-button>
-            <el-button  class="add_btn" @click="clientDetermine('newAddClient')">确 定</el-button>
-          </div>
-        </el-dialog> -->
       </article>
       <activity-type v-if="step == 2"></activity-type>
   </div>
@@ -121,7 +88,7 @@ import {getSubcompany,getLogo} from '@/api/market/setting'
           limit: 20
         },
         tableKey: 0,
-       dialogImageUrl: '',
+        dialogImageUrl: '',
       }
     },
     computed: {
@@ -140,14 +107,20 @@ import {getSubcompany,getLogo} from '@/api/market/setting'
         this.listLoading = true
         getSubcompany(this.listQuery).then(response => {
           this.list = response.data.records
-          console.log(this.list)
           this.total = response.data.total
           this.listLoading = false
+          console.log(this.list)
         })
       },
       getCompanyLogo(obj){
         getLogo(obj).then(response=>{
           console.log(response)
+          if(response.status ==200){
+            getSubcompany(this.listQuery).then(response => {
+              this.list = response.data.records
+              this.total = response.data.total
+            })
+          }
         })
       },
       handleSizeChange(val) {
@@ -158,6 +131,26 @@ import {getSubcompany,getLogo} from '@/api/market/setting'
         this.listQuery.page = val
         this.getList()
       },
+      limitImg(file){
+        const isJPG = file.type === 'image/png';
+        const isLt1M = file.size / 1024 / 1024 < 1;
+        if (!isJPG) {
+          this.$notify({
+            title: '警告',
+            message: '上传LOGO图片只能是 png 格式!',
+            type: 'warning'
+          });
+          return false;
+        }
+        if (!isLt1M) {
+          this.$notify({
+            title: '警告',
+            message: '上传LOGO图片大小不能超过 1MB!',
+            type: 'warning'
+          });
+          return false;
+        }
+      },
       afterSuccess(file,objs){
         let obj = {
           "deptId": objs.deptId,
@@ -165,41 +158,6 @@ import {getSubcompany,getLogo} from '@/api/market/setting'
         }
         this.getCompanyLogo(obj)
       },
-      // handleCreate() { // 新增
-      //   this.dialogVisible = true
-      //   this.resetTemp()
-      //   // this.dialogStatus = 'create'
-      //   this.$router.push('/admin/user-detail')
-      //   Bus.$emit('activeIndex', '/admin/user')
-      // },
-      // deletes(row) {
-      //   this.$confirm('此操作将永久删除该部门(部门名称:' + row.name + '), 是否继续?', '提示', {
-      //     confirmButtonText: '确定',
-      //     cancelButtonText: '取消',
-      //     type: 'warning'
-      //   }).then(() => {
-      //     delObj(row.name).then(() => {
-      //       this.getList()
-      //       this.$notify({
-      //         title: '成功',
-      //         message: '删除成功',
-      //         type: 'success',
-      //         duration: 2000
-      //       })
-      //     }).cache(() => {
-      //       this.$notify({
-      //         title: '失败',
-      //         message: '删除失败',
-      //         type: 'error',
-      //         duration: 2000
-      //       })
-      //     })
-      //   })
-      // },
-      // handleUpdate(){
-      //   this.dialogVisible = true
-      // },
-     
     }
   }
 </script>
@@ -222,16 +180,28 @@ import {getSubcompany,getLogo} from '@/api/market/setting'
 .choose_button{
   color:#0299CC;
   background-color: #ffffff;
-  border-color:#fff;
+  border:none;
+}
+.el-table__row:hover{
+  .choose_button{
+    background-color:#f7f8fa;
+  }
 }
 .img{
   display:inline-block;
   width: 93px;
   height:49px;
+  line-height: 49px;
   border:none;
+  background-color: #F8F8F8;
   img{
     width: 100%;
     height:100%;
+  }
+  .svg-icon{
+    width: 35px;
+    height:25px;
+    margin: auto;
   }
 }
 </style>
