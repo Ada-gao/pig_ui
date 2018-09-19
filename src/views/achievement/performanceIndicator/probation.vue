@@ -1,7 +1,7 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container" style="text-align: right">
-      <el-button v-if="sys_prd_type_add"
+      <el-button v-if="probation_norm_add"
                  class="filter-item add_btn"
                  style="margin-bottom: 0;"
                  @click="handleCreate"
@@ -27,12 +27,12 @@
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <a v-if="sys_prd_type_upd"
+          <a v-if="probation_norm_edit"
              size="small"
              class="common_btn"
              @click="handleUpdate(scope.row)">编辑
           </a>
-          <a v-if="sys_prd_type_upd &&
+          <a v-if="probation_norm_delete &&
                    list.length > 1 &&
                    scope.row.month >= list.length"
              size="small"
@@ -132,9 +132,9 @@
     },
     created() {
       this.getList()
-      this.sys_prd_type_add = this.permissions['sys_prd_type_add']
-      this.sys_prd_type_upd = this.permissions['sys_prd_type_upd']
-      this.sys_prd_type_del = this.permissions['sys_prd_type_del']
+      this.probation_norm_add = this.permissions['probation_norm_add']
+      this.probation_norm_edit = this.permissions['probation_norm_edit']
+      this.probation_norm_delete = this.permissions['probation_norm_delete']
     },
     methods: {
       getList() {

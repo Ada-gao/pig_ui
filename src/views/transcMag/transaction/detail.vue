@@ -216,29 +216,29 @@
 
         </el-form>
         <!-- 预约审核 -->
-        <div v-if="status == '1001' && orderStatus != 1" class="dialog-footer" style="text-align: center;">
+        <div v-if="status == '1001' && orderStatus != 1 && sys_appoint_upd" class="dialog-footer" style="text-align: center;">
           <el-button class="add_btn" @click="submitResult('1003')">通 过</el-button>
           <el-button class="common_btn" @click="rejectResult('1002')">不通过</el-button>
         </div>
         <!-- 打款审核 -->
-        <div v-if="(status == '2001' || status == '2002' || status == '2004') && orderStatus != 1" class="dialog-footer" style="text-align: center;">
+        <div v-if="(status == '2001' || status == '2002' || status == '2004') && orderStatus != 1 && sys_remit_audit" class="dialog-footer" style="text-align: center;">
           <el-button v-show="status == '2001'&!form.refundStatus" class="search_btn" @click="submitResult('2004')">通 过</el-button>
           <el-button v-show="status == '2001'&!form.refundStatus" class="add_btn" @click="rejectResult('2002')">不通过</el-button>
           <!-- <el-button v-show="!form.refundStatus" class="add_btn" @click="submitOperat('2003')">关闭订单</el-button> -->
           <el-button v-show="!form.refundStatus" class="add_btn" @click="rejectResult('2003')">关闭订单</el-button>
         </div>
         <!-- 打款-订单关闭 -->
-        <div v-if="status == '2003' && form.refundStatus === null && orderStatus != 1" class="dialog-footer" style="text-align: center;">
+        <div v-if="status == '2003' && form.refundStatus === null && orderStatus != 1 && sys_remit_audit" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('1')">需要退款</el-button>
           <el-button class="add_btn" @click="submitResult('0')">无需退款</el-button>
         </div>
         <!-- 合同审核 -->
-        <div v-if="status == '3002' && orderStatus != 1" class="dialog-footer" style="text-align: center;">
+        <div v-if="status == '3002' && orderStatus != 1 && sys_contract_audit" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('3004')">通 过</el-button>
           <el-button class="add_btn" @click="rejectResult('3003')">不通过</el-button>
         </div>
         <!-- 退款审核 -->
-        <div v-if="form.refundStatus == '2' && orderStatus != 1" class="dialog-footer" style="text-align: center;">
+        <div v-if="form.refundStatus == '2' && orderStatus != 1 && sys_refund_audit" class="dialog-footer" style="text-align: center;">
           <el-button class="search_btn" @click="submitResult('4')">通 过</el-button>
           <el-button class="add_btn" @click="rejectResult('3')">不通过</el-button>
         </div>
@@ -537,6 +537,10 @@
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
+      this.sys_appoint_upd = this.permissions['sys_appoint_upd']
+      this.sys_remit_audit = this.permissions['sys_remit_audit']
+      this.sys_refund_audit = this.permissions['sys_refund_audit']
+      this.sys_contract_audit = this.permissions['sys_contract_audit']
       this.type_is_update = this.$route.path.substr(-1)
       this.orderStatus = this.$route.params.orderStatus
       // console.log(this.orderStatus)

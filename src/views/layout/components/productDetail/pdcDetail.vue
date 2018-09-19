@@ -197,7 +197,7 @@
         <el-col :span="11">
           <el-form-item label="认购费">
             <span v-if="detailDisabled">{{form.subscribe==0?'无认购费':form.subscribe==1?'价内认购':'价外认购 ' + form.subscribeRate + '%'}}</span>
-            <el-radio-group v-else v-model="form.subscribe" @change="subscribeChange">
+            <el-radio-group v-else v-model="form.subscribe" @change="subscribeChange" style="white-space: nowrap;">
               <el-radio :label="0" style="display: inline-block">无认购费</el-radio>
               <el-radio :label="1" style="display: inline-block">价内认购</el-radio>
               <el-radio :label="2" style="display: inline-block">价外认购(%)</el-radio>
@@ -427,7 +427,7 @@
             { required: true, validator: pdAcount, trigger: 'blur' }
           ],
           paymentNumber: [
-            { required: true, validator: pdAcount, trigger: 'blur' }
+            { required: false, validator: pdAcount, trigger: 'blur' }
           ],
           productCode: [
             { required: true, message: '请输入产品名称', trigger: 'blur' },

@@ -16,7 +16,7 @@
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <a v-if="sys_prd_type_upd"
+            <a v-if="sys_parameter_ch_edit"
                size="small"
                @click="handleUpdate(scope.row)"
                class="common_btn">
@@ -71,7 +71,7 @@
       ])
     },
     mounted() {
-      this.sys_prd_type_upd = this.permissions['sys_prd_type_upd']
+      this.sys_parameter_ch_edit = this.permissions['sys_parameter_ch_edit']
       this.getList()
     },
     methods: {

@@ -797,8 +797,9 @@
               this.fileList = []
             }
             this.form.deptId = this.form.deptIds[this.form.deptIds.length - 1]
-            putObj(this.form).then(() => {
+            putObj(this.form).then((res) => {
               // this.getList()
+              if (res.status !== 200) return false
               this.$notify({
                 title: '成功',
                 message: '修改成功',

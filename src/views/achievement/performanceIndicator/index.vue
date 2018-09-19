@@ -71,7 +71,7 @@
     </div>
 
     <div style="text-align: right;">
-      <el-button v-if="sys_prd_type_add"
+      <el-button v-if="performance_indicator_add"
                  class="add_btn"
                  @click="handleCreate">
         <svg-icon icon-class="add" style="margin-right: 5px;"></svg-icon>新增指标
@@ -124,12 +124,12 @@
                        width="150">
         <template slot-scope="scope">
           <a size="small"
-             v-if="sys_prd_type_upd"
+             v-if="performance_indicator_edit"
              @click="handleUpdate(scope.row.performanceIndicatorId)"
              class="common_btn">编辑</a>
           <!--<span class="space_line"> | </span>-->
           <a size="small"
-             v-if="sys_prd_type_upd"
+             v-if="performance_indicator_del"
              class="danger_btn"
              @click="deletes(scope.row.performanceIndicatorId)">删除</a>
         </template>
@@ -378,9 +378,9 @@
     created() {
       this.getAllSearch()
       this.getList()
-      this.sys_prd_type_add = this.permissions['sys_prd_type_add']
-      this.sys_prd_type_upd = this.permissions['sys_prd_type_upd']
-      this.sys_prd_type_del = this.permissions['sys_prd_type_del']
+      this.performance_indicator_add = this.permissions['performance_indicator_add']
+      this.performance_indicator_edit = this.permissions['performance_indicator_edit']
+      this.performance_indicator_del = this.permissions['performance_indicator_del']
     },
     methods: {
       cycleList(list) {
