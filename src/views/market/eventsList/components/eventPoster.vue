@@ -5,7 +5,7 @@
       <!-- 活动封面（用于app端展示） -->
       <p class="title">活动封面<span class="title-app">（用于app端展示）</span></p>
       <el-row type="flex" class="row-bg" justify="space-between" align="middle">
-        <el-col>
+        <el-col v-if="url == 'edit'">
           <el-form-item label="封面">
             <el-upload class="upload-demo" 
               action="/activity/file/upload"
@@ -21,7 +21,7 @@
         <!-- <el-col style="text-align: center;">
                     <el-button class="add_btn">生成预览</el-button>
                 </el-col> -->
-        <el-col :span="16" class="img" v-loading="loadingCover">
+        <el-col style="width:750px" class="img" v-loading="loadingCover">
           <el-row type="flex" class="row-bg" justify="space-between" align="middle">
             <el-col :span="8" class="line"></el-col>
             <el-col :span="8" class="img-title">封面预览</el-col>
@@ -32,8 +32,8 @@
       </el-row>
       <!-- 活动海报（用于app端分享查看） -->
       <p class="title">活动海报<span class="title-app">（用于app端分享查看）</span></p>
-      <el-row type="flex" class="row-bg" justify="space-around" align="middle">
-        <el-col>
+      <el-row type="flex" class="row-bg" justify="space-between" align="middle">
+        <el-col v-if="url == 'edit'">
           <el-form-item label="部门">
             <span v-for="item in form.activityDeptList" :key="item.val">{{item.val}}</span>
           </el-form-item>
@@ -73,7 +73,7 @@
         <!-- <el-col style="text-align: center;">
                     <el-button class="add_btn">生成预览</el-button>
                 </el-col> -->
-        <el-col :span="16" class="img" v-loading="loadingPoster">
+        <el-col style="width:750px" class="img" v-loading="loadingPoster">
           <el-row type="flex" class="row-bg" justify="space-between" align="middle">
             <el-col :span="8" class="line"></el-col>
             <el-col :span="8" class="img-title">海报预览</el-col>
@@ -87,7 +87,7 @@
          </el-col>
       </el-row>
       <div style="height:20px;"></div>
-        <div style="text-align: center;">
+        <div style="text-align: center;" v-if="url == 'edit'">
       <el-button  v-if="!(url == 'add')" class="add_btn" @click="releaseEvent">发布活动</el-button>
       <el-button class="add_btn" @click="save('ruleForm')">保 存</el-button>
       <el-button class="search_btn" @click="cancelSava">取 消</el-button>
