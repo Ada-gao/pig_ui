@@ -97,9 +97,9 @@
         <el-col :sm="12" :lg="8" v-if="searchEmail">
           <el-form-item label="理财师">
             <el-input
-              placeholder="搜索理财师邮箱前缀"
+              placeholder="请输入理财师姓名"
               prefix-icon="el-icon-search"
-              v-model="listQuery.email">
+              v-model="listQuery.userName">
             </el-input>
           </el-form-item>
         </el-col>
@@ -272,7 +272,7 @@ export default {
       this.listQuery = {
         page: 1,
         limit: 20,
-        username: '',
+        userName: '',
         positionId: '',
         // delFlag: '',
         deptId: '',

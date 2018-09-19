@@ -11,7 +11,7 @@
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="搜索">
               <el-input
-                placeholder="搜索员工、手机号、工号"
+                placeholder="搜索用户名、手机号、工号"
                 prefix-icon="el-icon-search"
                 v-model="listQuery.searchParams">
               </el-input>

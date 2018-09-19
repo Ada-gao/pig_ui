@@ -179,7 +179,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="客户锁定状态" prop="lock">
+            <el-form-item label="用户锁定状态" prop="lock">
               <el-radio-group v-model="form.lock">
                 <el-radio :label="1" style="display: inline-block">锁定</el-radio>
                 <el-radio :label="0" style="display: inline-block">正常</el-radio>
@@ -358,7 +358,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="账户锁定状态：" prop="lock">
+            <el-form-item label="用户锁定状态：" prop="lock">
               {{form.lock|turnText1(lockStatus)}}
               <!-- <el-radio-group v-model="form.lock">
                 <el-radio :label="1" style="display: inline-block">锁定</el-radio>
@@ -493,7 +493,7 @@
             {required: true, trigger: 'change', message: '请选择入职日期'}
           ],
           role: [
-            {required: true, trigger: 'change', message: '请选择角色'}
+            {required: false, trigger: 'change', message: '请选择角色'}
           ],
           positionName: [
             {required: true, trigger: 'change', message: '请选择职位'}
