@@ -3,7 +3,7 @@
   <nav class="filter-container">
     <el-button-group>
       <el-button :class="{add_btn:labelButton=='eventDetails'}" @click="changeButton('eventDetails')">活动详情</el-button>
-      <el-button v-if="!(url == 'add')" v-on:childByValue="childByValue" :class="{add_btn:labelButton=='eventPoster'}" @click="changeButton('eventPoster')">活动海报</el-button>
+      <el-button v-if="!(url == 'add')" :class="{add_btn:labelButton=='eventPoster'}" @click="changeButton('eventPoster')">活动海报</el-button>
       <el-button v-if="!(url == 'add') && activityStatusId == 1" :class="{add_btn:labelButton=='registrationCheck'}" @click="changeButton('registrationCheck')">报名/签到</el-button>
       <el-button v-if="!(url == 'add')" :class="{add_btn:labelButton=='checkinAccount'}" @click="changeButton('checkinAccount')">签到帐号</el-button>
       <el-button v-if="!(url == 'add') && activityStatusId == 1" :class="{add_btn:labelButton=='signingRecord'}" @click="changeButton('signingRecord')">签单记录</el-button>
@@ -122,21 +122,33 @@
     <article style="margin-top:40px">
       <p class="title">活动可见范围（员工）</p>
       <el-form-item>
-        <el-radio-group v-model="form.activityRangeType">
+        <el-radio-group v-model="form.activityRangeType" v-if="url != 'view'">
           <el-radio :label="'0'">全部可见</el-radio>
           <el-radio :label="'1'">部分可见</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="参与部门" v-if="form.activityRangeType == 1">
-        <el-row type="flex" justify="space-between">
+      <el-form-item label="参与部门" v-if="form.activityRangeType == 1 || url == 'view'">
+        <el-row v-if="url == 'view'">
+          <el-col v-if="form.activityRangeType == 0">全部可见</el-col>
+          <el-col> 
+            <span style="padding: 0 6px" class="c-select-list" v-for="(item,index) in activityRangeDeptListLabel" :key="index">{{item}}</span>
+          </el-col>
+        </el-row>
+        <el-row type="flex" justify="space-between" v-else>
           <el-col class="c-select">
             <span class="c-select-list" v-for="(item,index) in activityRangeDeptListLabel" :key="index">{{item}}</span>
           </el-col>
           <el-button class="search_btn" style="height:40px;" @click="selectDepartment('activityRangeDeptList')">选择部门</el-button>
         </el-row>
       </el-form-item>
-      <el-form-item label="参与职位" v-if="form.activityRangeType == 1">
-        <el-row type="flex" justify="space-between">
+      <el-form-item label="参与职位" v-if="form.activityRangeType == 1 || url == 'view'">
+        <el-row v-if="url == 'view'">
+          <el-col v-if="form.activityRangeType == 0">全部可见</el-col>
+          <el-col> 
+            <span style="padding: 0 6px" class="c-select-list" v-for="(item,index) in activityRangePositionListLabel" :key="index">{{item}}</span>
+          </el-col>
+        </el-row>
+        <el-row type="flex" justify="space-between" v-else>
           <el-col class="c-select">
             <span class="c-select-list" v-for="(item,index) in activityRangePositionListLabel" :key="index">{{item}}</span>
           </el-col>
@@ -148,13 +160,19 @@
     <article style="margin-top:40px">
       <p class="title">活动可见范围（客户）</p>
       <el-form-item>
-        <el-radio-group v-model="form.activityClientLabelType">
+        <el-radio-group v-model="form.activityClientLabelType"  v-if="url != 'view'">
           <el-radio :label="'0'">全部可见</el-radio>
           <el-radio :label="'1'">部分可见</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="客户标签" v-if="form.activityClientLabelType == 1">
-        <el-row type="flex" justify="space-between">
+      <el-form-item label="客户标签" v-if="form.activityClientLabelType == 1 || url == 'view'">
+       <el-row v-if="url == 'view'">
+          <el-col v-if="form.activityRangeType == 0">全部可见</el-col>
+          <el-col> 
+             <span style="padding: 0 6px" class="c-select-list" v-for="(item,index) in activityClientLabelListLabel" :key="index">{{item}}</span>
+          </el-col>
+        </el-row>
+        <el-row type="flex" justify="space-between" v-else>
           <el-col class="c-select">
             <span class="c-select-list" v-for="(item,index) in activityClientLabelListLabel" :key="index">{{item}}</span>
           </el-col>
@@ -166,7 +184,10 @@
     <article style="margin-top:40px">
       <p class="title">活动分享渠道</p>
       <el-form-item>
-        <el-checkbox-group v-model="form.activityShare">
+        <el-row  v-if="url == 'view'">
+          <el-col :span="2" v-for="item in form.activityShare" :key="item">{{item | activityShare}}</el-col>
+        </el-row>
+        <el-checkbox-group v-model="form.activityShare" v-else>
           <el-checkbox label="0">微信好友</el-checkbox>
           <el-checkbox label="1">微信朋友圈</el-checkbox>
           <el-checkbox label="2">QQ好友</el-checkbox>
@@ -213,7 +234,7 @@
     <article class="table-event">
       <div class="thead">所有部门</div>
       <div class="tbody">
-        <el-tree show-checkbox :node-key="nodeKey" :data="treeDepartmentData" ref="activityRangeDeptList" :props="defaultProps"></el-tree>
+        <el-tree show-checkbox :node-key="nodeKey"  :data="treeDepartmentData" ref="activityRangeDeptList" :props="defaultProps"></el-tree>
       </div>
     </article>
     <div slot="footer" class="dialog-footer">
@@ -368,11 +389,35 @@ export default {
 
     }
   },
+  filters:{
+    activityShare(val){
+      let self;
+      if(val === '0') self = '微信好友'
+      if(val === '1') self = '微信朋友圈'
+      if(val === '2') self = 'QQ好友'
+      return self
+
+    }
+  },
   methods: {
-      childByValue: function (childValue) {
-        // childValue就是子组件传过来的值
-        console.log(childValue)
-      },
+    // handleCheckChange(data, checked, indeterminate) {
+    //   if(checked){
+    //     if(data.children.length>0){
+    //       data.children.forEach(item=>{
+    //          this.form['activityRangeDeptList'].push(item.id);
+    //           this['activityRangeDeptList' + 'Label'].push(item.name);
+    //         if(item.children.length>0){
+    //           item.children.forEach(item=>{
+    //              this.form['activityRangeDeptList'].push(item.id);
+    //           this['activityRangeDeptList' + 'Label'].push(item.name);
+    //           })
+    //         }
+    //       })
+    //     }
+    //   }
+        
+    //   },
+
     // 表单数据初始化
     initialization() {
       this.form = {
@@ -391,7 +436,8 @@ export default {
         activityClientLabelList: [], //客户标签(可见客户标签)
         activityShare: [], //活动分享渠道
         activityForeendPictureList: [], //C端展示图
-        activityStatusId:0
+        activityStatusId:0,
+        activityRangeDeptSelfList:[]
       }
     },
     //我为数组添加键值id
@@ -421,12 +467,14 @@ export default {
           newObj.activityEnd = newObj.activityData[1]
           newObj.registrationStart = newObj.registrationData[0]
           newObj.registrationEnd = newObj.registrationData[1]
+          newObj.activityRangeDeptSelfList = this.activityRangeDeptSelfList
           if(this.url == 'add'){
             method = "post"
           }else{
             method = "put"
             newObj.activityId = this.activityId
           }
+          const loading = this.$loading()
           addActivity(newObj,method).then(res => {
            if(res.status ==200){
             this.$notify({
@@ -434,6 +482,7 @@ export default {
               message: '保存成功',
               type: 'success'
             });
+             loading.close()
             this.$router.push(`/market/eventsList/edit/${res.data.data}`)
            }
          
@@ -465,9 +514,13 @@ export default {
     },
     // 通过id查询活动信息 转成可现实的数据
     editProcess(data){
+          // 活动负责人
          const activityPrincipalList = []
+         // 主办部门
          const activityDeptList = []
-         const activityRangeDeptListLabel = []
+         const activityRangeDeptList = []
+         const activityRangePositionList = []
+         const activityClientLabelList = []
           this.fileList = []
           data.activityData = [data.activityStart,data.activityEnd]
           data.registrationData = [data.registrationStart,data.registrationEnd]
@@ -482,11 +535,28 @@ export default {
             data.activityPrincipalList = activityPrincipalList
             data.activityDeptList = activityDeptList
           }
-           data.activityRangeDeptList.forEach(item=>{
-              activityRangeDeptListLabel.push(item.val)
-            })
-          data.activityRangeDeptListLabel = activityRangeDeptListLabel
+          // 可见范围 参与部门
+          data.activityRangeDeptList.forEach(item=>{
+            this.activityRangeDeptListLabel.push(item.val)
+            activityRangeDeptList.push(item.vid);
+          })
+          data['activityRangeDeptList'] = activityRangeDeptList
 
+          // 可见范围 参与职位
+          data.activityRangePositionList.forEach(item=>{
+            this.activityRangePositionListLabel.push(item.val)
+            activityRangePositionList.push(item.vid);
+          })
+          data['activityRangePositionList'] = activityRangePositionList
+
+           // 活动可见范围 客户标签
+          data.activityClientLabelList.forEach(item=>{
+            this.activityClientLabelListLabel.push(item.val)
+            activityClientLabelList.push(item.vid);
+          })
+          data['activityClientLabelList'] = activityClientLabelList
+
+          // C端展示图
           data.activityForeendPictureList.forEach(item=>{
             this.fileList.push({url:item.val})
           })
@@ -510,11 +580,13 @@ export default {
     },
     // 获取所有  部门
     getAllDeparts(select) {
+      const loading = this.$loading()
       getAllDeparts().then(res => {
         if (res.status == 200) {
           this.treeDepartmentData = res.data;
           this.dialogDepartment = true;
           this.$nextTick(() => {
+              loading.close()
             this.$refs[select].setCheckedKeys(this.form[select])
           })
 
@@ -523,12 +595,13 @@ export default {
     },
     // 查询全部职位
     getAllPositon(select) {
+      const loading = this.$loading()
       getAllPositon().then(res => {
         if (res.status == 200) {
-          console.log(this.$refs.treePosition)
           this.treePositionData = res.data;
           this.dialogPosition = true;
           this.$nextTick(() => {
+              loading.close()
             this.$refs[select].setCheckedKeys(this.form[select])
           })
 
@@ -537,11 +610,13 @@ export default {
     },
     //获取客户标签列表
     getClientList(select) {
+      const loading = this.$loading()
       getClientList().then(res => {
         if (res.status == 200) {
           this.treeCustomerLabelData = res.data;
           this.dialogCustomerLabel = true;
           this.$nextTick(() => {
+              loading.close()
             this.$refs[select].setCheckedKeys(this.form[select])
           })
         }
@@ -591,7 +666,12 @@ export default {
       let obj = null;
       let select = this.selectIdentification;
       let checkedNodes = this.$refs[select].getCheckedNodes();
-
+      let parentIdArr = []
+      let DepartmentId = []
+      let activityRangeDeptSelfList = []
+      this.form[select] = []
+      this[select + 'Label'] = []
+      this.activityRangeDeptSelfList = []
       if (select == 'activityRangeDeptList') obj = {
         id: 'id',
         label: 'name'
@@ -604,12 +684,51 @@ export default {
         id: 'clientLabelId',
         label: 'labelName'
       }
-
       checkedNodes.forEach(item => {
         this.form[select].push(item[obj.id]);
         this[select + 'Label'].push(item[obj.label]);
+        parentIdArr.push(item.parentId)
       })
+      if(select == 'activityRangeDeptList'){
+      //获取所有部门的id 
+      this.treeDepartmentData.forEach(item=>{
+        DepartmentId.push(item)
+        if(item.children){
+          item.children.forEach(item=>{
+            DepartmentId.push(item)
+          })
+        }
+       })
+      // 数组去重
+      parentIdArr = Array.from(new Set(parentIdArr));
+      parentIdArr.forEach(parentId=>{
+        DepartmentId.forEach(item=>{
+          if(parentId == item.id){
+            activityRangeDeptSelfList.push(item.id)
+            DepartmentId.forEach(itemChild=>{
+              if(item.parentId == itemChild.id){
+                 activityRangeDeptSelfList.push(itemChild.id)
+              }
+            })
+          }
+        })
+      })
+
+       activityRangeDeptSelfList = Array.from(new Set(activityRangeDeptSelfList))
+       
+       this.form[select].forEach(item=>{
+        activityRangeDeptSelfList.forEach((item1,index)=>{
+          if(item == item1){
+            activityRangeDeptSelfList.splice(index,1)
+          }
+        })
+       })
+     activityRangeDeptSelfList.forEach(item=>{
+        this.activityRangeDeptSelfList.push({vid:item})
+     })
+     }
       this.$refs[select].setCheckedKeys([]);
+      // 关掉弹框
       this.cancel()
     },
     // 文件上传成功时的钩子
