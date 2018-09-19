@@ -7,7 +7,6 @@
       <el-row type="flex" class="row-bg" justify="space-between" align="middle">
         <el-col>
           <el-form-item label="封面">
-
             <el-upload class="upload-demo" 
               action="/activity/file/upload"
                :show-file-list="false"

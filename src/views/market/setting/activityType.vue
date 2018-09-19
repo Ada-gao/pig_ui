@@ -1,34 +1,24 @@
 <template>
   <div class="app-container calendar-list-container">
-  
-
     <div style="text-align: right">
-      <el-button v-if="sys_user_add" class="add_btn" @click="handleCreate">
+      <el-button v-if="sys_user_add" class="add_btn" @click="handleAddActive()">
         <svg-icon icon-class="add"></svg-icon> 新增</el-button>
     </div>
-  
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
-
-    
-
       <el-table-column align="center" label="活动类型">
         <template slot-scope="scope">
-        <span>{{scope.row.label}}</span>
+          <span>{{scope.row.label}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <a size="small" class="common_btn"
-                     @click="handleUpdate(scope.row, 'view')">编辑
-          </a>
-        <a size="small" class="danger_btn">删除</a>
+          <a size="small" class="common_btn" @click="handleUpdate(scope.row)">编辑</a>
+          <a size="small" class="danger_btn" @click='deletes(scope.row)'>删除</a>
         </template>
       </el-table-column>
-
     </el-table>
-
     <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                      :current-page.sync="listQuery.page"
@@ -36,32 +26,25 @@
                      layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-
       <el-dialog
-          title="新增部门logo"
+          title="新增活动类型"
           :visible.sync="dialogVisible"
           width="30%">
           <el-form  ref="newAddClient" label-width="100px" class="demo-ruleForm">
-
-          <el-form-item  label="部门名称">
-            <el-input placeholder="签到人部门" style="width:90%;"></el-input>
+          <el-form-item  label="活动类型">
+            <el-input placeholder="输入活动类型名称" style="width:90%;" v-model='typeName'></el-input>
           </el-form-item>
-
-          <el-form-item label="部门logo">
-           
-          </el-form-item>
-        
         </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button  class="search_btn" @click="cancel('newAddClient')">取 消</el-button>
-            <el-button  class="add_btn" @click="clientDetermine('newAddClient')">确 定</el-button>
+              <el-button  class="search_btn" @click="cancel('newAddClient')">取 消</el-button>
+              <el-button  class="add_btn" @click='submit()'>确 定</el-button>
           </div>
         </el-dialog>
   </div>
 </template>
 
 <script>
-import {getSysSelectValueList} from '@/api/market/setting'
+import {getSysSelectValueList,addType,deleteType,editType} from '@/api/market/setting'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { parseTime, transformText, transformText1 } from '@/utils'
   import { mapGetters } from 'vuex'
@@ -127,6 +110,9 @@ import {getSysSelectValueList} from '@/api/market/setting'
         entryDate: [],
         // positionName: '',
         // isReadonly: false
+        typeName:this.typeName,
+        sysSelectValueId:null,
+        isEdit:false,
       }
     },
     computed: {
@@ -149,27 +135,15 @@ import {getSysSelectValueList} from '@/api/market/setting'
         getSysSelectValueList('activity_type').then(response => {
           if(response.status == 200){
             this.list = response.data
-          this.listLoading = false
+            this.listLoading = false
           }
         })
       },
-   
       handlePosition() {
         getAllPositon().then(res => {
           this.positionsOptions = res.data
         })
       },
-      // handleDept() {
-      //   fetchDeptTree()
-      //     .then(response => {
-      //       this.treeDeptData = response.data
-      //       // this.dialogDeptVisible = true
-      //     })
-      // },
-      // changeDept() {
-      //   this.role = ''
-      //   this.form.role = ''
-      // },
       handleFilter() {
         this.listQuery.page = 1
         this.getList()
@@ -182,23 +156,59 @@ import {getSysSelectValueList} from '@/api/market/setting'
         this.listQuery.page = val
         this.getList()
       },
-      handleCreate() { // 新增
-        this.resetTemp()
-        // this.dialogStatus = 'create'
-        this.$router.push('/admin/user-detail')
-        Bus.$emit('activeIndex', '/admin/user')
+      handleAddActive(){  //新增
+        this.isEdit = false
+        this.dialogVisible = true
+        this.typeName = ''
       },
-      handleUpdate(row, state) { // 编辑查询（查看）
-        this.$router.push('/admin/user-detail/' + row.userId + '/' + state)
-        Bus.$emit('activeIndex', '/admin/user')
+      handleUpdate(row) { // 编辑
+        this.isEdit = true
+        this.dialogVisible = true
+        this.typeName = row.label
+        this.sysSelectValueId = row.sysSelectValueId
+      },
+      addActiveType(obj){
+        addType(obj).then(response=>{
+          if(response.status == 200){
+            this.getList()
+            this.dialogVisible = false
+          } 
+        })
+      },
+      edit(data){
+        editType(data).then(response=>{
+          if(response.status == 200){
+            this.getList()
+            this.dialogVisible = false
+          }
+        })
+      },
+      submit(){
+        if(this.isEdit){
+          let data={
+            "description": "string",
+            "label": this.typeName,
+            "sort": 0,
+            "sysSelectValueId": this.sysSelectValueId,
+            "type": "activity_type",
+            "value": "string"
+          }
+          this.edit(data)
+        }else{
+          let obj = {
+            "label": this.typeName,
+            "type": "activity_type",
+          }
+          this.addActiveType(obj)
+        }  
       },
       deletes(row) {
-        this.$confirm('此操作将永久删除该用户(用户名:' + row.username + '), 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除该活动类型(活动类型名称:' + row.label + '), 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          delObj(row.userId).then(() => {
+          deleteType(row.sysSelectValueId).then(() => {
             this.getList()
             this.$notify({
               title: '成功',
@@ -206,7 +216,7 @@ import {getSysSelectValueList} from '@/api/market/setting'
               type: 'success',
               duration: 2000
             })
-          }).cache(() => {
+          }).catch(() => {
             this.$notify({
               title: '失败',
               message: '删除失败',

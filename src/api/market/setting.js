@@ -22,3 +22,27 @@ export function getLogo(obj) {
     data: obj
   })
 }
+// 新增活动类型
+export function addType(obj) {
+  return request({
+    url: 'admin/sysSelectValue',
+    method: 'post',
+    data: obj
+  })
+}
+
+// 编辑活动类型
+export function editType(data) {
+  return request({
+    url: 'admin/sysSelectValue',
+    method: 'put',
+    data
+  })
+}
+// 删除活动
+export function deleteType(id) {
+  return request({
+    url: `admin/sysSelectValue/${id}`,
+    method: 'delete'
+  })
+}
