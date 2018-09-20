@@ -340,7 +340,7 @@
       this.productId = this.$route.params.id
       const proStatusText = this.$route.query.productStatus
       // 获取状态速度更快，提升用户体验
-      if (proStatusText.indexOf('在建') === -1 && proStatusText.indexOf('预热') === -1) {
+      if (proStatusText && proStatusText.indexOf('在建') === -1 && proStatusText.indexOf('预热') === -1) {
         this.productTran = true
       }
       if(this.productId) {

@@ -244,7 +244,7 @@
         <el-col :span="11">
           <el-form-item label="大额支付行号" prop="paymentNumber">
             <span v-if="detailDisabled">{{form.paymentNumber}}</span>
-            <el-input v-else v-model="form.paymentNumber" placeholder="请输入"></el-input>
+            <el-input v-else type="number" v-model.number="form.paymentNumber" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -358,6 +358,16 @@
       }
   }
 
+  const acount = (rule, value, callback) => {
+    const exp = /^\d{1,20}$/
+    if (!value) {
+    } else if (!exp.test(Number(value))) {
+      callback('请输入正确的账号')
+    } else {
+      callback()
+    }
+  }
+
   const pdAcount = (rule, value, callback) => {
     const exp = /^\d{1,20}$/
     if (!value) {
@@ -425,9 +435,6 @@
           ],
           cardNo: [
             { required: true, validator: pdAcount, trigger: 'blur' }
-          ],
-          paymentNumber: [
-            { required: false, validator: pdAcount, trigger: 'blur' }
           ],
           productCode: [
             { required: true, message: '请输入产品名称', trigger: 'blur' },

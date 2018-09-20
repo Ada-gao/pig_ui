@@ -146,7 +146,8 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          delObj(this.currentId).then(() => {
+          delObj(this.currentId).then((res) => {
+            if (res.status !== 200) return false
             this.getList()
             this.resetForm()
             this.onCancel()
