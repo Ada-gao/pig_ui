@@ -38,7 +38,7 @@
             :show-file-list="false"
             :before-upload='limitImg'
             :on-success="(res)=>{return afterSuccess(res,{deptId:scope.row.deptId})}">
-            <el-button size="small" class='choose_button'>选择图片</el-button>
+            <el-button size="small" class='choose_button' v-if='subcompany_logo'>选择图片</el-button>
           </el-upload>
         </template>
       </el-table-column>
@@ -98,9 +98,9 @@ import {getSubcompany,getLogo} from '@/api/market/setting'
     },
     created() {
       this.getList()
-      this.sys_user_add = this.permissions['sys_user_add']
-      this.sys_user_upd = this.permissions['sys_user_upd']
-      this.sys_user_del = this.permissions['sys_user_del']
+      this.subcompany_logo = this.permissions['subcompany_logo']
+      // this.sys_user_upd = this.permissions['sys_user_upd']
+      // this.sys_user_del = this.permissions['sys_user_del']
     },
     methods: {
       getList() {
