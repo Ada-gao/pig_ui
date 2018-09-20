@@ -1,9 +1,9 @@
 <template>
   <article class="checkin-account">
-      <div style="text-align: right">
-      <el-button  class="search_btn" @click="handleCreate">
-        <svg-icon icon-class="add"></svg-icon> 添加</el-button>
-    </div>
+      <div style="text-align: right" v-if="activity_signin_account_add">
+        <el-button  class="search_btn" @click="handleCreate">
+          <svg-icon icon-class="add"></svg-icon> 添加</el-button>
+      </div>
       <el-table
       border
       v-loading="listLoading"
@@ -33,7 +33,7 @@
        <el-table-column
         align="center"
         label="操作">
-        <template slot-scope="scope">
+        <template slot-scope="scope" v-if="activity_signin_account_delete">
          <a class="red" size="small" @click="deleteAccountMobile(scope.row)">删除</a>
       </template>
       </el-table-column>
@@ -131,8 +131,8 @@
     },
     created() {
       this.getSigninaccount()
-      this.sys_user_add = this.permissions['sys_user_add']
-      this.sys_user_upd = this.permissions['sys_user_upd']
+      this.activity_signin_account_add = this.permissions['activity_signin_account_add']
+      this.activity_signin_account_delete = this.permissions['activity_signin_account_delete']
       this.sys_user_del = this.permissions['sys_user_del']
     },
 

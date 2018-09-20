@@ -3,11 +3,11 @@
   <nav class="filter-container">
     <el-button-group>
       <el-button :class="{add_btn:labelButton=='eventDetails'}" @click="changeButton('eventDetails')">活动详情</el-button>
-      <el-button v-if="!(url == 'add')" :class="{add_btn:labelButton=='eventPoster'}" @click="changeButton('eventPoster')">活动海报</el-button>
-      <el-button v-if="!(url == 'add') && activityStatusId == 1" :class="{add_btn:labelButton=='registrationCheck'}" @click="changeButton('registrationCheck')">报名/签到</el-button>
-      <el-button v-if="!(url == 'add')" :class="{add_btn:labelButton=='checkinAccount'}" @click="changeButton('checkinAccount')">签到帐号</el-button>
-      <el-button v-if="!(url == 'add') && activityStatusId == 1" :class="{add_btn:labelButton=='signingRecord'}" @click="changeButton('signingRecord')">签单记录</el-button>
-      <el-button v-if="!(url == 'add') " :class="{add_btn:labelButton=='operationLog'}" @click="changeButton('operationLog')">操作日志</el-button>
+      <el-button v-if="!(url == 'add') && activity_poster_edit" :class="{add_btn:labelButton=='eventPoster'}" @click="changeButton('eventPoster')">活动海报</el-button>
+      <el-button v-if="!(url == 'add') && activityStatusId == 1 && activity_client_query" :class="{add_btn:labelButton=='registrationCheck'}" @click="changeButton('registrationCheck')">报名/签到</el-button>
+      <el-button v-if="!(url == 'add') && activity_signin_account_query" :class="{add_btn:labelButton=='checkinAccount'}" @click="changeButton('checkinAccount')">签到帐号</el-button>
+      <el-button v-if="!(url == 'add') && activityStatusId == 1 && activity_contract_query" :class="{add_btn:labelButton=='signingRecord'}" @click="changeButton('signingRecord')">签单记录</el-button>
+      <el-button v-if="!(url == 'add') && activity_log_query" :class="{add_btn:labelButton=='operationLog'}" @click="changeButton('operationLog')">操作日志</el-button>
     </el-button-group>
   </nav>
   <!-- 活动海报 eventPoster-->
@@ -222,7 +222,7 @@
 
      <div style="text-align: center;" v-if="url != 'view'">
       <!-- <el-button class="search_btn">上一步</el-button> -->
-      <el-button v-if="url == 'edit'" class="add_btn" @click="releaseEvent">发布活动</el-button>
+      <el-button v-if="url == 'edit' && activity_release" class="add_btn" @click="releaseEvent">发布活动</el-button>
       <el-button class="add_btn" @click="save('ruleForm')">保 存</el-button>
       <el-button class="search_btn" @click="cancelSava">取 消</el-button>
       <!-- <router-link class="el-button search_btn el-button--default" to="/market/eventsList" >取 消</router-link> -->
@@ -376,9 +376,12 @@ export default {
 
     // 获取一级部门及子公司列表
     this.getDeptRoots();
-    this.sys_user_add = this.permissions['sys_user_add']
-    this.sys_user_upd = this.permissions['sys_user_upd']
-    this.sys_user_del = this.permissions['sys_user_del']
+    this.activity_poster_edit = this.permissions['activity_poster_edit']//市场活动海报编辑
+    this.activity_signin_account_query = this.permissions['activity_signin_account_query'] //查询签到账号
+    this.activity_client_query = this.permissions['activity_client_query']//活动客户查询
+    this.activity_contract_query = this.permissions['activity_contract_query']//查询签单记录
+    this.activity_log_query = this.permissions['activity_log_query']//查询活动操作日志
+    this.activity_release = this.permissions['activity_release']//市场活动发布
   },
   mounted() {
 

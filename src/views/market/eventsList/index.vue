@@ -43,8 +43,8 @@
     </el-form>
   </div>
 
-  <div style="text-align: right">
-    <el-button v-if="sys_user_add" class="add_btn" @click="handleUpdate('add')">
+  <div style="text-align: right" v-if="activity_add">
+    <el-button class="add_btn" @click="handleUpdate('add')">
       <svg-icon icon-class="add"></svg-icon> 新增活动
     </el-button>
   </div>
@@ -90,14 +90,14 @@
 
     <el-table-column align="center" label="操作" fixed="right" width="150">
       <template slot-scope="scope">
-          <a size="small" class="common_btn"
+          <a v-if="activity_query" size="small" class="common_btn"
                      @click="handleUpdate('view',scope.row)">查看
           </a>
           <span class="space_line"> | </span>
-          <a v-if="sys_user_upd" size="small" class="common_btn"
+          <a v-if="activity_edit" size="small" class="common_btn"
                      @click="handleUpdate('edit',scope.row)">编辑
           </a>
-            <a  size="small" class="danger_btn"
+            <a v-if="activity_delete" size="small" class="danger_btn"
                    @click="deletes(scope.row)" >删除
           </a>
         </template>
@@ -185,17 +185,15 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'permissions',
-      'workStatus',
-      'lockStatus'
+      'permissions'
     ])
   },
   created() {
-    // this.handlePosition()
     this.getActivityList()
-    this.sys_user_add = this.permissions['sys_user_add']
-    this.sys_user_upd = this.permissions['sys_user_upd']
-    this.sys_user_del = this.permissions['sys_user_del']
+    this.activity_add = this.permissions['activity_add']
+    this.activity_query = this.permissions['activity_query']
+    this.activity_edit = this.permissions['activity_edit']
+    this.activity_delete = this.permissions['activity_delete']
   },
   methods: {
     //二维码预览

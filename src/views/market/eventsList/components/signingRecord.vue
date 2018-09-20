@@ -15,7 +15,7 @@
           </el-form>
         </el-row>
 
-       <div style="text-align: right;">
+       <div style="text-align: right;" v-if="activity_client_export">
           <el-button class="search_btn" @click="handleExport">
             <svg-icon icon-class="export"></svg-icon>批量导出
           </el-button>
@@ -124,7 +124,7 @@
     },
     created() {
       this.getContract()
-      this.sys_user_add = this.permissions['sys_user_add']
+      this.activity_client_export = this.permissions['activity_client_export']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
     },
