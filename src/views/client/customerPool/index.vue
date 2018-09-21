@@ -118,6 +118,8 @@
               :key="item.userId"
               :label="item.name"
               :value="item.userId">
+              <span style="float: left">{{ item.name }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.empNo }}</span>
             </el-option>
           </el-select>
       </el-form-item>
