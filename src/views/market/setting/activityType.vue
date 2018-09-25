@@ -1,6 +1,6 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div style="text-align: right">
+    <div style="text-align: right" v-if='select_value_add'>
       <el-button v-if="sys_user_add" class="add_btn" @click="handleAddActive()">
         <svg-icon icon-class="add"></svg-icon> 新增</el-button>
     </div>
@@ -14,8 +14,8 @@
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <a size="small" class="common_btn" @click="handleUpdate(scope.row)">编辑</a>
-          <a size="small" class="danger_btn" @click='deletes(scope.row)'>删除</a>
+          <a size="small" class="common_btn" @click="handleUpdate(scope.row)" v-if='select_value_edit'>编辑</a>
+          <a size="small" class="danger_btn" @click='deletes(scope.row)' v-if='select_value_delete'>删除</a>
         </template>
       </el-table-column>
     </el-table>
@@ -125,9 +125,9 @@ import {getSysSelectValueList,addType,deleteType,editType} from '@/api/market/se
     created() {
       // this.handlePosition()
       this.getList()
-      this.sys_user_add = this.permissions['sys_user_add']
-      this.sys_user_upd = this.permissions['sys_user_upd']
-      this.sys_user_del = this.permissions['sys_user_del']
+      this.select_value_add = this.permissions['select_value_add']
+      this.select_value_edit = this.permissions['select_value_edit']
+      this.select_value_delete = this.permissions['select_value_delete']
     },
     methods: {
       getList() {
