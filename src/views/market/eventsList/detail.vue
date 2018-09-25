@@ -345,6 +345,7 @@ export default {
       treeCustomerLabelData: [],
       labelButton: 'eventDetails',
       activityRangeDeptListLabel: [],
+      activityRangeDeptList:[],
       activityRangePositionListLabel: [],
       activityClientLabelListLabel: [],
       nodeKey: '',
@@ -364,7 +365,27 @@ export default {
     ...mapGetters([
       'permissions',
       'activityType'
-    ])
+    ]),
+    activityRangeType(){
+      return  this.form && this.form.activityRangeType 
+    }
+  },
+  watch: {
+ activityRangeType(val){
+        
+         if(val == 0){
+            this.getAllDeparts()
+         }
+         else{
+          // console.log(this.form.activityRangeDeptList)
+          // if(!this.form.activityRangeDeptList){
+          //    this.activityRangeDeptListLabel = []
+          //  } else{
+
+          //  }
+         
+         }
+    }
   },
   created() {
     if(this.url != 'add')  this.editActivity()
@@ -373,6 +394,7 @@ export default {
 
     // 获取 所有用户
     this.getDirectSupervisorList();
+  
 
     // 获取一级部门及子公司列表
     this.getDeptRoots();
@@ -384,14 +406,14 @@ export default {
     this.activity_release = this.permissions['activity_release']//市场活动发布
   },
   mounted() {
-
+  // 获取所有的部门
+    this.getAllDeparts()
+    // 查询全部职位
+    this.getAllPositon()
+    //获取客户标签列表
+    this.getClientList()
   },
-  watch: {
 
-    treeCustomerLabelData() {
-
-    }
-  },
   filters:{
     activityShare(val){
       let self;
@@ -432,10 +454,10 @@ export default {
         registrationData: [], //报名时间
         activitySite: '', //活动地址
         activityDeptList: '', //主办部门
-        activityRangeType: 0, //活动可见范围（员工）
+        activityRangeType: '0', //活动可见范围（员工）
         activityRangeDeptList: [], //参与部门(可见部门)
         activityRangePositionList: [], //参与职位(可见职位)
-        activityClientLabelType: 0, //活动可见范围（客户）
+        activityClientLabelType: '0', //活动可见范围（客户）
         activityClientLabelList: [], //客户标签(可见客户标签)
         activityShare: [], //活动分享渠道
         activityForeendPictureList: [], //C端展示图
@@ -451,7 +473,7 @@ export default {
       })
 
       return array
-    },
+    }, 
     //保存提交
     save(formName) {
      
@@ -470,7 +492,24 @@ export default {
           newObj.activityEnd = newObj.activityData[1]
           newObj.registrationStart = newObj.registrationData[0]
           newObj.registrationEnd = newObj.registrationData[1]
-          newObj.activityRangeDeptSelfList = this.activityRangeDeptSelfList
+          if(this.form.activityClientLabelType == 0){
+             newObj.activityClientLabelList = []
+          }
+          if(this.form.activityRangeType == 0){
+            newObj.activityRangeDeptList = this.activityRangeDeptList
+            newObj.activityRangePositionList = []
+
+          }else{
+            if(this.form.activityRangeDeptList.length<1){
+               this.$notify({
+                title: '警告',
+                message: '参与部门不能为空',
+                type: 'warning'
+              });
+               return false
+            }
+          }
+          // newObj.activityRangeDeptSelfList = this.activityRangeDeptSelfList
           if(this.url == 'add'){
             method = "post"
           }else{
@@ -563,6 +602,11 @@ export default {
           data.activityForeendPictureList.forEach(item=>{
             this.fileList.push({url:item.val})
           })
+          if(data.activityRangeType == 0){
+            data.activityRangeDeptList = []
+            this.activityRangeDeptListLabel = []
+
+          }
           return data
     },
     // 查询所有用户
@@ -581,47 +625,50 @@ export default {
         }
       })
     },
+    getAllDepartsList(data){
+
+      this.activityRangeDeptList = []
+      this.form.activityRangeDeptSelfList = []
+
+      data.forEach(item=>{
+        this.activityRangeDeptList.push({vid:item.id})
+        if(item.children.length>0){
+          this.activityRangeDeptList.push({vid:item.id})
+          if(item.length>0){
+            this.activityRangeDeptList.push({vid:item.id})
+          }
+        }
+      })
+    },
     // 获取所有  部门
     getAllDeparts(select) {
-      const loading = this.$loading()
       getAllDeparts().then(res => {
         if (res.status == 200) {
           this.treeDepartmentData = res.data;
-          this.dialogDepartment = true;
-          this.$nextTick(() => {
-              loading.close()
-            this.$refs[select].setCheckedKeys(this.form[select])
-          })
-
+          this.getAllDepartsList(res.data)
         }
       })
     },
     // 查询全部职位
     getAllPositon(select) {
-      const loading = this.$loading()
       getAllPositon().then(res => {
         if (res.status == 200) {
           this.treePositionData = res.data;
-          this.dialogPosition = true;
-          this.$nextTick(() => {
-              loading.close()
-            this.$refs[select].setCheckedKeys(this.form[select])
-          })
+          // this.$nextTick(() => {
+          //   this.$refs[select].setCheckedKeys(this.form[select])
+          // })
 
         }
       })
     },
     //获取客户标签列表
     getClientList(select) {
-      const loading = this.$loading()
       getClientList().then(res => {
         if (res.status == 200) {
           this.treeCustomerLabelData = res.data;
-          this.dialogCustomerLabel = true;
-          this.$nextTick(() => {
-              loading.close()
-            this.$refs[select].setCheckedKeys(this.form[select])
-          })
+          // this.$nextTick(() => {
+          //   this.$refs[select].setCheckedKeys(this.form[select])
+          // })
         }
       })
     },
@@ -633,7 +680,8 @@ export default {
     selectDepartment(select) {
       this.selectIdentification = select;
       if (this.selectIdentification == 'activityRangeDeptList') {
-        this.getAllDeparts(select); //  获取所有  部门
+        this.dialogDepartment = true;
+        // this.getAllDeparts(select); //  获取所有  部门
         this.defaultProps = {
           children: 'children',
           label: 'name',
@@ -641,21 +689,25 @@ export default {
         }
       }
       if (this.selectIdentification == 'activityRangePositionList') {
-        this.getAllPositon(select); // 查询全部职位
+          this.dialogPosition = true;
+        // this.getAllPositon(select); // 查询全部职位
         this.defaultProps = {
           label: 'positionName',
           id: 'positionId'
         }
       }
       if (this.selectIdentification == 'activityClientLabelList') {
-        this.getClientList(select); //获取客户标签列表
+          this.dialogCustomerLabel = true;
+        // this.getClientList(select); //获取客户标签列表
         this.defaultProps = {
           label: 'labelName',
           id: 'clientLabelId'
         }
       }
       this.nodeKey = this.defaultProps.id;
-
+          this.$nextTick(() => {
+            this.$refs[select].setCheckedKeys(this.form[select])
+          })
 
       //  this.selectIdentification && (this.dialogFormVisible = true);
     },
@@ -674,7 +726,7 @@ export default {
       let activityRangeDeptSelfList = []
       this.form[select] = []
       this[select + 'Label'] = []
-      this.activityRangeDeptSelfList = []
+      this.form.activityRangeDeptSelfList = []
       if (select == 'activityRangeDeptList') obj = {
         id: 'id',
         label: 'name'
@@ -727,7 +779,7 @@ export default {
         })
        })
      activityRangeDeptSelfList.forEach(item=>{
-        this.activityRangeDeptSelfList.push({vid:item})
+        this.form.activityRangeDeptSelfList.push({vid:item})
      })
      }
       this.$refs[select].setCheckedKeys([]);
@@ -749,7 +801,6 @@ export default {
     },
     // 点击文件列表中已上传的文件时的钩子
     handlePictureCardPreview(file) {
-      console.log(file)
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },

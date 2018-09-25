@@ -35,14 +35,19 @@
       <el-row type="flex" class="row-bg" justify="space-between" align="middle">
         <el-col v-if="url == 'edit'">
           <el-form-item label="部门">
-            <span v-for="item in form.activityDeptList" :key="item.val">{{item.val}}</span>
+            <nav class="filter-container">
+              <el-button-group>
+                <el-button  v-for="item in form.activityDeptList" :key="item.val" :class="{add_btn:labelButton==item.vid}" @click="changeButton(item.vid)">{{item.val}}</el-button>
+              </el-button-group>
+            </nav>
           </el-form-item>
           <el-form-item label="活动名称">
             <span>{{form.activityName}}</span>
           </el-form-item>
           <el-form-item label="活动时间">
-            <span>{{form.activityStart}}</span>
-            <span>{{form.activityEnd}}</span>
+            <span>{{form.activityStart| parseTime}}</span>
+            --
+            <span>{{form.activityEnd| parseTime}}</span>
           </el-form-item>
           <el-form-item label="活动地址">
             <span>{{form.activitySite}}</span>
@@ -82,10 +87,12 @@
             <el-row>
             <el-col><img class="img-loge" :src="logImgUrl"></el-col> 
            <el-col> <img class="img-url" :src="activityPosterUrl"></el-col> 
-           <el-col><img class="img-code" :src="codeImgUrl"></el-col> 
+           <el-col class="img-code" id="qrcode" ref="qrcode">
+           </el-col> 
           </el-row>
          </el-col>
       </el-row>
+     
       <div style="height:20px;"></div>
         <div style="text-align: center;" v-if="url == 'edit'">
       <el-button  v-if="!(url == 'add')" class="add_btn" @click="releaseEvent">发布活动</el-button>
@@ -99,10 +106,13 @@
 
 <script>
 import {activityPoster} from '@/api/market/eventsList'
+import {getSubcompany} from '@/api/market/setting'
+import QRCode from 'qrcodejs2'
 import {mapGetters} from 'vuex'
 export default {
   name: 'eventPoster',
   props:['form'],
+   components: {QRCode},
   data() {
     return {
       activityBannerUrl:this.form.activityBannerUrl || 'static/img/activity/banner.png',
@@ -114,11 +124,49 @@ export default {
       loadingPoster:false,
        url : this.$route.path.split('/')[3],
       activityId:this.$route.params.activityId,
-      posterList:{}
+      posterList:{},
+      listQuery:{
+        page: 1,
+        limit: 200
+      },
+      list:{},
+      labelButton:this.form.activityDeptList[0].vid,
+      codeUrl:window.location.origin+'/#'+this.form.activityQrcodeUrl
     }
   },
+  created() {
+    this.getList()
+  },
+
+mounted(){
+  this.$nextTick(()=>{
+   this.qrcode();
+  })
+
+},
   methods: {
-    
+    qrcode () {
+        let qrcode = new QRCode('qrcode', {  
+            width: 100,  // 设置宽度 
+            height: 100, // 设置高度
+            text: this.codeUrl
+        })  
+      },
+    getList() {
+      getSubcompany(this.listQuery).then(response => {
+        this.list = response.data.records
+        this.changeButton(this.labelButton)
+      })
+    },
+    changeButton(vid){
+      this.list.forEach(item=>{
+        if(item.deptId == vid){
+          this.logImgUrl = item.logo
+          this.labelButton = item.deptId
+        }
+      })
+    },
+
     activityPoster(){
        this.posterList = {
           activityBannerUrl: this.activityBannerUrl,
@@ -259,11 +307,7 @@ export default {
       'lockStatus'
     ])
   },
-  created() {
-    this.sys_user_add = this.permissions['sys_user_add']
-    this.sys_user_upd = this.permissions['sys_user_upd']
-    this.sys_user_del = this.permissions['sys_user_del']
-  },
+
 }
 </script>
 
@@ -300,15 +344,14 @@ export default {
       .img-loge{
         position: absolute;
         max-height: 35px;
-        top: 16px;
-        left: 16px;
+        top: 20px;
+        left: 20px;
       }
       .img-code{
         position: absolute;
-        height: 50px;
         bottom: 50px;
         left: 25%;
-        margin-left: -25px;
+        margin-left: -50px;
       }
     .row-bg{
         width: 50%;

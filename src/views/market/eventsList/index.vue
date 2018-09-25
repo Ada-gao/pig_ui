@@ -68,10 +68,10 @@
         </template>
     </el-table-column>
 
-    <el-table-column align="center" label="活动负责人" prop="activityPrincipal">
+    <el-table-column align="center" label="活动负责人" prop="activityPrincipal" show-overflow-tooltip>
     </el-table-column>
 
-    <el-table-column align="center" label="活动部门" prop="activityDept">
+    <el-table-column align="center" label="活动部门" prop="activityDept" show-overflow-tooltip>
     </el-table-column>
 
     <el-table-column align="center" class-name="status-col" label="活动状态">
@@ -82,9 +82,17 @@
         </template>
     </el-table-column>
 
-    <el-table-column align="center" label="官方活动二维码" show-overflow-tooltip>
+    <el-table-column align="center" label="官方活动二维码" >
       <template slot-scope="scope">
-        <span @click="modelCode">{{scope.row.activityQrcodeUrl}}</span>
+        <a @click="modelCode(scope.row.activityQrcodeUrl)">
+        <svg-icon icon-class="qrcode"  ></svg-icon>
+        </a>
+       
+        <a @click="download(scope)">
+         下载  
+        </a>
+
+        <!-- <download-qrcode >下载</download-qrcode>/ -->
         </template>
     </el-table-column>
 
@@ -93,7 +101,7 @@
           <a v-if="activity_query" size="small" class="common_btn"
                      @click="handleUpdate('view',scope.row)">查看
           </a>
-          <span class="space_line"> | </span>
+          <span class="space_line" v-if="activity_edit"> | </span>
           <a v-if="activity_edit" size="small" class="common_btn"
                      @click="handleUpdate('edit',scope.row)">编辑
           </a>
@@ -104,24 +112,14 @@
     </el-table-column>
 
   </el-table>
-
+ 
   <div v-show="!listLoading" class="pagination-container">
     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
     </el-pagination>
   </div>
 
-  <el-dialog :visible.sync="dialogVisible" width="20%">
-    <article>
-      <div class="title-code">解码未来“2018年独角兽企业投资经济论坛</div>
-      <time>时间：2018-4-1 14:00-16:00</time>
-      <p>地点：陆家嘴软件园</p>
-    </article>
-    <section>
-      <p>报名请扫描二维码</p>
-
-    </section>
-  </el-dialog>
-
+<qrcode v-if="dialogVisible" :activityQrcodeUrl= "activityQrcodeUrl"></qrcode>
+  <div id="qrcode1" ref="qrcode1" v-show="false"></div>
 </div>
 </template>
 
@@ -133,11 +131,16 @@ import { mapGetters} from 'vuex'
 import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
 import ElOption from "element-ui/packages/select/src/option"
 import Bus from '@/assets/js/bus'
-
+import qrcode from './components/qrcode.vue'
+import downloadQrcode from './components/downloadQrcode.vue'
+import QRCode from 'qrcodejs2'
 export default {
   components: {
     ElOption,
-    ElRadioGroup
+    ElRadioGroup,
+    qrcode,
+    downloadQrcode,
+    QRCode
   },
   filters: {
     turnText(val, list) {
@@ -159,8 +162,9 @@ export default {
   },
   data() {
     return {
+      activityQrcodeUrl:'',
       dialogVisible: false,
-      activityList: null,
+      activityList: [],
       total: null,
       listLoading: true,
       releaseSelections:['未发布','已发布','已结束'],
@@ -195,12 +199,30 @@ export default {
     this.activity_edit = this.permissions['activity_edit']
     this.activity_delete = this.permissions['activity_delete']
   },
+  mounted(){
+
+},
   methods: {
     //二维码预览
-    modelCode() {
-      this.dialogVisible = true;
+    modelCode(activityQrcodeUrl) {
+      this.dialogVisible = true
+      this.activityQrcodeUrl = activityQrcodeUrl
+         
     },
-
+       qrcode (text) {
+        let qrcode = new QRCode('qrcode1', {  
+            width: 200,  // 设置宽度 
+            height: 200, // 设置高度
+            text:text
+        })  
+      },
+    download(scope){
+      let img = document.getElementById('qrcode1').getElementsByTagName('img')[scope.$index]
+      var link = document.createElement("a");
+      link.setAttribute("href",img.src);
+      link.setAttribute("download",'123.png');
+      link.click();
+    },
     getActivityList() {
       this.listLoading = true
    
@@ -209,6 +231,10 @@ export default {
         this.activityList  = res.data.records
         this.total = res.data.total
         this.listLoading = false
+        this.activityList.forEach((item,index)=>{
+          console.log(index)
+         this.qrcode('index'+index)
+       })
        }
       })
     },
