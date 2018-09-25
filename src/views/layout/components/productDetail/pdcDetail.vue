@@ -112,9 +112,7 @@
                 v-if="!isDisabled"
                 style="display: inline-block"
                 class="sec-form-item"
-                :rules="[
-                  {required: true, message: '请输入收益对标基准', trigger: 'change'}
-                ]">
+                >
                 <el-input
                   style="display: inline-block; width: 100px; margin-left: 20px;"
                   :maxlength="5"
@@ -382,12 +380,23 @@
   const pdAnnualizedReturn = (rule, value, callback) => {
       const exp = /^(\d+|\d+\.\d{1,2})$/
       if (!value) {
-          callback('请打入收益对标基准')
-      } else if (!exp.test(value)) {
+          callback('请输入收益对标基准')
+      } else if (!exp.test(Number(value))) {
           callback('请输入正确的收益对标基准')
       } else {
           callback()
       }
+  }
+//募集人数校验
+  const vaProLp = (rule, value, callback) => {
+    const exp = /^\d{1,10}$/
+    if (!value) {
+      return null
+    }  else if(!exp.test(Number(value))) {
+      callback('请输入10位以内整数')
+    } else{
+        callback()
+    }
   }
 
   export default {
@@ -470,6 +479,9 @@
           annualizedReturn: [
             { required: true, validator: pdAnnualizedReturn, trigger: 'blur'}
 
+          ],
+          productLp: [
+            {required: false, validator: vaProLp, trigger: 'blur'}
           ]
         },
         createStatus: 'create',
