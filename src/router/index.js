@@ -268,8 +268,8 @@ export const asyncRouterMap = [
       { menuId: 43, path: 'posi', component: _import('admin/posi/index'), name: '职位管理', meta: { title: '职位管理', icon: 'position' }},
       { menuId: 299, path: 'rank', component: _import('admin/rank/index'), name: '职级管理', meta: { title: '职级管理', icon: 'position' }},
       { menuId: 10, path: 'dept', component: _import('admin/dept/index'), name: '部门管理', meta: { title: '部门管理', icon: 'dept' }},
-      { menuId: 11, path: 'subsidiary', component: _import('admin/subsidiary/index'), name: '子公司管理', meta: { title: '子公司管理', icon: 'dept' }},
-      { menuId: 2, path: 'uploadUser', component: _import('admin/user/uploadExcel'), name: '用户批量导入', meta: { title: '用户批量导入', icon: 'upload' }}
+      { menuId: 354, path: 'subsidiary', component: _import('admin/subsidiary/index'), name: '子公司管理', meta: { title: '子公司管理', icon: 'dept' }},
+      { menuId: 386, path: 'uploadUser', component: _import('admin/user/uploadExcel'), name: '用户批量导入', meta: { title: '用户批量导入', icon: 'upload' }}
     ]
   },
   {
@@ -293,8 +293,8 @@ export const asyncRouterMap = [
       { menuId: 82, path: 'allocated', component: _import('client/allocated/index'), name: '待分配客户', meta: { title: '待分配客户', icon: 'allocated' }},
       { menuId: 70, path: 'certFile', component: _import('client/certFile/index'), name: '认证资料管理', meta: { title: '认证资料管理', icon: 'certFile' }},
       { menuId: 324, path: 'customerLabel', component: _import('client/customerLabel/index'), name: '客户标签设置', meta: { title: '客户标签设置', icon: 'label' }},
-      { menuId: 369, path: 'customerPool', component: _import('client/customerPool/index'), name: '客户池', meta: { title: '客户池', icon: 'customerPool' }},
-      { menuId: 25, path: 'customerBatch', component: _import('client/batch/index'), name: '客户导入', meta: { title: '客户导入', icon: 'upload' }},
+      { menuId: 388, path: 'customerPool', component: _import('client/customerPool/index'), name: '客户池', meta: { title: '客户池', icon: 'customerPool' }},
+      { menuId: 351, path: 'customerBatch', component: _import('client/batch/index'), name: '客户导入', meta: { title: '客户导入', icon: 'upload' }},
       { menuId: 347, path: 'customerBuyPdBatch', component: _import('client/pdbatch/index'), name: '已购买导入', meta: { title: '已购买导入', icon: 'upload' }},
       { menuId: 352, path: 'riskEvaluation', component: _import('client/riskEvaluation/index'), name: '风险测评表', meta: { title: '风险测评表', icon: 'upload' }}
     ]
@@ -362,8 +362,8 @@ export const asyncRouterMap = [
     children: [
       { menuId: 314, path: 'perform', component: _import('achievement/performanceIndicator/index'), name: '业绩指标列表', meta: { title: '业绩指标列表', icon: 'pfIndi' }},
       { menuId: 287, path: 'balanced', component: _import('achievement/balanced/index'), name: '平衡计分卡', meta: { title: '平衡计分卡', icon: 'pfBn' }},
-      { menuId: 48, path: 'commissionList', component: _import('achievement/commissionList/index'), name: '佣金列表', meta: { title: '佣金列表', icon: 'pfCm' }},
-      { menuId: 48, path: 'commCalc', component: _import('achievement/commissionCalc/index'), name: '佣金计算模版', meta: { title: '佣金计算模版', icon: 'pfCmcalc' }},
+      { menuId: 320, path: 'commissionList', component: _import('achievement/commissionList/index'), name: '佣金列表', meta: { title: '佣金列表', icon: 'pfCm' }},
+      { menuId: 304, path: 'commCalc', component: _import('achievement/commissionCalc/index'), name: '佣金计算模版', meta: { title: '佣金计算模版', icon: 'pfCmcalc' }},
       { menuId: 283, path: 'probation', component: _import('achievement/performanceIndicator/probation'), name: '试用期业绩标准', meta: { title: '试用期业绩标准', icon: 'pfBn' }},
       { menuId: 291, path: 'saleSupport', component: _import('achievement/saleSupport/index'), name: '销售支持', meta: { title: '销售支持', icon: 'pfSale' }}
     ]
@@ -428,7 +428,7 @@ export const asyncRouterMap = [
       { menuId: 15, path: 'elk', component: _import('admin/monitor/elk'), name: 'ELK状态', meta: { title: 'ELK状态', icon: 'elk' }},
       { menuId: 16, path: 'swagger', component: _import('admin/monitor/swagger'), name: '接口文档', meta: { title: '接口文档', icon: 'swagger' }},
       { menuId: 17, path: 'daemon', component: _import('admin/monitor/daemon'), name: '任务监控', meta: { title: '任务监控', icon: 'daemon' }},
-      { menuId: 17, path: 'app', component: _import('admin/monitor/app'), name: 'app监控', meta: { title: 'app监控', icon: 'daemon' }}
+      { menuId: 86, path: 'app', component: _import('admin/monitor/app'), name: '密钥管理', meta: { title: '密钥管理', icon: 'daemon' }}
     ]
   }
 ]

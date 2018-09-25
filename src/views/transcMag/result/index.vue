@@ -7,7 +7,7 @@
         <el-tab-pane label="合同不通过原因" name="2"></el-tab-pane>
         <el-tab-pane label="退款不通过原因" name="3"></el-tab-pane>
       </el-tabs>
-      <el-button v-if="sys_prd_type_add"
+      <el-button v-if="sys_fail_add"
                  class="filter-item add_btn"
                  style="margin-left: 10px; float: right"
                  type="primary"
@@ -36,10 +36,10 @@
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <a v-if="sys_prd_type_upd" size="small" class="common_btn"
+          <a v-if="sys_fail_udp" size="small" class="common_btn"
              @click="handleUpdate(scope.row)">编辑
           </a>
-          <a v-if="sys_prd_type_del" size="small" class="danger_btn"
+          <a v-if="sys_fail_del" size="small" class="danger_btn"
              @click="deletes(scope.row)">删除
           </a>
         </template>
@@ -156,10 +156,9 @@
     },
     created() {
       this.getList()
-      this.sys_prd_type_add = this.permissions['sys_prd_type_add']
-      this.sys_prd_type_upd = this.permissions['sys_prd_type_upd']
-      // this.sys_prd_type_del = this.permissions['sys_prd_type_del']
-      this.sys_prd_type_del = true
+      this.sys_fail_add = this.permissions['sys_fail_add']
+      this.sys_fail_udp = this.permissions['sys_fail_udp']
+      this.sys_fail_del = this.permissions['sys_fail_del']
     },
     methods: {
       getList() {

@@ -3,11 +3,11 @@ import request from '@/utils/request'
 /**
  * 获取客户池列表
  */
-export function getClientPoolList(query) {
+export function getClientPoolList(params) {
   return request({
     url: '/client/client/pool',
     method: 'get',
-     params: query
+     params
   })
 }
 /**
@@ -24,10 +24,11 @@ export function allocationDepartment(params,data) {
 /**
  * 批量分配理财师
  */
-export function allocationPlanners(query) {
+export function allocationPlanners(params,data) {
   return request({
     url: '/client/planner',
     method: 'put',
-    data: query
+    params,
+    data
   })
 }

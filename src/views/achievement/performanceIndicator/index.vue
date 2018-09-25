@@ -71,7 +71,7 @@
     </div>
 
     <div style="text-align: right;">
-      <el-button v-if="sys_prd_type_add"
+      <el-button v-if="performance_indicator_add"
                  class="add_btn"
                  @click="handleCreate">
         <svg-icon icon-class="add" style="margin-right: 5px;"></svg-icon>新增指标
@@ -124,12 +124,12 @@
                        width="150">
         <template slot-scope="scope">
           <a size="small"
-             v-if="sys_prd_type_upd"
+             v-if="performance_indicator_edit"
              @click="handleUpdate(scope.row.performanceIndicatorId)"
              class="common_btn">编辑</a>
           <!--<span class="space_line"> | </span>-->
           <a size="small"
-             v-if="sys_prd_type_upd"
+             v-if="performance_indicator_del"
              class="danger_btn"
              @click="deletes(scope.row.performanceIndicatorId)">删除</a>
         </template>
@@ -156,95 +156,108 @@
                :rules="rules1"
                :validate-on-rule-change="true"
                label-width="100px">
-        <!--<el-row>-->
-          <!--<el-col class="inline-col">-->
-            <!--<el-form-item label="周期" prop="start">-->
-              <!--<el-date-picker-->
-                <!--v-model="form.start"-->
-                <!--placeholder="选择开始时间"-->
-                <!--type="date">-->
-              <!--</el-date-picker>-->
-            <!--</el-form-item>-->
-            <!--<span class="sepa">-</span>-->
-            <!--<el-form-item prop="end" class="inline-item">-->
-              <!--<el-date-picker-->
-                <!--v-model="form.end"-->
-                <!--placeholder="选择结束时间"-->
-                <!--type="date">-->
-              <!--</el-date-picker>-->
-            <!--</el-form-item>-->
-          <!--</el-col>-->
-        <!--</el-row>-->
-        <!--<el-row>-->
-          <!--<el-col>-->
-            <!--<el-form-item label="部门" prop="deptIds">-->
-              <!--<el-cascader-->
-                <!--style="width: 95%"-->
-                <!--:options="departs"-->
-                <!--:props="defaultProps"-->
-                <!--:show-all-levels="false"-->
-                <!--v-if="dialogStatus === 'edit'"-->
-                <!--change-on-select-->
-                <!--v-model="form.deptIds"-->
-              <!--&gt;</el-cascader>-->
-              <!--<div v-else>-->
-                <!--&lt;!&ndash;<el-cascader&ndash;&gt;-->
-                  <!--&lt;!&ndash;style="width:95%"&ndash;&gt;-->
-                  <!--&lt;!&ndash;:options="departs"&ndash;&gt;-->
-                  <!--&lt;!&ndash;:show-all-level="false"&ndash;&gt;-->
-                  <!--&lt;!&ndash;change-on-select&ndash;&gt;-->
-                  <!--&lt;!&ndash;placeholder=""&ndash;&gt;-->
-                  <!--&lt;!&ndash;ref="cascader"&ndash;&gt;-->
-                  <!--&lt;!&ndash;:props="defaultProps"&ndash;&gt;-->
-                  <!--&lt;!&ndash;v-model="selectedOptions"&ndash;&gt;-->
-                  <!--&lt;!&ndash;@change="addOption"></el-cascader>&ndash;&gt;-->
+
+        <el-row v-if="dialogStatus === 'create'">
+          <el-col class="inline-col">
+            <el-form-item label="周期" prop="start">
+              <el-date-picker
+                v-model="form.start"
+                placeholder="选择开始时间"
+                type="date">
+              </el-date-picker>
+            </el-form-item>
+            <span class="sepa">-</span>
+            <el-form-item prop="end" class="inline-item">
+              <el-date-picker
+                v-model="form.end"
+                placeholder="选择结束时间"
+                type="date">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row  v-if="dialogStatus === 'create'">
+          <el-col>
+            <el-form-item label="部门" prop="deptIds">
+              <el-cascader
+                style="width: 95%"
+                :options="departs"
+                :props="defaultProps"
+                :show-all-levels="false"
+                v-if="dialogStatus === 'edit'"
+                change-on-select
+                v-model="form.deptIds"
+              ></el-cascader>
+              <div v-else>
                 <!--<el-cascader-->
-                  <!--style="width: 82%"-->
+                  <!--style="width:95%"-->
                   <!--:options="departs"-->
-                  <!--:props="defaultProps"-->
-                  <!--:show-all-levels="false"-->
+                  <!--:show-all-level="false"-->
                   <!--change-on-select-->
+                  <!--placeholder=""-->
+                  <!--ref="cascader"-->
+                  <!--:props="defaultProps"-->
                   <!--v-model="selectedOptions"-->
-                <!--&gt;</el-cascader>-->
-                <!--<el-button @click="addOption">添加</el-button>-->
-                <!--<div class="tags" style="width: 95%">-->
-                  <!--<el-tag-->
-                    <!--:key="tag.id"-->
-                    <!--v-for="(tag, index) in form.deptIds"-->
-                    <!--closable-->
-                    <!--:disable-transitions="false"-->
-                    <!--@close="handleClose(index)">-->
-                    <!--{{tag.name}}-->
-                  <!--</el-tag>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</el-form-item>-->
-          <!--</el-col>-->
-        <!--</el-row>-->
-        <!--<el-row>-->
-          <!--<el-col>-->
-            <!--<el-form-item label="职位" prop="positionId">-->
-              <!--<el-select class="filter-item"-->
-                         <!--placeholder="请选择职位"-->
-                         <!--@change="handlePosition"-->
-                         <!--v-model="form.positionId">-->
-                <!--<el-option v-for="item in positions"-->
-                           <!--:value="item.positionId"-->
-                           <!--:label="item.positionName"-->
-                           <!--:key="item.positionId">-->
-                  <!--<span style="float: left;">{{item.positionName}}</span>-->
-                <!--</el-option>-->
-              <!--</el-select>-->
-            <!--</el-form-item>-->
-          <!--</el-col>-->
-        <!--</el-row>-->
-        <!--<el-row>-->
-          <!--<el-col>-->
-            <!--<el-form-item label="职级" prop="rankIds">-->
+                  <!--@change="addOption"></el-cascader>-->
+                <el-cascader
+                  style="width: 82%"
+                  :options="departs"
+                  :props="defaultProps"
+                  :show-all-levels="false"
+                  change-on-select
+                  v-model="selectedOptions"
+                ></el-cascader>
+                <el-button @click="addOption">添加</el-button>
+                <div class="tags" style="width: 95%">
+                  <el-tag
+                    :key="tag.id"
+                    v-for="(tag, index) in form.deptIds"
+                    closable
+                    :disable-transitions="false"
+                    @close="handleClose(index)">
+                    {{tag.name}}
+                  </el-tag>
+                </div>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="dialogStatus === 'create'">
+          <el-col>
+            <el-form-item label="职位" prop="positionId">
+              <el-select class="filter-item"
+                         placeholder="请选择职位"
+                         @change="handlePosition"
+                         v-model="form.positionId">
+                <el-option v-for="item in positions"
+                           :value="item.positionId"
+                           :label="item.positionName"
+                           :key="item.positionId">
+                  <span style="float: left;">{{item.positionName}}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="dialogStatus === 'create'">
+          <el-col>
+            <el-form-item label="职级" prop="rankIds">
+              <el-select class="filter-item"
+                         placeholder="请选择职级"
+                         multiple
+                         v-model="form.rankIds">
+                <el-option v-for="item in level"
+                           :value="item.rankId"
+                           :label="item.rankName"
+                           :key="item.rankId">
+                  <span style="float: left;">{{item.rankName}}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <!--<el-form-item label="职级" prop="rankIds" v-else>-->
               <!--<el-select class="filter-item"-->
                          <!--placeholder="请选择职级"-->
-                         <!--multiple-->
-                         <!--v-model="form.rankIds">-->
+                         <!--v-model="tempRankId">-->
                 <!--<el-option v-for="item in level"-->
                            <!--:value="item.rankId"-->
                            <!--:label="item.rankName"-->
@@ -253,20 +266,9 @@
                 <!--</el-option>-->
               <!--</el-select>-->
             <!--</el-form-item>-->
-            <!--&lt;!&ndash;<el-form-item label="职级" prop="rankIds" v-else>&ndash;&gt;-->
-              <!--&lt;!&ndash;<el-select class="filter-item"&ndash;&gt;-->
-                         <!--&lt;!&ndash;placeholder="请选择职级"&ndash;&gt;-->
-                         <!--&lt;!&ndash;v-model="tempRankId">&ndash;&gt;-->
-                <!--&lt;!&ndash;<el-option v-for="item in level"&ndash;&gt;-->
-                           <!--&lt;!&ndash;:value="item.rankId"&ndash;&gt;-->
-                           <!--&lt;!&ndash;:label="item.rankName"&ndash;&gt;-->
-                           <!--&lt;!&ndash;:key="item.rankId">&ndash;&gt;-->
-                  <!--&lt;!&ndash;<span style="float: left;">{{item.rankName}}</span>&ndash;&gt;-->
-                <!--&lt;!&ndash;</el-option>&ndash;&gt;-->
-              <!--&lt;!&ndash;</el-select>&ndash;&gt;-->
-            <!--&lt;!&ndash;</el-form-item>&ndash;&gt;-->
-          <!--</el-col>-->
-        <!--</el-row>-->
+          </el-col>
+        </el-row>
+
         <el-row>
           <el-col>
             <el-form-item label="业绩指标" prop="performanceIndicator">
@@ -376,9 +378,9 @@
     created() {
       this.getAllSearch()
       this.getList()
-      this.sys_prd_type_add = this.permissions['sys_prd_type_add']
-      this.sys_prd_type_upd = this.permissions['sys_prd_type_upd']
-      this.sys_prd_type_del = this.permissions['sys_prd_type_del']
+      this.performance_indicator_add = this.permissions['performance_indicator_add']
+      this.performance_indicator_edit = this.permissions['performance_indicator_edit']
+      this.performance_indicator_del = this.permissions['performance_indicator_del']
     },
     methods: {
       cycleList(list) {
@@ -442,13 +444,7 @@
                 id: this.selectedOptions[this.selectedOptions.length - 1]
               }
             )
-            console.log(this.$refs.form)
-            this.$refs.form.validate(valid => {
-              console.log(valid)
-              if (valid) {
-                //
-              }
-            })
+            // console.log(this.$refs.form)
           }
         }
       },

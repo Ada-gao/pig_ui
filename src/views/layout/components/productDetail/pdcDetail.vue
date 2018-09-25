@@ -86,7 +86,7 @@
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
             <el-form-item v-else label=""
               prop="investmentHorizonUnit"
-              style="display: inline-block; width: 110px;"
+              style="display: inline-block; width: 70px;"
               :rules="[
                 {required: true, message: '请选择产品期限单位', trigger: 'change'}
               ]">
@@ -195,7 +195,7 @@
         <el-col :span="11">
           <el-form-item label="认购费">
             <span v-if="detailDisabled">{{form.subscribe==0?'无认购费':form.subscribe==1?'价内认购':'价外认购 ' + form.subscribeRate + '%'}}</span>
-            <el-radio-group v-else v-model="form.subscribe" @change="subscribeChange">
+            <el-radio-group v-else v-model="form.subscribe" @change="subscribeChange" style="white-space: nowrap;">
               <el-radio :label="0" style="display: inline-block">无认购费</el-radio>
               <el-radio :label="1" style="display: inline-block">价内认购</el-radio>
               <el-radio :label="2" style="display: inline-block">价外认购(%)</el-radio>
@@ -242,7 +242,7 @@
         <el-col :span="11">
           <el-form-item label="大额支付行号" prop="paymentNumber">
             <span v-if="detailDisabled">{{form.paymentNumber}}</span>
-            <el-input v-else v-model="form.paymentNumber" placeholder="请输入"></el-input>
+            <el-input v-else type="number" v-model.number="form.paymentNumber" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -356,6 +356,16 @@
       }
   }
 
+  const acount = (rule, value, callback) => {
+    const exp = /^\d{1,20}$/
+    if (!value) {
+    } else if (!exp.test(Number(value))) {
+      callback('请输入正确的账号')
+    } else {
+      callback()
+    }
+  }
+
   const pdAcount = (rule, value, callback) => {
     const exp = /^\d{1,20}$/
     if (!value) {
@@ -433,9 +443,6 @@
             { required: true, message: '请输入支行名称', rigger: 'blur' }
           ],
           cardNo: [
-            { required: true, validator: pdAcount, trigger: 'blur' }
-          ],
-          paymentNumber: [
             { required: true, validator: pdAcount, trigger: 'blur' }
           ],
           productCode: [

@@ -324,7 +324,7 @@
 
 <script>
   import {
-    fetchList, getObj, addObj, delObj, getClientStatus, getClientRemark, getClientPlanner, getClientBankcard, getClientProducts
+    getObj, addObj, delObj, getClientStatus, getClientRemark, getClientPlanner, getClientBankcard, getClientProducts
   } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令

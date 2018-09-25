@@ -8,7 +8,7 @@
                     v-model="listQuery.name">
           </el-input>
         </el-col>
-        <el-col class="line" :span="0.8">&nbsp</el-col>
+        <el-col class="line" :span="0.8">&nbsp;</el-col>
         <el-button class="filter-item search_btn" v-waves icon="search" @click="handleFilter"><svg-icon icon-class="search"></svg-icon>查询</el-button>
 
         <el-button v-if="sys_currency_add" class="filter-item add_btn" style="margin-left: 10px; float: right" @click="handleCreate" type="primary" icon="edit">
@@ -42,7 +42,7 @@
     </el-table>
 
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="handleClose('form')">
       <el-form :model="form" ref="form" label-width="100px" :rules="rules">
         
         <el-form-item label="币种名称" prop="name">
@@ -275,6 +275,9 @@
           id: undefined,
           name: '',
         }
+      },
+      handleClose(formName) {
+        this.$refs[formName].resetFields()
       }
     }
   }

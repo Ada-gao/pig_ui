@@ -27,7 +27,7 @@
           </el-form-item>
         </el-col>
         <el-col :sm="10" :lg="7" v-show="searchDate">
-          <el-form-item label="日期">
+          <el-form-item label="预约时间">
               <el-date-picker
                 style="width: 100%"
                 v-model="listQuery.date"
@@ -52,8 +52,8 @@
         <el-col :sm="10" :lg="7" v-show="isSpread">
           <el-form-item label="理财师">
             <el-input
-            placeholder="请输入理财师邮箱前缀"
-            v-model="listQuery.email">
+            placeholder="请输入理财师姓名"
+            v-model="listQuery.userName">
           </el-input>
           </el-form-item>
         </el-col>

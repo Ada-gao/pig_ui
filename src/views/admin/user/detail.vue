@@ -179,7 +179,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="客户锁定状态" prop="lock">
+            <el-form-item label="用户锁定状态" prop="lock">
               <el-radio-group v-model="form.lock">
                 <el-radio :label="1" style="display: inline-block">锁定</el-radio>
                 <el-radio :label="0" style="display: inline-block">正常</el-radio>
@@ -358,7 +358,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="账户锁定状态：" prop="lock">
+            <el-form-item label="用户锁定状态：" prop="lock">
               {{form.lock|turnText1(lockStatus)}}
               <!-- <el-radio-group v-model="form.lock">
                 <el-radio :label="1" style="display: inline-block">锁定</el-radio>
@@ -386,7 +386,7 @@
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/user'
+  import { getObj, addObj, putObj, delObj } from '@/api/user'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getPositionName } from '@/api/posi'
   import { getAllPositon } from '@/api/queryConditions'
@@ -493,14 +493,14 @@
             {required: true, trigger: 'change', message: '请选择入职日期'}
           ],
           role: [
-            {required: true, trigger: 'change', message: '请选择角色'}
+            {required: false, trigger: 'change', message: '请选择角色'}
           ],
           positionName: [
             {required: true, trigger: 'change', message: '请选择职位'}
           ],
-          email: [
-            {required: false, trigger: 'blur', message: '请输入邮箱'}
-          ],
+          // email: [
+          //   {required: false, trigger: 'blur', message: '请输入邮箱'}
+          // ],
           mobile: [
             {required: true, trigger: 'blur', validator: validMobile}
           ],
@@ -512,6 +512,10 @@
           ],
           deptIds: [
             { required: true, trigger: 'blur', message: '请选择部门' }
+          ],
+          email: [
+            // { required: false, trigger: 'blur', message: '请输入邮箱' },
+            { type: 'email', trigger: ['blur', 'change'], message: '请输入正确的邮箱' }
           ]
         },
         // statusOptions: ['0', '1', '2'],
@@ -793,8 +797,9 @@
               this.fileList = []
             }
             this.form.deptId = this.form.deptIds[this.form.deptIds.length - 1]
-            putObj(this.form).then(() => {
+            putObj(this.form).then((res) => {
               // this.getList()
+              if (res.status !== 200) return false
               this.$notify({
                 title: '成功',
                 message: '修改成功',

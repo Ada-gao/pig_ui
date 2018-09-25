@@ -26,9 +26,9 @@
               <el-select v-model="listQuery.clientFrom" placeholder="请选择客户来源">
                 <el-option
                   v-for="item in clientFrom"
-                  :key="item.id"
+                  :key="item.value"
                   :label="item.label"
-                  :value="item.id">
+                  :value="item.value">
                 </el-option>
               </el-select>
 
@@ -36,17 +36,17 @@
           </el-col>
         </el-row>
         <el-row style="text-align: center;">
-          <el-button class="search_btn" @click="resetFilter"><svg-icon icon-class="reset"></svg-icon> 重置</el-button>
           <el-button class="search_btn" @click="handleFilter"><svg-icon icon-class="search"></svg-icon> 查询</el-button>
+          <el-button class="search_btn" @click="resetFilter"><svg-icon icon-class="reset"></svg-icon> 重置</el-button>
         </el-row>
       </el-form>
     </div>
 
     <div style="text-align: right">
-      <el-button v-if="sys_user_add" class="add_btn" @click="distributionPersonal">
-        <svg-icon icon-class="add"></svg-icon>分配到个人</el-button>
-        <el-button v-if="sys_user_add" class="add_btn" @click="distributionDepartment">
-        <svg-icon icon-class="add"></svg-icon>分配到部门</el-button>
+      <el-button v-if="activity_client_user_batch" class="add_btn" @click="distributionPersonal">
+        <svg-icon icon-class="personal"></svg-icon>分配到个人</el-button>
+        <el-button v-if="activity_client_dept_batch" class="add_btn" @click="distributionDepartment">
+        <svg-icon icon-class="department"></svg-icon>分配到部门</el-button>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
@@ -75,6 +75,9 @@
       <el-table-column align="center" label="邮箱" prop="email">
       </el-table-column>
 
+      <el-table-column align="center" label="客户来源" prop="clientFrom">
+      </el-table-column>
+
       <el-table-column align="center" label="国籍（常住地区）">
         <template slot-scope="scope">
         <span>{{scope.row.nationality}}</span>
@@ -84,10 +87,9 @@
 
       <el-table-column align="center" label="操作" fixed="right" width="150">
         <template slot-scope="scope">
-          <a size="small" class="common_btn"
-                     @click="handleUpdate(scope.row, 'view')">查看
+           <a v-if="activity_client_query" size="small" class="common_btn"
+                     @click="handleRouter(scope.row.clientId)">查看
           </a>
-        
         </template>
       </el-table-column>
 
@@ -110,12 +112,14 @@
        :rules="[
            { required: true, message: '请选择姓名', trigger: 'change'}
         ]">
-         <el-select v-model="personalForm.personal" placeholder="请选择人员">
+         <el-select v-model="personalForm.personal" placeholder="请选择人员" >
             <el-option
               v-for="item in plannerList"
               :key="item.userId"
               :label="item.name"
               :value="item.userId">
+              <span style="float: left">{{ item.name }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.empNo }}</span>
             </el-option>
           </el-select>
       </el-form-item>
@@ -225,14 +229,13 @@
     },
     created() {
       this.getClientPoolList()
-      this.sys_user_add = this.permissions['sys_user_add']
-      this.sys_user_upd = this.permissions['sys_user_upd']
-      this.sys_user_del = this.permissions['sys_user_del']
+      this.activity_client_query = this.permissions['activity_client_query']
+      this.activity_client_user_batch = this.permissions['activity_client_user_batch']
+      this.activity_client_dept_batch = this.permissions['activity_client_dept_batch']
     },
     methods: {
       getClientPoolList() {
         this.listLoading = true
-       console.log(this.listQuery)
         getClientPoolList(this.listQuery).then(response => {
           this.list = response.data.records
           this.total = response.data.total
@@ -241,6 +244,7 @@
             item.clientType = transformText(this.certificationType, item.clientType)
             item.idType = transformText(this.idTypeOptions, item.idType)
             item.nationality = transformText(this.nationality, item.nationality)
+            item.clientFrom = transformText(this.clientFrom, item.clientFrom)
           })
       
         })
@@ -258,7 +262,11 @@
         this.listQuery.page = val
         this.getClientPoolList()
       },
-        
+       handleRouter(id) { // 查看跳转详情
+        this.$router.push({
+          path: '/client/readDetail/' + id + '/0'
+        })
+      },
       resetFilter() { // 重置搜索条件
         this.listQuery = {
           page: 1,
@@ -271,13 +279,29 @@
       },
       // 分配到部门
       distributionDepartment(){
-        this.dialogDepartment = true
-        this.getDeptRoots()
+        if(this.multipleSelection.length>0){
+          this.dialogDepartment = true
+          this.getDeptRoots()
+        }else{
+          this.$notify({
+            title: '警告',
+            message: '清选择至少一条数据',
+            type: 'warning'
+          });
+        }
       },
       // 分配到个人
       distributionPersonal(){
+        if(this.multipleSelection.length>0){
         this.dialogPersonal = true
         this.getUserLists()
+        }else{
+          this.$notify({
+            title: '警告',
+            message: '清选择至少一条数据',
+            type: 'warning'
+          });
+        }
       },
       //获取理财师列表
       getUserLists() {
@@ -291,7 +315,17 @@
       personalDetermine(formName){
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            allocationPlanners({clientIds:this.multipleSelection},{deptId:this.departmentForm.department}).then(res=>{
+            let PlannerChangeReq = {}
+            this.plannerList.forEach(item=>{
+              if(item.userId == this.personalForm.personal){
+                PlannerChangeReq = {
+                  deptId:item.deptId,
+                  plannerId:item.userId,
+                  reason:'正常更换'
+                }
+              }
+            })
+            allocationPlanners({clientIds:this.multipleSelection},PlannerChangeReq).then(res=>{
              if(res.status == 200){
               this.sallocationSuccess('dialogPersonal')
                }
@@ -324,9 +358,9 @@
               message: '分配成功',
               type: 'success'
             });
+          this.getClientPoolList()
            this[dialog] = false
            this.multipleSelection = []
-       
       },
         //获取部门列表
       getDeptRoots() {

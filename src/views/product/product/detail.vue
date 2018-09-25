@@ -151,7 +151,7 @@
   import productDetail from 'components/productDetail/pdcDetail'
   import productOperation from 'components/productDetail/pdcOperation'
   import transcTableComponent from 'components/table/transcTable'
-  import { fetchList, getObj, addObj, putObj, delObj, getAppointList,
+  import { getObj, addObj, putObj, delObj, getAppointList,
     addOperationObj, putFileObj, delCustFile, getCustFile,
     addCustFile, updCustFile, fetchOperation, updProductType,
     getProductStage, updProductStage, getBriefReport, updProductPause,
@@ -340,7 +340,7 @@
       this.productId = this.$route.params.id
       const proStatusText = this.$route.query.productStatus
       // 获取状态速度更快，提升用户体验
-      if (proStatusText.indexOf('在建') === -1 && proStatusText.indexOf('预热') === -1) {
+      if (proStatusText && proStatusText.indexOf('在建') === -1 && proStatusText.indexOf('预热') === -1) {
         this.productTran = true
       }
       if(this.productId) {

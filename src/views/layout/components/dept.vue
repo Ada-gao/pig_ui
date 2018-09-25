@@ -33,7 +33,8 @@ export default {
       curPrevId: '',
       eachIndex: 0,
       result: [],
-      changeVal: undefined
+      changeVal: undefined,
+      childrenId: []
     }
   },
   props: {
@@ -97,7 +98,7 @@ export default {
         }
       })
     },
-    cycleListId(list, prevId = []) {
+    cycleListId(list, prevId = []) { // 获取所有完整路径的id
       list.forEach(item => {
         if (item.children && item.children.length > 0) {
           this.curPrevId = [...prevId, item.id]
@@ -118,7 +119,6 @@ export default {
           }
         })
       })
-      // console.log(list2)
       this.deptIds = list2
     }
   }

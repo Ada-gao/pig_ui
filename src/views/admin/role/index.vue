@@ -4,7 +4,6 @@
       <el-button v-if="sys_role_add" class="filter-item add_btn" style="margin-left: 10px;" @click="handleCreate">
         <svg-icon icon-class="add"></svg-icon> 添加</el-button>
     </div>
-
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
@@ -180,7 +179,9 @@
       return {
         treeData: [],
         treeDeptData: [],
+        checkedKeysAll: [],
         checkedKeys: [],
+        checkedKeysAll1: [],
         checkedKeys1: [],
         defaultProps: {
           children: 'children',
@@ -237,7 +238,10 @@
           permission: '分配权限',
         },
         tableKey: 0,
-        tempVal: undefined
+        tempVal: undefined,
+        eachIndex: 0,
+        result: [],
+        childrenIdList: []
       }
     },
     computed: {
@@ -255,7 +259,6 @@
     },
     watch: {
       tempVal(newVal, oldVal) {
-        console.log(newVal !== oldVal)
         if (newVal !== oldVal && this.form.dataScope - 0 === 3) {
           this.handleDept(newVal[newVal.length - 1])
         }
@@ -287,7 +290,7 @@
         getObj(row.roleId)
           .then(res => {
             this.form = res.data
-            this.checkedKeys1 = this.form.deptIds? this.form.deptIds.split(',').map(Number) : []
+            this.checkedKeysAll1 = this.form.deptIds? this.form.deptIds.split(',').map(Number) : []
             const listStr = this.form.maskCode
             let arr = []
             if (listStr) {
@@ -313,16 +316,36 @@
       },
       handlePermission(row) {
         fetchRoleTree(row.roleCode).then(res => {
-          this.checkedKeys = res.data
+          this.checkedKeysAll = res.data
+          this.dialogPermissionVisible = true
         })
         fetchTree()
-          .then(res => {
-            this.treeData = res.data
-            this.dialogStatus = 'permission'
-            this.dialogPermissionVisible = true
-            this.roleId = row.roleId
-            this.roleCode = row.roleCode
-          })
+            .then(res => {
+              this.treeData = res.data
+              this.dialogStatus = 'permission'
+              // this.dialogPermissionVisible = true
+              this.roleId = row.roleId
+              this.roleCode = row.roleCode
+              this.result = this.cycleListId(this.treeData)
+              this.result.forEach((item, index) => { // 所有子级id
+                this.childrenIdList.push(item[item.length - 1])
+              })
+              this.childrenIdList = Array.from(new Set(this.childrenIdList)) // 去重
+              let arr = []
+              this.checkedKeysAll.map(checked => {
+                this.childrenIdList.map(childrenId => {
+                  if (checked == childrenId) {
+                    arr.push(checked)
+                  }
+                })
+              })
+              this.checkedKeys = arr
+            })
+      },
+      filterChildren(treeData, checkedList) {
+        checkedList.forEach(item => {
+          treeData.find(tree => tree.id === item && tree.children.length)
+        })
       },
       filterNode(value, data) {
         if (!value) return true
@@ -453,6 +476,21 @@
         getBelongsDept(roleDeptId)
           .then(res => {
             this.treeDeptData = res.data
+            let tempList = []
+            tempList = this.cycleListId(this.treeDeptData)
+            tempList.forEach((item, index) => { // 所有子级id
+              this.childrenIdList.push(item[item.length - 1])
+            })
+            this.childrenIdList = Array.from(new Set(this.childrenIdList)) // 去重
+            let arr = []
+            this.checkedKeysAll1.map(checked => {
+              this.childrenIdList.map(childrenId => {
+                if (checked == childrenId) {
+                  arr.push(checked)
+                }
+              })
+            })
+            this.checkedKeys1 = arr
           })
       },
       scopeChangeHandle(val) {
@@ -471,6 +509,18 @@
       closeDialogHandle() { // dialog 关闭清除表单数据
         this.$refs['form'].resetFields()
         this.treeDeptData = []
+      },
+      cycleListId(list, prevId = []) {
+        list.forEach(item => {
+          if (item.children && item.children.length > 0) {
+            this.cycleListId(item.children, [...prevId, item.id])
+          }
+          if (item.children && !item.children.length) {
+            this.result[this.eachIndex] = [...prevId, item.id]
+            this.eachIndex++
+          }
+        })
+        return this.result
       }
     }
   }

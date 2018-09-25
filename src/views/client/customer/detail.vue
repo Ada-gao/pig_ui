@@ -96,22 +96,13 @@
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from 'element-ui/packages/select/src/option'
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
-  import { isvalidMobile, validateEmail } from '@/utils/validate'
+  import { isvalidMobile } from '@/utils/validate'
 
   const validMobile = (rule, value, callback) => {
     if (!value) {
       callback(new Error('请输入电话号码'))
     } else if (!isvalidMobile(value)) {
       callback(new Error('请输入正确的11位手机号'))
-    } else {
-      callback()
-    }
-  }
-  const validEmail = (rule, value, callback) => {
-    if (!value) {
-      callback(new Error('请输入邮箱'))
-    } else if (!validateEmail(value)) {
-      callback(new Error('请输入正确的邮箱'))
     } else {
       callback()
     }
@@ -174,7 +165,7 @@
             { required: true, message: '请选择职位', trigger: 'blur' }
           ],
           email: [
-            { required: false, validator: validEmail, trigger: 'blur' }
+            { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
           ]
         },
         sex: '',

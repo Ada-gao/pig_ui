@@ -8,7 +8,6 @@
       :searchCity="false"
       :searchClientType="false"
       :searchCertificationStatus="false"
-      :searchValidate="true"
       >
     </search-bar-component>
 
@@ -48,11 +47,11 @@
           <span>{{scope.row.mobile}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="验证状态">
+      <!-- <el-table-column align="center" label="验证状态">
         <template slot-scope="scope">
           <span>{{scope.row.mobileValidatedName}}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column align="center" label="微信号">
         <template slot-scope="scope">

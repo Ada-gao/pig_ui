@@ -160,9 +160,10 @@
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="预约编号" prop="appointmentCode">
-              <el-input v-model="form.appointmentCode"
+              <el-input v-if="dialogStatus==='create'" v-model="form.appointmentCode"
                         type="text"
                         placeholder="请输入预约编号"></el-input>
+              <span v-else>{{form.appointmentCode}}</span>
             </el-form-item>
           </el-col>
 
@@ -176,7 +177,7 @@
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="理财师姓名" prop="userName">
-              <el-select class="filter-item"
+              <el-select v-if="dialogStatus==='create'" class="filter-item"
                          value-key="name"
                          style="width:100%;"
                          placeholder="请输入理财师姓名"
@@ -190,18 +191,21 @@
                   <span style="float: left;">{{item.name}}</span>
                 </el-option>
               </el-select>
+              <span v-else>{{form.userName}}</span>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="理财师工号" prop="userCode">
-              <el-input v-model="form.userCode" readonly="readonly" placeholder="请输入理财师工号"></el-input>
+              <el-input v-if="dialogStatus==='create'" v-model="form.userCode" placeholder="请输入理财师工号"></el-input>
+              <span v-else>{{form.userCode}}</span>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="销售支持姓名" prop="salesName">
-              <el-select class="filter-item"
+              <el-select v-if="dialogStatus==='create'"
+                         class="filter-item"
                          value-key="name"
                          filterable
                          style="width:100%;"
@@ -215,12 +219,14 @@
                   <span style="float: left;">{{item.name}}</span>
                 </el-option>
               </el-select>
+              <span v-else>{{form.salesName}}</span>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="销售支持工号" prop="salesCode">
-              <el-input v-model="form.salesCode" readonly="readonly" placeholder="请输入销售支持工号"></el-input>
+              <el-input v-if="dialogStatus==='create'" v-model="form.salesCode" placeholder="请输入销售支持工号"></el-input>
+              <span v-else>{{form.salesCode}}</span>
             </el-form-item>
           </el-col>
 

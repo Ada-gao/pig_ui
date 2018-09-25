@@ -549,12 +549,12 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="已募集人数:" prop="minimalAmount" style="white-space: nowrap">
-              <span>{{productInfo.collectLP}}</span>
+              <span>{{statistic.remitNums||0}}</span>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="已募集额度:" prop="minimalAmount" style="white-space: nowrap">
-              <span>{{productInfo.collectAmount}}万</span>
+              <span>{{statistic.remitAmounts||0}}万</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -619,7 +619,7 @@
   import productMaterialComponent from 'components/table/material'
   import { putFileObj, delCustFile, fetchOperation, addCustFile, postTranscFile, getCustFile,
     updCustFile, updProductDisplay, updProductPause, getProductStage, addOperationObj, updProductType,
-    updToCollect, cancelToCollect } from '@/api/product/product'
+    updToCollect, cancelToCollect, getBriefReport } from '@/api/product/product'
   import { mapGetters } from 'vuex'
   import { transformText, sortKey, transferEdit } from '@/utils'
   // import { parseTime } from '@/utils'
@@ -772,7 +772,8 @@
         data1: {},
         data2: {},
         collectVal: 1,
-        collectTime: ''
+        collectTime: '',
+        statistic: {}
         // form: {},
         // isDisabled: true,
         // stage: false,
@@ -1350,10 +1351,13 @@
         this.dto.status = status
         this.productStatusText = transformText(this.productStatus, this.productStatusNo)
         this.msgText = transformText(this.productStatus, status)
-
+        if (status == 3) {
+          getBriefReport(this.productId).then(res => {
+            this.statistic = res.data
+          })
+        }
         if(status == 3 || status == 4) {
           this.dialogStVisible = true
-
         } else {
           this.$confirm('此产品现在为' + this.productStatusText + ', 确定进入' + this.msgText + '吗?', '提示', {
             confirmButtonText: '确定',
@@ -1501,6 +1505,7 @@
       },
       changeSecStep(val) {
         this.secStep = val
+        this.setTables()
       },
       chooseClientFile() { // 下拉框选择材料提交
         this.dialogComVisible = false
@@ -1652,6 +1657,16 @@
           // this.clientFiles = response.data || []
           this.data2 = response.data
         })
+      },
+      setTables() { // 设置table宽度100% (客户所需材料表格)
+        const tables=document.querySelectorAll('table')
+        for(let i = 0; i < tables.length; i++) {
+          tables[i].style.width='100%'
+        };
+        const elHeaders=document.querySelectorAll('.el-table__header')
+        for(let j = 0; j < elHeaders.length; j++) {
+          elHeaders[j].style.tableLayout='inherit'
+        }
       }
     }
   }
