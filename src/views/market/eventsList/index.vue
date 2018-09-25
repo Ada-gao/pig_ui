@@ -132,14 +132,12 @@ import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
 import ElOption from "element-ui/packages/select/src/option"
 import Bus from '@/assets/js/bus'
 import qrcode from './components/qrcode.vue'
-import downloadQrcode from './components/downloadQrcode.vue'
 import QRCode from 'qrcodejs2'
 export default {
   components: {
     ElOption,
     ElRadioGroup,
     qrcode,
-    downloadQrcode,
     QRCode
   },
   filters: {
@@ -232,8 +230,7 @@ export default {
         this.total = res.data.total
         this.listLoading = false
         this.activityList.forEach((item,index)=>{
-          console.log(index)
-         this.qrcode('index'+index)
+         this.qrcode(item.activityQrcodeUrl)
        })
        }
       })
