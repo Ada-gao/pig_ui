@@ -92,6 +92,11 @@ export const constantRouterMap = [
         name: '投资者审核详情页',
         meta: { title: '投资者审核信息', icon: '', noCache: true },
         hidden: true
+      },
+      { path: 'customerLabel/list/:clientLabelId',
+        component: _import('client/customerLabel/list'),
+        name: '客户标签列表',
+        meta: { title: '客户标签设置', icon: 'label' }
       }
     ]
   },

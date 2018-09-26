@@ -12,7 +12,6 @@ import { Validate } from '@/utils/validate_rules'
 
 Vue.use(ElementUI, { locale })
 Vue.use(Validate)
-
 // register global utility filters.
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
