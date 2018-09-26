@@ -211,7 +211,7 @@ export default {
         let qrcode = new QRCode('qrcode1', {  
             width: 200,  // 设置宽度 
             height: 200, // 设置高度
-            text:text
+            text:window.location.port+text
         })  
       },
     download(scope){
@@ -229,6 +229,7 @@ export default {
         this.activityList  = res.data.records
         this.total = res.data.total
         this.listLoading = false
+        document.getElementById("qrcode1").innerHTML = "";
         this.activityList.forEach((item,index)=>{
          this.qrcode(item.activityQrcodeUrl)
        })

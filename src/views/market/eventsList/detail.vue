@@ -245,7 +245,7 @@
   <!-- 参与职位对话框 -->
   <el-dialog title="提示" :visible.sync="dialogPosition" width="30%">
     <article class="table-event">
-      <div class="thead">所有部门</div>
+      <div class="thead">所有职位</div>
       <div class="tbody">
         <el-tree show-checkbox :node-key="nodeKey" :data="treePositionData" ref="activityRangePositionList" :props="defaultProps"></el-tree>
       </div>
@@ -258,7 +258,7 @@
   <!-- 客户标签对话框 -->
   <el-dialog title="提示" :visible.sync="dialogCustomerLabel" width="30%">
     <article class="table-event">
-      <div class="thead">所有部门</div>
+      <div class="thead">所有标签</div>
       <div class="tbody">
         <el-tree show-checkbox :node-key="nodeKey" :data="treeCustomerLabelData" ref="activityClientLabelList" :props="defaultProps"></el-tree>
       </div>
