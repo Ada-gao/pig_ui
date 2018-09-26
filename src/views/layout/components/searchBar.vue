@@ -104,7 +104,7 @@
           </el-form-item>
         </el-col>
         <el-col :sm="12" :lg="8" style="white-space: nowrap" v-if="searchValidate">
-          <el-form-item label="验证状态">
+          <el-form-item label="手机号验证状态">
             <el-select v-model="listQuery.mobileValidated" style="width: 100%" placeholder="请选择">
               <el-option v-for="item in mobileValidatedArr" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -135,6 +135,15 @@
           <el-form-item label="保护期过期">
             <el-select v-model="listQuery.preserveStatus" style="width: 100%" placeholder="请选择">
               <el-option v-for="item in preserveExpired" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :sm="12" :lg="8" v-if="searchDisplayType">
+          <el-form-item label="显示类型">
+            <el-select v-model="listQuery.allDisplay" style="width: 100%" placeholder="请选择">
+              <el-option v-for="item in displayType" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
@@ -198,6 +207,9 @@ export default {
     },
     searchPreserveExpired: {
       default: false
+    },
+    searchDisplayType: {
+      default: false
     }
   },
   data() {
@@ -211,6 +223,20 @@ export default {
         {
           label: '已验证',
           value: '0'
+        }
+      ],
+      displayType: [
+        {
+          label: '在标签内的客户',
+          value: '1'
+        },
+        {
+          label: '不在标签内的客户',
+          value: '2'
+        },
+        {
+          label: '全部',
+          value: '3'
         }
       ],
       deptId: [],
@@ -247,24 +273,25 @@ export default {
   },
   methods: {
     handleFilter() { // 搜索
-      console.log(this.listQuery)
+      // console.log(this.listQuery)
       this.listQuery.page = 1
-
-      let amountStart = this.listQuery.amountStart || -1
-      let amountEnd = this.listQuery.amountEnd || -1
-      this.listQuery.amount = [amountStart, amountEnd]
+      this.listQuery.orderByField = 'create_time'
+      this.listQuery.isAsc = false
 
       if(this.deptId.length) {
         this.listQuery.deptId = this.deptId[this.deptId.length - 1]
       }
+      let amountStart = this.listQuery.amountStart || -1
+      let amountEnd = this.listQuery.amountEnd || -1
+      this.listQuery.amount = [amountStart, amountEnd]
 
       if(this.city.length) {
         this.listQuery.city = this.city[1] == '市辖区' ? this.city[0] : this.city[1]
       }
-
-      this.listQuery.orderByField = 'create_time'
-      this.listQuery.isAsc = false
-
+      if (this.searchDisplayType) {
+        this.listQuery.orderByField = 'tab.create_time'
+        delete this.listQuery.amount
+      }
       this.$emit('search-list', this.listQuery)
     },
     resetFilter() { // 重置搜索条件

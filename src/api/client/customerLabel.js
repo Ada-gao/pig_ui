@@ -14,7 +14,7 @@ export function getClientList() {
 /**
  * 新增或修改客户标签
  */
-export function clientLabel(obj,method) {
+export function clientLabel(obj) {
 	console.log(obj)
   return request({
     url: '/client/clientLabel/',
@@ -96,5 +96,35 @@ export function deleteClientAumLabel(id) {
   })
 }
 
+// 客户标签搜索
 
+/**
+ * 客户标签搜索列表
+ */
+export function fetchClientLabel(obj) {
+  return request({
+    url: '/client/client/clientLableSearch',
+    method:'get',
+    params: obj
+  })
+}
+/**
+ * 客户标签搜索设置
+ */
+export function addClientLabel(obj) {
+  return request({
+    url: '/client/client/addClientLabel/',
+    method:'post',
+    data: obj
+  })
+}
+/**
+ * 客户标签搜索取消
+ */
+export function delClientLabel(clientId) {
+  return request({
+    url: '/client/client/deleteClientLabel/' + clientId,
+    method:'delete'
+  })
+}
 

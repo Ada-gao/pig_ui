@@ -71,8 +71,8 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="购买人群" prop="buyingCrowds">
-            <span v-if="detailDisabled">{{form.buyingCrowds|turnText(buyingCrowds)}}</span>
-            <el-select v-else class="filter-item" v-model="form.buyingCrowds" placeholder="请选择">
+            <span v-if="detailDisabled" v-for="item in form.buyingCrowds">{{item|turnText(buyingCrowds)}}</span>
+            <el-select v-else class="filter-item" multiple v-model="form.buyingCrowds" placeholder="请选择">
               <el-option v-for="item in buyingCrowds" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
@@ -488,6 +488,7 @@
     },
     mounted() {
       this.form = this.formData
+      this.form.buyingCrowds = this.form.buyingCrowds ? this.form.buyingCrowds.split(',') : this.form.buyingCrowds
       let list = Object.keys(this.formData)
 
       if(list.length > 1 && !list.productId) {
@@ -506,6 +507,7 @@
           getObj(this.productId)
           .then(response => {
             this.form = response.data
+            this.form.buyingCrowds = this.form.buyingCrowds.split(',')
             this.userDefinedAttribute = JSON.parse(this.form.userDefinedAttribute)
             console.log(JSON.parse(this.form.userDefinedAttribute))
             this.form.subscribe = this.form.subscribe - 0
@@ -595,6 +597,7 @@
           if (valid) {
             this.form.discountCoefficient = this.investRatio
             this.form.userDefinedAttribute = JSON.stringify(this.userDefinedAttribute)
+            this.form.buyingCrowds = this.form.buyingCrowds.join()
             // console.log(this.form.userDefinedAttribute)
             addObj(this.form)
               .then(response => {
@@ -640,6 +643,7 @@
           if (valid) {
             this.form.discountCoefficient = this.investRatio
             this.form.userDefinedAttribute = JSON.stringify(this.userDefinedAttribute)
+            this.form.buyingCrowds = this.form.buyingCrowds.join()
             if (this.stage) { //分期
               updProductStage(this.form).then(response => {
                 if(!response.data || response.status !== 200) {

@@ -23,7 +23,11 @@
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
               <a size="small"  v-if="client_label_operation_edit" class="common_btn"
-                 @click="editAum(scope.row.clientLabelId,'newAddClient')">编辑
+                @click="editAum(scope.row.clientLabelId,'newAddClient')">编辑标签
+              </a>
+              <span class="space_line"> | </span>
+              <a size="small"  v-if="client_label_operation_edit" class="common_btn"
+                @click="editCustomerList(scope.row.clientLabelId)">编辑客户列表
               </a>
               <a size="small"  v-if="client_label_operation_del" class="danger_btn"
                 @click="deletes(scope.row.clientLabelId)">删除
@@ -311,7 +315,6 @@
             this.selfEdit = false;
           })
         }
-
       },
       // 删除客户aum标签
       deleteAum(id){
@@ -333,10 +336,9 @@
 
         })
       },
-
     //删除弹出框
       deletes(id) {
-        this.deletesTitle = '确定要删除吗'
+        this.deletesTitle = '确定删除客户标签吗'
         this.dialogVisible = true
         this.id = id
       },
@@ -366,6 +368,9 @@
             duration: 2000
           })
          this.dialogVisible = false;
+      },
+      editCustomerList(clientLabelId) {
+        this.$router.push({path: '/client/customerLabel/list/' + clientLabelId})
       }
     }
   }
