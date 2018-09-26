@@ -9,9 +9,7 @@
     </article>
     <section>
       <p>报名请扫描二维码</p>
-<div id="qrcode" ref="qrcode"></div>
-    
-
+      <div id="qrcode" ref="qrcode"></div>
     </section>
   </el-dialog>
 
@@ -70,13 +68,11 @@ section{
   color: #475669;
   letter-spacing: 0;
   text-align: center;
-  position: relative;
-}
-#qrcode{
-        text-align: center;
-position: absolute;
-  img{
-    width: 200px;
+    #qrcode{
+    position: relative;
+    left: 50%;
+    margin-left: -100px;
   }
 }
+
 </style>
