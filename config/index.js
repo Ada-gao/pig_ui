@@ -34,51 +34,58 @@ module.exports = {
         target: url.BASE_API,
         changeOrigin: true,
         pathRewrite: {
-          '^/auth' : '/auth'
+          '^/auth': '/auth'
         }
       },
       '/admin': {
         target: url.BASE_API,
         changeOrigin: true,
         pathRewrite: {
-          '^/admin' : '/admin'
+          '^/admin': '/admin'
         }
       },
       '/zuul': {
         target: url.BASE_API,
         changeOrigin: true,
         pathRewrite: {
-          '^/zuul' : '/zuul'
+          '^/zuul': '/zuul'
         }
       },
       '/product': {
         target: url.BASE_API,
         changeOrigin: true,
         pathRewrite: {
-          '^/product' : '/product'
+          '^/product': '/product'
         }
       },
       '/client': {
         target: url.BASE_API,
         changeOrigin: true,
         pathRewrite: {
-          '^/client' : '/client'
+          '^/client': '/client'
         }
       },
       '/performance': {
         target: url.BASE_API,
         changeOrigin: true,
         pathRewrite: {
-          '^/performance' : '/performance'
+          '^/performance': '/performance'
         }
       },
       '/sharing': {
         target: url.BASE_API,
         changeOrigin: true,
         pathRewrite: {
-          '^/sharing' : '/sharing'
+          '^/sharing': '/sharing'
         }
-      }
+      },
+      '/activity': {
+        target: url.BASE_API,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/activity': '/activity'
+        }
+      },
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README

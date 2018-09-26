@@ -44,6 +44,7 @@ const getters = {
   lockStatus: state => state.dictionary.lockStatus,
   preserveExpired: state => state.dictionary.preserveExpired,
   maskCode: state => state.dictionary.maskCode,
-  dataScope: state => state.dictionary.dataScope
+  dataScope: state => state.dictionary.dataScope,
+  activityType: state => state.dictionary.activityType
 }
 export default getters

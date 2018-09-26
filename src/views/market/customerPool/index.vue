@@ -1,81 +1,47 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <!-- <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户名"
-                v-model="listQuery.username">
-      </el-input>
-      <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="sys_user_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button> -->
       <el-form label-position="right" label-width="100px">
         <el-row :gutter="20">
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="搜索">
               <el-input
-                placeholder="搜索员工、手机号、工号"
+                placeholder="输入客户姓名、编号"
                 prefix-icon="el-icon-search"
                 v-model="listQuery.searchParams">
               </el-input>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="职位">
-              <el-select class="filter-item" v-model="listQuery.positionId" placeholder="请选择" @focus="handlePosition()">
-                <el-option v-for="item in positionsOptions" :key="item.positionId" :value="item.positionId" :label="item.positionName">
-                  <span style="float: left">{{ item.positionName }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="工作状态">
-              <el-select class="filter-item" v-model="listQuery.status" placeholder="请选择">
-                <el-option v-for="item in workStatus" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!-- <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="客户锁定状态">
-              <el-select class="filter-item" v-model="listQuery.lock" placeholder="请选择">
-                <el-option v-for="item in lockStatus" :key="item.value" :value="item.value" :label="item.label">
-                  <span style="float: left">{{ item.label }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col> -->
-        <!-- </el-row> -->
-        <!-- <el-row :gutter="10"> -->
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="入职时间">
-              <el-date-picker
-                v-model="entryDate"
-                type="daterange"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :default-time="['00:00:00', '23:59:59']">
-              </el-date-picker>
+            <el-form-item label="手机号">
+              <el-input
+                placeholder="搜索客户手机号"
+                prefix-icon="el-icon-search"
+                v-model="listQuery.searchParams">
+              </el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row style="text-align: center;">
-          <el-button class="search_btn" @click="handleFilter"><svg-icon icon-class="search"></svg-icon> 查询</el-button>
           <el-button class="search_btn" @click="resetFilter"><svg-icon icon-class="reset"></svg-icon> 重置</el-button>
+          <el-button class="search_btn" @click="handleFilter"><svg-icon icon-class="search"></svg-icon> 查询</el-button>
         </el-row>
       </el-form>
     </div>
 
     <div style="text-align: right">
       <el-button v-if="sys_user_add" class="add_btn" @click="handleCreate">
-        <svg-icon icon-class="add"></svg-icon> 添加</el-button>
+        <svg-icon icon-class="add"></svg-icon> 批量分配到个人</el-button>
+        <el-button v-if="sys_user_add" class="add_btn" @click="handleCreate">
+        <svg-icon icon-class="add"></svg-icon> 批量分配到部门</el-button>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
               highlight-current-row style="width: 100%">
 
-      <el-table-column align="center" label="序号" type="index" width="50">
+      <el-table-column align="center" type="selection" label="全选" width="50">
       </el-table-column>
 
-      <el-table-column align="center" label="用户名" class-name="left">
+      <el-table-column align="center" label="客户编号" class-name="left">
         <template slot-scope="scope">
           <span>
             <img v-if="scope.row.avatar" class="user-avatar" style="width: 20px; height: 20px; border-radius: 50%;" :src="scope.row.avatar+'?imageView2/1/w/20/h/20'">
@@ -84,31 +50,31 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="所属部门" show-overflow-tooltip>
+      <el-table-column align="center" label="客户姓名" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.deptName}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="职位" class-name="toggle">
+      <el-table-column align="center" label="证件类型" class-name="toggle">
         <template slot-scope="scope">
           <span>{{scope.row.positionId}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="角色">
+      <el-table-column align="center" label="证件号码">
         <template slot-scope="scope">
           <span>{{scope.row.roleDesc}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="入职时间">
+      <el-table-column align="center" label="客户类型">
         <template slot-scope="scope">
           <span>{{scope.row.employeeDate|parseTime('{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" class-name="status-col" label="状态">
+      <el-table-column align="center" class-name="status-col" label="手机号">
         <template slot-scope="scope">
           <!-- <el-tag :class="'leave': scope.row.statusNum == 0,
                           'normal': scope.row.statusNum == 1,
@@ -120,27 +86,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="账户锁定状态" show-overflow-tooltip>
+      <el-table-column align="center" label="邮箱" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.lock|turnText(lockStatus)}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="手机号" show-overflow-tooltip>
+      <el-table-column align="center" label="国籍（常住地区）" show-overflow-tooltip>
         <template slot-scope="scope">
         <span>{{scope.row.mobile}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="工号" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <span>{{scope.row.empNo}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="直属上级" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <span>{{scope.row.directSupervisorName}}</span>
         </template>
       </el-table-column>
 
@@ -151,7 +105,7 @@
           </a>
           <span class="space_line"> | </span>
           <a v-if="sys_user_upd" size="small" class="common_btn"
-                     @click="handleUpdate(scope.row, 'edit')">编辑
+                     @click="handleUpdate(scope.row, 'edit')">分配
           </a>
           <!-- <el-button v-if="sys_user_del" size="small" type="danger"
                      @click="deletes(scope.row)">删除
@@ -169,22 +123,38 @@
       </el-pagination>
     </div>
 
-    <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDeptVisible">
-      <el-tree
-        class="filter-tree"
-        :data="treeDeptData"
-        :default-checked-keys="checkedKeys"
-        check-strictly
-        node-key="id"
-        highlight-current
-        ref="deptTree"
-        :props="defaultProps"
-        @node-click="getNodeData"
-        default-expand-all
-      >
-      </el-tree>
-    </el-dialog> -->
+    <el-dialog
+          title="分配到部门"
+          :visible.sync="dialogVisible"
+          width="30%">
+          <el-form  ref="newAddClient" label-width="100px" class="demo-ruleForm">
 
+          <el-form-item  label="子公司">
+            <el-input placeholder="请选择部门" style="width:90%;"></el-input>
+          </el-form-item>
+
+        </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button  class="search_btn" @click="cancel('newAddClient')">取 消</el-button>
+            <el-button  class="add_btn" @click="clientDetermine('newAddClient')">确 定</el-button>
+          </div>
+        </el-dialog>
+            <el-dialog
+          title="分配到个人"
+          :visible.sync="dialogVisible"
+          width="30%">
+          <el-form  ref="newAddClient" label-width="100px" class="demo-ruleForm">
+
+          <el-form-item  label="姓名">
+            <el-input placeholder="请选择人员" style="width:90%;"></el-input>
+          </el-form-item>
+
+        </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button  class="search_btn" @click="cancel('newAddClient')">取 消</el-button>
+            <el-button  class="add_btn" @click="clientDetermine('newAddClient')">确 定</el-button>
+          </div>
+        </el-dialog>
   </div>
 </template>
 
@@ -221,12 +191,7 @@
     },
     data() {
       return {
-        // treeDeptData: [],
-        // checkedKeys: [],
-        // defaultProps: {
-        //   children: 'children',
-        //   label: 'name'
-        // },
+      dialogVisible: false,
         list: null,
         total: null,
         listLoading: true,

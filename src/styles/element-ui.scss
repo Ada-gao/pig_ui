@@ -243,3 +243,54 @@ $leave_status: #FF4C4C;
     white-space: nowrap;
   }
 }
+// 市场活动 样式重写
+.events-detail{
+  .el-tag{
+    color: #0299CC;
+    background: rgba(0,193,223,0.10);
+    border: 1px solid rgba(32,160,255,0.20);
+    border-radius: 4px;
+    .el-tag__close.el-icon-close{
+      color: #0299CC;
+        background: rgba(0,193,223,0.10);
+      border-radius: 100px;
+      &:hover{
+          background: #0299CC;
+          color: #fff;
+      }
+    }
+  }
+  // C端展示图
+  .image-display{
+    .el-upload--picture-card{
+      line-height:20px;
+      width: auto;
+      height: auto;
+      padding:16px  20px;
+      font-family: PingFangSC-Regular;
+      letter-spacing: 0;
+      background: #FAFAFA;
+      cursor:pointer;
+      color: #A1A1A1;
+      border: 1px solid #C8C8C8;
+      border-radius: 2px;
+      text-align: center;
+      .svg-icon{
+        line-height: 20px;
+        font-size: 24px;
+      }
+      .img-title{
+        font-size: 13px;
+        line-height: 20px;
+      }
+      .img-text{
+        font-size: 7px;
+        line-height: 10px;
+      }
+      &:hover{
+        border-color: #409EFF;
+      }
+    }
+ 
+  }
+}

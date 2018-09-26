@@ -1,357 +1,329 @@
 <template>
-  <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <el-form label-position="right" label-width="100px">
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="活动名称">
-              <el-input
-                placeholder="请输入活动名称"
-                v-model="listQuery.searchParams">
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="活动开始时间">
-              <el-date-picker
-                v-model="entryDate"
-                type="daterange"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :default-time="['00:00:00', '23:59:59']">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="活动结束时间">
-              <el-date-picker
-                v-model="entryDate"
-                type="daterange"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :default-time="['00:00:00', '23:59:59']">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-            <el-form-item label="活动状态">
-              <el-row type="flex" class="row-bg" justify="space-between">
-               <el-button :class="{add_btn:releaseSelection == 1}" @click="changeReleaseSelection(1)">未发布</el-button>
-               <el-button :class="{add_btn:releaseSelection == 2}" @click="changeReleaseSelection(2)">已发布</el-button>
-               <el-button :class="{add_btn:releaseSelection == 3}" @click="changeReleaseSelection(3)">已结束</el-button>
-              </el-row>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row style="text-align: center;">
-          <el-button class="search_btn" @click="handleFilter"><svg-icon icon-class="search"></svg-icon> 查询</el-button>
-          <el-button class="search_btn" @click="resetFilter"><svg-icon icon-class="reset"></svg-icon> 重置</el-button>
-        </el-row>
-      </el-form>
-    </div>
+<div class="app-container calendar-list-container">
+  <div class="filter-container">
+    <el-form label-position="right" label-width="100px">
+      <el-row :gutter="20">
+        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+          <el-form-item label="活动名称">
+            <el-input placeholder="请输入活动名称" v-model="listQuery.activityName">
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+          <el-form-item label="活动开始时间">
+            <el-date-picker v-model="startDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+          <el-form-item label="活动结束时间">
+            <el-date-picker v-model="endDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+          <el-form-item label="活动状态">
+            <!-- <el-checkbox :class="{add_btn:releaseSelection == 1}" @click="changeReleaseSelection(1)">未发布</el-checkbox>
+            <el-button :class="{add_btn:releaseSelection == 2}" @click="changeReleaseSelection(2)">已发布</el-button>
+            <el-button :class="{add_btn:releaseSelection == 3}" @click="changeReleaseSelection(3)">已结束</el-button> -->
+            <el-checkbox-group v-model="activityStatus">
+              <el-checkbox-button  v-for="releaseSelection in releaseSelections" :label="releaseSelection" :key="releaseSelection">{{releaseSelection}}</el-checkbox-button>
+            </el-checkbox-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row style="text-align: center;">
+        <el-button class="search_btn" @click="handleFilter">
+          <svg-icon icon-class="search"></svg-icon> 查询
+        </el-button>
+        <el-button class="search_btn" @click="resetFilter">
+          <svg-icon icon-class="reset"></svg-icon> 重置
+        </el-button>
+      </el-row>
+    </el-form>
+  </div>
 
-    <div style="text-align: right">
-      <el-button v-if="sys_user_add" class="add_btn" @click="handleUpdate('add')">
-        <svg-icon icon-class="add"></svg-icon> 新增活动</el-button>
-    </div>
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
-              highlight-current-row style="width: 100%">
+  <div style="text-align: right" v-if="activity_add">
+    <el-button class="add_btn" @click="handleUpdate('add')">
+      <svg-icon icon-class="add"></svg-icon> 新增活动
+    </el-button>
+  </div>
+  <el-table :key='tableKey' :data="activityList" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%">
 
-      <el-table-column align="center" label="活动名称">
-      </el-table-column>
+    <el-table-column align="center" label="活动名称" prop="activityName">
+    </el-table-column>
 
-      <el-table-column align="center" label="活动编号" class-name="left">
-        <template slot-scope="scope">
-          <span>
-            <img v-if="scope.row.avatar" class="user-avatar" style="width: 20px; height: 20px; border-radius: 50%;" :src="scope.row.avatar+'?imageView2/1/w/20/h/20'">
-            {{scope.row.username}}
-          </span>
+    <el-table-column align="center" label="活动编号" prop="activityCode">
+    </el-table-column>
+
+    <el-table-column align="center" label="活动开始时间">
+      <template slot-scope="scope">
+        <span>{{scope.row.activityStart | parseTime}}</span>
         </template>
-      </el-table-column>
+    </el-table-column>
 
-      <el-table-column align="center" label="活动开始时间" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <span>{{scope.row.deptName}}</span>
+    <el-table-column align="center" label="活动结束时间">
+      <template slot-scope="scope">
+          <span>{{scope.row.activityEnd | parseTime}}</span>
         </template>
-      </el-table-column>
+    </el-table-column>
 
-      <el-table-column align="center" label="活动结束时间" class-name="toggle">
-        <template slot-scope="scope">
-          <span>{{scope.row.positionId}}</span>
+    <el-table-column align="center" label="活动负责人" prop="activityPrincipal" show-overflow-tooltip>
+    </el-table-column>
+
+    <el-table-column align="center" label="活动部门" prop="activityDept" show-overflow-tooltip>
+    </el-table-column>
+
+    <el-table-column align="center" class-name="status-col" label="活动状态">
+      <template slot-scope="scope">
+          <el-tag v-if="scope.row.activityStatusId == 0" class="normal">{{scope.row.activityStatusId|turnText}}</el-tag>
+          <el-tag v-if="scope.row.activityStatusId == 1" class="unusual">{{scope.row.activityStatusId|turnText}}</el-tag>
+          <el-tag v-if="scope.row.activityStatusId == 2" class="leave">{{scope.row.activityStatusId|turnText}}</el-tag>
         </template>
-      </el-table-column>
+    </el-table-column>
 
-      <el-table-column align="center" label="活动负责人">
-        <template slot-scope="scope">
-          <span>{{scope.row.roleDesc}}</span>
+    <el-table-column align="center" label="官方活动二维码" >
+      <template slot-scope="scope">
+        <a @click="modelCode(scope.row.activityQrcodeUrl)">
+        <svg-icon icon-class="qrcode"  ></svg-icon>
+        </a>
+       
+        <a @click="download(scope)">
+         下载  
+        </a>
+
+        <!-- <download-qrcode >下载</download-qrcode>/ -->
         </template>
-      </el-table-column>
+    </el-table-column>
 
-      <el-table-column align="center" label="活动部门">
-        <template slot-scope="scope">
-          <span>{{scope.row.employeeDate|parseTime('{y}-{m}-{d}')}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" class-name="status-col" label="活动状态">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.statusNum == 0" class="normal">{{scope.row.status|turnText(workStatus)}}</el-tag>
-          <el-tag v-if="scope.row.statusNum == 1" class="leave">{{scope.row.status|turnText(workStatus)}}</el-tag>
-          <el-tag v-if="scope.row.statusNum == 2" class="unusual">{{scope.row.status|turnText(workStatus)}}</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="官方活动二维码" show-overflow-tooltip>
-        <template slot-scope="scope">
-        <span @click="modelCode">{{scope.row.lock|turnText(lockStatus)}}</span>
-        </template>
-      </el-table-column>
-
-
-
-      <el-table-column align="center" label="操作" fixed="right" width="150">
-        <template slot-scope="scope">
-          <a size="small" class="common_btn"
+    <el-table-column align="center" label="操作" fixed="right" width="150">
+      <template slot-scope="scope">
+          <a v-if="activity_query" size="small" class="common_btn"
                      @click="handleUpdate('view',scope.row)">查看
           </a>
-          <span class="space_line"> | </span>
-          <a v-if="sys_user_upd" size="small" class="common_btn"
+          <span class="space_line" v-if="activity_edit"> | </span>
+          <a v-if="activity_edit" size="small" class="common_btn"
                      @click="handleUpdate('edit',scope.row)">编辑
           </a>
-          <el-button  size="small" type="danger"
-                     @click="deletes(scope.row)">删除
-          </el-button>
+            <a v-if="activity_delete" size="small" class="danger_btn"
+                   @click="deletes(scope.row)" >删除
+          </a>
         </template>
-      </el-table-column>
+    </el-table-column>
 
-    </el-table>
-
-    <div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                     :current-page.sync="listQuery.page"
-                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
-                     layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
-    </div>
-
-    <el-dialog :visible.sync="dialogVisible" width="20%">
-      <article>
-        <div class="title-code">解码未来“2018年独角兽企业投资经济论坛</div>
-        <time>时间：2018-4-1 14:00-16:00</time>
-        <p>地点：陆家嘴软件园</p>
-      </article>
-      <section>
-        <p>报名请扫描二维码</p>
-
-      </section>
-    </el-dialog>
-
+  </el-table>
+ 
+  <div v-show="!listLoading" class="pagination-container">
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+    </el-pagination>
   </div>
+
+<qrcode v-if="dialogVisible" :activityQrcodeUrl= "activityQrcodeUrl"></qrcode>
+  <div id="qrcode1" ref="qrcode1" v-show="false"></div>
+</div>
 </template>
 
 <script>
-  import { fetchList, getObj, addObj, putObj, delObj } from '@/api/user'
-  import { deptRoleList, fetchDeptTree } from '@/api/role'
-  import { getPositionName } from '@/api/posi'
-  import { getAllPositon } from '@/api/queryConditions'
-  import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { parseTime, transformText, transformText1 } from '@/utils'
-  import { mapGetters } from 'vuex'
-  import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
-  import ElOption from "element-ui/packages/select/src/option"
-  import Bus from '@/assets/js/bus'
+import {getActivityList,deleteActivity} from '@/api/market/eventsList'
+import waves from '@/directive/waves/index.js' // 水波纹指令
+import {parseTime,transformText, transformText1} from '@/utils'
+import { mapGetters} from 'vuex'
+import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
+import ElOption from "element-ui/packages/select/src/option"
+import Bus from '@/assets/js/bus'
+import qrcode from './components/qrcode.vue'
+import QRCode from 'qrcodejs2'
+export default {
+  components: {
+    ElOption,
+    ElRadioGroup,
+    qrcode,
+    QRCode
+  },
+  filters: {
+    turnText(val, list) {
+      let self
+      if(val == 0) self = "未发布"
+      if(val == 1) self = "已发布"
+      if(val == 2) self = "已结束"
+      return self
+    },
+    parseTime(time) {
+      if (!time) return
+      let date = new Date(time)
+      return parseTime(date)
+    }
+  },
+  name: 'table_user',
+  directives: {
+    waves
+  },
+  data() {
+    return {
+      activityQrcodeUrl:'',
+      dialogVisible: false,
+      activityList: [],
+      total: null,
+      listLoading: true,
+      releaseSelections:['未发布','已发布','已结束'],
+      activityStatus: [],
+      listQuery: {
+        page: 1,
+        limit: 20,
+        activityStatus:[]
+      },
+      role: undefined,
+      form: {
+        name: 'rank',
+        username: undefined,
+        password: undefined,
+        status: undefined,
+        deptId: undefined
+      },
+      tableKey: 0,
+      startDate: [],
+      endDate: [],
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'permissions'
+    ])
+  },
+  created() {
+    this.getActivityList()
+    this.activity_add = this.permissions['activity_add']
+    this.activity_query = this.permissions['activity_query']
+    this.activity_edit = this.permissions['activity_edit']
+    this.activity_delete = this.permissions['activity_delete']
+  },
+  mounted(){
 
-  export default {
-    components: {
-      ElOption,
-      ElRadioGroup
+},
+  methods: {
+    //二维码预览
+    modelCode(activityQrcodeUrl) {
+      this.dialogVisible = true
+      this.activityQrcodeUrl = activityQrcodeUrl
+         
     },
-    filters: {
-      turnText (val, list) {
-        return transformText1(val, list)
+       qrcode (text) {
+        let qrcode = new QRCode('qrcode1', {  
+            width: 200,  // 设置宽度 
+            height: 200, // 设置高度
+            text:window.location.port+text
+        })  
       },
-      parseTime (time) {
-        if(!time) return
-        let date = new Date(time)
-        return parseTime(date)
-      }
+    download(scope){
+      let img = document.getElementById('qrcode1').getElementsByTagName('img')[scope.$index]
+      var link = document.createElement("a");
+      link.setAttribute("href",img.src);
+      link.setAttribute("download",'123.png');
+      link.click();
     },
-    name: 'table_user',
-    directives: {
-      waves
+    getActivityList() {
+      this.listLoading = true
+   
+      getActivityList(this.listQuery).then(res => {
+       if(res.status == 200){
+        this.activityList  = res.data.records
+        this.total = res.data.total
+        this.listLoading = false
+        document.getElementById("qrcode1").innerHTML = "";
+        this.activityList.forEach((item,index)=>{
+         this.qrcode(item.activityQrcodeUrl)
+       })
+       }
+      })
     },
-    data() {
-      return {
-        releaseSelection:1,
-        dialogVisible:false,
-        list: null,
-        total: null,
-        listLoading: true,
-        listQuery: {
-          page: 1,
-          limit: 20
-        },
-        role: undefined,
-        form: {
-          name: 'rank',
-          username: undefined,
-          password: undefined,
-          status: undefined,
-          deptId: undefined
-        },
-        // statusOptions: ['0', '1', '2'],
-        positionsOptions: [],
-        // dialogDeptVisible: false,
-        userAdd: false,
-        userUpd: false,
-        userDel: false,
-        // dialogStatus: '',
-        tableKey: 0,
-        // value13: '',
-        eduOptions: [],
-        // IDType: '',
-        // employeeDate: '',
-        // maritalStatus: '',
-        positionId: '',
-        status: '',
-        // tableData: [],
-        // tableHeader: [],
-        entryDate: [],
-        // positionName: '',
-        // isReadonly: false
-      }
-    },
-    computed: {
-      ...mapGetters([
-        'permissions',
-        'workStatus',
-        'lockStatus'
-      ])
-    },
-    created() {
-      // this.handlePosition()
-      this.getList()
-      this.sys_user_add = this.permissions['sys_user_add']
-      this.sys_user_upd = this.permissions['sys_user_upd']
-      this.sys_user_del = this.permissions['sys_user_del']
-    },
-    methods: {
-      //二维码预览
-      modelCode(){
-        this.dialogVisible = true;
-      },
-      // 选择发布状态
-      changeReleaseSelection(index){
-        this.releaseSelection = index;
-      },
-      getList() {
-        this.listLoading = true
-        this.listQuery.orderByField = '`user`.create_time'
-        this.listQuery.isAsc = false
-        if(this.entryDate.length > 0) {
-          this.listQuery.startTime = parseTime(this.entryDate[0], '{y}-{m}-{d}')
-          this.listQuery.endTime = parseTime(this.entryDate[1], '{y}-{m}-{d}')
-        } else {
-          this.listQuery.startTime = ''
-          this.listQuery.endTime = ''
-        }
-        // this.handlePosition()
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.records
-          // console.log(this.list)
-          this.list.map(item => {
-            item.roleDesc = item.roleList.length > 0 ? item.roleList[0].roleDesc : ''
-          })
-          this.total = response.data.total
-          this.listLoading = false
-          getAllPositon().then(res => {
-            this.positionsOptions = res.data
-            this.list.forEach(item => {
-              item.positionId = transformText(this.positionsOptions, item.positionId)
-              item.statusNum = item.status
-              // item.status = transformText(this.workStatus, item.status)
-            })
-          })
-        })
-      },
 
-      handlePosition() {
-        getAllPositon().then(res => {
-          this.positionsOptions = res.data
-        })
-      },
-      handleFilter() {
-        this.listQuery.page = 1
-        this.getList()
-      },
-      handleSizeChange(val) {
-        this.listQuery.limit = val
-        this.getList()
-      },
-      handleCurrentChange(val) {
-        this.listQuery.page = val
-        this.getList()
-      },
-      // 编辑查询（查看）新增 页面跳转
-      handleUpdate(state,row) {
+
+// 查询
+    handleFilter() {
+      this.listQuery.page = 1
+      this.listQuery.activityStatus = []
+      this.activityStatus.forEach(item=>{
+        if(item == '已发布') this.listQuery.activityStatus.push(0)
+        if(item == '未发布') this.listQuery.activityStatus.push(1)
+        if(item == '已结束') this.listQuery.activityStatus.push(2)
+      })
+      this.listQuery.activityStartFrom = this.startDate && this.startDate[0] 
+      this.listQuery.activityStartTo = this.startDate && this.startDate[1] 
+      this.listQuery.activityEndFrom = this.endDate && this.endDate[0] 
+      this.listQuery.activityEndTo = this.endDate && this.endDate[1] 
+
+      this.getActivityList()
+    },
+    handleSizeChange(val) {
+      this.listQuery.limit = val
+      this.getActivityList()
+    },
+    handleCurrentChange(val) {
+      this.listQuery.page = val
+      this.getActivityList()
+    },
+    // 编辑查询（查看）新增 页面跳转
+    handleUpdate(state, row) {
+      if(state == 'add'){
         this.$router.push(`/market/eventsList/${state}`)
-      },
-      deletes(row) {
-        this.$confirm('此操作将永久删除该活动，是否继续？', '提示', {
-          confirmButtonText: '确定',
+      }else{
+        this.$router.push(`/market/eventsList/${state}/${row.activityId}`)
+      }
+      
+    },
+    deletes(row) {
+      this.$confirm('此操作将永久删除该活动，是否继续？', '提示', {
+         confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          delObj(row.userId).then(() => {
-            this.getList()
-            this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
-              duration: 2000
-            })
-          }).cache(() => {
-            this.$notify({
-              title: '失败',
-              message: '删除失败',
-              type: 'error',
-              duration: 2000
-            })
+      }).then(() => {
+        deleteActivity(row.activityId).then(() => {
+          this.getActivityList()
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+        }).catch(() => {
+          this.$notify({
+            title: '失败',
+            message: '删除失败',
+            type: 'error',
+            duration: 2000
           })
         })
-      },
-      resetTemp() {
-        this.form = {
-          id: undefined,
-          username: '',
-          password: '',
-          role: undefined
-        }
-      },
-      resetFilter() { // 重置搜索条件
-        this.listQuery = {
+      })
+    },
+    resetFilter() { // 重置搜索条件
+      this.listQuery = {
           page: 1,
           limit: 20,
-          username: '',
-          positionId: '',
-          status: ''
+          activityStatus: [],
+          activityStartFrom: '',
+          activityStartTo: '',
+          activityEndFrom: '',
+          activityEndTo: '',
+          activityName: null
         },
-        this.entryDate = []
-        this.handleFilter()
-      }
+      this.startDate = []
+      this.endDate = []
+      this.activityStatus = []
+      this.getActivityList()
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
-.el-select,
-.el-date-editor {
-  width: 100%;
+.el-date-editor,
+.el-select {
+    width: 100%;
 }
-.title-code{
-  font-family: PingFangSC-Medium;
-  font-size: 20px;
-  color: #000000;
-  letter-spacing: 0;
+.title-code {
+    font-family: PingFangSC-Medium;
+    font-size: 20px;
+    color: #000000;
+    letter-spacing: 0;
 }
 </style>

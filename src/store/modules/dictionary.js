@@ -33,7 +33,8 @@ const dictionary = {
     lockStatus: [],
     preserveExpired: [],
     maskCode: [],
-    dataScope: []
+    dataScope: [],
+    activityType: []
   },
 
   mutations: {
@@ -132,6 +133,9 @@ const dictionary = {
     },
     SET_DATA_SCOPE: (state, dataScope) => {
       state.dataScope = dataScope
+    },
+    SET_ACTIVITY_TYPE: (state, activityType) => {
+      state.activityType = activityType
     }
   },
 
@@ -174,6 +178,7 @@ const dictionary = {
           let preserveExpiredList = []
           let maskCodeList = []
           let dataScopeList = []
+          let activityTypeList = []
 
           for(let i = 0; i < data.length; i++) {
             if(data[i].type === 'id_type') {
@@ -262,6 +267,8 @@ const dictionary = {
 
             } else if(data[i].type === 'data_scope') {
               dataScopeList.push(data[i])
+            } else if(data[i].type === 'activity_type') {
+              activityTypeList.push(data[i])
             }
           }
 
@@ -274,7 +281,6 @@ const dictionary = {
               contractList.push(item)
             }
           })
-
           commit('SET_ID_TYPE', idTypeList)
           commit('SET_MARRIAGE_STATUS', marriageStatusList)
           commit('SET_PRODUCT_STATUS', productStatusList)
@@ -307,6 +313,7 @@ const dictionary = {
           commit('SET_PRESERVE_EXPIRED', preserveExpiredList)
           commit('SET_MASK_CODE', maskCodeList)
           commit('SET_DATA_SCOPE', dataScopeList)
+          commit('SET_ACTIVITY_TYPE', activityTypeList)
           resolve()
         }).catch(error => {
           reject(error)
