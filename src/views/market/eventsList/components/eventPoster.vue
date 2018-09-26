@@ -131,7 +131,7 @@ export default {
       },
       list:{},
       labelButton:this.form.activityDeptList[0].vid,
-      codeUrl:window.location.origin+'/#'+this.form.activityQrcodeUrl
+      codeUrl:'http://10.9.70.235:9999'+this.form.activityQrcodeUrl
     }
   },
   created() {

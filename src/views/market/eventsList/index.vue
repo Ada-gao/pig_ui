@@ -118,7 +118,7 @@
     </el-pagination>
   </div>
 
-<qrcode v-if="dialogVisible" :activityQrcodeUrl= "activityQrcodeUrl"></qrcode>
+<qrcode v-if="dialogVisible" :activityQrcodeUrl= "activityQrcodeUrl" @dialogVisibleChild = "dialogVisibleChild"></qrcode>
   <div id="qrcode1" ref="qrcode1" v-show="false"></div>
 </div>
 </template>
@@ -204,14 +204,20 @@ export default {
     //二维码预览
     modelCode(activityQrcodeUrl) {
       this.dialogVisible = true
-      this.activityQrcodeUrl = activityQrcodeUrl
+      this.activityQrcodeUrl = {
+          dialogVisible: this.dialogVisible,
+          activityQrcodeUrl
+      }
          
     },
+    dialogVisibleChild(val){
+      this.dialogVisible = val
+          },
        qrcode (text) {
         let qrcode = new QRCode('qrcode1', {  
             width: 200,  // 设置宽度 
             height: 200, // 设置高度
-            text:window.location.port+text
+            text:'http://10.9.70.235:9999'+text
         })  
       },
     download(scope){
@@ -231,7 +237,7 @@ export default {
         this.listLoading = false
         document.getElementById("qrcode1").innerHTML = "";
         this.activityList.forEach((item,index)=>{
-         this.qrcode(item.activityQrcodeUrl)
+        //  this.qrcode(item.activityQrcodeUrl)
        })
        }
       })

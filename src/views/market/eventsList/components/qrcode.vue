@@ -25,11 +25,14 @@ export default {
   data() {
     return {
       dialogVisible: true,
-     
     }
   },
- 
+ watch:{
+   dialogVisible(val){
+     this.$emit('dialogVisibleChild',val)
+   }
 
+ },
   mounted(){
   this.$nextTick(()=>{
    this.qrcode();
@@ -37,10 +40,11 @@ export default {
 },
   methods: {
        qrcode () {
+         console.log('http://10.9.70.235:9999'+this.activityQrcodeUrl.activityQrcodeUrl)
         let qrcode = new QRCode('qrcode', {  
             width: 200,  // 设置宽度 
             height: 200, // 设置高度
-            text: window.location.port+this.activityQrcodeUrl
+            text: 'http://10.9.70.235:9999'+this.activityQrcodeUrl.activityQrcodeUrl
         })  
       },
   }
