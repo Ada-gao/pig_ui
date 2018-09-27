@@ -225,7 +225,7 @@ export default {
       let img = document.getElementById('qrcode1').getElementsByTagName('img')[scope.$index]
       var link = document.createElement("a");
       link.setAttribute("href",img.src);
-      link.setAttribute("download",'123.png');
+      link.setAttribute("download",'qrcode.png');
       link.click();
     },
     getActivityList() {

@@ -94,7 +94,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="主办部门" prop="activityDeptList">
-          <span v-if="url == 'view'" v-for="(item,index) in form.activityDeptList" :value="item.id">
+          <span v-if="url == 'view'" v-for="(item,index) in form.activityDeptList" :key="item.id" :value="item.id">
               {{item.val}}
               <span v-if="index != form.activityDeptList.length-1">|</span></span>
             <el-select  v-if="url != 'view'"  v-model="form.activityDeptList" multiple placeholder="请选择" style="width: 100%;">
