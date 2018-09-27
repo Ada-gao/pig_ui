@@ -3,9 +3,13 @@
  
   <el-dialog :visible.sync="dialogVisible" width="20%" @open = "qrcode">
     <article>
-      <div class="title-code">解码未来“2018年独角兽企业投资经济论坛</div>
-      <time>时间：2018-4-1 14:00-16:00</time>
-      <p>地点：陆家嘴软件园</p>
+      <div class="title-code">{{activityQrcodeUrl.activityQrcodeUrl.activityName}}</div>
+      <time>时间： 
+          <span>{{activityQrcodeUrl.activityQrcodeUrl.activityStart| parseTime}}</span>
+            --
+          <span>{{activityQrcodeUrl.activityQrcodeUrl.activityEnd| parseTime}}</span>
+      </time>
+      <p>地点：{{activityQrcodeUrl.activityQrcodeUrl.activitySite}}</p>
     </article>
     <section>
       <p>报名请扫描二维码</p>
@@ -40,11 +44,11 @@ export default {
 },
   methods: {
        qrcode () {
-         console.log('http://10.9.70.235:9999'+this.activityQrcodeUrl.activityQrcodeUrl)
+         console.log('http://10.9.70.235:9999'+this.activityQrcodeUrl.activityQrcodeUrl.activityQrcodeUrl)
         let qrcode = new QRCode('qrcode', {  
             width: 200,  // 设置宽度 
             height: 200, // 设置高度
-            text: 'http://10.9.70.235:9999'+this.activityQrcodeUrl.activityQrcodeUrl
+            text: this.activityQrcodeUrl.activityQrcodeUrl.activityQrcodeUrl
         })  
       },
   }

@@ -84,7 +84,7 @@
 
     <el-table-column align="center" label="官方活动二维码" >
       <template slot-scope="scope">
-        <a @click="modelCode(scope.row.activityQrcodeUrl)">
+        <a @click="modelCode(scope.row)">
         <svg-icon icon-class="qrcode"  ></svg-icon>
         </a>
        
@@ -217,7 +217,8 @@ export default {
         let qrcode = new QRCode('qrcode1', {  
             width: 200,  // 设置宽度 
             height: 200, // 设置高度
-            text:'http://10.9.70.235:9999'+text
+             text:text
+            // text:'http://10.9.70.235:9999'+text
         })  
       },
     download(scope){
