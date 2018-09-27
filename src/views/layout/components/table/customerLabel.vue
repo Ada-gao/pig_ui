@@ -12,10 +12,11 @@
       <el-table-column align="center" label="操作" class-name="operate-col">
         <template slot-scope="scope">
           <a v-if="sys_product_upd" size="small" class="common_btn"
-                     @click="handleUpdate(scope.row)">查看客户信息
+                     @click="handleUpdate(scope.row.clientId)">查看客户信息
           </a>
           <a v-if="sys_product_del" size="small" class="danger_btn"
-                     @click="clientLabelHandle(scope.row.clientLabelId)">{{scope.row.clientLabelId ? '取消客户标签' : '设置客户标签'}}
+                     @click="clientLabelHandle(scope.row.clientId, scope.row.clientLabelId)">
+                     {{scope.row.clientLabelId && scope.row.delFlag == 0 ? '取消客户标签' : '设置客户标签'}}
           </a>
         </template>
       </el-table-column>
@@ -105,6 +106,7 @@
         tableKey: 0,
         // currencyList: [],
         productTypes: [],
+        clientLabelId: ''
       }
     },
     computed: {
@@ -119,6 +121,7 @@
       this.sys_product_add = this.permissions['sys_product_add']
       this.sys_product_upd = this.permissions['sys_product_upd']
       this.sys_product_del = this.permissions['sys_product_del']
+      this.clientLabelId = this.$route.params.clientLabelId
     },
     watch: {
       clientLabelList(curVal, oldVal) {
@@ -131,48 +134,70 @@
     },
     methods: {
       handleSelectionChange(val) {
-        console.log(val)
+        let arr = []
+        val.forEach(item => {
+          arr.push(item.clientId)
+        })
+        this.$emit('selectClient', arr)
       },
       handleSizeChange(val) {
         this.listQuery.limit = val
-        this.$emit('searchProduct', this.listQuery)
-        // this.getList()
+        this.$emit('searchList', this.listQuery)
       },
       handleCurrentChange(val) {
         this.listQuery.page = val
-        this.$emit('searchProduct', this.listQuery)
-        // this.getList()
+        this.$emit('searchList', this.listQuery)
       },
-      handleUpdate(row) { // 查看
-        this.$router.push({path: '/product/productDetail/' + row.productId, query: {productStatus: row.productStatus}})
+      handleUpdate(id) { // 查看
+        this.$router.push({
+          path: '/client/readDetail/' + id
+        })
         Bus.$emit('activeIndex', this.activeUrl)
         localStorage.setItem('activeUrl', this.activeUrl)
       },
       resetTemp() {
         this.form = {
           id: undefined,
-          name: '',
-          // role: undefined
+          name: ''
         }
       },
-      clientLabelHandle(id) {
+      clientLabelHandle(id, clientLabelId) {
         let text = id ? '取消' : '设置'
         this.$confirm('确定' + text + '客户标签?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          console.log('close dialog')
-          if (id) {
-            delClientLabel(id).then(res => {
-              
+          if (clientLabelId) {
+            const param = {
+              clientIds: [id]
+            }
+            delClientLabel([id]).then(res => {
+              if (res.status !== 200) return
+              this.$notify({
+                title: '成功',
+                message: '取消成功',
+                type: 'success',
+                duration: 2000
+              })
+              this.$emit('searchList', this.listQuery)
             })
           } else {
-            addClientLabel().then(res => {
-
+            const param = {
+              clientId: [id],
+              clientLabelIds: [this.clientLabelId]
+            }
+            addClientLabel(param).then(res => {
+              if (res.status !== 200) return
+              this.$notify({
+                title: '成功',
+                message: '设置成功',
+                type: 'success',
+                duration: 2000
+              })
+              this.$emit('searchList', this.listQuery)
             })
           }
-          
         }).catch(() => {
           // this.$message({
           //   type: 'info',

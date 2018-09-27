@@ -367,7 +367,7 @@
       },
       handleRouter(id) { // 查看跳转详情
         this.$router.push({
-          path: '/client/readDetail/' + id + '/0'
+          path: '/client/readDetail/' + id
         })
         Bus.$emit('activeIndex', '/client/customer')
       },

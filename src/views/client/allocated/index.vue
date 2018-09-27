@@ -397,7 +397,7 @@
         //   path: '/client/detail/' + id
         // })
         this.$router.push({
-          path: '/client/readDetail/' + id + '/0'
+          path: '/client/readDetail/' + id
         })
         Bus.$emit('activeIndex', '/client/allocated')
       },

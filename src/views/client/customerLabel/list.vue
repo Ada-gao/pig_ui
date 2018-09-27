@@ -20,13 +20,13 @@
     <div class="filter-container" style="text-align: right">
       <el-button
                  class="filter-item add_btn"
-                 @click="openModel"
+                 @click="openModel('cancel')"
                  type="primary"
                  icon="edit">
         <svg-icon icon-class="add"></svg-icon> 取消客户标签</el-button>
       <el-button
                  class="filter-item add_btn"
-                 @click="openModel"
+                 @click="openModel('set')"
                  type="primary"
                  icon="edit"
                  v-show="step==2">
@@ -36,20 +36,22 @@
     <customer-label-list
       v-show="step==1"
       :clientLabelList="data"
-      @searchList="getListPageQuery">
+      @searchList="getListPageQuery"
+      @selectClient="getClientList">
     </customer-label-list>
     <!-- 全局客户搜索列表 -->
     <customer-label-list
       v-show="step==2"
       :clientLabelList="data"
-      @searchList="getListPageQuery1">
+      @searchList="getListPageQuery1"
+      @selectClient="getClientList">
     </customer-label-list>
     
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
       width="30%">
-      <span>{{deletesTitle}}</span>
+      <span>确定{{deletesTitle}}客户标签？</span>
       <div slot="footer" class="dialog-footer">
         <el-button class="search_btn" @click="dialogVisible = false">取 消</el-button>
         <el-button class="add_btn" @click="labelHandle">确 定</el-button>
@@ -60,8 +62,7 @@
 
 <script>
   import {
-    getClientList,clientLabel,deleteClientLabel,seeClientLabel,editClientLabel,fetchList,clientAumLabel,editClientAumLabel,deleteClientAumLabel,
-    fetchClientLabel
+    fetchClientLabel, addClientLabel, delClientLabel
   } from '@/api/client/customerLabel'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
@@ -130,7 +131,9 @@
           orderByField: 'tab.create_time'
         },
         data: null,
-        DisplayTypeBl: false
+        DisplayTypeBl: false,
+        clientLabelType: '',
+        clientIds: []
       }
     },
        computed: {
@@ -164,6 +167,9 @@
         this.listQuery.limit = data.limit
         this.getList()
       },
+      getClientList(data) {
+        this.clientIds = data
+      },
       //根据客户标签搜索列表
       getList() {
         // this.listLoading = true
@@ -196,47 +202,25 @@
         this.DisplayTypeBl  = this.step == 2 ? true : false
         this.getList()
       },
-      openModel(){
-        this.step == 1?this.newAdd = true:this.newAddAum = true;
-        this.newAddParamet = {}
-        this.newAddClient = {}
+      openModel(type){
+        if (!this.clientIds.length) {
+          this.$notify({
+            title: '警告',
+            message: '请至少选择一个客户',
+            type: 'warning',
+            duration: 2000
+          })
+          return
+        }
+        this.clientLabelType = type
+        this.dialogVisible = true
+        this.deletesTitle = type === 'cancel' ? '取消' : '设置'
       },
 
       // 取消 关闭对话框
       cancel(formName){
         this.$refs[formName].resetFields()
-        this.newAddAum = false
-        this.newAdd = false
-        this.newAddParamet = {}
-        this.newAddClient = {}
-      },
-      // 新增 确定 客户标签
-      clientDetermine(formName){
-        let self = false
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            console.log(valid)
-          } else {
-            self = true
-            console.log('error submit!!')
-            return false
-          }
-        })
-        if(self) return false
-        let method
-
-        if(this.selfEdit){
-          this.newAddClient.clientLabelId = this.id
-          editClientLabel(this.newAddClient,this.id).then(response =>{
-             this.changeLabel(response)
-          this.$refs[formName].resetFields()
-        })
-        }else{
-          clientLabel(this.newAddClient).then(response =>{
-              this.changeLabel(response)
-              this.$refs[formName].resetFields()
-          })
-        }
+        
       },
       changeLabel(response){
 
@@ -253,21 +237,39 @@
              this.selfEdit = false
           }
       },
-      //获得全部客户aum标签
-      getAumList() {
-        this.listLoading = true
-
-        fetchList().then(response => {
-
-         response.data.forEach((val,index,taht)=>{
-            val.signingAmount = `${val.lowLimit} - ${val.highLimit}万`
+      labelHandle() {
+        if (this.clientLabelType === 'cancel') {
+          const param = {
+            clientIds: this.clientIds
+          }
+          delClientLabel(this.clientIds).then(res => {
+            if (res.status !== 200) return
+            this.$notify({
+              title: '成功',
+              message: '取消成功',
+              type: 'success',
+              duration: 2000
+            })
+            // this.$emit('searchList', this.listQuery)
           })
-         this.aumlist = response.data
-          this.listLoading = false
-
-        })
-      },
-      labelHandle() {}
+        } else {
+          const param = {
+            clientId: this.clientIds,
+            clientLabelIds: [this.listQuery.clientLabelId]
+          }
+          addClientLabel(param).then(res => {
+            if (res.status !== 200) return
+            this.$notify({
+              title: '成功',
+              message: '设置成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        }
+        this.dialogVisible = false
+        this.getList()
+      }
     }
   }
 </script>

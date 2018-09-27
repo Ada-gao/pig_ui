@@ -1,5 +1,5 @@
 <template>
-    <iframe ref="iframe" src="http://10.9.70.205:9999/swagger-ui.html" frameborder="0" style="border:0;" width="100%"></iframe>
+    <iframe ref="iframe" :src="baseUrl" frameborder="0" style="border:0;" width="100%"></iframe>
 </template>
 
 <script>
@@ -11,7 +11,8 @@
     },
     mounted() {
       this.iframeInit()
-      // console.log(`\"${process.env.BASE_API}\" `)
+      var url = require('../../../../config/dev.env')
+      this.baseUrl = url.BASE_API + '/swagger-ui.html' || this.baseUrl
     },
     methods: {
       iframeInit() {

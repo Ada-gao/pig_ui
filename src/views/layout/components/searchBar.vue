@@ -97,9 +97,9 @@
         <el-col :sm="12" :lg="8" v-if="searchEmail">
           <el-form-item label="理财师">
             <el-input
-              placeholder="搜索理财师邮箱前缀"
+              placeholder="搜索理财师"
               prefix-icon="el-icon-search"
-              v-model="listQuery.email">
+              v-model="listQuery.userName">
             </el-input>
           </el-form-item>
         </el-col>
@@ -227,13 +227,13 @@ export default {
       ],
       displayType: [
         {
-          label: '在标签内的客户',
+          label: '不在标签内的客户',
           value: '1'
         },
-        {
-          label: '不在标签内的客户',
-          value: '2'
-        },
+        // {
+        //   label: '在标签内的客户',
+        //   value: '2'
+        // },
         {
           label: '全部',
           value: '3'
