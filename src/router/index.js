@@ -73,7 +73,7 @@ export const constantRouterMap = [
         hidden: true
       },
       {
-        path: 'readDetail/:id/:isView',
+        path: 'readDetail/:id',
         component: _import('client/customer/readOnlyDetail'),
         name: '客户详情页',
         meta: { title: '查看客户详情', icon: '', noCache: true },

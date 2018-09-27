@@ -178,10 +178,15 @@
         this.dialogFormVisible = true
       },
       close() {
+        this.$refs['form'].resetFields()
         this.resetTemp()
       },
       handleUpdate(row) {
-        this.form = row
+        // this.form = row
+        this.form.rankId = row.rankId
+        this.form.rankName = row.rankName
+        this.form.positionName = row.positionName
+        this.form.positionId = row.positionId
         this.dialogFormVisible = true
         this.dialogStatus = 'update'
       },

@@ -121,10 +121,20 @@ export function addClientLabel(obj) {
 /**
  * 客户标签搜索取消
  */
-export function delClientLabel(clientId) {
+export function delClientLabel(obj) {
   return request({
-    url: '/client/client/deleteClientLabel/' + clientId,
-    method:'delete'
+    url: '/client/client/deleteClientLabel/',
+    method:'delete',
+    data: obj
+  })
+}
+/**
+ * 查询客户标签
+ */
+export function getClientLabel(clientId) {
+  return request({
+    url: '/client/clientLabel/clientLabel/' + clientId,
+    method:'get',
   })
 }
 
