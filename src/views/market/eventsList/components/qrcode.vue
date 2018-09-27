@@ -44,7 +44,6 @@ export default {
 },
   methods: {
        qrcode () {
-         console.log('http://10.9.70.235:9999'+this.activityQrcodeUrl.activityQrcodeUrl.activityQrcodeUrl)
         let qrcode = new QRCode('qrcode', {  
             width: 200,  // 设置宽度 
             height: 200, // 设置高度
