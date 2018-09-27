@@ -31,7 +31,7 @@
               <span>{{scope.row.applyReason}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="风险测评问卷（图片）">
+          <el-table-column align="center" :label="investorType == 0 ? '风险测评问卷（图片）' : '专业投资者认证材料（图片）'">
             <template slot-scope="scope">
               <div v-for="item in scope.row.urls" :data="scope.row.urls" style="display: inline-block; margin-right: 10px">
                 <a href="#"><img :src="item" alt="" style="width: 50px"></a>

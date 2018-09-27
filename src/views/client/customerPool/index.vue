@@ -141,7 +141,7 @@
            :rules="[
                { required: true, message: '请选择部门', trigger: 'change'}
             ]">
-             <el-select v-model="departmentForm.department" placeholder="请选择人员">
+             <el-select v-model="departmentForm.department" placeholder="请选择部门">
                 <el-option
                   v-for="item in rootList"
                   :key="item.id"
