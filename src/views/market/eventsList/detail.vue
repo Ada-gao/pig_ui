@@ -45,7 +45,7 @@
           <el-form-item label="活动类型" prop="activityType">
             <span v-if="url == 'view'">{{form.activityType}}</span>
             <el-select v-else v-model="form.activityType"  placeholder="请选择"  style="width: 100%;">
-              <el-option v-for="item in activityTypeList" :key="item.sysSelectValueId"  :label="item.label"  :value="item.sysSelectValueId">
+              <el-option v-for="item in activityTypeList" :key="item.value"  :label="item.label"  :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
@@ -579,6 +579,7 @@ export default {
           data.activityData = [data.activityStart,data.activityEnd]
           data.registrationData = [data.registrationStart,data.registrationEnd]
           data.activityShare = data.activityShare.split('|')
+       
           // 在编辑的状态下
           if(this.url == 'edit'){
             data.activityPrincipalList.forEach(item=>{
@@ -589,10 +590,9 @@ export default {
             })
             data.activityPrincipalList = activityPrincipalList
             data.activityDeptList = activityDeptList
-            data.activityType = Number(data.activityType)
-          }else if(this.url == 'view'){ //在查看状态下
+          }else if(this.url == 'view'){// 在查看的状态下
             this.activityTypeList.forEach(item=>{
-              if(item.sysSelectValueId == data.activityType){
+              if(item.value == data.activityType){
                 data.activityType = item.label
               }
             })

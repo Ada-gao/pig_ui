@@ -47,7 +47,7 @@ export default {
         let qrcode = new QRCode('qrcode', {  
             width: 200,  // 设置宽度 
             height: 200, // 设置高度
-            text: this.activityQrcodeUrl.activityQrcodeUrl.activityQrcodeUrl
+            text: this.activityQrcodeUrl.activityQrcodeUrl.qrcodeTargetUrl
         })  
       },
   }

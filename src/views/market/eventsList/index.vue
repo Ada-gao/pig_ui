@@ -23,9 +23,6 @@
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="活动状态">
-            <!-- <el-checkbox :class="{add_btn:releaseSelection == 1}" @click="changeReleaseSelection(1)">未发布</el-checkbox>
-            <el-button :class="{add_btn:releaseSelection == 2}" @click="changeReleaseSelection(2)">已发布</el-button>
-            <el-button :class="{add_btn:releaseSelection == 3}" @click="changeReleaseSelection(3)">已结束</el-button> -->
             <el-checkbox-group v-model="activityStatus">
               <el-checkbox-button  v-for="releaseSelection in releaseSelections" :label="releaseSelection" :key="releaseSelection">{{releaseSelection}}</el-checkbox-button>
             </el-checkbox-group>
@@ -126,7 +123,7 @@
 <script>
 import {getActivityList,deleteActivity} from '@/api/market/eventsList'
 import waves from '@/directive/waves/index.js' // 水波纹指令
-import {parseTime,transformText, transformText1} from '@/utils'
+import {transformText, transformText1} from '@/utils'
 import { mapGetters} from 'vuex'
 import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
 import ElOption from "element-ui/packages/select/src/option"
@@ -148,11 +145,6 @@ export default {
       if(val == 2) self = "已结束"
       return self
     },
-    parseTime(time) {
-      if (!time) return
-      let date = new Date(time)
-      return parseTime(date)
-    }
   },
   name: 'table_user',
   directives: {
@@ -238,7 +230,7 @@ export default {
         this.listLoading = false
         document.getElementById("qrcode1").innerHTML = "";
         this.activityList.forEach((item,index)=>{
-         this.qrcode(item.QrcodeTargetUrl)
+         this.qrcode(item.qrcodeTargetUrl)
        })
        }
       })
