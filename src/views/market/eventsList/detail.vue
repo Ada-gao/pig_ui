@@ -298,7 +298,9 @@ export default {
      var validatePass = (rule, value, callback) => {
         let reg = /^[0-9]+.?[0-9]*$/;
         if(!reg.test(value)){
-           callback(new Error('活动人数必须为数字值'));
+         callback(new Error('活动人数必须为数字值'));
+        }else{
+           callback()
         }
 
       };
@@ -536,7 +538,6 @@ export default {
             });
              loading.close()
             this.$router.push(`/market/eventsList/edit/${res.data.data}`)
-            this.editActivity()
            }
          
           })
