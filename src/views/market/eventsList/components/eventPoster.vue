@@ -131,7 +131,7 @@ export default {
       },
       list:{},
       labelButton:this.form.activityDeptList[0].vid,
-      codeUrl:this.form.activityQrcodeUrl
+      codeUrl:this.form.QrcodeTargetUrl
     }
   },
   created() {

@@ -238,7 +238,7 @@ export default {
         this.listLoading = false
         document.getElementById("qrcode1").innerHTML = "";
         this.activityList.forEach((item,index)=>{
-         this.qrcode(item.activityQrcodeUrl)
+         this.qrcode(item.QrcodeTargetUrl)
        })
        }
       })

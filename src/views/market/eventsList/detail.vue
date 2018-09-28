@@ -44,8 +44,8 @@
         <el-col :span="11">
           <el-form-item label="活动类型" prop="activityType">
             <span v-if="url == 'view'">{{form.activityType}}</span>
-            <el-select v-else v-model="form.activityType" placeholder="请选择" style="width: 100%;">
-              <el-option v-for="item in activityType" :key="item.value" :label="item.label" :value="item.value">
+            <el-select v-else v-model="form.activityType"  placeholder="请选择"  style="width: 100%;">
+              <el-option v-for="item in activityTypeList" :key="item.sysSelectValueId"  :label="item.label"  :value="item.sysSelectValueId">
               </el-option>
             </el-select>
           </el-form-item>
@@ -279,6 +279,7 @@ import { getAllPositon} from '@/api/queryConditions'
 import {getAllDeparts} from '@/api/achievement/index'
 import {getClientList} from '@/api/client/customerLabel'
 import {addActivity,editActivity,releaseEvent} from '@/api/market/eventsList'
+import {getSysSelectValueList} from '@/api/market/setting'
 import eventPoster from './components/eventPoster.vue'
 import registrationCheck from './components/registrationCheck.vue'
 import checkinAccount from './components/checkinAccount.vue'
@@ -335,6 +336,7 @@ export default {
       childrenForm:null,
       shuttleList: [],
       activityLeader: [],
+      activityTypeList:[],
       jobList: [],
       rootList: [],
       dialogDepartment: false,
@@ -363,8 +365,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'permissions',
-      'activityType'
+      'permissions'
     ]),
     activityRangeType(){
       return  this.form && this.form.activityRangeType 
@@ -388,10 +389,11 @@ export default {
     }
   },
   created() {
+      // 获取活动类型列表
+    this.getSysSelectValueList()
     if(this.url != 'add')  this.editActivity()
     // 初始化 form
     this.initialization();
-
     // 获取 所有用户
     this.getDirectSupervisorList();
   
@@ -526,6 +528,7 @@ export default {
             });
              loading.close()
             this.$router.push(`/market/eventsList/edit/${res.data.data}`)
+            this.editActivity()
            }
          
           })
@@ -567,6 +570,7 @@ export default {
           data.activityData = [data.activityStart,data.activityEnd]
           data.registrationData = [data.registrationStart,data.registrationEnd]
           data.activityShare = data.activityShare.split('|')
+          // 在编辑的状态下
           if(this.url == 'edit'){
             data.activityPrincipalList.forEach(item=>{
               activityPrincipalList.push(item.vid)
@@ -576,7 +580,15 @@ export default {
             })
             data.activityPrincipalList = activityPrincipalList
             data.activityDeptList = activityDeptList
+            data.activityType = Number(data.activityType)
+          }else if(this.url == 'view'){ //在查看状态下
+            this.activityTypeList.forEach(item=>{
+              if(item.sysSelectValueId == data.activityType){
+                data.activityType = item.label
+              }
+            })
           }
+
           // 可见范围 参与部门
           data.activityRangeDeptList.forEach(item=>{
             this.activityRangeDeptListLabel.push(item.val)
@@ -609,6 +621,14 @@ export default {
           }
           return data
     },
+    // 获取活动类型列表
+      getSysSelectValueList() {
+        getSysSelectValueList('activity_type').then(response => {
+          if(response.status == 200){
+            this.activityTypeList = response.data
+          }
+        })
+      },
     // 查询所有用户
     getDirectSupervisorList() {
       getDirectSupervisorList().then(res => {
