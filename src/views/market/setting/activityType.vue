@@ -15,7 +15,7 @@
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <a size="small" class="common_btn" @click="handleUpdate(scope.row)" v-if='select_value_edit'>编辑</a>
-          <a size="small" class="danger_btn" @click='deletes(scope.row)' v-if='select_value_delete'>删除</a>
+          <!-- <a size="small" class="danger_btn" @click='deletes(scope.row)' v-if='select_value_delete'>删除</a> -->
         </template>
       </el-table-column>
     </el-table>
