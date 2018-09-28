@@ -1,7 +1,7 @@
 <template>
   <div class="app-container calendar-list-container">
     <div style="text-align: right" v-if='select_value_add'>
-      <el-button v-if="sys_user_add" class="add_btn" @click="handleAddActive()">
+      <el-button v-if="select_value_add" class="add_btn" @click="handleAddActive()">
         <svg-icon icon-class="add"></svg-icon> 新增</el-button>
     </div>
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
@@ -30,14 +30,16 @@
           title="新增活动类型"
           :visible.sync="dialogVisible"
           width="30%">
-          <el-form  ref="newAddClient" label-width="100px" class="demo-ruleForm">
-          <el-form-item  label="活动类型">
-            <el-input placeholder="输入活动类型名称" style="width:90%;" v-model='typeName'></el-input>
+          <el-form  ref="newAddClient" :model="dynamicValidateForm" label-width="100px" class="demo-ruleForm">
+          <el-form-item  label="活动类型"  prop="typeName"  :rules="[
+      { required: true, message: '请输入活动类型', trigger: 'blur' }
+    ]">
+            <el-input placeholder="输入活动类型名称" style="width:90%;" v-model='dynamicValidateForm.typeName'></el-input>
           </el-form-item>
         </el-form>
           <div slot="footer" class="dialog-footer">
               <el-button  class="search_btn" @click="cancel('newAddClient')">取 消</el-button>
-              <el-button  class="add_btn" @click='submit()'>确 定</el-button>
+              <el-button  class="add_btn" @click="submit('newAddClient')">确 定</el-button>
           </div>
         </el-dialog>
   </div>
@@ -110,7 +112,9 @@ import {getSysSelectValueList,addType,deleteType,editType} from '@/api/market/se
         entryDate: [],
         // positionName: '',
         // isReadonly: false
-        typeName:this.typeName,
+        dynamicValidateForm:{
+          typeName:this.typeName
+        },
         sysSelectValueId:null,
         isEdit:false,
       }
@@ -159,12 +163,12 @@ import {getSysSelectValueList,addType,deleteType,editType} from '@/api/market/se
       handleAddActive(){  //新增
         this.isEdit = false
         this.dialogVisible = true
-        this.typeName = ''
+        this.dynamicValidateForm.typeName = ''
       },
       handleUpdate(row) { // 编辑
         this.isEdit = true
         this.dialogVisible = true
-        this.typeName = row.label
+        this.dynamicValidateForm.typeName = row.label
         this.sysSelectValueId = row.sysSelectValueId
       },
       addActiveType(obj){
@@ -183,24 +187,31 @@ import {getSysSelectValueList,addType,deleteType,editType} from '@/api/market/se
           }
         })
       },
-      submit(){
-        if(this.isEdit){
-          let data={
-            "description": "string",
-            "label": this.typeName,
-            "sort": 0,
-            "sysSelectValueId": this.sysSelectValueId,
-            "type": "activity_type",
-            "value": "string"
+      submit(formName){
+        console.log( this.$refs[formName])
+          this.$refs[formName].validate((valid) => {
+          if (valid) {
+            if(this.isEdit){
+              let data={
+                "label": this.dynamicValidateForm.typeName,
+                "sysSelectValueId": this.sysSelectValueId,
+                "type": "activity_type",
+              }
+              this.edit(data)
+            }else{
+              let obj = {
+                "label": this.dynamicValidateForm.typeName,
+                "type": "activity_type",
+              }
+              this.addActiveType(obj)
+            } 
+
+          } else {
+            console.log('error submit!!');
+            return false;
           }
-          this.edit(data)
-        }else{
-          let obj = {
-            "label": this.typeName,
-            "type": "activity_type",
-          }
-          this.addActiveType(obj)
-        }  
+        });
+      
       },
       deletes(row) {
         this.$confirm('此操作将永久删除该活动类型(活动类型名称:' + row.label + '), 是否继续?', '提示', {
@@ -244,6 +255,10 @@ import {getSysSelectValueList,addType,deleteType,editType} from '@/api/market/se
         },
         this.entryDate = []
         this.handleFilter()
+      },
+      cancel(formName){
+         this.$refs[formName].resetFields()
+          this.dialogVisible = false
       }
     }
   }
