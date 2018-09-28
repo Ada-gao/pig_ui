@@ -295,6 +295,13 @@ export default {
     operationLog
   },
   data() {
+     var validatePass = (rule, value, callback) => {
+        let reg = /^[0-9]+.?[0-9]*$/;
+        if(!reg.test(value)){
+           callback(new Error('活动人数必须为数字值'));
+        }
+
+      };
     return {
       fileList: [],
       rules: {
@@ -313,7 +320,8 @@ export default {
         activityActivitiesNumber: [{
           required: true,
           message: '请输入活动人数'
-        }],
+        },
+        { validator: validatePass}],
         activityData: [{
           required: true,
           message: '请选择活动时间'
