@@ -1,6 +1,6 @@
 <template>
   <div class="filter-container">
-    <el-form label-position="right" label-width="100px">
+    <el-form label-position="right" label-width="100px" ref="searchForm">
       <el-row :gutter="20">
         <el-col :sm="12" :lg="8" v-if="searchKeyword">
           <el-form-item label="搜索">
@@ -268,12 +268,29 @@ export default {
       'preserveExpired'
     ])
   },
+  watch: {
+    searchDisplayType(cur, old) {
+      this.listQuery = {
+        page: 1,
+        limit: 20,
+        username: '',
+        positionId: '',
+        // delFlag: '',
+        deptId: '',
+        mobileValidated: undefined,
+        city: '',
+        allDisplay: ''
+      }
+      this.deptId = []
+      this.city = []
+      this.entryDate = []
+    }
+  },
   created() {
     this.handleDept()
   },
   methods: {
     handleFilter() { // 搜索
-      // console.log(this.listQuery)
       this.listQuery.page = 1
       this.listQuery.orderByField = 'create_time'
       this.listQuery.isAsc = false
@@ -303,8 +320,8 @@ export default {
         // delFlag: '',
         deptId: '',
         mobileValidated: undefined,
-        nationality: '',
-        city: ''
+        city: '',
+        allDisplay: ''
       },
       console.log(this.listQuery.nationality)
       this.deptId = []

@@ -172,7 +172,7 @@
       },
       //根据客户标签搜索列表
       getList() {
-        // this.listLoading = true
+        this.listLoading = true
         this.listQuery.allDisplay = this.step == 1 ? '2' : this.listQuery.allDisplay
         fetchClientLabel(this.listQuery).then(response => {
           this.data = response.data
@@ -199,6 +199,7 @@
           allDisplay: this.step == 1 ? '2' : '3',
           clientLabelId: this.$route.params.clientLabelId
         }
+        // console.log(this.listQuery)
         this.DisplayTypeBl  = this.step == 2 ? true : false
         this.getList()
       },
