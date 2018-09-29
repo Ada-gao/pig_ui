@@ -179,7 +179,11 @@
         this.resetTemp()
       },
       handleUpdate(row) {
-        this.form = row
+        // this.form = row
+        this.form.rankId = row.rankId
+        this.form.rankName = row.rankName
+        this.form.positionId = row.positionId
+        this.form.positionName = row.positionName
         this.dialogFormVisible = true
         this.dialogStatus = 'update'
         if (!this.posiFlag) {

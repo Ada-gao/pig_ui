@@ -112,7 +112,7 @@
        :rules="[
            { required: true, message: '请选择姓名', trigger: 'change'}
         ]">
-         <el-select v-model="personalForm.personal" placeholder="请选择人员" >
+         <el-select v-model="personalForm.personal" filterable placeholder="请选择人员" >
             <el-option
               v-for="item in plannerList"
               :key="item.userId"
