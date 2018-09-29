@@ -242,8 +242,8 @@ export default {
       this.listQuery.page = 1
       this.listQuery.activityStatus = []
       this.activityStatus.forEach(item=>{
-        if(item == '已发布') this.listQuery.activityStatus.push(0)
-        if(item == '未发布') this.listQuery.activityStatus.push(1)
+        if(item == '未发布') this.listQuery.activityStatus.push(0)
+        if(item == '已发布') this.listQuery.activityStatus.push(1)
         if(item == '已结束') this.listQuery.activityStatus.push(2)
       })
       this.listQuery.activityStartFrom = this.startDate && this.startDate[0] 
