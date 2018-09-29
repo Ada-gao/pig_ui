@@ -184,6 +184,7 @@ mounted(){
         })
     },
     handlError(file, fileList) {
+       this.loadingClose()
       this.$notify({
         title: '警告',
         message: '上传失败，请稍后再试',
