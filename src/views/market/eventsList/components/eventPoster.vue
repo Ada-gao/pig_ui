@@ -147,8 +147,8 @@ mounted(){
   methods: {
     qrcode () {
         let qrcode = new QRCode('qrcode', {  
-            width: 100,  // 设置宽度 
-            height: 100, // 设置高度
+            width: 75,  // 设置宽度 
+            height: 75, // 设置高度
             text: this.codeUrl
         })  
       },

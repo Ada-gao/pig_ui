@@ -38,7 +38,7 @@
         <el-col :span="11">
           <el-form-item label="活动名称" prop="activityName">
             <span v-if="url == 'view'">{{form.activityName}}</span>
-            <el-input v-else v-model="form.activityName"></el-input>
+            <el-input v-else v-model="form.activityName" :maxlength="20"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -89,7 +89,7 @@
         <el-col :span="11">
           <el-form-item label="活动地址" prop="activitySite">
             <span v-if="url == 'view'">{{form.activitySite}}</span>
-            <el-input v-else v-model="form.activitySite"></el-input>
+            <el-input v-else v-model="form.activitySite"  :maxlength="20"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -109,7 +109,7 @@
         <el-col :span="24">
           <el-form-item label="活动简介">
             <span v-if="url == 'view'">{{form.activityIntroduction}}</span>
-            <el-input v-else v-model="form.activityIntroduction" type="textarea" :rows="4" placeholder="请输入内容">
+            <el-input v-else v-model="form.activityIntroduction"  :maxlength="200" type="textarea" :rows="4" placeholder="请输入内容">
             </el-input>
           </el-form-item>
         </el-col>
@@ -296,9 +296,9 @@ export default {
   },
   data() {
      var validatePass = (rule, value, callback) => {
-        let reg = /^[0-9]+.?[0-9]*$/;
+        let reg = /^[1-9]\d*$/;
         if(!reg.test(value)){
-         callback(new Error('活动人数必须为数字值'));
+         callback(new Error('活动人数必须为正整数'));
         }else{
            callback()
         }

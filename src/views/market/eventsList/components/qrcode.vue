@@ -14,6 +14,8 @@
     <section>
       <p>报名请扫描二维码</p>
       <div id="qrcode" ref="qrcode"></div>
+      <div class="logo-img"><img :src="logoImg" alt=""></div>
+      
     </section>
   </el-dialog>
 
@@ -29,6 +31,7 @@ export default {
   data() {
     return {
       dialogVisible: true,
+      logoImg:'static/img/activity/logo.png',
     }
   },
  watch:{
@@ -75,10 +78,24 @@ section{
   color: #475669;
   letter-spacing: 0;
   text-align: center;
+  position: relative;
     #qrcode{
     position: relative;
     left: 50%;
     margin-left: -100px;
+  }
+  .logo-img{
+    width: 66px;
+    background: #FFFFFF;
+    border-radius: 3px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform:translate(-50%);
+    padding:4px;
+    img{
+      width: 100%;
+    }
   }
 }
 
