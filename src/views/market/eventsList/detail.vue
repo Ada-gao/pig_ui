@@ -821,12 +821,10 @@ export default {
     },
     // 文件列表移除文件时的钩子
     handleRemove(file, fileList) {
-      // let index = this.form.activityForeendPictureList.indexOf(file.response.url);
-      // if (index > -1) this.form.activityForeendPictureList.splice(index, 1);
+      let url = file.name ? file.response.url : file.url
       this.form.activityForeendPictureList.forEach((item,index)=>{
-        if(item.pictureUrl == fileList.url) this.form.activityForeendPictureList.splice(index, 1);
+        if(item.val == url) this.form.activityForeendPictureList.splice(index, 1);
       })
-
     },
     // 点击文件列表中已上传的文件时的钩子
     handlePictureCardPreview(file) {
