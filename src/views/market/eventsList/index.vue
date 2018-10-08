@@ -11,20 +11,20 @@
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="活动开始时间">
-            <el-date-picker v-model="startDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
+            <el-date-picker v-model="startDate" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
             </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="活动结束时间">
-            <el-date-picker v-model="endDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
+            <el-date-picker v-model="endDate" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
             </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="活动状态">
             <el-checkbox-group v-model="activityStatus">
-              <el-checkbox-button  v-for="releaseSelection in releaseSelections" :label="releaseSelection" :key="releaseSelection">{{releaseSelection}}</el-checkbox-button>
+              <el-checkbox-button   v-for="releaseSelection in releaseSelections" :label="releaseSelection" :key="releaseSelection">{{releaseSelection}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
         </el-col>
@@ -123,7 +123,7 @@
 <script>
 import {getActivityList,deleteActivity} from '@/api/market/eventsList'
 import waves from '@/directive/waves/index.js' // 水波纹指令
-import {transformText, transformText1} from '@/utils'
+import {parseTime,transformText, transformText1} from '@/utils'
 import { mapGetters} from 'vuex'
 import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
 import ElOption from "element-ui/packages/select/src/option"
@@ -246,11 +246,10 @@ export default {
         if(item == '已发布') this.listQuery.activityStatus.push(1)
         if(item == '已结束') this.listQuery.activityStatus.push(2)
       })
-      this.listQuery.activityStartFrom = this.startDate && this.startDate[0] 
-      this.listQuery.activityStartTo = this.startDate && this.startDate[1] 
-      this.listQuery.activityEndFrom = this.endDate && this.endDate[0] 
-      this.listQuery.activityEndTo = this.endDate && this.endDate[1] 
-
+      this.listQuery.activityStartFrom = this.startDate &&  parseTime(this.startDate[0], '{y}-{m}-{d} {h}:{i}:{s}')
+      this.listQuery.activityStartTo = this.startDate &&  parseTime(this.startDate[1], '{y}-{m}-{d} {h}:{i}:{s}')
+      this.listQuery.activityEndFrom = this.endDate && parseTime(this.endDate[0], '{y}-{m}-{d} {h}:{i}:{s}')
+      this.listQuery.activityEndTo = this.endDate && parseTime(this.endDate[1], '{y}-{m}-{d} {h}:{i}:{s}')
       this.getActivityList()
     },
     handleSizeChange(val) {
@@ -324,5 +323,8 @@ export default {
     font-size: 20px;
     color: #000000;
     letter-spacing: 0;
+}
+.el-checkbox-group .el-checkbox-button:last-child{
+  margin-right: 0;
 }
 </style>
