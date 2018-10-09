@@ -98,11 +98,10 @@
           <a v-if="activity_query" size="small" class="common_btn"
                      @click="handleUpdate('view',scope.row)">查看
           </a>
-          <span class="space_line" v-if="activity_edit"> | </span>
-          <a v-if="activity_edit" size="small" class="common_btn"
+          <a v-if="activity_edit && scope.row.activityStatusId != 2" size="small" class="common_btn edit_btn"
                      @click="handleUpdate('edit',scope.row)">编辑
           </a>
-            <a v-if="activity_delete" size="small" class="danger_btn"
+            <a v-if="activity_delete && scope.row.activityStatusId != 2" size="small" class="danger_btn"
                    @click="deletes(scope.row)" >删除
           </a>
         </template>
@@ -275,7 +274,8 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
       }).then(() => {
-        deleteActivity(row.activityId).then(() => {
+        deleteActivity(row.activityId).then(res => {
+          if(res.status == 200){
           this.getActivityList()
           this.$notify({
             title: '成功',
@@ -283,13 +283,7 @@ export default {
             type: 'success',
             duration: 2000
           })
-        }).catch(() => {
-          this.$notify({
-            title: '失败',
-            message: '删除失败',
-            type: 'error',
-            duration: 2000
-          })
+          }
         })
       })
     },
@@ -326,5 +320,14 @@ export default {
 }
 .el-checkbox-group .el-checkbox-button:last-child{
   margin-right: 0;
+}
+.edit_btn:before{
+    width: 1px;
+    height: 14px;
+    background-color: #8F8F8F;
+    display: inline-block;
+    content: '';
+    margin: 0 5px;
+    vertical-align: text-bottom;
 }
 </style>
