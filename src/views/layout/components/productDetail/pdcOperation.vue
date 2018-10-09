@@ -684,7 +684,7 @@
     data() {
       let checkAge = (rule, value, callback) => {
         if (value>100) {
-          return callback(new Error('输入内容不能大于等于100'));
+          return callback(new Error('输入内容不能大于等于100'))
         }
       };
       return {

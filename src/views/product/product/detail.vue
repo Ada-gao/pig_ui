@@ -75,7 +75,7 @@
                   <svg-icon icon-class="appointmon"></svg-icon>
                 </div>
                 <div class="right-box">
-                  <div class="title">预约金额</div>
+                  <div class="title">预约成功金额</div>
                   <div class="btm-box"><span>{{statistic.appointAmounts||0}}</span><i>万</i></div>
                 </div>
               </div>
@@ -124,7 +124,7 @@
       </div>
       <div class="transc-tab">
         <el-button @click="handleAppoint('0')" class="first_btn" :class="{'search_btn': listQuery.type=='0'}" label="1">预约成功人数</el-button>
-        <el-button @click="handleAppoint('1')" class="sec_btn" label="2">打款成功人数</el-button>
+        <el-button @click="handleAppoint('1')" class="sec_btn" :class="{'search_btn': listQuery.type=='1'}" label="2">打款成功人数</el-button>
         <el-button class="filter-item add_btn"
           style="margin-left: 10px; padding: 10px; border-radius: 5px; float: right;"
           @click="batchExport" type="primary">
@@ -913,9 +913,10 @@
             color: #FDCE82;
             letter-spacing: 0;
             line-height: 20px;
+            white-space: nowrap;
             span {
               font-size: 30px;
-              vertical-align: text-top;
+              // vertical-align: text-top;
             }
             i {
               font-style: normal;

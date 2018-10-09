@@ -32,7 +32,7 @@
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread && searchProductType">
+        <el-col v-show="isSpread && searchProductType">
           <el-form-item label="产品分类">
              <el-checkbox-group v-model="listQuery.productTypeIds">
               <el-checkbox-button v-for="item in productTypes" :label="item.productTypeId" :key="item.productTypeId">{{item.name}}</el-checkbox-button>
