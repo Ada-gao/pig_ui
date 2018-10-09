@@ -264,7 +264,7 @@ export default {
       if(state == 'add'){
         this.$router.push(`/market/eventsList/${state}`)
       }else{
-        this.$router.push(`/market/eventsList/${state}/${row.activityId}`)
+        this.$router.push(`/market/eventsList/${state}/${row.activityId}/${row.activityStatusId}`)
       }
       
     },

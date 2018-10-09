@@ -88,11 +88,11 @@
       },
       handleSizeChange(val) {
 			  this.listQuery.limit = val
-			  this.getList()
+			  this.getOperationLog()
       },
       handleCurrentChange(val) {
         this.listQuery.page = val
-        this.getList()
+        this.getOperationLog()
       },
     }
   }

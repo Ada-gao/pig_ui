@@ -371,7 +371,7 @@ export default {
       dialogVisible: false,
       url : this.$route.path.split('/')[3],
       activityId:this.$route.params.activityId,
-      activityStatusId:''
+      activityStatusId:this.$route.params.activityStatusId,
     }
   },
   computed: {
@@ -554,7 +554,7 @@ export default {
           //  Object.assign(this.childrenForm ,res.data)
            this.childrenForm = JSON.parse(JSON.stringify(res.data));
           this.form = this.editProcess(res.data)
-          this.activityStatusId = this.form.activityStatusId
+          // this.activityStatusId = this.form.activityStatusId
           if(this.url == 'view'){
             document.querySelectorAll('.events-detail .image-display .el-upload--picture-card')[0].style.display="none"
             this.$nextTick(()=>{
