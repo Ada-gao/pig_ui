@@ -502,7 +502,9 @@
           //   {required: false, trigger: 'blur', message: '请输入邮箱'}
           // ],
           mobile: [
-            {required: true, trigger: 'blur', validator: validMobile}
+            // {required: true, trigger: 'blur', validator: validMobile},
+            {required: true, trigger: 'blur,change', message: '请输入手机号'},
+            { pattern: /^1[34578]\d{9}$/, message: '请输入正确的手机号码' }
           ],
           isMarketing: [
             { required: true, trigger: 'change', message: '请选择是否是营销岗' }

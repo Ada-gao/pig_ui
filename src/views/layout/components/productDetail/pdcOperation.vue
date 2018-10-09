@@ -196,7 +196,7 @@
       </el-row>
     </div>
     <div class="split-line" style="margin: 20px 0;"></div>
-    <el-form :rules="rules2" ref="form2" label-width="120px" :model="form2">
+    <el-form ref="form2" label-width="120px" :model="form2">
       <div class="group-item">
         <h3>产品预约审核条件（不选择，代表不需要审核，可多选）</h3>
         <el-row>
@@ -231,13 +231,19 @@
             </el-checkbox>
           </el-col>
           <el-col :md="12" :lg="8" style="margin-bottom: 10px">
-             <el-form-item label="预约时效" prop="timeliness" class="timeliness">
-            <!--<span style="width: 135px; display: inline-block; text-align: right">预约时效</span>-->
-            <el-input style="width: 100px;"
-                      :disabled="operationDisabled"
-                      type="number"
-                      v-model.number="form2.timeliness"></el-input> 小时
-             </el-form-item>
+            <el-form-item
+              label="预约时效"
+              prop="timeliness"
+              class="timeliness"
+              :rules="[
+                { required: true, trigger: 'blur', message: '请输入预约时效'},
+                { pattern: /^[1-9]\d*$/, message: '请输入大于0的整数' }
+              ]">
+              <!--<span style="width: 135px; display: inline-block; text-align: right">预约时效</span>-->
+              <el-input style="width: 100px;"
+                :disabled="operationDisabled"
+                v-model="form2.timeliness"></el-input> 小时
+            </el-form-item>
           </el-col>
         </el-row>
       </div>
@@ -291,14 +297,17 @@
         <h3>佣金业绩统计</h3>
         <el-row style="position: relative">
           <el-col :span="11">
-          <el-form :model="normalDTO" ref="normalDTO" :rules="rules2" class="demo-ruleForm">
-            <el-form-item label="折标业绩系数" prop="performanceCoefficient" label-width="120px" >
-              <span class="el-input" v-if="operationDisabled">{{normalDTO.performanceCoefficient}}</span>
-              <el-input  v-model="normalDTO.performanceCoefficient" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )' v-else></el-input>
-            </el-form-item>
+            <el-form :model="normalDTO" ref="normalDTO" :rules="rules3" class="demo-ruleForm">
+              <el-form-item
+                label="折标业绩系数"
+                prop="performanceCoefficient"
+                label-width="120px">
+                <span class="el-input" v-if="operationDisabled">{{normalDTO.performanceCoefficient}}</span>
+                <!-- <el-input  v-model="normalDTO.performanceCoefficient" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )' v-else></el-input> -->
+                <el-input  v-model="normalDTO.performanceCoefficient" v-else></el-input>
+              </el-form-item>
              </el-form>
           </el-col>
-
         </el-row>
         <el-row>
           <el-col :span="11"  v-for="(item,index) in normalDTO.normalBrokerageCoefficients" :key="item.age" style="white-space: nowrap; margin-right:3%; min-height:114px;" >
@@ -310,16 +319,15 @@
               <span @click="deleteProductCommission(index)" class="color-0299CC " v-if="index != 0 && index == normalDTO.normalBrokerageCoefficients.length-1&& !operationDisabled"><i class="el-icon-delete mr5"></i >删除</span>
             </el-row>
 
-             <el-form :model="Citem" ref="Citem" :rules="rules2" class="demo-ruleForm"  v-for="(Citem,i) in item.brokerageCoefficientDTOList" :key="i" label-width="120px">
+            <el-form :model="Citem" ref="Citem" :rules="rules4" class="demo-ruleForm"  v-for="(Citem,i) in item.brokerageCoefficientDTOList" :key="i" label-width="120px">
               <el-form-item :label="`第${Citem.hierarchy}层级(%)`" prop="coefficient">
                 <span class="el-input" v-if="operationDisabled">{{Citem.coefficient}}</span>
-                <el-input  v-else v-model="Citem.coefficient" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input>
-                    <span @click="addProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0 && !operationDisabled"><svg-icon icon-class="add" class="color-0299CC"></svg-icon></span>
+                <!-- <el-input  v-else v-model="Citem.coefficient" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input> -->
+                <el-input  v-else v-model="Citem.coefficient"></el-input>
+                  <span @click="addProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0 && !operationDisabled"><svg-icon icon-class="add" class="color-0299CC"></svg-icon></span>
                   <i  @click="deleteProductLevel(i)" v-if="i+1 == item.brokerageCoefficientDTOList.length && index == 0 && !operationDisabled" class="el-icon-delete color-0299CC"></i >
               </el-form-item>
-               </el-form>
-
-
+            </el-form>
           </el-col>
         </el-row>
       </div>
@@ -327,52 +335,66 @@
      <!-- 活动时间段业绩统计 -->
      <div class="group-item">
         <h3 class="activity-title">活动时间段业绩统计 <el-button class="search_btn add-statistics" v-if="!operationDisabled" @click="addStatistics">
-                <svg-icon icon-class="add"></svg-icon>新增统计</el-button></h3>
+          <svg-icon icon-class="add"></svg-icon>新增统计</el-button></h3>
 
         <el-row v-for="(item,index) in activityData" :key="index" :class="{dashed:index!=0}">
           <span @click="deleteStatistics(index)" class="color-0299CC delete-fr" v-if="activityData.length == index+1 && index != 0&& !operationDisabled"><i class="el-icon-delete mr5"></i >删除</span>
-         <el-row style="clear: both;">
-          <el-col :span="11" style="margin-right: 3%;">
-            <el-form-item label="活动时间段">
-              <el-date-picker
-              style="width:100%"
-              @change = "activeDateChange"
-                v-model="activeDateList[index]"
-                :disabled="operationDisabled"
-                type="daterange"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :default-time="['00:00:00', '23:59:59']">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-          <el-form :model="item" ref="item" :rules="rules2" class="demo-ruleForm" label-width="120px">
-            <el-form-item label="折标业绩系数" prop="performanceCoefficient">
-              <span class="el-input" v-if="operationDisabled">{{item.performanceCoefficient}}</span>
-              <el-input v-model="item.performanceCoefficient" v-else type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input>
-            </el-form-item>
-            </el-form>
-          </el-col>
-         </el-row>
+          <el-row style="clear: both;">
+            <el-col :span="11" style="margin-right: 3%;">
+              <el-form-item label="活动时间段">
+                <el-date-picker
+                style="width:100%"
+                @change = "activeDateChange"
+                  v-model="activeDateList[index]"
+                  :disabled="operationDisabled"
+                  type="daterange"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :default-time="['00:00:00', '23:59:59']">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form :model="item" ref="item" class="demo-ruleForm" label-width="120px">
+                <el-form-item
+                  label="折标业绩系数"
+                  prop="performanceCoefficient"
+                  :rules="[
+                    { required: false, trigger: 'blur, change', message: '' },
+                    { pattern: /^\d+\.{0,1}\d{0,2}$/, message: '请输入数字并且最多两位小数' }
+                  ]">
+                  <span class="el-input" v-if="operationDisabled">{{item.performanceCoefficient}}</span>
+                  <!-- <el-input v-model="item.performanceCoefficient" v-else type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'></el-input> -->
+                  <el-input v-model="item.performanceCoefficient" v-else></el-input>
+                </el-form-item>
+              </el-form>
+            </el-col>
+          </el-row>
           <el-row>
             <el-col :span="11"  v-for="(Citem,Cindex) in item.activityBrokerageCoefficients" :key="Citem.age" style="white-space: nowrap;
-            margin-right:3%;" >
+              margin-right:3%;">
               <el-row  type="flex" justify="space-between" class="row-bg product-commission">
                 <span style="line-height:41px;">活动时间产品佣金系数第{{Citem.age}}年</span>
                  <el-button class="search_btn" @click="addactivityTime(index)" v-if="Cindex == 0 && !operationDisabled">
                 <svg-icon icon-class="add"></svg-icon>新增</el-button>
                 <span @click="deleteActivityTime(index,Cindex)" class="color-0299CC " v-if="Cindex != 0 && Cindex == item.activityBrokerageCoefficients.length-1 && !operationDisabled"><i class="el-icon-delete mr5"></i >删除</span>
               </el-row>
-                <el-form :model="cvalue" ref="cvalue" :rules="rules2" class="demo-ruleForm" v-for="(cvalue,k) in Citem.brokerageCoefficientDTOList" :key="k" label-width="120px">
-              <el-form-item :label="`第${cvalue.hierarchy}层级(%)`" prop="coefficient">
-                <span class="el-input" v-if="operationDisabled">{{cvalue.coefficient}}</span>
-                <el-input
-                  v-model="cvalue.coefficient" v-else onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'   type="number"></el-input>
-                  <span @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0 && !operationDisabled"><svg-icon icon-class="add" class="color-0299CC"></svg-icon></span>
-                  <i  @click="deleteActivityTimeLevel(index,Cindex,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0 && !operationDisabled" class="el-icon-delete color-0299CC"></i >
-              </el-form-item>
-              </el-form>
+                <el-form :model="cvalue" ref="cvalue" class="demo-ruleForm" v-for="(cvalue,k) in Citem.brokerageCoefficientDTOList" :key="k" label-width="120px">
+                  <el-form-item
+                    :label="`第${cvalue.hierarchy}层级(%)`"
+                    prop="coefficient"
+                    :rules="[
+                      { required: false, trigger: 'blur, change', message: '' },
+                      { pattern: /^\d+\.{0,1}\d{0,2}$/, message: '请输入数字并且最多两位小数' }
+                    ]">
+                    <span class="el-input" v-if="operationDisabled">{{cvalue.coefficient}}</span>
+                    <!-- <el-input
+                      v-model="cvalue.coefficient" v-else onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )'   type="number"></el-input> -->
+                    <el-input v-model="cvalue.coefficient" v-else></el-input>
+                    <span @click="addActivityTimeLevel(index,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0 && !operationDisabled"><svg-icon icon-class="add" class="color-0299CC"></svg-icon></span>
+                    <i @click="deleteActivityTimeLevel(index,Cindex,k)" v-if="k+1 == Citem.brokerageCoefficientDTOList.length && Cindex == 0 && !operationDisabled" class="el-icon-delete color-0299CC"></i >
+                  </el-form-item>
+                </el-form>
 
             </el-col>
         </el-row>
@@ -727,21 +749,16 @@
         headers: {
           Authorization: 'Bearer ' + getToken()
         },
-        rules2: {
-          aging: [
-            { required: true, trigger: 'bulr'}
-          ],
-          visiblePeople: [
-            { required: true, trigger: 'change'}
-          ],
+        rules3: {
           performanceCoefficient:[
-            { validator: checkAge, trigger: 'blur' }
-          ],
+            { required: false, trigger: 'blur, change', message: '' },
+            { pattern: /^\d+\.{0,1}\d{0,2}$/, message: '请输入数字并且最多两位小数' }
+          ]
+        },
+        rules4: {
           coefficient:[
-            { validator: checkAge, trigger: 'blur' }
-          ],
-          timeliness: [
-            { required: true, message: '请输入预约时效', trigger: 'blur'}
+            { required: false, trigger: 'blur, change', message: '' },
+            { pattern: /^\d+\.{0,1}\d{0,2}$/, message: '请输入数字并且最多两位小数' }
           ]
         },
         defineRules: {
@@ -826,7 +843,7 @@
     methods: {
       activeDateChange(){
         this.activityData.forEach((item,index)=>{
-          item.activeDate = this.activeDateList[index]||['',''];
+          item.activeDate = this.activeDateList[index]||['','']
         })
       },
       judgeEmpty(){
@@ -834,7 +851,7 @@
           title: '警告',
           message: '层级不能为空',
           type: 'warning'
-        });
+        })
       },
       //折标业绩系数 为空提示
       performanceCoefficient(){
@@ -842,26 +859,26 @@
           title: '警告',
           message: '折标业绩系数不能为空',
           type: 'warning'
-        });
+        })
       },
       //筛选佣金业绩统计
       normalFilter(filter){
-        let self = true;
+        let self = true
         if(!this.normalDTO.performanceCoefficient && filter){
-          this.performanceCoefficient();
-          self = false;
-          return false;
+          this.performanceCoefficient()
+          self = false
+          return false
         }
         this.normalDTO.normalBrokerageCoefficients.forEach(item=>{
           item.brokerageCoefficientDTOList.forEach(item=>{
             if(!item.coefficient){
-            this.judgeEmpty();
-              self = false;
-              return false;
+            this.judgeEmpty()
+              self = false
+              return false
             }
           })
         })
-        return self;
+        return self
       },
       //筛选活动时间段业绩统计 新增统计判断
       activityFilter(filter){
@@ -912,14 +929,14 @@
           item.activityBrokerageCoefficients.forEach(item=>{
             item.brokerageCoefficientDTOList.forEach(item=>{
              if(!item.coefficient){
-              this.judgeEmpty();
-              self = false;
-              return false;
+              this.judgeEmpty()
+              self = false
+              return false
               }
             })
           })
         })
-        return self;
+        return self
 
         //   activityData: [
         //   {
@@ -1053,9 +1070,9 @@
         this.getAllFiles(this.productId)
         fetchOperation(this.productId).then(res => {
 
-          this.form2 = res.data;
-          this.normalDTO =this.form2.normalDTO = res.data.normalDTO || this.normalDTO;
-          this.activityData = res.data.activityDTO || this.activityData;
+          this.form2 = res.data
+          this.normalDTO =this.form2.normalDTO = res.data.normalDTO || this.normalDTO
+          this.activityData = res.data.activityDTO || this.activityData
 
 
           // console.log(this.form2.collectDate)
@@ -1168,7 +1185,7 @@
             type: 'error',
             duration: 2000
           })
-          return false;
+          return false
         }
          this.normalDTO.normalBrokerageCoefficients.forEach(item=>{
           item.brokerageCoefficientDTOList.forEach(item=>{
@@ -1179,7 +1196,7 @@
                   type: 'error',
                   duration: 2000
                 })
-                return false;
+                return false
             }
           })
          })
@@ -1216,15 +1233,15 @@
         this.form2.productId = this.productId
         // this.form2.keyProduct = this.radio2
         // console.log('aaa', this.form2.timeliness)
-        if (!this.form2.timeliness || this.form2.timeliness < 0) {
-          this.$notify({
-            title: '失败',
-            message: '预约时效不能为空',
-            type: 'error',
-            duration: 2000
-          })
-          return false
-        }
+        // if (!this.form2.timeliness || this.form2.timeliness < 0) {
+        //   this.$notify({
+        //     title: '失败',
+        //     message: '预约时效不能为空',
+        //     type: 'error',
+        //     duration: 2000
+        //   })
+        //   return false
+        // }
         if (!this.operationDisabled && !this.form2.importantStart) {
           if (this.defineform.radio2 === 2) {
             this.$notify({
@@ -1345,8 +1362,8 @@
       updateProductType(status) { // 产品状态转化
         //进入 预热或者进入募集中需要验证层级不能为空
         if(status == 1 || status == 2){
-           if(!this.activityFilter(true)) return false;
-          if(!this.normalFilter(true)) return false;
+          if(!this.activityFilter(true)) return false
+          if(!this.normalFilter(true)) return false
         }
         this.dto.status = status
         this.productStatusText = transformText(this.productStatus, this.productStatusNo)
