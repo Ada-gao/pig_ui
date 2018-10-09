@@ -70,7 +70,7 @@
         </el-form-item>
 
         <el-form-item label="职级" prop="rankName" style="width:95%">
-          <el-input v-model="form.rankName" placeholder="请输入职级名称"></el-input>
+          <el-input v-model.trim="form.rankName" placeholder="请输入职级名称"></el-input>
         </el-form-item>
 
       </el-form>

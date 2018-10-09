@@ -66,7 +66,7 @@
       <el-form :model="form" ref="form" label-width="100px">
         
         <el-form-item label="职位" prop="positionName">
-          <el-input v-model="form.positionName" placeholder="请输入职位名称"></el-input>
+          <el-input v-model.trim="form.positionName" placeholder="请输入职位名称"></el-input>
           <input type="hidden" v-model="form.positionId">
         </el-form-item>
         
@@ -245,8 +245,9 @@
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
-            this.dialogFormVisible = false
-            putObj(this.form).then(() => {
+            // this.dialogFormVisible = false
+            putObj(this.form).then((res) => {
+              if (res.status !== 200) return
               this.dialogFormVisible = false
               this.getList()
               this.$notify({

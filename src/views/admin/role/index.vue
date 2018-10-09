@@ -74,13 +74,13 @@
       <el-form :model="form" :rules="rules" ref="form" label-width="100px">
         <el-input type="hidden" v-model="form.roleDeptId"></el-input>
         <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="form.roleName" placeholder="角色名称"></el-input>
+          <el-input v-model.trim="form.roleName" placeholder="角色名称"></el-input>
         </el-form-item>
         <el-form-item label="角色标识" prop="roleCode">
-          <el-input v-model="form.roleCode" placeholder="角色标识"></el-input>
+          <el-input v-model.trim="form.roleCode" placeholder="角色标识"></el-input>
         </el-form-item>
         <el-form-item label="描述" prop="roleDesc">
-          <el-input v-model="form.roleDesc" placeholder="描述"></el-input>
+          <el-input v-model.trim="form.roleDesc" placeholder="描述"></el-input>
         </el-form-item>
         <el-form-item label="所属部门" prop="roleDeptIds">
           <dept v-model="form.roleDeptIds" @change="deptIdChangeHandle"></dept>
@@ -420,9 +420,11 @@
               this.form.maskCode = this.form.maskCode.join(',')
             }
             this.form.roleDeptId = this.form.roleDeptIds[this.form.roleDeptIds.length - 1]
-            let menuIds = this.$refs.deptTree.getCheckedKeys()
-            let menuIds1 = this.$refs.deptTree.getHalfCheckedKeys()
-            this.form.deptIds = [...menuIds, ...menuIds1].join()
+            if (this.form.dataScope === '3') {
+              let menuIds = this.$refs.deptTree.getCheckedKeys()
+              let menuIds1 = this.$refs.deptTree.getHalfCheckedKeys()
+              this.form.deptIds = [...menuIds, ...menuIds1].join()
+            }
             // this.dialogFormVisible = false
             putObj(this.form).then((res) => {
               if (res.status !== 200) return
