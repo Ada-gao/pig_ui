@@ -664,7 +664,6 @@
         if (value>100) {
           return callback(new Error('输入内容不能大于等于100'));
         }
-
       };
       return {
         tempObj: null,
@@ -877,37 +876,38 @@
           }
           // console.log(item.activeDate)
           //活动时间段
-          if(!item.activeDate && filter){
-              this.$notify({
-                title: '警告',
-                message: '活动时间段不能为空',
-                type: 'warning'
-              });
-              self = false;
-              return false;
-          }
-          item.activeDate.forEach(item=>{
-            if(!item && filter){
-              this.$notify({
-                title: '警告',
-                message: '活动时间段不能为空',
-                type: 'warning'
-              });
-              self = false;
-              return false;
-            }
-          })
-          this.activeDateList.forEach(item=>{
-            if(!item && filter){
-              this.$notify({
-                title: '警告',
-                message: '活动时间段不能为空',
-                type: 'warning'
-              });
-              self = false;
-              return false;
-            }
-          })
+          // 20181009 活动时间段改为非必填
+          // if(!item.activeDate && filter){
+          //     this.$notify({
+          //       title: '警告',
+          //       message: '活动时间段不能为空',
+          //       type: 'warning'
+          //     });
+          //     self = false;
+          //     return false;
+          // }
+          // item.activeDate.forEach(item=>{
+          //   if(!item && filter){
+          //     this.$notify({
+          //       title: '警告',
+          //       message: '活动时间段不能为空',
+          //       type: 'warning'
+          //     });
+          //     self = false;
+          //     return false;
+          //   }
+          // })
+          // this.activeDateList.forEach(item=>{
+          //   if(!item && filter){
+          //     this.$notify({
+          //       title: '警告',
+          //       message: '活动时间段不能为空',
+          //       type: 'warning'
+          //     });
+          //     self = false;
+          //     return false;
+          //   }
+          // })
           //活动时间产品佣金系数
           item.activityBrokerageCoefficients.forEach(item=>{
             item.brokerageCoefficientDTOList.forEach(item=>{

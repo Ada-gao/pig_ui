@@ -69,34 +69,49 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
+        <!-- <el-col :span="11">
           <el-form-item label="购买人群" prop="buyingCrowds">
             <span v-if="detailDisabled">{{form.buyingCrowds|turnText(buyingCrowds)}}</span>
-            <el-select v-else class="filter-item" v-model="form.buyingCrowds" placeholder="请选择">
+            <el-select v-else class="filter-item" multiple v-model="form.buyingCrowds" placeholder="请选择">
               <el-option v-for="item in buyingCrowds" :key="item.value" :value="item.value" :label="item.label">
+                <span style="float: left">{{ item.label }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col> -->
+        <el-col :span="11">
+          <el-form-item
+            label="购买人群"
+            prop="buyingCrowds"
+            :rules="[
+              { required: true, message: '请选择购买人群', trigger: 'blur'}
+            ]">
+            <span v-if="detailDisabled"><i v-for="item in form.buyingCrowds">{{item|turnText(buyingCrowds)}} </i></span>
+            <el-select v-if="!detailDisabled" class="filter-item" multiple v-model="formBuyingCrowds" value-key="id" placeholder="请选择">
+              <el-option v-for="item in buyingCrowds" :key="item.id" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
               </el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="产品期限" prop="investmentHorizon" style="margin-bottom: 21px;">
+          <el-form-item label="产品期限" prop="investmentHorizon" style="margin-bottom: 21px; white-space: nowrap;">
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}</span>
-            <el-input v-else v-model="form.investmentHorizon" style="width: 30%;"></el-input>
+            <el-input v-else v-model="form.investmentHorizon" style="width: 25%;"></el-input>
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
             <el-form-item v-else label=""
               prop="investmentHorizonUnit"
-              style="display: inline-block; width: 70px;"
+              style="display: inline-block; width: 90px;"
               :rules="[
                 {required: true, message: '请选择产品期限单位', trigger: 'change'}
               ]">
-              <el-select v-model="form.investmentHorizonUnit">
+              <el-select v-model="form.investmentHorizonUnit" placeholder="请选择">
                 <el-option v-for="item in investHorizonUnit" :key="item.value" :value="item.value" :label="item.label">
                 </el-option>
               </el-select>
             </el-form-item>
 
-            <span style="width: 40%">产品折后系数：{{investRatio|turnNum}}</span>
+            <span style="width: 40%">产品折后系数：{{investRatio||0|turnNum}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -114,7 +129,7 @@
                 class="sec-form-item"
                 >
                 <el-input
-                  style="display: inline-block; width: 100px; margin-left: 20px;"
+                  style="display: inline-block; width: 100px; margin-left: 5px;"
                   :maxlength="5"
                   v-model="form.annualizedReturn"></el-input>
               </el-form-item>
@@ -413,7 +428,8 @@
     data() {
       return {
         form: {
-          userDefinedAttribute: []
+          userDefinedAttribute: '',
+          buyingCrowds: []
         },
         userDefinedAttribute: [],
         productTypes: [],
@@ -485,7 +501,6 @@
           ],
           annualizedReturn: [
             { required: true, validator: pdAnnualizedReturn, trigger: 'blur'}
-
           ],
           productLp: [
             {required: false, validator: vaProLp, trigger: 'blur'}
@@ -499,7 +514,8 @@
         },
         subDisabled: false,
         ratio: 0,
-        userNewAttr: false
+        userNewAttr: false,
+        formBuyingCrowds: []
       }
     },
     props: ['productId', 'stageType', 'formData'],
@@ -560,8 +576,8 @@
     mounted() {
       this.form = this.formData
       let list = Object.keys(this.formData)
-
       if(list.length > 1 && !list.productId) {
+        this.formBuyingCrowds = this.form.buyingCrowds.split()
         if(this.stageType === '0') {
           // 产品分期
           this.detailDisabled = false
@@ -583,6 +599,7 @@
             this.userDefinedAttribute = JSON.parse(this.form.userDefinedAttribute)
             // console.log(JSON.parse(this.form.userDefinedAttribute))
             this.form.subscribe = this.form.subscribe - 0
+            this.formBuyingCrowds = this.form.buyingCrowds.split()
             if(this.userDefinedAttribute == 'null') {
               this.userNewAttr = false
             } else if(this.userDefinedAttribute instanceof Array) {
@@ -667,6 +684,7 @@
           })
           return false
         }
+        this.form.buyingCrowds = this.formBuyingCrowds.toString()
         set[formName].validate(valid => {
           if (valid) {
             this.form.discountCoefficient = this.investRatio
@@ -713,6 +731,7 @@
           })
           return false
         }
+        this.form.buyingCrowds = this.formBuyingCrowds.toString()
         set[formName].validate(valid => {
           if (valid) {
             this.form.discountCoefficient = this.investRatio

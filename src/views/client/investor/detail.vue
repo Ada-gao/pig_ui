@@ -16,7 +16,6 @@
                 highlight-current-row style="width: 100%">
           <el-table-column align="center" label="风险评级" v-if="investorType == 0">
             <template slot-scope="scope">
-              </el-select>
               <el-select v-model="scope.row.riskLevel" @change="handleChange" style="width: 50%">
                 <el-option v-for="item in customerRiskLevel" :key="item.value" :label="item.value" :value="item.value">
                   <!-- <span style="float: left">{{ item.value }}</span> -->
@@ -40,18 +39,6 @@
           </el-table-column>
         </el-table>
       </div>
-      <!-- <div class="professional-investor" v-else>
-        <el-table :data="certInfo" v-loading="listLoading" element-loading-text="给我一点时间" border fit
-                highlight-current-row style="width: 100%">
-          <el-table-column label="（图片）">
-            <template slot-scope="scope">
-              <div v-for="item in scope.row.urls" :data="scope.row.urls" style="display: inline-block; margin-right: 10px">
-                <a href="#"><img :src="item" alt="" style="width: 50px"></a>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div> -->
       <div class="split-line" style="margin-top: 20px"></div>
       <h5>过往客户审核日志</h5>
       <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit

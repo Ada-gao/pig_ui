@@ -77,7 +77,7 @@
           <el-col :span="11">
             <el-form-item label="所在城市"  placeholder="请选择职位" required>
             <el-col :span="11">
-              <el-form-item  prop="city"  >
+              <el-form-item  prop="city">
                 <el-cascader
                   @change="changeWatch('cityChangeDate')"
                   size="large"
@@ -129,7 +129,7 @@
             <el-form-item label="直属上级" required>
              <el-col :span="11">
               <el-form-item prop="directSupervisorId">
-              <el-select class="filter-item" v-model="form.directSupervisorId" placeholder="请选择直属上级" @change="changeWatch('supervisorChangeDate')">
+              <el-select class="filter-item" v-model="form.directSupervisorId" filterable placeholder="请选择直属上级" @change="changeWatch('supervisorChangeDate')">
                 <el-option v-for="item in listBox.employeeList" :key="item.userId" :label="item.name" :value="item.userId">
                   <span style="float: left">{{ item.name }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.empNo }}</span>
@@ -139,13 +139,13 @@
                 </el-col>
               <el-col class="line" :span="2">&nbsp;</el-col>
                <el-col :span="11">
-                  <el-form-item prop="supervisorChangeDate">
-              <el-date-picker
-              :disabled = "disabledChange.supervisorChangeDate"
-                v-model="form.supervisorChangeDate"
-                type="date"
-                placeholder="选择日期">
-              </el-date-picker>
+                <el-form-item prop="supervisorChangeDate">
+                <el-date-picker
+                :disabled = "disabledChange.supervisorChangeDate"
+                  v-model="form.supervisorChangeDate"
+                  type="date"
+                  placeholder="选择日期">
+                </el-date-picker>
               </el-form-item>
               </el-col>
             </el-form-item>
@@ -154,7 +154,7 @@
             <el-form-item label="合伙人" required>
              <el-col :span="11">
              <el-form-item prop="partnerId">
-              <el-select class="filter-item" v-model="form.partnerId" placeholder="请选择合伙人" @change="changeWatch('partnerChangeDate')">
+              <el-select class="filter-item" v-model="form.partnerId" filterable placeholder="请选择合伙人" @change="changeWatch('partnerChangeDate')">
                 <el-option v-for="item in listBox.employeeList" :key="item.userId" :label="item.name" :value="item.userId">
                   <span style="float: left">{{ item.name }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.empNo }}</span>
@@ -163,15 +163,15 @@
                </el-form-item>
                 </el-col>
               <el-col class="line" :span="2">&nbsp;</el-col>
-               <el-col :span="11">
-                 <el-form-item prop="partnerChangeDate">
-              <el-date-picker
-              :disabled = "disabledChange.partnerChangeDate"
-                v-model="form.partnerChangeDate"
-                type="date"
-                placeholder="选择日期">
-              </el-date-picker>
-              </el-form-item>
+              <el-col :span="11">
+                <el-form-item prop="partnerChangeDate">
+                  <el-date-picker
+                  :disabled = "disabledChange.partnerChangeDate"
+                    v-model="form.partnerChangeDate"
+                    type="date"
+                    placeholder="选择日期">
+                  </el-date-picker>
+                </el-form-item>
               </el-col>
             </el-form-item>
           </el-col>
@@ -179,7 +179,7 @@
             <el-form-item label="区域总" required>
              <el-col :span="11">
               <el-form-item prop="regionalManagerId">
-              <el-select class="filter-item" v-model="form.regionalManagerId" placeholder="请选择区域总" @change="changeWatch('regionalManagerChangeDate')">
+              <el-select class="filter-item" v-model="form.regionalManagerId" filterable placeholder="请选择区域总" @change="changeWatch('regionalManagerChangeDate')">
                 <el-option v-for="item in listBox.employeeList" :key="item.userId" :label="item.name" :value="item.userId">
                   <span style="float: left">{{ item.name }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.empNo }}</span>
@@ -204,7 +204,7 @@
             <el-form-item label="区域副总" required>
              <el-col :span="11">
              <el-form-item prop="regionalViceManagerId">
-              <el-select class="filter-item" v-model="form.regionalViceManagerId" placeholder="请选择区域副总" @change="changeWatch('regionalViceManagerChangeDate')">
+              <el-select class="filter-item" v-model="form.regionalViceManagerId" filterable placeholder="请选择区域副总" @change="changeWatch('regionalViceManagerChangeDate')">
                 <el-option v-for="item in listBox.employeeList" :key="item.userId" :label="item.name" :value="item.userId">
                   <span style="float: left">{{ item.name }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.empNo }}</span>
@@ -229,7 +229,7 @@
             <el-form-item label="城市总" required>
              <el-col :span="11">
              <el-form-item prop="cityManagerId">
-              <el-select class="filter-item" v-model="form.cityManagerId" placeholder="请选择城市总" @change="changeWatch('cityManagerChangeDate')">
+              <el-select class="filter-item" v-model="form.cityManagerId" filterable placeholder="请选择城市总" @change="changeWatch('cityManagerChangeDate')">
                 <el-option v-for="item in listBox.employeeList" :key="item.userId" :label="item.name" :value="item.userId">
                   <span style="float: left">{{ item.name }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.empNo }}</span>
@@ -254,7 +254,7 @@
             <el-form-item label="城市副总" required>
              <el-col :span="11">
             <el-form-item prop="cityViceManagerId">
-              <el-select class="filter-item" v-model="form.cityViceManagerId" placeholder="请选择城市副总" @change="changeWatch('cityViceManagerChangeDate')">
+              <el-select class="filter-item" v-model="form.cityViceManagerId" filterable placeholder="请选择城市副总" @change="changeWatch('cityViceManagerChangeDate')">
                 <el-option v-for="item in listBox.employeeList" :key="item.userId" :label="item.name" :value="item.userId">
                   <span style="float: left">{{ item.name }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.empNo }}</span>
@@ -279,7 +279,7 @@
             <el-form-item label="团队经理" required>
              <el-col :span="11">
             <el-form-item prop="teamManagerId">
-              <el-select class="filter-item" v-model="form.teamManagerId" placeholder="请选择团队经理" @change="changeWatch('teamManagerChangeDate')">
+              <el-select class="filter-item" v-model="form.teamManagerId" filterable placeholder="请选择团队经理" @change="changeWatch('teamManagerChangeDate')">
                 <el-option v-for="item in listBox.employeeList" :key="item.userId" :label="item.name" :value="item.userId">
                   <span style="float: left">{{ item.name }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.empNo }}</span>
