@@ -96,7 +96,7 @@
                      @click="handleRouter(scope.row.clientId)">查看
           </a>
           <span class="space_line"> | </span>
-          <a v-if="sys_user_upd" size="small" class="common_btn"
+          <a v-if="sys_client_upd" size="small" class="common_btn"
                      @click="handleUpdate(scope.row.clientId)">编辑
           </a>
         </template>
@@ -236,9 +236,7 @@
     created() {
       // this.handlePosition()
       this.getList()
-      this.sys_user_add = this.permissions['sys_user_add']
-      this.sys_user_upd = this.permissions['sys_user_upd']
-      this.sys_user_del = this.permissions['sys_user_del']
+      this.sys_client_upd = this.permissions['sys_client_upd']
     },
     methods: {
       getList() {
