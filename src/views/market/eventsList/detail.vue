@@ -288,7 +288,6 @@ import registrationCheck from './components/registrationCheck.vue'
 import checkinAccount from './components/checkinAccount.vue'
 import signingRecord from './components/signingRecord.vue'
 import operationLog from './components/operationLog.vue'
-import { getToken } from '@/utils/auth'
 export default {
   name: 'eventsDetail',
   components: {
@@ -414,7 +413,6 @@ export default {
     this.getCompany()
     // 获取 所有用户
     this.getDirectSupervisorList();
-  console.log('Bearer ' +getToken())
     // 获取一级部门及子公司列表
     this.getDeptRoots();
     this.activity_poster_edit = this.permissions['activity_poster_edit']//市场活动海报编辑
