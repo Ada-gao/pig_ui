@@ -30,7 +30,7 @@
        align="center"
         label="打款时间">
         <template slot-scope="scope">
-          {{scope.row.tradeDate | parseTime}}
+          {{scope.row.tradeDate | parseTime('{y}-{m}-{d} {h}:{i}')}}
         </template>
       </el-table-column>
       </el-table-column>

@@ -27,8 +27,9 @@
       </el-pagination>
     </div>
       <el-dialog
-          title="新增活动类型"
+          :title="title"
           :visible.sync="dialogVisible"
+          :before-close="handleClose"
           width="30%">
           <el-form  ref="newAddClient" :model="dynamicValidateForm" label-width="100px" class="demo-ruleForm">
           <el-form-item  label="活动类型"  prop="typeName"  :rules="[
@@ -117,6 +118,7 @@ import {getSysSelectValueList,addType,deleteType,editType} from '@/api/market/se
         },
         sysSelectValueId:null,
         isEdit:false,
+        title:'',
       }
     },
     computed: {
@@ -164,12 +166,14 @@ import {getSysSelectValueList,addType,deleteType,editType} from '@/api/market/se
         this.isEdit = false
         this.dialogVisible = true
         this.dynamicValidateForm.typeName = ''
+        this.title= '新增活动类型'
       },
       handleUpdate(row) { // 编辑
         this.isEdit = true
         this.dialogVisible = true
         this.dynamicValidateForm.typeName = row.label
         this.sysSelectValueId = row.sysSelectValueId
+        this.title= '编辑活动类型'
       },
       addActiveType(obj){
         addType(obj).then(response=>{
@@ -259,6 +263,9 @@ import {getSysSelectValueList,addType,deleteType,editType} from '@/api/market/se
       cancel(formName){
          this.$refs[formName].resetFields()
           this.dialogVisible = false
+      },
+      handleClose(){
+        this.cancel('newAddClient')
       }
     }
   }

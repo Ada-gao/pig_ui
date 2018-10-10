@@ -24,7 +24,7 @@
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="活动状态">
             <el-checkbox-group v-model="activityStatus">
-              <el-checkbox-button  v-for="releaseSelection in releaseSelections" :label="releaseSelection" :key="releaseSelection">{{releaseSelection}}</el-checkbox-button>
+              <el-checkbox-button   v-for="releaseSelection in releaseSelections" :label="releaseSelection" :key="releaseSelection">{{releaseSelection}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
         </el-col>
@@ -55,13 +55,13 @@
 
     <el-table-column align="center" label="活动开始时间">
       <template slot-scope="scope">
-        <span>{{scope.row.activityStart | parseTime}}</span>
+        <span>{{scope.row.activityStart | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
         </template>
     </el-table-column>
 
     <el-table-column align="center" label="活动结束时间">
       <template slot-scope="scope">
-          <span>{{scope.row.activityEnd | parseTime}}</span>
+          <span>{{scope.row.activityEnd | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
         </template>
     </el-table-column>
 
@@ -98,11 +98,10 @@
           <a v-if="activity_query" size="small" class="common_btn"
                      @click="handleUpdate('view',scope.row)">查看
           </a>
-          <span class="space_line" v-if="activity_edit"> | </span>
-          <a v-if="activity_edit" size="small" class="common_btn"
+          <a v-if="activity_edit && scope.row.activityStatusId != 2" size="small" class="common_btn edit_btn"
                      @click="handleUpdate('edit',scope.row)">编辑
           </a>
-            <a v-if="activity_delete" size="small" class="danger_btn"
+            <a v-if="activity_delete && scope.row.activityStatusId != 2" size="small" class="danger_btn"
                    @click="deletes(scope.row)" >删除
           </a>
         </template>
@@ -123,7 +122,7 @@
 <script>
 import {getActivityList,deleteActivity} from '@/api/market/eventsList'
 import waves from '@/directive/waves/index.js' // 水波纹指令
-import {transformText, transformText1} from '@/utils'
+import {parseTime,transformText, transformText1} from '@/utils'
 import { mapGetters} from 'vuex'
 import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
 import ElOption from "element-ui/packages/select/src/option"
@@ -184,6 +183,7 @@ export default {
   },
   created() {
     this.getActivityList()
+   
     this.activity_add = this.permissions['activity_add']
     this.activity_query = this.permissions['activity_query']
     this.activity_edit = this.permissions['activity_edit']
@@ -246,11 +246,10 @@ export default {
         if(item == '已发布') this.listQuery.activityStatus.push(1)
         if(item == '已结束') this.listQuery.activityStatus.push(2)
       })
-      this.listQuery.activityStartFrom = this.startDate && this.startDate[0] 
-      this.listQuery.activityStartTo = this.startDate && this.startDate[1] 
-      this.listQuery.activityEndFrom = this.endDate && this.endDate[0] 
-      this.listQuery.activityEndTo = this.endDate && this.endDate[1] 
-
+      this.listQuery.activityStartFrom = this.startDate &&  parseTime(this.startDate[0], '{y}-{m}-{d}')
+      this.listQuery.activityStartTo = this.startDate &&  parseTime(this.startDate[1], '{y}-{m}-{d}')
+      this.listQuery.activityEndFrom = this.endDate && parseTime(this.endDate[0], '{y}-{m}-{d}')
+      this.listQuery.activityEndTo = this.endDate && parseTime(this.endDate[1], '{y}-{m}-{d}')
       this.getActivityList()
     },
     handleSizeChange(val) {
@@ -266,7 +265,7 @@ export default {
       if(state == 'add'){
         this.$router.push(`/market/eventsList/${state}`)
       }else{
-        this.$router.push(`/market/eventsList/${state}/${row.activityId}`)
+        this.$router.push(`/market/eventsList/${state}/${row.activityId}/${row.activityStatusId}`)
       }
       
     },
@@ -276,7 +275,8 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
       }).then(() => {
-        deleteActivity(row.activityId).then(() => {
+        deleteActivity(row.activityId).then(res => {
+          if(res.status == 200){
           this.getActivityList()
           this.$notify({
             title: '成功',
@@ -284,13 +284,7 @@ export default {
             type: 'success',
             duration: 2000
           })
-        }).catch(() => {
-          this.$notify({
-            title: '失败',
-            message: '删除失败',
-            type: 'error',
-            duration: 2000
-          })
+          }
         })
       })
     },
@@ -324,5 +318,17 @@ export default {
     font-size: 20px;
     color: #000000;
     letter-spacing: 0;
+}
+.el-checkbox-group .el-checkbox-button:last-child{
+  margin-right: 0;
+}
+.edit_btn:before{
+    width: 1px;
+    height: 14px;
+    background-color: #8F8F8F;
+    display: inline-block;
+    content: '';
+    margin: 0 5px;
+    vertical-align: text-bottom;
 }
 </style>

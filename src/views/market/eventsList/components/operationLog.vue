@@ -14,7 +14,7 @@
        align="center"
         prop="date"
         label="时间">
-        <template slot-scope="scope">{{scope.row.createTime | parseTime}}</template>
+        <template slot-scope="scope">{{scope.row.createTime | parseTime('{y}-{m}-{d} {h}:{i}')}}</template>
       </el-table-column>
       <el-table-column
        align="center"
@@ -88,11 +88,11 @@
       },
       handleSizeChange(val) {
 			  this.listQuery.limit = val
-			  this.getList()
+			  this.getOperationLog()
       },
       handleCurrentChange(val) {
         this.listQuery.page = val
-        this.getList()
+        this.getOperationLog()
       },
     }
   }

@@ -231,14 +231,14 @@ export const constantRouterMap = [
         hidden: true
       },
       {
-        path: 'eventsList/view/:activityId',
+        path: 'eventsList/view/:activityId/:activityStatusId',
         component: _import('market/eventsList/detail'),
         name: '市场活动查看',
         meta: { title: '市场活动查看', icon: '', noCache: true },
         hidden: true
       },
       {
-        path: 'eventsList/edit/:activityId',
+        path: 'eventsList/edit/:activityId/:activityStatusId',
         component: _import('market/eventsList/detail'),
         name: '市场活动编辑',
         meta: { title: '市场活动编辑', icon: '', noCache: true },

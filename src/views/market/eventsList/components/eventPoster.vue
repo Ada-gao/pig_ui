@@ -27,7 +27,7 @@
             <el-col :span="8" class="img-title">封面预览</el-col>
             <el-col :span="8" class="line"></el-col>
           </el-row>
-          <img class="img-url" :src="activityBannerUrl">
+          <img class="img-url-cover" :src="activityBannerUrl">
         </el-col>
       </el-row>
       <!-- 活动海报（用于app端分享查看） -->
@@ -45,9 +45,9 @@
             <span>{{form.activityName}}</span>
           </el-form-item>
           <el-form-item label="活动时间">
-            <span>{{form.activityStart| parseTime}}</span>
+            <span>{{form.activityStart| parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
             --
-            <span>{{form.activityEnd| parseTime}}</span>
+            <span>{{form.activityEnd| parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
           </el-form-item>
           <el-form-item label="活动地址">
             <span>{{form.activitySite}}</span>
@@ -86,8 +86,9 @@
           </el-row>
             <el-row>
             <el-col><img class="img-loge" :src="logImgUrl"></el-col> 
-           <el-col> <img class="img-url" :src="activityPosterUrl"></el-col> 
-           <el-col class="img-code" id="qrcode" ref="qrcode">
+           <el-col> <img class="img-url-poster" :src="activityPosterUrl"></el-col> 
+           <el-col>
+             <div class="img-code" id="qrcode" ref="qrcode"></div>
            </el-col> 
           </el-row>
          </el-col>
@@ -147,8 +148,8 @@ mounted(){
   methods: {
     qrcode () {
         let qrcode = new QRCode('qrcode', {  
-            width: 100,  // 设置宽度 
-            height: 100, // 设置高度
+            width: 75,  // 设置宽度 
+            height: 75, // 设置高度
             text: this.codeUrl
         })  
       },
@@ -338,9 +339,13 @@ mounted(){
     }
     .img {
       position: relative;
-      .img-url{
-        width: 50%;
-        height: 50%;
+      .img-url-poster{
+        width: 375px;
+        height: 667px;
+      }
+      .img-url-cover{
+        width: 375px;
+        height: 155px;
       }
       .img-loge{
         position: absolute;
@@ -351,8 +356,7 @@ mounted(){
       .img-code{
         position: absolute;
         bottom: 50px;
-        left: 25%;
-        margin-left: -50px;
+        left: 150px;
       }
     .row-bg{
         width: 50%;
