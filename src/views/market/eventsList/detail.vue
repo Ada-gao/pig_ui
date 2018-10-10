@@ -93,7 +93,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="主办部门" prop="activityDeptList">
+          <el-form-item label="主办部门" prop="activityDeptList" required v-if="activityDeptList.isCompany == 1">
+            <span >{{activityDeptList.name}}</span>
+          </el-form-item>
+          <el-form-item label="主办部门" prop="activityDeptList" v-else>
           <span v-if="url == 'view'" v-for="(item,index) in form.activityDeptList" :key="item.id" :value="item.id">
               {{item.val}}
               <span v-if="index != form.activityDeptList.length-1">|</span></span>
@@ -101,8 +104,8 @@
               <el-option v-for="item in rootList" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
-              
           </el-form-item>
+         
         </el-col>
       </el-row>
       <el-row>
@@ -278,7 +281,7 @@ import {getDeptRoots} from '@/api/dept'
 import { getAllPositon} from '@/api/queryConditions'
 import {getAllDeparts} from '@/api/achievement/index'
 import {getClientList} from '@/api/client/customerLabel'
-import {addActivity,editActivity,releaseEvent} from '@/api/market/eventsList'
+import {addActivity,editActivity,releaseEvent,getCompany} from '@/api/market/eventsList'
 import {getSysSelectValueList} from '@/api/market/setting'
 import eventPoster from './components/eventPoster.vue'
 import registrationCheck from './components/registrationCheck.vue'
@@ -372,6 +375,7 @@ export default {
       url : this.$route.path.split('/')[3],
       activityId:this.$route.params.activityId,
       activityStatusId:this.$route.params.activityStatusId,
+      activityDeptList:{},
     }
   },
   computed: {
@@ -400,11 +404,14 @@ export default {
     }
   },
   created() {
+   
       // 获取活动类型列表
     this.getSysSelectValueList()
     if(this.url != 'add')  this.editActivity()
     // 初始化 form
     this.initialization();
+     // 取得直属子公司
+    this.getCompany()
     // 获取 所有用户
     this.getDirectSupervisorList();
   console.log('Bearer ' +getToken())
@@ -495,7 +502,7 @@ export default {
            let method
           Object.assign(newObj,this.form)
           newObj.activityPrincipalList = this.arrayId(newObj.activityPrincipalList)
-           newObj.activityDeptList = this.arrayId(newObj.activityDeptList)
+          newObj.activityDeptList = this.arrayId(newObj.activityDeptList)
           newObj.activityRangeDeptList = this.arrayId(newObj.activityRangeDeptList)
           newObj.activityRangePositionList = this.arrayId(newObj.activityRangePositionList)
           newObj.activityClientLabelList = this.arrayId(newObj.activityClientLabelList)
@@ -528,6 +535,9 @@ export default {
             method = "put"
             newObj.activityId = this.activityId
           }
+          // 如果是子公司，传入子公司的deptId
+          if(this.activityDeptList.isCompany == 1) newObj.activityDeptList = [{vid:this.activityDeptList.deptId}]
+
           const loading = this.$loading()
           addActivity(newObj,method).then(res => {
            if(res.status ==200){
@@ -537,7 +547,7 @@ export default {
               type: 'success'
             });
              loading.close()
-            this.$router.push(`/market/eventsList/edit/${res.data.data}`)
+            this.$router.push(`/market/eventsList/edit/${res.data.data}/${this.activityStatusId  || 0}`)
            }
          
           })
@@ -558,11 +568,11 @@ export default {
           if(this.url == 'view'){
             document.querySelectorAll('.events-detail .image-display .el-upload--picture-card')[0].style.display="none"
             this.$nextTick(()=>{
-                document.querySelectorAll('.el-upload-list__item-delete')[0].style.display="none"
+                document.querySelectorAll('.el-upload-list__item-delete').forEach(item=>{
+                  item.style.display="none"
+                })
             })
-             
             }
-       
         }
       })
     },
@@ -629,6 +639,19 @@ export default {
 
           }
           return data
+    },
+    // 取得直属子公司
+    getCompany(){
+      getCompany().then(res=>{
+        let data = res.data
+        if(res.status == 200){//子公司
+          this.activityDeptList = {
+            isCompany:data.isCompany,
+            name:data.name,
+            deptId:data.deptId,
+          }
+        }
+      })
     },
     // 获取活动类型列表
       getSysSelectValueList() {
@@ -914,6 +937,7 @@ export default {
                 message: '发布成功',
                 type: 'success'
               });
+              this.$router.push(`/market/eventsList/edit/${res.data.data}/1`)
             })
         }
       })

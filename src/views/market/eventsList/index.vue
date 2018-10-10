@@ -183,6 +183,7 @@ export default {
   },
   created() {
     this.getActivityList()
+   
     this.activity_add = this.permissions['activity_add']
     this.activity_query = this.permissions['activity_query']
     this.activity_edit = this.permissions['activity_edit']

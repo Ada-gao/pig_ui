@@ -14,7 +14,7 @@
     <section>
       <p>报名请扫描二维码</p>
       <div id="qrcode" ref="qrcode"></div>
-      <div class="logo-img"><img :src="logoImg" alt=""></div>
+      <div class="logo-img"><img :src="logoImg" alt="" v-if="isCompany == 0"></div>
       
     </section>
   </el-dialog>
@@ -24,6 +24,7 @@
 
 <script>
 import QRCode from 'qrcodejs2'
+import {getCompany} from '@/api/market/eventsList'
 export default {
   name: 'qqrcode',
   props:['activityQrcodeUrl'],
@@ -32,7 +33,12 @@ export default {
     return {
       dialogVisible: true,
       logoImg:'static/img/activity/logo.png',
+      isCompany:''
     }
+  },
+  created(){
+ // 取得直属子公司
+    this.getCompany()
   },
  watch:{
    dialogVisible(val){
@@ -53,6 +59,17 @@ export default {
             text: this.activityQrcodeUrl.activityQrcodeUrl.qrcodeTargetUrl
         })  
       },
+     // 取得直属子公司
+    getCompany(){
+      getCompany().then(res=>{
+        let data = res.data
+        if(res.status == 200){//子公司
+          
+            this.isCompany=data.isCompany
+          
+        }
+      })
+    },
   }
 }
 </script>

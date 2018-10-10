@@ -122,3 +122,12 @@ export function getOperationLog(params) {
     params
   })
 }
+/**
+ * 取得直属子公司
+ */
+export function getCompany() {
+  return request({
+    url: '/admin/dept/getCompany/',
+    method: 'get'
+  })
+}
