@@ -233,7 +233,6 @@
         const set = this.$refs
         set[formName].validate(valid => {
           if (valid) {
-            this.dialogFormVisible = false
             putRankById(this.form).then(res => {
               if (res.status === 200) {
                 this.getList()
@@ -243,18 +242,19 @@
                   type: 'success',
                   duration: 2000
                 })
+                this.dialogFormVisible = false
                 this.resetTemp()
                 this.$refs[formName].resetFields()
               }
             }).catch(() => {
-              this.resetTemp()
-              this.$refs[formName].resetFields()
-              this.$notify({
-                title: '失败',
-                message: '修改失败',
-                type: 'error',
-                duration: 2000
-              })
+              // this.resetTemp()
+              // this.$refs[formName].resetFields()
+              // this.$notify({
+              //   title: '失败',
+              //   message: '修改失败',
+              //   type: 'error',
+              //   duration: 2000
+              // })
             })
           } else {
             return false

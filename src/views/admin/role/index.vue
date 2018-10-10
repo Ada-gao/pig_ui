@@ -509,6 +509,7 @@
         this.tempVal = val
       },
       closeDialogHandle() { // dialog 关闭清除表单数据
+        this.resetTemp()
         this.$refs['form'].resetFields()
         this.treeDeptData = []
       },
@@ -523,6 +524,16 @@
           }
         })
         return this.result
+      },
+      resetTemp() {
+        this.form = {
+          roleName: '',
+          roleCode: '',
+          roleDesc: '',
+          roleDeptIds: [],
+          maskCode: [],
+          dataScope: ''
+        }
       }
     }
   }

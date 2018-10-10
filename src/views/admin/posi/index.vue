@@ -62,7 +62,7 @@
       </el-tree>
     </el-dialog> -->
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="cancel">
       <el-form :model="form" ref="form" label-width="100px">
         
         <el-form-item label="职位" prop="positionName">
@@ -72,7 +72,7 @@
         
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button class="search_btn" @click="cancel('form')">取 消</el-button>
+        <el-button class="search_btn" @click="cancel">取 消</el-button>
         <el-button class="add_btn" v-if="dialogStatus=='create'" @click="create('form')">确 定</el-button>
         <el-button class="add_btn" v-else @click="update('form')">修 改</el-button>
       </div>
@@ -237,9 +237,11 @@
           }
         })
       },
-      cancel(formName) {
+      cancel() {
+        console.log('close')
         this.dialogFormVisible = false
-        this.$refs[formName].resetFields()
+        // this.$refs[formName].resetFields()
+        this.resetTemp()
       },
       update(formName) {      // 提交编辑
         const set = this.$refs
