@@ -51,7 +51,7 @@
       title="提示"
       :visible.sync="dialogVisible"
       width="30%">
-      <span>确定{{deletesTitle}}客户标签？</span>
+      <span>{{deletesTitle}}客户标签？</span>
       <div slot="footer" class="dialog-footer">
         <el-button class="search_btn" @click="dialogVisible = false">取 消</el-button>
         <el-button class="add_btn" @click="labelHandle">确 定</el-button>
@@ -215,13 +215,12 @@
         }
         this.clientLabelType = type
         this.dialogVisible = true
-        this.deletesTitle = type === 'cancel' ? '取消' : '设置'
+        this.deletesTitle = type === 'cancel' ? '取消' : '确定设置'
       },
 
       // 取消 关闭对话框
       cancel(formName){
         this.$refs[formName].resetFields()
-        
       },
       changeLabel(response){
 
