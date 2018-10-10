@@ -29,6 +29,7 @@
       <el-dialog
           :title="title"
           :visible.sync="dialogVisible"
+          :before-close="handleClose"
           width="30%">
           <el-form  ref="newAddClient" :model="dynamicValidateForm" label-width="100px" class="demo-ruleForm">
           <el-form-item  label="活动类型"  prop="typeName"  :rules="[
@@ -262,6 +263,9 @@ import {getSysSelectValueList,addType,deleteType,editType} from '@/api/market/se
       cancel(formName){
          this.$refs[formName].resetFields()
           this.dialogVisible = false
+      },
+      handleClose(){
+        this.cancel('newAddClient')
       }
     }
   }

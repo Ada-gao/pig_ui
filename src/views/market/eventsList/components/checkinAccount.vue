@@ -48,6 +48,7 @@
         <el-dialog
           title="新增签到"
           :visible.sync="dialogVisible"
+          :before-close="handleClose"
           width="30%">
           <el-form :model="SignInPersonForm" :rules="SignInPersonRules" ref="SignInPerson" label-width="100px" class="demo-ruleForm">
 
@@ -185,6 +186,9 @@
       cancel(formName){
         this.$refs[formName].resetFields();
         this.dialogVisible = false;
+      },
+      handleClose(){
+         this.cancel('SignInPerson')
       },
       // 保存
       clientDetermine(formName){

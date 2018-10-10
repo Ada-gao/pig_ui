@@ -11,13 +11,13 @@
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="活动开始时间">
-            <el-date-picker v-model="startDate" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
+            <el-date-picker v-model="startDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
             </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="活动结束时间">
-            <el-date-picker v-model="endDate" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
+            <el-date-picker v-model="endDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
             </el-date-picker>
           </el-form-item>
         </el-col>
@@ -55,13 +55,13 @@
 
     <el-table-column align="center" label="活动开始时间">
       <template slot-scope="scope">
-        <span>{{scope.row.activityStart | parseTime}}</span>
+        <span>{{scope.row.activityStart | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
         </template>
     </el-table-column>
 
     <el-table-column align="center" label="活动结束时间">
       <template slot-scope="scope">
-          <span>{{scope.row.activityEnd | parseTime}}</span>
+          <span>{{scope.row.activityEnd | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
         </template>
     </el-table-column>
 
@@ -245,10 +245,10 @@ export default {
         if(item == '已发布') this.listQuery.activityStatus.push(1)
         if(item == '已结束') this.listQuery.activityStatus.push(2)
       })
-      this.listQuery.activityStartFrom = this.startDate &&  parseTime(this.startDate[0], '{y}-{m}-{d} {h}:{i}:{s}')
-      this.listQuery.activityStartTo = this.startDate &&  parseTime(this.startDate[1], '{y}-{m}-{d} {h}:{i}:{s}')
-      this.listQuery.activityEndFrom = this.endDate && parseTime(this.endDate[0], '{y}-{m}-{d} {h}:{i}:{s}')
-      this.listQuery.activityEndTo = this.endDate && parseTime(this.endDate[1], '{y}-{m}-{d} {h}:{i}:{s}')
+      this.listQuery.activityStartFrom = this.startDate &&  parseTime(this.startDate[0], '{y}-{m}-{d}')
+      this.listQuery.activityStartTo = this.startDate &&  parseTime(this.startDate[1], '{y}-{m}-{d}')
+      this.listQuery.activityEndFrom = this.endDate && parseTime(this.endDate[0], '{y}-{m}-{d}')
+      this.listQuery.activityEndTo = this.endDate && parseTime(this.endDate[1], '{y}-{m}-{d}')
       this.getActivityList()
     },
     handleSizeChange(val) {

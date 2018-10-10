@@ -72,14 +72,14 @@
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="11">
           <el-form-item label="活动时间" prop="activityData">
-          <span v-if="url == 'view'">{{form.activityData[0] | parseTime}} - {{form.activityData[1] | parseTime}}</span>
+          <span v-if="url == 'view'">{{form.activityData[0] | parseTime('{y}-{m}-{d} {h}:{i}')}} - {{form.activityData[1] | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
             <el-date-picker v-else style="width:100%" v-model="form.activityData" type="datetimerange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="报名时间" prop="registrationData">
-            <span v-if="url == 'view'">{{form.registrationData[0] | parseTime}} - {{form.registrationData[1] | parseTime}}</span>
+            <span v-if="url == 'view'">{{form.registrationData[0] | parseTime('{y}-{m}-{d} {h}:{i}')}} - {{form.registrationData[1] | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
             <el-date-picker v-else style="width:100%" v-model="form.registrationData" type="datetimerange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
