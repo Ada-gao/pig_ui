@@ -38,7 +38,7 @@
         <el-col :span="11">
           <el-form-item label="活动名称" prop="activityName">
             <span v-if="url == 'view'">{{form.activityName}}</span>
-            <el-input v-else v-model="form.activityName" :maxlength="20"></el-input>
+            <el-input v-else v-model.trim="form.activityName" :maxlength="20"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -65,7 +65,7 @@
         <el-col :span="11">
           <el-form-item label="活动人数(人)" prop="activityActivitiesNumber">
             <span v-if="url == 'view'">{{form.activityActivitiesNumber}}</span>
-            <el-input v-else v-model="form.activityActivitiesNumber"></el-input>
+            <el-input v-else v-model.trim="form.activityActivitiesNumber"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -112,7 +112,7 @@
         <el-col :span="24">
           <el-form-item label="活动简介">
             <span v-if="url == 'view'">{{form.activityIntroduction}}</span>
-            <el-input v-else v-model="form.activityIntroduction"  :maxlength="200" type="textarea" :rows="4" placeholder="请输入内容">
+            <el-input v-else v-model.trim="form.activityIntroduction"  :maxlength="200" type="textarea" :rows="4" placeholder="请输入内容">
             </el-input>
           </el-form-item>
         </el-col>
