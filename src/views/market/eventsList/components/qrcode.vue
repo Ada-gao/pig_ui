@@ -5,9 +5,9 @@
     <article>
       <div class="title-code">{{activityQrcodeUrl.activityQrcodeUrl.activityName}}</div>
       <time>时间： 
-          <span>{{activityQrcodeUrl.activityQrcodeUrl.activityStart| parseTime}}</span>
+          <span>{{activityQrcodeUrl.activityQrcodeUrl.activityStart| parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
             --
-          <span>{{activityQrcodeUrl.activityQrcodeUrl.activityEnd| parseTime}}</span>
+          <span>{{activityQrcodeUrl.activityQrcodeUrl.activityEnd| parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
       </time>
       <p>地点：{{activityQrcodeUrl.activityQrcodeUrl.activitySite}}</p>
     </article>

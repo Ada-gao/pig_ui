@@ -45,9 +45,9 @@
             <span>{{form.activityName}}</span>
           </el-form-item>
           <el-form-item label="活动时间">
-            <span>{{form.activityStart| parseTime}}</span>
+            <span>{{form.activityStart| parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
             --
-            <span>{{form.activityEnd| parseTime}}</span>
+            <span>{{form.activityEnd| parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
           </el-form-item>
           <el-form-item label="活动地址">
             <span>{{form.activitySite}}</span>

@@ -30,7 +30,7 @@
        align="center"
         label="报名时间">
         <template slot-scope="scope">
-          {{scope.row.registrationTime | parseTime}}
+          {{scope.row.registrationTime | parseTime('{y}-{m}-{d} {h}:{i}')}}
         </template>
       </el-table-column>
       <el-table-column
@@ -76,7 +76,7 @@
        align="center"
         label="签到时间">
          <template slot-scope="scope">
-          {{scope.row.singinTime | parseTime}}
+          {{scope.row.singinTime | parseTime('{y}-{m}-{d} {h}:{i}')}}
         </template>
       </el-table-column>
     </el-table>
