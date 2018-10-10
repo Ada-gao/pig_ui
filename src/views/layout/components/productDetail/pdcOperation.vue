@@ -751,13 +751,13 @@
         },
         rules3: {
           performanceCoefficient:[
-            { required: false, trigger: 'blur, change', message: '' },
+            { required: true, trigger: 'blur, change', message: '请输入折标业绩系数' },
             { pattern: /^\d+\.{0,1}\d{0,2}$/, message: '请输入数字并且最多两位小数' }
           ]
         },
         rules4: {
           coefficient:[
-            { required: false, trigger: 'blur, change', message: '' },
+            { required: true, trigger: 'blur, change', message: '请输入产品佣金系数' },
             { pattern: /^\d+\.{0,1}\d{0,2}$/, message: '请输入数字并且最多两位小数' }
           ]
         },
@@ -894,37 +894,37 @@
           // console.log(item.activeDate)
           //活动时间段
           // 20181009 活动时间段改为非必填
-          // if(!item.activeDate && filter){
-          //     this.$notify({
-          //       title: '警告',
-          //       message: '活动时间段不能为空',
-          //       type: 'warning'
-          //     });
-          //     self = false;
-          //     return false;
-          // }
-          // item.activeDate.forEach(item=>{
-          //   if(!item && filter){
-          //     this.$notify({
-          //       title: '警告',
-          //       message: '活动时间段不能为空',
-          //       type: 'warning'
-          //     });
-          //     self = false;
-          //     return false;
-          //   }
-          // })
-          // this.activeDateList.forEach(item=>{
-          //   if(!item && filter){
-          //     this.$notify({
-          //       title: '警告',
-          //       message: '活动时间段不能为空',
-          //       type: 'warning'
-          //     });
-          //     self = false;
-          //     return false;
-          //   }
-          // })
+          if(!item.activeDate && filter){
+              this.$notify({
+                title: '警告',
+                message: '活动时间段不能为空',
+                type: 'warning'
+              });
+              self = false;
+              return false;
+          }
+          item.activeDate.forEach(item=>{
+            if(!item && filter){
+              this.$notify({
+                title: '警告',
+                message: '活动时间段不能为空',
+                type: 'warning'
+              });
+              self = false;
+              return false;
+            }
+          })
+          this.activeDateList.forEach(item=>{
+            if(!item && filter){
+              this.$notify({
+                title: '警告',
+                message: '活动时间段不能为空',
+                type: 'warning'
+              });
+              self = false;
+              return false;
+            }
+          })
           //活动时间产品佣金系数
           item.activityBrokerageCoefficients.forEach(item=>{
             item.brokerageCoefficientDTOList.forEach(item=>{
