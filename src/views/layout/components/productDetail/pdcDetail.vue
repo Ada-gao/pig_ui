@@ -232,7 +232,29 @@
           </el-form-item>
         </el-col>
       </el-row>
-
+      <article style="margin-top:40px">
+        <p class="title">产品可见范围</p>
+        <el-form-item>
+          <el-radio-group v-model="activityRangeType" v-if="!detailDisabled">
+            <el-radio :label="0">全部可见</el-radio>
+            <el-radio :label="1">部分可见</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="部门" v-if="activityRangeType == 1 || detailDisabled">
+          <el-row v-if="detailDisabled">
+            <el-col v-if="activityRangeType == 0">全部可见</el-col>
+            <el-col> 
+              <span style="padding: 0 6px" class="c-select-list" v-for="(item,index) in checkedDeptLabelList" :key="index">{{item}}</span>
+            </el-col>
+          </el-row>
+          <el-row type="flex" justify="space-between" v-else>
+            <el-col class="c-select">
+              <span class="c-select-list" v-for="(item,index) in checkedDeptLabelList" :key="index">{{item}}</span>
+            </el-col>
+            <el-button class="search_btn" style="height:40px;" @click="selectDepartment">选择部门</el-button>
+          </el-row>
+        </el-form-item>
+      </article>
       <div class="split-line" style="margin-bottom: 20px;"></div>
 
       <el-row :gutter="90">
@@ -315,6 +337,7 @@
       <el-button class="search_btn" v-if="createStatus=='update'" @click="cancel('form')">取 消</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'" type="primary" @click="update('form')">保 存</el-button>
     </div>
+    <!-- 新增属性 -->
     <el-dialog :visible.sync="dialogPropertyVisible" title="新增属性">
       <el-form :model="newAttrForm" ref="newAttrForm" label-width="120px">
         <el-col>
@@ -333,6 +356,19 @@
         <el-button type="primary" @click="handleAddProperty('newAttrForm')">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 部门 -->
+    <el-dialog title="" :visible.sync="dialogDepartment" width="30%">
+      <article class="table-event">
+        <div class="thead">所有部门</div>
+        <div class="tbody">
+          <el-tree show-checkbox node-key="id" :data="treeDepartmentData" ref="deptTree" :props="defaultProps"></el-tree>
+        </div>
+      </article>
+      <div slot="footer" class="dialog-footer">
+        <el-button class="search_btn" @click="cancelDept">取 消</el-button>
+        <el-button class="add_btn" @click="handleAddDept">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -341,6 +377,7 @@
   import transcTableComponent from 'components/table/transcTable'
   import { fetchProductTypeList, fetchProductMixType } from '@/api/product/productType'
   import { fetchCurrency, getObjList } from '@/api/currency'
+  import { fetchTree } from '@/api/dept'
   import { mapGetters } from 'vuex'
   import { transformText, sortKey, transformText1 } from '@/utils'
   import { parseTime } from '@/utils'
@@ -515,7 +552,16 @@
         subDisabled: false,
         ratio: 0,
         userNewAttr: false,
-        formBuyingCrowds: []
+        formBuyingCrowds: [],
+        treeDepartmentData: [],
+        defaultProps: {
+          children: 'children',
+          label: 'name'
+        },
+        dialogDepartment: false,
+        checkedDeptLabelList: [],
+        checkedDeptIds: [],
+        activityRangeType: 0
       }
     },
     props: ['productId', 'stageType', 'formData'],
@@ -613,6 +659,14 @@
             } else {
               this.isDisabled = false
             }
+            if (this.form.deptIds) {
+              this.activityRangeType = 1
+              this.checkedDeptIds = this.form.deptIds.split()
+              fetchTree().then(res => {
+                this.treeDepartmentData = res.data
+                
+              })
+            }
             this.productStatusNo = this.form.productStatus //根据产品状态判断禁用字段
             let params = {
               productStatusNo: this.productStatusNo,
@@ -690,6 +744,7 @@
             this.form.discountCoefficient = this.investRatio
             this.form.userDefinedAttribute = JSON.stringify(this.userDefinedAttribute)
             // console.log(this.form.userDefinedAttribute)
+            this.form.deptIds = this.checkedDeptIds ? this.checkedDeptIds.toString() : null
             addObj(this.form)
               .then(response => {
                 if(response.status === 200) {
@@ -736,6 +791,7 @@
           if (valid) {
             this.form.discountCoefficient = this.investRatio
             this.form.userDefinedAttribute = JSON.stringify(this.userDefinedAttribute)
+            this.form.deptIds = this.checkedDeptIds ? this.checkedDeptIds.toString() : null
             if (this.stage) { //分期
               updProductStage(this.form).then(response => {
                 if(!response.data || response.status !== 200) {
@@ -807,6 +863,28 @@
       cancelAddNewAttr(formName) {
         this.dialogPropertyVisible = false
         this.$refs[formName].resetFields()
+      },
+      selectDepartment() {
+        this.dialogDepartment = true
+        fetchTree().then(res => {
+          this.treeDepartmentData = res.data
+        })
+        if (this.checkedDeptIds.length) {
+          this.$refs.deptTree.setCheckedKeys(this.checkedDeptIds)
+        }
+      },
+      handleAddDept() {
+        this.checkedDeptLabelList = []
+        this.checkedDeptIds = []
+        let checkedNodes = this.$refs.deptTree.getCheckedNodes()
+        checkedNodes.forEach(item => {
+          this.checkedDeptLabelList.push(item.name)
+          this.checkedDeptIds.push(item.id)
+        })
+        this.cancelDept()
+      },
+      cancelDept() {
+        this.dialogDepartment = false
       }
     }
   }
@@ -816,9 +894,35 @@
 .filter-item {
   display: block;
 }
-  .define_col .el-form-item__content span,
-  .define_col .el-form-item__content .el-input {
-    margin-left: 20px;
-  }
-
+.define_col .el-form-item__content span,
+.define_col .el-form-item__content .el-input {
+  margin-left: 20px;
+}
+.title {
+  font-family: PingFangSC-Medium;
+  font-size: 16px;
+  color: #2F2F2F;
+  letter-spacing: 0;
+  border-bottom: 1px solid #E9E9E9;
+  padding-bottom: 10px;
+}
+.c-select {
+    padding: 0 16px;
+    background: #FFFFFF;
+    border: 1px solid #C8C8C8;
+    border-radius: 2px;
+    margin-right: 10px;
+    .c-select-list {
+        padding: 2px 6px;
+        margin: 0 6px;
+        background: rgba(0,193,223,0.10);
+        border: 1px solid rgba(32,160,255,0.20);
+        border-radius: 4px;
+        font-family: PingFangSC-Regular;
+        color: #0299CC;
+        letter-spacing: 0;
+        line-height: 14px;
+        display: inline-block;
+    }
+}
 </style>
