@@ -157,7 +157,7 @@
                :validate-on-rule-change="true"
                label-width="100px">
 
-        <el-row v-if="dialogStatus === 'create'">
+        <el-row>
           <el-col class="inline-col">
             <el-form-item label="周期" prop="start">
               <el-date-picker
@@ -176,7 +176,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row  v-if="dialogStatus === 'create'">
+        <!-- <el-row  v-if="dialogStatus === 'create'">
           <el-col>
             <el-form-item label="部门" prop="deptIds">
               <el-cascader
@@ -189,16 +189,6 @@
                 v-model="form.deptIds"
               ></el-cascader>
               <div v-else>
-                <!--<el-cascader-->
-                  <!--style="width:95%"-->
-                  <!--:options="departs"-->
-                  <!--:show-all-level="false"-->
-                  <!--change-on-select-->
-                  <!--placeholder=""-->
-                  <!--ref="cascader"-->
-                  <!--:props="defaultProps"-->
-                  <!--v-model="selectedOptions"-->
-                  <!--@change="addOption"></el-cascader>-->
                 <el-cascader
                   style="width: 82%"
                   :options="departs"
@@ -221,7 +211,7 @@
               </div>
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row> -->
         <el-row v-if="dialogStatus === 'create'">
           <el-col>
             <el-form-item label="职位" prop="positionId">
@@ -268,7 +258,6 @@
             <!--</el-form-item>-->
           </el-col>
         </el-row>
-
         <el-row>
           <el-col>
             <el-form-item label="业绩指标" prop="performanceIndicator">
@@ -276,6 +265,23 @@
                         class="width95"
                         type="number"
                         placeholder="请输入业绩指标"></el-input>万
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="dialogStatus === 'create'">
+          <el-col>
+            <el-form-item label="部门" prop="deptIds">
+              <el-tree
+                class="filter-tree"
+                :data="departs"
+                :default-checked-keys="checkedKeys"
+                show-checkbox
+                node-key="id"
+                highlight-current
+                ref="deptTree"
+                :props="defaultPropsDept"
+              >
+          </el-tree>
             </el-form-item>
           </el-col>
         </el-row>
@@ -320,6 +326,10 @@
           label: 'name',
           value: 'name'
         },
+        defaultPropsDept: {
+          children: 'children',
+          label: 'name',
+        },
         listQuery: {
           page: 1,
           limit: 20,
@@ -348,7 +358,7 @@
           ],
           deptIds: [
             // message: '请选择部门',
-            { required: true, trigger: 'blur', message: '请选择部门' }
+            { required: true, trigger: 'change', message: '请选择部门' }
           ],
           positionId: [
             { required: true, message: '请选择职位', trigger: 'blur, change' }
@@ -367,7 +377,10 @@
         result: [],
         eachIndex: 0,
         tempDeptIds: [],
-        tempRankId: null
+        tempRankId: null,
+        checkedKeys: [],
+        checkedKeysAll: [],
+        childrenIdList: []
       }
     },
     computed: {
@@ -433,21 +446,21 @@
         console.log(list2)
         this.form.deptIds = list2
       },
-      addOption() {
-        if (this.selectedOptions) {
-          this.transferName(this.departs, this.selectedOptions[this.selectedOptions.length - 1])
-          const flag = this.form.deptIds.find(ele => ele.id === this.selectedOptions[this.selectedOptions.length - 1])
-          if (!flag) {
-            this.form.deptIds.push(
-              {
-                name: this.name,
-                id: this.selectedOptions[this.selectedOptions.length - 1]
-              }
-            )
-            // console.log(this.$refs.form)
-          }
-        }
-      },
+      // addOption() {
+      //   if (this.selectedOptions) {
+      //     this.transferName(this.departs, this.selectedOptions[this.selectedOptions.length - 1])
+      //     const flag = this.form.deptIds.find(ele => ele.id === this.selectedOptions[this.selectedOptions.length - 1])
+      //     if (!flag) {
+      //       this.form.deptIds.push(
+      //         {
+      //           name: this.name,
+      //           id: this.selectedOptions[this.selectedOptions.length - 1]
+      //         }
+      //       )
+      //       // console.log(this.$refs.form)
+      //     }
+      //   }
+      // },
       tableHeader(h, { column, $index }) {
         return h('span', [
           h('span', column.label),
@@ -569,7 +582,7 @@
         // this.tempDeptId = []
         editPfItem(id).then(res => {
           this.form = Object.assign({}, res.data)
-          this.upperIds(this.result, this.tempDeptIds, this.form.deptId)
+          // this.upperIds(this.result, this.tempDeptIds, this.form.deptId)
           this.handlePosition(this.form.positionId)
           // this.tempRankId = res.data.rankId
           this.form.rankIds = [...res.data.rankIds]
@@ -627,9 +640,9 @@
         this.$refs['form'].resetFields()
       },
       create(formName) {
-        this.tempForm = {
-          deptIds: []
-        }
+        // this.tempForm = {
+        //   deptIds: []
+        // }
         const set = this.$refs
         if (this.form.start && this.form.start.toString().split('-').length !== 3) {
           this.form.start = parseTime(this.form.start, '{y}-{m}-{d}')
@@ -646,18 +659,21 @@
           })
           return false
         }
-        for (let k in this.form) {
-          if (k === 'deptIds') {
-            this.form[k].map(ele => {
-              this.tempForm[k].push(ele.id)
-            })
-          } else {
-            this.tempForm[k] = this.form[k]
-          }
-        }
+        // for (let k in this.form) {
+        //   if (k === 'deptIds') {
+        //     this.form[k].map(ele => {
+        //       this.tempForm[k].push(ele.id)
+        //     })
+        //   } else {
+        //     this.tempForm[k] = this.form[k]
+        //   }
+        // }
+        this.form.deptIds = this.$refs.deptTree.getCheckedKeys()
+        console.log(this.form.deptIds)
         set[formName].validate(valid => {
           if (valid) {
-            addPfItem(this.tempForm).then(res => {
+            // addPfItem(this.tempForm).then(res => {
+            addPfItem(this.form).then(res => {
               if (res.status === 200) {
                 this.dialogCreate = false
                 this.getList()
