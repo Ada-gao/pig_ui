@@ -93,7 +93,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="主办部门" prop="activityDeptList" required v-if="activityDeptList.isCompany == 1">
+          <el-form-item label="主办部门" v-if="activityDeptList.isCompany == 1">
             <span >{{activityDeptList.name}}</span>
           </el-form-item>
           <el-form-item label="主办部门" prop="activityDeptList" v-else>
