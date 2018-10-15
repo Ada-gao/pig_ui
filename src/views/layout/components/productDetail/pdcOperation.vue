@@ -865,6 +865,7 @@
       },
       //筛选佣金业绩统计
       normalFilter(filter){
+        console.log('佣金业绩统计')
         let self = true
         if(!this.normalDTO.performanceCoefficient && filter){
           this.performanceCoefficient()
@@ -884,6 +885,7 @@
       },
       //筛选活动时间段业绩统计 新增统计判断
       activityFilter(filter){
+        console.log('活动时间段')
         let self = true;
         this.activityData.forEach(item=>{
 
@@ -1365,7 +1367,7 @@
       updateProductType(status) { // 产品状态转化
         //进入 预热或者进入募集中需要验证层级不能为空
         if(status == 1 || status == 2){
-          if(!this.activityFilter(true)) return false
+          // if(!this.activityFilter(true)) return false
           if(!this.normalFilter(true)) return false
         }
         this.dto.status = status
