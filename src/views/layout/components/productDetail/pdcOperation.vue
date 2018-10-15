@@ -521,7 +521,7 @@
       <el-select v-model="clientFile"
         clearable
         placeholder="请选择"
-        style="margin-bottom: 30px; width: 100%"
+        style="width: 100%"
         @change="changeFileList">
         <el-option
           v-for="item in clientFileList"
@@ -530,6 +530,7 @@
           :value="item.productClientFileManageId||item.transactionFileManageId">
         </el-option>
       </el-select>
+      <div v-show="chooseNone" class="dialog-select__error">请选择材料</div>
       <div class="dialog-footer text-right">
         <el-button @click="dialogComVisible = false">取 消</el-button>
         <el-button type="primary" @click="chooseClientFile">确 定</el-button>
@@ -789,7 +790,8 @@
         data2: {},
         collectVal: 1,
         collectTime: '',
-        statistic: {}
+        statistic: {},
+        chooseNone: false
         // form: {},
         // isDisabled: true,
         // stage: false,
@@ -1520,12 +1522,17 @@
             this.dialogComVisible = true
           })
         }
+        this.chooseNone = false
       },
       changeSecStep(val) {
         this.secStep = val
         this.setTables()
       },
       chooseClientFile() { // 下拉框选择材料提交
+        if (!this.clientFile) {
+          this.chooseNone = true
+          return
+        }
         this.dialogComVisible = false
         if (this.fileType === 'client') {
           let params = {
@@ -1749,6 +1756,10 @@
     display: flex;
      justify-content:space-between;
       line-height: 40px;
+  }
+  .dialog-select__error{
+    color: #f56c6c;
+    font-size: 12px;
   }
 </style>
 

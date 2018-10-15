@@ -235,19 +235,26 @@
       <article style="margin-top:40px">
         <p class="title">产品可见范围</p>
         <el-form-item>
-          <el-radio-group v-model="activityRangeType" v-if="!detailDisabled">
+          <el-radio-group v-model="visibleRangeType" v-if="!detailDisabled">
             <el-radio :label="0">全部可见</el-radio>
             <el-radio :label="1">部分可见</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="部门" v-if="activityRangeType == 1 || detailDisabled">
-          <el-row v-if="detailDisabled">
-            <el-col v-if="activityRangeType == 0">全部可见</el-col>
-            <el-col> 
-              <span style="padding: 0 6px" class="c-select-list" v-for="(item,index) in checkedDeptLabelList" :key="index">{{item}}</span>
+        <el-form-item label="部门" v-if="detailDisabled">
+          <el-row v-if="!form.deptIds">
+            <el-col>全部可见</el-col>
+          </el-row>
+          <el-row v-else>
+            <el-col>
+              <span style="padding: 0 6px" class="c-select-list" v-for="(item,index) in form.deptNames" :key="index">{{item}}</span>
             </el-col>
           </el-row>
-          <el-row type="flex" justify="space-between" v-else>
+        </el-form-item>
+        <el-form-item label="部门" v-if="visibleRangeType == 1 && !detailDisabled">
+          <!-- <el-row v-if="detailDisabled">
+            <el-col v-if="visibleRangeType == 0">全部可见</el-col>
+          </el-row> -->
+          <el-row type="flex" justify="space-between">
             <el-col class="c-select">
               <span class="c-select-list" v-for="(item,index) in checkedDeptLabelList" :key="index">{{item}}</span>
             </el-col>
@@ -561,7 +568,7 @@
         dialogDepartment: false,
         checkedDeptLabelList: [],
         checkedDeptIds: [],
-        activityRangeType: 0
+        visibleRangeType: 0,
       }
     },
     props: ['productId', 'stageType', 'formData'],
@@ -623,7 +630,8 @@
       this.form = this.formData
       let list = Object.keys(this.formData)
       if(list.length > 1 && !list.productId) {
-        this.formBuyingCrowds = this.form.buyingCrowds.split()
+        this.formBuyingCrowds = this.form.buyingCrowds.split(',')
+        console.log(this.formBuyingCrowds)
         if(this.stageType === '0') {
           // 产品分期
           this.detailDisabled = false
@@ -645,7 +653,8 @@
             this.userDefinedAttribute = JSON.parse(this.form.userDefinedAttribute)
             // console.log(JSON.parse(this.form.userDefinedAttribute))
             this.form.subscribe = this.form.subscribe - 0
-            this.formBuyingCrowds = this.form.buyingCrowds.split()
+            this.formBuyingCrowds = this.form.buyingCrowds.split(',')
+            this.checkedDeptLabelList = this.form.deptNames
             if(this.userDefinedAttribute == 'null') {
               this.userNewAttr = false
             } else if(this.userDefinedAttribute instanceof Array) {
@@ -660,12 +669,8 @@
               this.isDisabled = false
             }
             if (this.form.deptIds) {
-              this.activityRangeType = 1
-              this.checkedDeptIds = this.form.deptIds.split()
-              fetchTree().then(res => {
-                this.treeDepartmentData = res.data
-                
-              })
+              this.visibleRangeType = 1
+              this.checkedDeptIds = this.form.deptIds.split(',')
             }
             this.productStatusNo = this.form.productStatus //根据产品状态判断禁用字段
             let params = {
@@ -870,7 +875,9 @@
           this.treeDepartmentData = res.data
         })
         if (this.checkedDeptIds.length) {
-          this.$refs.deptTree.setCheckedKeys(this.checkedDeptIds)
+          this.$nextTick(() => {
+            this.$refs.deptTree.setCheckedKeys(this.checkedDeptIds)
+          })
         }
       },
       handleAddDept() {
