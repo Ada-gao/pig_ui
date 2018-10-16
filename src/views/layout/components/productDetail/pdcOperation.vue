@@ -468,10 +468,10 @@
       <span class="stage_btn" v-if="createStatus=='update'&productStatusNo===2" @click="handleCollect('1')">
         <svg-icon icon-class="stage"></svg-icon> 募集分期</span>
       <!-- 创建 -->
-      <el-button class="search_btn" v-if="createStatus=='create'" @click="cancel()">取 消</el-button>
+      <el-button class="search_btn" v-if="createStatus=='create'" @click="cancel('form2')">取 消</el-button>
       <el-button class="add_btn" v-if="createStatus=='create'" type="primary" @click="updateRouter">保 存</el-button>
       <!-- 编辑 -->
-      <el-button class="search_btn" v-if="createStatus=='update'&!operationDisabled" @click="cancel()">取 消</el-button>
+      <el-button class="search_btn" v-if="createStatus=='update'&!operationDisabled" @click="cancel('form2')">取 消</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&!operationDisabled" type="primary" @click="updateRouter">保 存</el-button>
       <!-- 在建 -->
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===0" type="primary" @click="updateProductType(1)">
@@ -540,9 +540,10 @@
     <el-dialog
       title="提示"
       :visible.sync="dialogCollectVisible"
+      @close="closeDialog"
       width="30%">
       <el-radio-group v-model="collectVal" @change="radioChange">
-        <el-radio style="display: block" :label="1">立即进入产品募集</el-radio>
+        <el-radio style="display: block; margin-bottom: 20px;" :label="1">立即进入产品募集</el-radio>
         <el-radio style="margin-left: 0; margin-right: 10px;" :label="2">定时进入产品募集</el-radio>
         <el-date-picker
           v-model="collectTime"
@@ -550,8 +551,9 @@
           placeholder="选择日期时间">
         </el-date-picker>
       </el-radio-group>
+      <div v-show="errorTime" class="dialog-select__error">定时的时间必须大于当前时间</div>
       <div class="dialog-footer text-right">
-        <el-button @click="dialogCollectVisible = false">取 消</el-button>
+        <el-button @click="cancelDialog">取 消</el-button>
         <el-button type="primary" @click="handleToCollect">确 定</el-button>
       </div>
     </el-dialog>
@@ -559,6 +561,7 @@
     <el-dialog
       title="提示"
       :visible.sync="dialogStVisible"
+      @close="closeDialog('dto')"
       width="30%">
       <div style="margin-bottom: 30px;">此产品现在为{{productStatusText}}，确定进入{{msgText}}吗？</div>
       <el-form :model="dto" ref="dto" label-width="110px">
@@ -631,6 +634,7 @@
         </el-row>
       </el-form>
       <div class="dialog-footer text-right">
+        <el-button @click="cancelDialog('dto')">取 消</el-button>
         <el-button @click="dialogStVisible = false">取 消</el-button>
         <el-button type="primary" @click="handleProStatus('dto')">确 定</el-button>
       </div>
@@ -791,7 +795,8 @@
         collectVal: 1,
         collectTime: '',
         statistic: {},
-        chooseNone: false
+        chooseNone: false,
+        errorTime: false
         // form: {},
         // isDisabled: true,
         // stage: false,
@@ -1404,6 +1409,7 @@
       radioChange(val) {
         if(val === 1) {
           this.collectTime = ''
+          this.errorTime = false
         }
       },
       handleToCollect() { // 募集定时
@@ -1411,16 +1417,21 @@
           collect: this.collectVal === 1 ? true : false,
           collectDate: this.collectTime = this.collectVal === 1 ? '' : this.collectTime
         }
-        updToCollect(this.productId, params).then(res => {
-          this.dialogCollectVisible = false
-          this.$notify({
-            title: '成功',
-            message: '状态操作成功',
-            type: 'success',
-            duration: 2000
+        if (new Date(this.collectTime).getTime() > new Date().getTime()) {
+          // 可以进入定时
+          updToCollect(this.productId, params).then(res => {
+            this.dialogCollectVisible = false
+            this.$notify({
+              title: '成功',
+              message: '状态操作成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.getOperations()
           })
-          this.getOperations()
-        })
+        } else {
+          this.errorTime = true
+        }
       },
       changeCollect() {
         // console.log('修改定时')
@@ -1469,7 +1480,7 @@
 
       },
       cancel(formName) {
-        // this.$refs[formName].resetFields()
+        this.$refs[formName].resetFields()
         this.$router.push({path: this.url})
         Bus.$emit('activeUrl', this.url)
       },
@@ -1694,6 +1705,21 @@
         for(let j = 0; j < elHeaders.length; j++) {
           elHeaders[j].style.tableLayout='inherit'
         }
+      },
+      cancelDialog() {
+        this.closeDialog()
+      },
+      closeDialog(formName) {
+        if (formName) {
+          this.$refs[formName].resetFields()
+          this.dialogStVisible = false
+        } else {
+          this.dialogCollectVisible = false
+          this.collectVal = 1
+          this.collectTime = ''
+          this.errorTime = false
+        }
+        
       }
     }
   }

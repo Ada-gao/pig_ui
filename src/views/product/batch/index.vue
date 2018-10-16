@@ -107,7 +107,7 @@
           '资产团队': 'assetTeam',
           '托管银行': 'custodianBank',
           '关联产品': 'relevanceName',
-          '关联类型': 'relevanceType',
+          '关联类型': 'relevanceTypeName',
           '渠道人数': 'channelNumber',
           '渠道打款金额（万）': 'channelAmount',
           '付息方式': 'interestPaymentName',

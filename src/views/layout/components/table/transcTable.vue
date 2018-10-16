@@ -98,7 +98,9 @@
 
       <el-table-column align="center" label="打款状态" v-if="payStatusCol">
         <template slot-scope="scope">
-          <span>{{scope.row.status|turnText(appointmentStatus)}}</span>
+          <span>{{scope.row.status|turnText(appointmentStatus)}}
+            <span v-show="scope.row.refundStatus">({{scope.row.refundStatus|turnText(refundStatus)}})</span>
+          </span>
         </template>
       </el-table-column>
 
@@ -260,7 +262,7 @@
           limit: 20,
           annualizedReturns: [],
           isFloat: null,
-          orderByField: 'create_time',
+          orderByField: 'update_time',
           isAsc: false
         },
         dialogFormVisible: false,
@@ -338,6 +340,7 @@
         this.queryId = 1
         this.listLoading = true
         this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
+        this.listQuery.orderByField = 'update_time'
         let list = null
         if(this.orderStatus == '1') { // 交易列表
           fetchTranscList(this.listQuery).then(response => {
