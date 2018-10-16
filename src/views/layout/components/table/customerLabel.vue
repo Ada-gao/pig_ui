@@ -162,7 +162,7 @@
         }
       },
       clientLabelHandle(id, clientLabelId) {
-        let text = id ? '取消' : '设置'
+        let text = clientLabelId ? '取消' : '设置'
         this.$confirm('确定' + text + '客户标签?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
