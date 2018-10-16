@@ -56,8 +56,10 @@
           <el-form-item label="活动负责人" prop="activityPrincipalList">
             <span v-if="url == 'view'" v-for="(item,index) in form.activityPrincipalList" :key="item.vid">
             {{item.val}}<span v-if="index != form.activityPrincipalList.length-1">|</span></span>
-            <el-select v-if="url != 'view'" v-model="form.activityPrincipalList" multiple placeholder="请选择" style="width: 100%;">
+            <el-select v-if="url != 'view'" v-model="form.activityPrincipalList" filterable  multiple placeholder="请选择" style="width: 100%;">
               <el-option v-for="item in activityLeader" :key="item.userId" :label="item.name" :value="item.userId">
+                <span style="float: left">{{ item.name }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.empNo }}</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -93,8 +95,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="主办部门" prop="activityDeptList" required v-if="activityDeptList.isCompany == 1">
-            <span >{{activityDeptList.name}}</span>
+          <el-form-item label="主办部门" v-if="activityDeptList.isCompany == 1">
+            <!-- <span v-for="(item,index) in activityDeptList.val" :key="item.val">
+               {{item}}<span v-if="index !=activityDeptList.val.length-1">|</span></span> -->
+               <span v-if="url == 'add'">{{activityDeptList.name}}</span>
+               <span v-else>{{form.activityDept}}</span>
           </el-form-item>
           <el-form-item label="主办部门" prop="activityDeptList" v-else>
           <span v-if="url == 'view'" v-for="(item,index) in form.activityDeptList" :key="item.id" :value="item.id">
@@ -534,7 +539,7 @@ export default {
             newObj.activityId = this.activityId
           }
           // 如果是子公司，传入子公司的deptId
-          if(this.activityDeptList.isCompany == 1) newObj.activityDeptList = [{vid:this.activityDeptList.deptId}]
+          // if(this.activityDeptList.isCompany == 1) newObj.activityDeptList = [{vid:this.activityDeptList.deptId}]
 
           const loading = this.$loading()
           addActivity(newObj,method).then(res => {
@@ -584,6 +589,7 @@ export default {
          const activityRangePositionList = []
          const activityClientLabelList = []
           this.fileList = []
+          this.activityDeptList.val = []
           data.activityData = [data.activityStart,data.activityEnd]
           data.registrationData = [data.registrationStart,data.registrationEnd]
           data.activityShare = data.activityShare.split('|')
@@ -595,6 +601,7 @@ export default {
             })
             data.activityDeptList.forEach(item=>{
               activityDeptList.push(item.vid)
+              this.activityDeptList.val.push(item.val)
             })
             data.activityPrincipalList = activityPrincipalList
             data.activityDeptList = activityDeptList
