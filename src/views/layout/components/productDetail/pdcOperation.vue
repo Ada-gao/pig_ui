@@ -1183,11 +1183,10 @@
           this.form2.importantStart = ''
           this.form2.importantEnd = ''
         }
-        if (this.productStatusNo === 2) {
+        // if (this.productStatusNo === 2) {
         //  if (!this.activityFilter(true)) return false
-         if (!this.normalFilter(true)) return false
-        }
-        if (!this.activityFilter(true)) return false
+        //  if (!this.normalFilter(true)) return false
+        // }
         if(this.normalDTO.performanceCoefficient >= 100) {
           this.$notify({
             title: '失败',
