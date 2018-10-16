@@ -57,7 +57,7 @@
         rules: {
           value: [
             { required: true, trigger: 'blur', message: '请输入投诉电话' },
-            { pattern: /([0-9]{3,4}-)?[0-9]{4,8}$/, message: '请输入正确的投诉电话' }
+            { pattern: /^([0-9]{3,4}-)?[0-9]{4,8}$/, message: '请输入正确的投诉电话' }
           ]
         }
       }

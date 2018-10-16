@@ -68,7 +68,7 @@
 
       <el-table-column align="center" label="预约时间" v-if="aptCol1">
         <template slot-scope="scope">
-          <span>{{scope.row.appointmentDate|parseTime('{y}-{m}-{d}')}}</span>
+          <span>{{scope.row.appointmentDate|parseTime('{y}-{m}-{d} {h}:{i}:{s}')}}</span>
         </template>
       </el-table-column>
 
@@ -162,7 +162,7 @@
   import { fetchCurrency, getObjList } from '@/api/currency'
   import { getToken } from '@/utils/auth'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { transformText, parseTime, transformText1 } from '@/utils'
+  import { transformText, transformText1 } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -290,11 +290,11 @@
       ])
     },
     filters: {
-      parseTime (time) {
-        if(!time) return
-        let date = new Date(time)
-        return parseTime(date)
-      },
+      // parseTime (time) {
+      //   if(!time) return
+      //   let date = new Date(time)
+      //   return parseTime(date)
+      // },
       turnText (val, list) {
         return transformText1(val, list)
       }

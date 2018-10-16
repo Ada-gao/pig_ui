@@ -1,5 +1,33 @@
 <template>
   <div class="app-container calendar-list-container pro-detail-radio">
+    <!-- 图片预览 -->
+    <el-dialog :visible.sync="dialogImgVisible1"
+               @close="handleClose"
+               class="swiper-dialog rotate-dialog">
+      <!--<img width="100%" :src="dialogImageUrl" alt="">-->
+      <el-carousel arrow="always"
+                   indicator-position="none"
+                   ref="carousel"
+                   style="width:100%;text-align:center"
+                   @change="carouselChange"
+                   :autoplay="false">
+        <el-carousel-item v-for="(item, index) in idcardImgs"
+                          :key="item">
+          <img :src="item"
+               alt=""
+               :class="'rotate_' + rotateCnt * 90"
+               style="width:80%;height:100%">
+          <!--<el-button type="primary"-->
+                     <!--@click="handleRotate"-->
+                     <!--style="display: block;margin:10px auto 0">顺时针翻转90度</el-button>-->
+        </el-carousel-item>
+      </el-carousel>
+      <el-button type="primary"
+                 @click="handleRotate"
+                 style="display: block;margin:0 auto">
+        <svg-icon icon-class="rotate" style="vertical-align: bottom;margin-right: 5px;"></svg-icon>&nbsp;旋转图片</el-button>
+    </el-dialog>
+
     <el-radio-group v-model="step" @change="handleChangeStep" style="margin-bottom: 30px;">
       <el-radio-button label="1">客户审核信息</el-radio-button>
       <el-radio-button style="border-radius: 0" label="2">客户信息</el-radio-button>
@@ -33,7 +61,7 @@
           <el-table-column align="center" :label="investorType == 0 ? '风险测评问卷（图片）' : '专业投资者认证材料（图片）'">
             <template slot-scope="scope">
               <div v-for="item in scope.row.urls" :data="scope.row.urls" style="display: inline-block; margin-right: 10px">
-                <a href="#"><img :src="item" alt="" style="width: 50px"></a>
+                <a href="#"><img @click="previewImg(scope.row.urls)" :src="item" alt="" style="width: 50px"></a>
               </div>
             </template>
           </el-table-column>
@@ -312,7 +340,10 @@
         step: '1',
         clientForm: {},
         clientStatus: {},
-        isClientType: false
+        isClientType: false,
+        dialogImgVisible1: false,
+        idcardImgs: ["http://10.9.60.142:8888/group1/M00/00/3A/Cgk8jlvFUNqADsqKAACoj5tpnnQ027.jpg"],
+        rotateCnt: 0
       }
     },
     computed: {
@@ -442,6 +473,19 @@
       },
       handleChange(val) {
         this.riskLevel = val
+      },
+      handleClose() {
+        this.rotateCnt = 0
+      },
+      carouselChange(value) {
+        this.rotateCnt = 0
+      },
+      previewImg(list) {
+        console.log(list)
+        this.idcardImgs = list
+      },
+      handleRotate() {
+        this.rotateCnt === 3 ? this.rotateCnt = 0 : ++this.rotateCnt
       }
     }
   }

@@ -222,8 +222,8 @@
         </div>
         <!-- 打款审核 -->
         <div v-if="(status == '2001' || status == '2002' || status == '2004') && orderStatus != 1 && sys_remit_audit" class="dialog-footer" style="text-align: center;">
-          <el-button v-show="status == '2001'&!form.refundStatus" class="search_btn" @click="submitResult('2004')">通 过</el-button>
-          <el-button v-show="status == '2001'&!form.refundStatus" class="add_btn" @click="rejectResult('2002')">不通过</el-button>
+          <el-button v-show="status == '2001'&&!form.refundStatus" class="search_btn" @click="submitResult('2004')">通 过</el-button>
+          <el-button v-show="status == '2001'&&!form.refundStatus" class="add_btn" @click="rejectResult('2002')">不通过</el-button>
           <!-- <el-button v-show="!form.refundStatus" class="add_btn" @click="submitOperat('2003')">关闭订单</el-button> -->
           <el-button v-show="!form.refundStatus" class="add_btn" @click="rejectResult('2003')">关闭订单</el-button>
         </div>
@@ -238,8 +238,8 @@
           <el-button class="add_btn" @click="rejectResult('3003')">不通过</el-button>
         </div>
         <!-- 退款审核 -->
-        <div v-if="form.refundStatus == '2' && orderStatus != 1 && sys_refund_audit" class="dialog-footer" style="text-align: center;">
-          <el-button class="search_btn" @click="submitResult('4')">通 过</el-button>
+        <div v-if="form.refundStatus == '2' && orderStatus != 1 && orderStatus != 3 && sys_refund_audit" class="dialog-footer" style="text-align: center;">
+          <el-button class="search_btn" @click="submitResult('4')">通 过1</el-button>
           <el-button class="add_btn" @click="rejectResult('3')">不通过</el-button>
         </div>
 

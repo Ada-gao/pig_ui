@@ -188,7 +188,7 @@
       <div class="split-line"></div>
       <el-row style="margin-top: 20px">
         <el-col :span="8">
-          <el-form-item label="人群划分：">
+          <el-form-item label="人群划分：" prop="crowds">
             <el-select class="filter-item" v-model="form.crowds" placeholder="请选择">
               <el-option v-for="item in buyingCrowds" :key="item.value" :label="item.label" :value="item.value">
                 <span style="float: left">{{ item.label }}</span>
@@ -332,6 +332,13 @@
             {
               required: false,
               message: '请选择角色',
+              trigger: 'blur'
+            }
+          ],
+          crowds: [
+            {
+              required: true,
+              message: '请选择人群',
               trigger: 'blur'
             }
           ]

@@ -197,6 +197,7 @@
             <el-input v-else v-model="form.relevanceName" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
+
         <el-col :span="11">
           <el-form-item label="付息方式" prop="interestPayment">
             <span v-if="detailDisabled">{{form.interestPayment|turnText(interestPayment)}}</span>
@@ -232,6 +233,20 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row v-if="!detailDisabled">
+        <el-col :span="11" :offset="11" style="text-align: right; margin-bottom: 10px">
+          <el-button class="search_btn" @click="dialogPropertyVisible=true">
+            <svg-icon icon-class="add"></svg-icon> 新增属性</el-button>
+        </el-col>
+      </el-row>
+      <div v-show="userNewAttr" class="split-line" style="margin-bottom: 20px;"></div>
+      <el-row v-show="userNewAttr">
+        <el-col :span="11" v-for="(item, index) in userDefinedAttribute" :key="index">
+          <el-form-item :label="item.label" prop="">
+            <el-input v-model="item.value" placeholder="请输入" :disabled="detailDisabled"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <article style="margin-top:40px">
         <p class="title">产品可见范围</p>
         <el-form-item>
@@ -263,7 +278,7 @@
         </el-form-item>
       </article>
       <div class="split-line" style="margin-bottom: 20px;"></div>
-
+      
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="账户名称" prop="accountName">
@@ -301,20 +316,6 @@
               :row="2"
               v-model="form.remark">
             </el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row v-if="createStatus==='create'">
-        <el-col :span="11" :offset="11" style="text-align: right; margin-bottom: 10px">
-          <el-button class="search_btn" @click="dialogPropertyVisible=true">
-            <svg-icon icon-class="add"></svg-icon> 新增属性</el-button>
-        </el-col>
-      </el-row>
-      <div class="split-line" style="margin-bottom: 20px;"></div>
-      <el-row v-show="userNewAttr">
-        <el-col :span="11" v-for="(item, index) in userDefinedAttribute" :key="index">
-          <el-form-item :label="item.label" prop="">
-            <el-input v-model="item.value" placeholder="请输入" :disabled="detailDisabled"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -655,8 +656,9 @@
             this.form.subscribe = this.form.subscribe - 0
             this.formBuyingCrowds = this.form.buyingCrowds.split(',')
             this.checkedDeptLabelList = this.form.deptNames
-            if(this.userDefinedAttribute == 'null') {
+            if(this.userDefinedAttribute == null) {
               this.userNewAttr = false
+              this.userDefinedAttribute = []
             } else if(this.userDefinedAttribute instanceof Array) {
               this.userNewAttr = true
             }
@@ -667,6 +669,9 @@
               this.isDisabled = true
             } else {
               this.isDisabled = false
+            }
+            if (this.form.annualizedReturn) {
+              this.form.isFloat = 1
             }
             if (this.form.deptIds) {
               this.visibleRangeType = 1
@@ -854,6 +859,7 @@
       handleAddProperty(formName) { // 新增属性
         this.$refs[formName].validate(valid => {
           if(valid) {
+            console.log(this.userDefinedAttribute)
             this.userDefinedAttribute.push({
             label: this.newAttrForm.propertyName,
             value: ''

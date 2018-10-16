@@ -11,7 +11,7 @@
 
           <el-table-column align="center" label="时间" prop="name">
             <template slot-scope="scope">
-              <span>{{scope.row.createTime | parseTime('{y}-{m}-{d}')}}</span>
+              <span>{{scope.row.createTime | parseTime()}}</span>
             </template>
           </el-table-column>
 
@@ -99,7 +99,8 @@
       ...mapGetters([
         'permissions',
         'appointmentStatus',
-        'expressType'
+        'expressType',
+        'refundStatus'
       ])
     },
     mounted() {
@@ -127,7 +128,11 @@
           this.total = response.data.total
           this.list = response.data.records
           this.list.forEach(item => {
-            item.status = transformText(this.appointmentStatus, item.status)
+            if (item.status.length === 1) {
+              item.status = transformText(this.refundStatus, item.status)
+            } else {
+              item.status = transformText(this.appointmentStatus, item.status)
+            }
           })
         })
       },
