@@ -261,7 +261,7 @@
             </el-form>
           </el-col>
           <el-col :span="12" v-show="defineform.radio2===2">
-            <el-form-item label="重点产品时间段">
+            <el-form-item label="重点产品时间段" required>
               <!--<el-date-picker-->
                 <!--style="width: 80%"-->
                 <!--v-model="importantDate"-->
@@ -360,7 +360,7 @@
                   label="折标业绩系数"
                   prop="performanceCoefficient"
                   :rules="[
-                    { required: false, trigger: 'blur, change', message: '' },
+                    { required: false, trigger: 'blur', message: '' },
                     { pattern: /^\d+\.{0,1}\d{0,2}$/, message: '请输入数字并且最多两位小数' }
                   ]">
                   <span class="el-input" v-if="operationDisabled">{{item.performanceCoefficient}}</span>
@@ -756,13 +756,13 @@
         },
         rules3: {
           performanceCoefficient:[
-            { required: true, trigger: 'blur, change', message: '请输入折标业绩系数' },
+            { required: true, trigger: 'blur', message: '请输入折标业绩系数' },
             { pattern: /^\d+\.{0,1}\d{0,2}$/, message: '请输入数字并且最多两位小数' }
           ]
         },
         rules4: {
           coefficient:[
-            { required: true, trigger: 'blur, change', message: '请输入产品佣金系数' },
+            { required: true, trigger: 'blur', message: '请输入产品佣金系数' },
             { pattern: /^\d+\.{0,1}\d{0,2}$/, message: '请输入数字并且最多两位小数' }
           ]
         },
@@ -1155,8 +1155,10 @@
         })
       },
       updateRouter() { // 操作指南新建或编辑提交
-        // console.log(this.importantStart, 'start')
-        // console.log(this.importantEnd, 'end')
+      
+        this.$refs['form2'].validate(valid1 => {
+        this.$refs['normalDTO'].validate(valid2 => {
+          if(valid1&&valid2){
         this.activityData.forEach((item, index) => {
           item.activeDate = this.activeDateList[index] || ['', '']
         })
@@ -1272,7 +1274,6 @@
           })
           return false
         }
-        console.log(this.form2)
         addOperationObj(this.form2).then(res => {
           this.$notify({
             title: '成功',
@@ -1284,6 +1285,9 @@
           // if(this.createStatus = 'create') {}
           // this.$router.push({path: '/product/productList'})
           // Bus.$emit('activeIndex', '/product/productList')
+        })
+          }
+        })
         })
       },
       updateProductDisplay() { // 显示/隐藏
