@@ -1183,6 +1183,7 @@
           this.form2.importantStart = ''
           this.form2.importantEnd = ''
         }
+        if (!this.normalFilter(true)) return false
         // if (this.productStatusNo === 2) {
         //  if (!this.activityFilter(true)) return false
         //  if (!this.normalFilter(true)) return false
