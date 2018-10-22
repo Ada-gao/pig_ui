@@ -171,3 +171,13 @@ export function modifyReason(obj) {
     }
   })
 }
+
+/**
+ * 根据预约编号查看理财师信息
+ */
+export function getPlannerByAptCode(appointmentCode) {
+  return request({
+    url: `/product/appointment/${appointmentCode}/planner`,
+    method: 'get'
+  })
+}

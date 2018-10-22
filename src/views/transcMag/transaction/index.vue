@@ -56,7 +56,8 @@
       </el-col>
     </el-row>
     <transc-search-component
-      :searchContract="false"></transc-search-component>
+      :searchContract="false"
+      :searchContractStatus="true"></transc-search-component>
 
     <transc-table-component
       :orderStatus="1"

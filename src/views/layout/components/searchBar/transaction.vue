@@ -110,7 +110,7 @@
       </el-row>
 
       <el-row>
-        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread && searchContract && (transcStep == 30 || status == 30)">
+        <el-col :sm="12" :lg="8" style="white-space: nowrap" v-show="isSpread && searchContractStatus && (transcStep == 30 || status == 30)">
           <el-form-item label="合同状态">
              <el-checkbox-group v-model="listQuery.status">
               <el-checkbox-button v-for="item in contractStatus" :label="item.value" :key="item.value">{{item.label}}</el-checkbox-button>
@@ -172,6 +172,9 @@ export default {
     },
     searchContract: {
       default: true
+    },
+    searchContractStatus: {
+      default: false
     },
     status: {
       default: 0

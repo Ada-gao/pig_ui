@@ -7,6 +7,7 @@
       :searchTranscStatus="false"
       :searchProductStatus="false"
       :searchRefund="false"
+      :searchContractStatus="true"
       :status="status">
     </transc-search-component>
 

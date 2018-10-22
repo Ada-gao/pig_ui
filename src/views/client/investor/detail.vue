@@ -481,7 +481,7 @@
         this.rotateCnt = 0
       },
       previewImg(list) {
-        console.log(list)
+        this.dialogImgVisible1 = true
         this.idcardImgs = list
       },
       handleRotate() {

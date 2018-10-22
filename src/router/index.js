@@ -207,6 +207,13 @@ export const constantRouterMap = [
         name: '币种详情',
         meta: { title: '币种详情', icon: '', noCache: true },
         hidden: true
+      },
+      {
+        path: 'version/detail/:id?',
+        component: _import('setting/version/detail'),
+        name: '版本详情',
+        meta: { title: '版本详情', icon: '', noCache: true },
+        hidden: true
       }
     ]
   },
@@ -269,7 +276,8 @@ export const asyncRouterMap = [
       { menuId: 299, path: 'rank', component: _import('admin/rank/index'), name: '职级管理', meta: { title: '职级管理', icon: 'position' }},
       { menuId: 10, path: 'dept', component: _import('admin/dept/index'), name: '部门管理', meta: { title: '部门管理', icon: 'dept' }},
       { menuId: 354, path: 'subsidiary', component: _import('admin/subsidiary/index'), name: '子公司管理', meta: { title: '子公司管理', icon: 'dept' }},
-      { menuId: 386, path: 'uploadUser', component: _import('admin/user/uploadExcel'), name: '用户批量导入', meta: { title: '用户批量导入', icon: 'upload' }}
+      { menuId: 386, path: 'uploadUser', component: _import('admin/user/uploadExcel'), name: '用户批量导入', meta: { title: '用户批量导入', icon: 'upload' }},
+      { menuId: 10, path: 'uploadDirectChange', component: _import('admin/user/uploadDirectChange'), name: '员工直属变更导入', meta: { title: '员工直属变更导入', icon: 'upload' }}
     ]
   },
   {
@@ -405,7 +413,8 @@ export const asyncRouterMap = [
       { menuId: 9, path: 'dict', component: _import('admin/dict/index'), name: '字典管理', meta: { title: '字典管理', icon: 'dict' }},
       { menuId: 8, path: 'log', component: _import('admin/log/index'), name: '日志管理', meta: { title: '日志管理', icon: 'log' }},
       { menuId: 330, path: 'complaint', component: _import('admin/complaint/index'), name: '投诉电话', meta: { title: '投诉电话', icon: 'log' }},
-      { menuId: 6, path: 'menu', component: _import('admin/menu/index'), name: '菜单管理', meta: { title: '菜单管理', icon: 'tree' }}
+      { menuId: 6, path: 'menu', component: _import('admin/menu/index'), name: '菜单管理', meta: { title: '菜单管理', icon: 'tree' }},
+      { menuId: 409, path: 'version', component: _import('setting/version/index'), name: '版本管理', meta: { title: '版本管理', icon: 'tree' }}
     ]
   },
   {

@@ -4,8 +4,12 @@
 
 <script>
   export default {
+    data () {
+      return {}
+    },
     mounted() {
       this.iframeInit()
+      console.log(require('../../../../config/dev.env'))
     },
     methods: {
       iframeInit() {

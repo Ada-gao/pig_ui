@@ -11,7 +11,7 @@
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
             <el-form-item label="搜索">
               <el-input
-                placeholder="搜索用户名、手机号、工号"
+                placeholder="搜索用户名、手机号、工号、姓名"
                 prefix-icon="el-icon-search"
                 v-model="listQuery.searchParams">
               </el-input>
@@ -80,6 +80,13 @@
           <span>
             <img v-if="scope.row.avatar" class="user-avatar" style="width: 20px; height: 20px; border-radius: 50%;" :src="scope.row.avatar+'?imageView2/1/w/20/h/20'">
             {{scope.row.username}}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="姓名">
+        <template slot-scope="scope">
+          <span>
+            {{scope.row.name}}
           </span>
         </template>
       </el-table-column>

@@ -162,7 +162,7 @@
             <el-form-item label="预约编号" prop="appointmentCode">
               <el-input v-if="dialogStatus==='create'" v-model="form.appointmentCode"
                         type="text"
-                        placeholder="请输入预约编号"></el-input>
+                        placeholder="请输入预约编号" @change="getPlanner(form.appointmentCode)"></el-input>
               <span v-else>{{form.appointmentCode}}</span>
             </el-form-item>
           </el-col>
@@ -178,8 +178,25 @@
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-form-item label="理财师姓名" prop="userName">
               <el-select v-if="dialogStatus==='create'" class="filter-item"
-                         value-key="name"
-                         style="width:100%;"
+                         value-key="empNo"
+                         style="width: 100%;"
+                         placeholder="请输入理财师姓名"
+                         v-model="user"
+                         filterable
+                         @change="userNameChange">
+                <el-option v-for="(item, index) in financialPlannerList"
+                           :value="item"
+                           :label="item.name"
+                           :key="item.empNo">
+                  <span style="float: left;">{{item.name}}</span>
+                </el-option>
+              </el-select>
+              <span v-else>{{form.userName}}</span>
+            </el-form-item>
+            <!-- <el-form-item label="理财师姓名" prop="userName">
+              <el-select v-if="dialogStatus==='create'" class="filter-item"
+                         value-key="empNo"
+                         style="width: 100%;"
                          placeholder="请输入理财师姓名"
                          v-model="form.userName"
                          filterable
@@ -187,12 +204,12 @@
                 <el-option v-for="(item, index) in financialPlannerList"
                            :value="item"
                            :label="item.name"
-                           :key="index">
+                           :key="item.empNo">
                   <span style="float: left;">{{item.name}}</span>
                 </el-option>
               </el-select>
               <span v-else>{{form.userName}}</span>
-            </el-form-item>
+            </el-form-item> -->
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
@@ -255,6 +272,7 @@
     getPlannerList // 查询理财师列表
     // getDirectSupervisorList // 销售支持列表(目前这个方法查询的是所有员工))
   } from '@/api/user'
+  import { getPlannerByAptCode } from '@/api/transc/transc'
   import { mapGetters } from 'vuex'
   export default {
     components: {},
@@ -310,7 +328,11 @@
           ]
         },
         financialPlannerList: [], // 所有理财师列表
-        salesSupportList: [] // 所有销售支持列表
+        salesSupportList: [], // 所有销售支持列表
+        user: {
+          name: '',
+          empNo: ''
+        }
       }
     },
     computed: {
@@ -327,6 +349,7 @@
     },
     methods: {
       userNameChange(newVal) {
+        console.log(newVal)
         const item = this.financialPlannerList.find((ite) => {
           return ite.empNo === newVal.empNo
         })
@@ -567,6 +590,14 @@
             type: 'info',
             message: '已取消删除'
           })
+        })
+      },
+      getPlanner(code) {
+        getPlannerByAptCode(code).then(res => {
+          console.log(res.data)
+          this.user.name = res.data.name
+          this.form.userCode = res.data.empNo
+          // this.form.userName = [res.data.name]
         })
       }
     }

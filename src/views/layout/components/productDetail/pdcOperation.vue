@@ -756,13 +756,13 @@
         },
         rules3: {
           performanceCoefficient:[
-            { required: true, trigger: 'blur, change', message: '请输入折标业绩系数' },
+            { required: true, trigger: 'blur', message: '请输入折标业绩系数' },
             { pattern: /^\d+\.{0,1}\d{0,2}$/, message: '请输入数字并且最多两位小数' }
           ]
         },
         rules4: {
           coefficient:[
-            { required: true, trigger: 'blur, change', message: '请输入产品佣金系数' },
+            { required: true, trigger: 'blur', message: '请输入产品佣金系数' },
             { pattern: /^\d+\.{0,1}\d{0,2}$/, message: '请输入数字并且最多两位小数' }
           ]
         },

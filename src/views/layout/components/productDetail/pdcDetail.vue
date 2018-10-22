@@ -346,7 +346,7 @@
       <el-button class="add_btn" v-if="createStatus=='update'" type="primary" @click="update('form')">保 存</el-button>
     </div>
     <!-- 新增属性 -->
-    <el-dialog :visible.sync="dialogPropertyVisible" title="新增属性">
+    <el-dialog :visible.sync="dialogPropertyVisible" title="新增属性" @close="closeDialog(newAttrForm)">
       <el-form :model="newAttrForm" ref="newAttrForm" label-width="120px">
         <el-col>
           <el-form-item
@@ -874,6 +874,10 @@
       cancelAddNewAttr(formName) {
         this.dialogPropertyVisible = false
         this.$refs[formName].resetFields()
+        console.log(this.$refs[formName])
+      },
+      closeDialog(formName) {
+        this.cancelAddNewAttr(formName)
       },
       selectDepartment() {
         this.dialogDepartment = true
