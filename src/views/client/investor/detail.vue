@@ -99,7 +99,8 @@
         
         <el-table-column align="center" label="审核时间">
           <template slot-scope="scope">
-            <span>{{scope.row.auditDate|parseTime('{y}-{m}-{d}')}}</span>
+            <!-- <span>{{scope.row.auditDate}}</span> -->
+            <span>{{scope.row.auditDate|parseTime('{y}-{m}-{d} {h}:{i}:{s}')}}</span>
           </template>
         </el-table-column>
         
@@ -223,7 +224,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="认证时间：" prop="clientType">
-            <span>{{clientStatus.certificationDate|parseTime('{y}-{m}-{d}')||'--'}}</span>
+            <span>{{clientStatus.certificationDate|parseTime('{y}-{m}-{d} {h}:{i}:{s}')||'--'}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">

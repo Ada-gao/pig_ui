@@ -8,6 +8,7 @@
       :searchCity="false"
       :searchClientType="false"
       :searchCertificationStatus="false"
+      :searchPreserveExpired="true"
       >
     </search-bar-component>
 

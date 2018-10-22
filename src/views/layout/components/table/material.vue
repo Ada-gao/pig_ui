@@ -9,7 +9,7 @@
             <el-input
               v-if="transcId===scope.row.productClientFileId||transcId===scope.row.productClientFileManageId"
               v-autoFocus
-              v-model="scope.row.fileName"
+              v-model.trim="scope.row.fileName"
               @keyup.enter.native="$event.target.blur"
               @blur="updateClientFile(scope.row)"></el-input>
             <span v-else>{{scope.row.fileName}}</span>
@@ -158,9 +158,14 @@
         localStorage.setItem('activeUrl', this.activeUrl)
       },
       updateClientFile(item) {
+        if (item.fileName.trim() === '') {
+          item.fileName = this.tempObj.fileName
+          this.transcId = ''
+          return
+        }
         if (item.fileName === this.tempObj.fileName) {
-              this.transcId = ''
-              return
+          this.transcId = ''
+          return
         }
         this.$emit('upd-client-file', item)
       },

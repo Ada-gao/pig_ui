@@ -4,6 +4,7 @@
       :searchClientClass="false"
       :searchRealNameStatus="false"
       :searchCertificationStatus="false"
+      :searchPreserveExpired="true"
       >
     </search-bar-component>
 

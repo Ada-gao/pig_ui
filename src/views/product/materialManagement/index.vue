@@ -180,7 +180,7 @@
         importUrl: 'zuul/product/productTransactionFileManage/',
         transcId: '',
         data: {},
-        focusStatus: false
+        tempObj: {}
       }
     },
     computed: {
@@ -206,8 +206,8 @@
 //    },
     methods: {
       editHandle(row) {
-        this.focusStatus = true
         this.transcId = row.transactionFileManageId
+        this.tempObj = Object.assign({}, row)
       },
       getListQuery(data) {
         console.log('data')
@@ -236,14 +236,14 @@
         this.$prompt('请输入材料名称', '新增材料', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-          // inputErrorMessage: '邮箱格式不正确'
+          inputPattern: /\S/,
+          inputErrorMessage: '请输入材料名称'
         }).then(({ value }) => {
           let params = {
             fileName: value
           }
           addClientFile(params).then(res => {
-            console.log(res)
+            // console.log(res)
             this.getClientList()
           })
           // this.$message({
@@ -278,12 +278,16 @@
         })
       },
       updateTranscFile(item) {
+        if (item.name.trim() === '') return
+        if (item.name === this.tempObj.name) {
+          this.transcId = ''
+          return
+        }
         let params = {
           name: item.name
         }
         updTranscFile(item.transactionFileManageId, params).then(res => {
           this.transcId = ''
-          this.focusStatus = false
           this.getTranscList()
         })
       },
@@ -313,7 +317,7 @@
       handleCurrentChange(val) {
         this.listQuery.page = val
         this.getTranscList()
-      },
+      }
     }
   }
 </script>
