@@ -15,6 +15,7 @@
             <el-input v-model="scope.row.name"
                       v-if="productFileId===scope.row.productFileId"
                       v-autoFocus
+                      :maxlength="20"
                       @keyup.enter.native="$event.target.blur"
                       @blur="updateFileName(scope.row, 'transaction', 'productFileId')"></el-input>
             <span v-else>{{scope.row.name}}</span>
@@ -93,6 +94,7 @@
             <el-input v-model="scope.row.name"
                       v-if="productFileId===scope.row.productFileId"
                       v-autoFocus
+                      :maxlength="20"
                       @keyup.enter.native="$event.target.blur"
                       @blur="updateFileName(scope.row, 'product', 'productFileId')"></el-input>
             <span v-else>{{scope.row.name}}</span>
@@ -151,6 +153,7 @@
           <template slot-scope="scope">
             <el-input v-model="scope.row.name"
                       v-autoFocus
+                      :maxlength="20"
                       v-if="productFileId===scope.row.productFileId"
                       @keyup.enter.native="$event.target.blur"
                       @blur="updateFileName(scope.row, 'announcement', 'productFileId')"></el-input>
@@ -1600,11 +1603,16 @@
         })
       },
       handlerEdit (p0, p1, p2) {
-          this.tempObj = transferEdit(p0, p1, p2)
+        this.tempObj = transferEdit(p0, p1, p2)
         console.log('tempObj', this.tempObj)
       },
       updateFileName(item, fileType, id) { // 编辑材料名称
         console.log('id', id)
+        if (item.name.trim() === '') {
+          item.name = this.tempObj.name
+          this[id] = ''
+          return
+        }
         let params = {
           id: item.productFileId,
           name: item.name,
@@ -1792,6 +1800,7 @@
   .dialog-select__error{
     color: #f56c6c;
     font-size: 12px;
+    margin-top: 10px;
   }
 </style>
 

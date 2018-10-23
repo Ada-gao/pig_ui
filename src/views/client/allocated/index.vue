@@ -100,7 +100,7 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="closeDialog('modal')">
       <el-form :model="modal" ref="modal" label-width="100px">
         <el-row :gutter="20">
           <el-col :span="11">
@@ -483,6 +483,9 @@
           this.clientIds.push(item.clientId)
         })
         this.handleUpdate(this.clientIds)
+      },
+      closeDialog (formName) {
+        this.changeCancel(formName)
       }
     }
   }

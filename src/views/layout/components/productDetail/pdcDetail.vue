@@ -1,6 +1,6 @@
 <template>
   <div class="product-detail">
-    <el-form :model="form" :rules="rules" ref="form" label-width="110px">
+    <el-form :model="form" :rules="rules" ref="form" label-width="120px">
       <el-row :gutter="90">
         <el-col :span="11" v-if="!stage&&createStatus==='update'">
           <!-- 如果分期，不显示编号 -->
@@ -178,8 +178,9 @@
             <el-input v-else v-model="form.custodianBank" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" class="define_col" style="padding-left: 25px;">
-          <el-form-item label="渠道打款金额（万）"  prop="channelAmount" style="white-space: nowrap">
+        <!-- <el-col :span="11" class="define_col"> -->
+        <el-col :span="11">
+          <el-form-item label="渠道打款金额（万）" prop="channelAmount" style="white-space: nowrap">
             <span v-if="detailDisabled">{{form.channelAmount}}</span>
             <el-input v-else v-model="form.channelAmount" placeholder="请输入"></el-input>
           </el-form-item>
@@ -346,7 +347,7 @@
       <el-button class="add_btn" v-if="createStatus=='update'" type="primary" @click="update('form')">保 存</el-button>
     </div>
     <!-- 新增属性 -->
-    <el-dialog :visible.sync="dialogPropertyVisible" title="新增属性" @close="closeDialog(newAttrForm)">
+    <el-dialog :visible.sync="dialogPropertyVisible" title="新增属性" @close="closeDialog('newAttrForm')">
       <el-form :model="newAttrForm" ref="newAttrForm" label-width="120px">
         <el-col>
           <el-form-item
@@ -355,7 +356,7 @@
             :rules="[
               {required: true, message: '请输入属性名称', trigger: 'change'}
             ]">
-            <el-input v-model="newAttrForm.propertyName"></el-input>
+            <el-input v-model="newAttrForm.propertyName" :maxlength="10"></el-input>
           </el-form-item>
         </el-col>
       </el-form>
@@ -526,19 +527,25 @@
             { required: true, message: '请选择交易币种', trigger: 'blur' }
           ],
           collectionAmount: [
-            {  required: true, message: '请输入募集额度', trigger: 'change'}
+            {  required: true, message: '请输入募集额度', trigger: 'change'},
+            { pattern: /^\d{0,9}$/, message: '请输入9位以内的整数' }
             // {  message: '金额必须为数字值',  trigger: 'change',  validator: certNumber}
           ],
           minimalAmount: [
             { required: true, message: '请输入起投金额', trigger: 'change'},
-            { message: '金额必须为数字值', trigger: 'change', validator: certNumber}
+            // { message: '金额必须为数字值', trigger: 'change', validator: certNumber},
+            { pattern: /^\d{0,9}$/, message: '请输入9位以内的整数' }
           ],
           minimalAddAmount: [
-            { required: true, message: '请输入追加金额', trigger: 'change'}
+            { required: true, message: '请输入追加金额', trigger: 'change'},
+            { pattern: /^\d{0,9}$/, message: '请输入9位以内的整数' }
             // { type: 'number', message: '金额必须为数字值', validator: certNumber }
           ],
+          channelAmount: [
+            { pattern: /^\d{0,9}$/, message: '请输入9位以内的整数' }
+          ],
           investmentHorizon: [
-            { required: true, validator: pdExpire, trigger: 'blur' },
+            { required: true, validator: pdExpire, trigger: 'blur' }
 //            { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
           ],
           buyingCrowds: [

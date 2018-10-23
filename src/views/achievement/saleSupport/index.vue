@@ -491,9 +491,9 @@
       },
       create(formName) {
         const set = this.$refs
+        console.log(this.form)
         this.form.salesName = this.form.salesName.split('(')[0]
         this.form.userName = this.form.userName.split('(')[0]
-        console.log(this.form)
         set[formName].validate(valid => {
           if (valid) {
             addSalesSupport(this.form).then(res => {
@@ -510,7 +510,7 @@
               this.resetTemp()
               this.$refs[formName].resetFields()
             }).catch(() => {
-              this.dialogCreate = false
+              this.dialogCreate = true
               this.resetTemp()
               this.$refs[formName].resetFields()
               this.$notify({
@@ -594,9 +594,11 @@
       },
       getPlanner(code) {
         getPlannerByAptCode(code).then(res => {
-          console.log(res.data)
-          this.user.name = res.data.name
+          this.user = res.data
           this.form.userCode = res.data.empNo
+          this.form.userName = res.data.name
+          // this.user.name = res.data.name
+          // this.user.empNo = res.data.empNo
           // this.form.userName = [res.data.name]
         })
       }
