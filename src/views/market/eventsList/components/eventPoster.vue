@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import {activityPoster} from '@/api/market/eventsList'
+import {activityPoster,releaseEvent} from '@/api/market/eventsList'
 import {getSubcompany} from '@/api/market/setting'
 import QRCode from 'qrcodejs2'
 import {mapGetters} from 'vuex'
@@ -296,6 +296,7 @@ mounted(){
                 message: '发布成功',
                 type: 'success'
               });
+              this.$router.push(`/market/eventsList/edit/${res.data.data}/1`)
             })
         }
       })
