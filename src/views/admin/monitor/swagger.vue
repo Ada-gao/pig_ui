@@ -1,15 +1,18 @@
 <template>
-    <iframe ref="iframe" src="http://10.9.60.141:9999/swagger-ui.html" frameborder="0" style="border:0;" width="100%"></iframe>
+    <iframe ref="iframe" :src="swaggerUrl" frameborder="0" style="border:0;" width="100%"></iframe>
 </template>
 
 <script>
+  let baseApi = require('../../../../config/dev.env').BASE_API
   export default {
     data () {
-      return {}
+      return {
+        swaggerUrl: ''
+      }
     },
     mounted() {
       this.iframeInit()
-      console.log(require('../../../../config/dev.env'))
+      this.swaggerUrl = baseApi + '/swagger-ui.html'
     },
     methods: {
       iframeInit() {
