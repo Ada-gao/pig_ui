@@ -67,7 +67,7 @@
         <el-col :span="11">
           <el-form-item label="活动人数(人)" prop="activityActivitiesNumber">
             <span v-if="url == 'view'">{{form.activityActivitiesNumber}}</span>
-            <el-input v-else v-model.trim="form.activityActivitiesNumber"></el-input>
+            <el-input v-else v-model.trim="form.activityActivitiesNumber" maxlength="9"></el-input>
           </el-form-item>
         </el-col>
       </el-row>

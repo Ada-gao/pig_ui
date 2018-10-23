@@ -4,8 +4,8 @@
     <el-form label-width="100px">
       <!-- 活动封面（用于app端展示） -->
       <p class="title">活动封面<span class="title-app">（用于app端展示）</span></p>
-      <el-row type="flex" class="row-bg" justify="space-between" align="middle">
-        <el-col v-if="url == 'edit'">
+      <el-row type="flex" class="row-bg" >
+        <el-col v-if="url == 'edit'" :span="16">
           <el-form-item label="封面">
             <el-upload class="upload-demo" 
               action="/activity/file/upload"
@@ -21,7 +21,7 @@
         <!-- <el-col style="text-align: center;">
                     <el-button class="add_btn">生成预览</el-button>
                 </el-col> -->
-        <el-col style="width:750px" class="img" v-loading="loadingCover">
+        <el-col style="width:375px" class="img" v-loading="loadingCover">
           <el-row type="flex" class="row-bg" justify="space-between" align="middle">
             <el-col :span="8" class="line"></el-col>
             <el-col :span="8" class="img-title">封面预览</el-col>
@@ -32,8 +32,8 @@
       </el-row>
       <!-- 活动海报（用于app端分享查看） -->
       <p class="title">活动海报<span class="title-app">（用于app端分享查看）</span></p>
-      <el-row type="flex" class="row-bg" justify="space-between" align="middle">
-        <el-col v-if="url == 'edit'">
+      <el-row type="flex" class="row-bg">
+        <el-col v-if="url == 'edit'" :span="16">
           <el-form-item label="部门">
             <nav class="filter-container">
               <el-button-group>
@@ -78,7 +78,7 @@
         <!-- <el-col style="text-align: center;">
                     <el-button class="add_btn">生成预览</el-button>
                 </el-col> -->
-        <el-col style="width:750px" class="img" v-loading="loadingPoster">
+        <el-col style="width:375px" class="img" v-loading="loadingPoster">
           <el-row type="flex" class="row-bg" justify="space-between" align="middle">
             <el-col :span="8" class="line"></el-col>
             <el-col :span="8" class="img-title">海报预览</el-col>
@@ -160,12 +160,18 @@ mounted(){
       })
     },
     changeButton(vid){
+      let self = false
       this.list.forEach(item=>{
         if(item.deptId == vid){
           this.logImgUrl = item.logo
           this.labelButton = item.deptId
+          self = true
         }
       })
+      if(!self) {
+        this.logImgUrl = null
+        this.labelButton = vid
+      } 
     },
 
     activityPoster(){
@@ -356,10 +362,10 @@ mounted(){
       .img-code{
         position: absolute;
         bottom: 50px;
-        left: 150px;
+        left:137.5px;
       }
     .row-bg{
-        width: 50%;
+        width: 100%;
        margin: 20px 0;
         .line{
         height: 1px;
