@@ -115,10 +115,10 @@
                      layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-		<el-dialog title="编辑平衡积分卡系数" :visible.sync="dialogEditVisible">
+		<el-dialog title="编辑平衡积分卡系数" @close="cancel('form')" :visible.sync="dialogEditVisible">
       <el-form :model="form" ref="form" label-width="170px" :rules="rules">
         <el-form-item label="平衡计分卡系数（%）" prop="coefficient">
-          <el-input v-model="form.coefficient"></el-input>
+          <el-input type='number' v-model="form.coefficient"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -135,19 +135,16 @@ import { parseTime, transformText } from '@/utils'
 export default {
 	data () {
 		const validatePass = (rule, value, callback) => {
-			console.log(!new RegExp("^[0-9]*$").test(value))
+			// console.log(!new RegExp("^[0-9]*$").test(value))
+			// console.log(typeof value, new RegExp("^(\d{1,2})(\s|$|\.\d{1,2}\b)").test(parseInt(value)))
+			console.log('value', this.judge(value))
 			if (!value) {
 				callback('请输入平衡计分卡系数')
-			} else if (!new RegExp("^[0-9]*$").test(value)) {
-				callback('只能填写数字哦')
+			} else if (!this.judge(value)) {
+				callback('请输入1到99的整数或小数（小数点保留后两位）')
 			} else {
 				callback()
 			}
-			// if (Number(value) > 1) {
-			// 	callback(new Error('平衡计分卡系数不能大于1'))
-			// } else {
-			// 	callback()
-			// }
 		}
 		return	{
 			list: null,
@@ -196,6 +193,19 @@ export default {
 	methods: {
 		blur() {
 			console.log('1111')
+		},
+		judge (num) {
+			var numStr = num + '',
+				matchStr = numStr.match(/\d{1,2}[.](\d+)/)
+			if (matchStr) {
+				if (matchStr[1].length < 3) {
+					return Number(numStr) < 100 && Number(numStr) > 0
+				} else {
+					return false
+				}
+			} else {
+				return Number(numStr) < 100 && Number(numStr) > 0
+			}
 		},
 		cycleList(list) {
 			list.forEach(item => {
