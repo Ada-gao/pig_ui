@@ -373,12 +373,12 @@
       },
       turnText(val, list) {
         return transformText1(val, list)
-      },
-      parseTime (time) {
-        if(!time) return
-        let date = new Date(time)
-        return parseTime(date)
       }
+      // parseTime (time) {
+      //   if(!time) return
+      //   let date = new Date(time)
+      //   return parseTime(date)
+      // }
     },
     created() {
       this.getList()

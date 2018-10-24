@@ -277,7 +277,7 @@ export const asyncRouterMap = [
       { menuId: 10, path: 'dept', component: _import('admin/dept/index'), name: '部门管理', meta: { title: '部门管理', icon: 'dept' }},
       { menuId: 354, path: 'subsidiary', component: _import('admin/subsidiary/index'), name: '子公司管理', meta: { title: '子公司管理', icon: 'dept' }},
       { menuId: 386, path: 'uploadUser', component: _import('admin/user/uploadExcel'), name: '用户批量导入', meta: { title: '用户批量导入', icon: 'upload' }},
-      { menuId: 10, path: 'uploadDirectChange', component: _import('admin/user/uploadDirectChange'), name: '员工直属变更导入', meta: { title: '员工直属变更导入', icon: 'upload' }}
+      { menuId: 10, path: 'uploadDirectChange', component: _import('admin/user/uploadDirectChange'), name: '直属变更导入', meta: { title: '员工直属变更导入', icon: 'upload' }}
     ]
   },
   {

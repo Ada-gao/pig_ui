@@ -9,6 +9,7 @@
             <el-input
               v-if="transcId===scope.row.productClientFileId||transcId===scope.row.productClientFileManageId"
               v-autoFocus
+              :maxlength="20"
               v-model.trim="scope.row.fileName"
               @keyup.enter.native="$event.target.blur"
               @blur="updateClientFile(scope.row)"></el-input>

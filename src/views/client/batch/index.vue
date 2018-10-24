@@ -87,7 +87,7 @@
         const kepMap = {
           '序号': 'lineNo',
           '客户姓名': 'name',
-          '客户编号': 'clientNo',
+          // '客户编号': 'clientNo',
           '性别': 'gender',
           '客户性质': 'clientClassStr',
           '邮箱': 'email',
@@ -101,7 +101,9 @@
           '证件号码': 'idNo',
           '手机号': 'mobile',
           '绑定理财师编号': 'empNo',
-          '资产管理规模': 'assetAmount'
+          '资产管理规模': 'assetAmount',
+          '投资者类型': 'clientType',
+          '风险等级': 'riskLevel'
         }
         this.formData.forEach(item => {
           replaceKey(item, kepMap)
@@ -163,7 +165,8 @@
                 duration: 2000,
                 message: '导入成功'
               })
-              // this.$router.push({ path: '/achievement/perform' })
+              // this.errorFlag = false
+              this.$router.push({ path: '/client/customerBatch' })
             } else {
               this.errorList = this.transferError(res.data)
               this.errorFlag = true

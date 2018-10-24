@@ -149,7 +149,7 @@
     <!--新建和编辑业绩指标-->
     <el-dialog :title="textMap[dialogStatus]"
                class="perform_dialog"
-               @close="cancel('form')"
+               @close="close('form')"
                :visible.sync="dialogCreate">
       <el-form :model="form"
                ref="form"
@@ -223,7 +223,7 @@
             <el-form-item label="销售支持姓名" prop="salesName">
               <el-select v-if="dialogStatus==='create'"
                          class="filter-item"
-                         value-key="name"
+                         value-key="userId"
                          filterable
                          style="width:100%;"
                          placeholder="请输入销售支持姓名"
@@ -232,7 +232,7 @@
                 <el-option v-for="(item, index) in salesSupportList"
                            :value="item"
                            :label="item.name"
-                           :key="index">
+                           :key="item.userId">
                   <span style="float: left;">{{item.name}}</span>
                 </el-option>
               </el-select>
@@ -312,7 +312,7 @@
             { required: true, message: '请输入订单编号', trigger: 'blur' }
           ],
           commissionRate: [
-            { required: true, validator: validDateRate, trigger: 'blur' }
+            { required: true, validator: validDateRate, trigger: 'blur,change' }
           ],
           salesCode: [
             { required: true, message: '请输入销售支持工号', trigger: 'blur' }
@@ -357,6 +357,7 @@
         this.form.userName = item.name
       },
       salesNameChange(newVal) {
+        this.salesSupportList = this.salesSupportList.slice(0)
         const item = this.salesSupportList.find((ite) => {
           return ite.empNo === newVal.empNo
         })
@@ -485,17 +486,21 @@
         this.listQuery.page = val
         this.getList()
       },
-      cancel(formName) {
+      close(formName) {
         this.dialogCreate = false
+        this.user = {}
         this.$refs[formName].resetFields()
+      },
+      cancel(formName) {
+        this.close(formName)
       },
       create(formName) {
         const set = this.$refs
         console.log(this.form)
-        this.form.salesName = this.form.salesName.split('(')[0]
-        this.form.userName = this.form.userName.split('(')[0]
         set[formName].validate(valid => {
           if (valid) {
+            this.form.salesName = this.form.salesName.split('(')[0]
+            this.form.userName = this.form.userName.split('(')[0]
             addSalesSupport(this.form).then(res => {
               if (res.status === 200) {
                 this.dialogCreate = false
@@ -511,14 +516,14 @@
               this.$refs[formName].resetFields()
             }).catch(() => {
               this.dialogCreate = true
-              this.resetTemp()
-              this.$refs[formName].resetFields()
-              this.$notify({
-                title: '失败',
-                message: '创建失败',
-                type: 'error',
-                duration: 2000
-              })
+              // this.resetTemp()
+              // this.$refs[formName].resetFields()
+              // this.$notify({
+              //   title: '失败',
+              //   message: '创建失败',
+              //   type: 'error',
+              //   duration: 2000
+              // })
             })
           } else {
             return false

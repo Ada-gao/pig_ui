@@ -34,6 +34,7 @@
             <el-input
               v-if="transcId===scope.row.transactionFileManageId"
               v-autoFocus
+              :maxlength="20"
               v-model="scope.row.name"
               @keyup.enter.native="$event.target.blur"
               @blur="updateTranscFile(scope.row)"></el-input>
