@@ -554,7 +554,7 @@
           placeholder="选择日期时间">
         </el-date-picker>
       </el-radio-group>
-      <div v-show="errorTime" class="dialog-select__error">定时的时间必须大于当前时间</div>
+      <div v-show="errorTime" class="dialog-select__error">{{errorTimeText}}</div>
       <div class="dialog-footer text-right">
         <el-button @click="cancelDialog">取 消</el-button>
         <el-button type="primary" @click="handleToCollect">确 定</el-button>
@@ -799,7 +799,8 @@
         collectTime: '',
         statistic: {},
         chooseNone: false,
-        errorTime: false
+        errorTime: false,
+        errorTimeText: ''
         // form: {},
         // isDisabled: true,
         // stage: false,
@@ -1424,21 +1425,23 @@
           collect: this.collectVal === 1 ? true : false,
           collectDate: this.collectTime = this.collectVal === 1 ? '' : this.collectTime
         }
-        if (new Date(this.collectTime).getTime() > new Date().getTime()) {
-          // 可以进入定时
-          updToCollect(this.productId, params).then(res => {
-            this.dialogCollectVisible = false
-            this.$notify({
-              title: '成功',
-              message: '状态操作成功',
-              type: 'success',
-              duration: 2000
-            })
-            this.getOperations()
-          })
+        if (this.collectVal === 1) {
+          this.errorTime = false
         } else {
-          this.errorTime = true
+          this.errorTime = new Date(this.collectTime).getTime() > new Date().getTime() ? false : true
+          this.errorTimeText = this.collectTime === '' ? '请选择时间' : '定时的时间必须大于当前时间'
         }
+        if (this.errorTime) return
+        updToCollect(this.productId, params).then(res => {
+          this.dialogCollectVisible = false
+          this.$notify({
+            title: '成功',
+            message: '状态操作成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getOperations()
+        })
       },
       changeCollect() {
         // console.log('修改定时')

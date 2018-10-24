@@ -34,7 +34,7 @@
       </el-table-column>
       <el-table-column align="center" label="创建时间">
         <template slot-scope="scope">
-          <span>{{scope.row.createTime}}</span>
+          <span>{{scope.row.createTime|parseTime()}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="升级方式">
