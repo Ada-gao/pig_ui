@@ -363,7 +363,10 @@ mounted(){
       .img-code{
         position: absolute;
         bottom: 50px;
-        left:137.5px;
+        // left:131px;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid #fff;
       }
     .row-bg{
         width: 100%;
