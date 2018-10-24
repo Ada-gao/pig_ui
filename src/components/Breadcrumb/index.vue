@@ -41,7 +41,7 @@
         // console.log(this.levelList)
       },
       handleRouter(item) {
-        let url = item.redirect
+        let url = item.path
         this.$router.push({path: url})
         Bus.$emit('activeIndex', url)
         if (!url) {

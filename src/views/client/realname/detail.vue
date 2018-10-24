@@ -92,7 +92,7 @@
       <el-row :gutter="20">
         <el-col :span="8">
           <el-form-item label="实名认证状态：" prop="username">
-            <span>{{clientStatus.realnameStatus}}</span>
+            <span>{{clientStatus.realnameStatus|turnText(certificationStatus)}}</span>
             <!-- <el-input v-model="clientStatus.realnameStatus" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
@@ -104,13 +104,13 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="认证时间：" prop="clientType">
-            <span>{{clientStatus.clientType||'--'}}</span>
+            <span>{{clientStatus.clientType|turnText(clientType)||'--'}}</span>
             <!-- <el-input v-model="clientStatus.clientType" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="证件类型：" prop="idType">
-            <span>{{clientStatus.idType}}</span>
+            <span>{{clientStatus.idType|turnText(idTypeOptions)}}</span>
             <!-- <el-input v-model="clientStatus.idType" placeholder="" readonly></el-input> -->
           </el-form-item>
         </el-col>
@@ -266,7 +266,7 @@
   // import { getClientStatus, getClientBankcard } from '@/api/client/client'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import waves from '@/directive/waves/index.js' // 水波纹指令
-  import { transformText, transformText1, parseTime } from '@/utils'
+  import { transformText1, parseTime } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
@@ -444,17 +444,11 @@
           this.realnameStatus = this.clientStatus.realnameStatus != 0 ? true : false // 认证状态判断
           this.isClientType = this.clientStatus.clientType == 0 ? true : false// 投资者类型判断
           // this.idType = this.clientStatus.idType == 0 ? true : false // 证件类型判断(0: 身份证)
-
-          this.clientStatus.realnameStatus = transformText(this.certificationStatus, this.clientStatus.realnameStatus)
-          this.clientStatus.clientType = transformText(this.clientType, this.clientStatus.clientType)
-          this.clientStatus.idType = transformText(this.idTypeOptions, this.clientStatus.idType)
         })
-
         getObj(id, '1').then(response => {
           this.form = response.data
-          // this.form.gender = transformText(this.genderType, this.form.gender)
-          // this.form.nationality = transformText(this.nationality, this.form.nationality)
-          if(this.realnameStatus) {
+          if(this.clientStatus.realnameStatus != 0) {
+          // if(this.realnameStatus) {
             getClientBankcard(id, '1').then(response => {
               if (response.status === 200) {
                 this.bankcardList = JSON.parse(JSON.stringify(response.data))

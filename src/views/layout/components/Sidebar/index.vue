@@ -28,9 +28,12 @@ export default {
   },
   mounted() {
     Bus.$on('activeIndex', defaultActive => {
+      if (defaultActive === '/dashboard') {
+        this.sidebar.opened = true
+        defaultActive = ''
+      }
       this.defaultActive = defaultActive
-      console.log(this.defaultActive)
-      // console.log(this.$route)
+      this.handleSelect(this.defaultActive)
     })
   },
   data() {
@@ -40,7 +43,7 @@ export default {
   },
   methods: {
     handleSelect(key, keyPath) {
-      // console.log(key, keyPath)
+      this.defaultActive = key
     }
   }
 }
