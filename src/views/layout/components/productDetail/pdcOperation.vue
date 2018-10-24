@@ -488,7 +488,7 @@
         <svg-icon icon-class="return"></svg-icon> 返回在建</el-button>
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===1" type="primary" @click="updateProductDisplay">
         <svg-icon v-if="form2.isDisplay==='1'" icon-class="eye"></svg-icon>
-        <svg-icon v-else icon-class="product_eye"></svg-icon>
+        <svg-icon v-else icon-class="eyeShow"></svg-icon>
         {{form2.isDisplay==='1'?'设为隐藏':'设为显示'}}</el-button>
       <!-- 募集中 -->
       <el-button class="add_btn" v-if="createStatus=='update'&productStatusNo===2" type="primary" @click="updateProductType(3)">

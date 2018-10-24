@@ -273,7 +273,7 @@ export const asyncRouterMap = [
       { menuId: 5, path: 'user', component: _import('admin/user/index'), name: '用户管理', meta: { title: '用户管理', icon: 'user2' }},
       { menuId: 7, path: 'role', component: _import('admin/role/index'), name: '角色管理', meta: { title: '角色管理', icon: 'role' }},
       { menuId: 43, path: 'posi', component: _import('admin/posi/index'), name: '职位管理', meta: { title: '职位管理', icon: 'position' }},
-      { menuId: 299, path: 'rank', component: _import('admin/rank/index'), name: '职级管理', meta: { title: '职级管理', icon: 'position' }},
+      { menuId: 299, path: 'rank', component: _import('admin/rank/index'), name: '职级管理', meta: { title: '职级管理', icon: 'rank' }},
       { menuId: 10, path: 'dept', component: _import('admin/dept/index'), name: '部门管理', meta: { title: '部门管理', icon: 'dept' }},
       { menuId: 354, path: 'subsidiary', component: _import('admin/subsidiary/index'), name: '子公司管理', meta: { title: '子公司管理', icon: 'dept' }},
       { menuId: 386, path: 'uploadUser', component: _import('admin/user/uploadExcel'), name: '用户批量导入', meta: { title: '用户批量导入', icon: 'upload' }},
@@ -304,7 +304,7 @@ export const asyncRouterMap = [
       { menuId: 388, path: 'customerPool', component: _import('client/customerPool/index'), name: '客户池', meta: { title: '客户池', icon: 'customerPool' }},
       { menuId: 351, path: 'customerBatch', component: _import('client/batch/index'), name: '客户导入', meta: { title: '客户导入', icon: 'upload' }},
       { menuId: 347, path: 'customerBuyPdBatch', component: _import('client/pdbatch/index'), name: '已购买导入', meta: { title: '已购买导入', icon: 'upload' }},
-      { menuId: 352, path: 'riskEvaluation', component: _import('client/riskEvaluation/index'), name: '风险测评表', meta: { title: '风险测评表', icon: 'upload' }}
+      { menuId: 352, path: 'riskEvaluation', component: _import('client/riskEvaluation/index'), name: '风险测评表', meta: { title: '风险测评表', icon: 'riskEvaluation' }}
     ]
   },
   {
@@ -330,7 +330,7 @@ export const asyncRouterMap = [
       { menuId: 139, path: 'cashing', component: _import('product/cashing/index'), name: '兑付中列表', meta: { title: '兑付中列表', icon: 'shutDown' }},
       { menuId: 140, path: 'payCompletion', component: _import('product/payCompletion/index'), name: '兑付完成列表', meta: { title: '兑付完成列表', icon: 'shutDown' }},
       { menuId: 144, path: 'material', component: _import('product/materialManagement/index'), name: '材料管理', meta: { title: '材料管理', icon: 'file' }},
-      { menuId: 348, path: 'productBatch', component: _import('product/batch/index'), name: '批量导入', meta: { title: '批量导入', icon: 'product' }},
+      { menuId: 348, path: 'productBatch', component: _import('product/batch/index'), name: '批量导入', meta: { title: '批量导入', icon: 'productBatch' }},
       { menuId: 49, path: 'productType', component: _import('product/type'), name: '产品类型', meta: { title: '产品类型', icon: 'productType' }}
     ]
   },
@@ -344,15 +344,15 @@ export const asyncRouterMap = [
     // icon: 'table',
     meta: {
       title: '交易管理',
-      icon: 'product_mg'
+      icon: 'transc_mg'
     },
     children: [
-      { menuId: 93, path: 'transc', component: _import('transcMag/transaction/index'), name: '交易列表', meta: { title: '交易列表', icon: 'product' }},
-      { menuId: 94, path: 'appoint', component: _import('transcMag/appointment/index'), name: '预约列表', meta: { title: '预约列表', icon: 'product' }},
-      { menuId: 95, path: 'payment', component: _import('transcMag/payment/index'), name: '打款列表', meta: { title: '打款列表', icon: 'product' }},
-      { menuId: 96, path: 'refund', component: _import('transcMag/refund/index'), name: '退款列表', meta: { title: '退款列表', icon: 'productType' }},
-      { menuId: 97, path: 'contract', component: _import('transcMag/contract/index'), name: '合同管理', meta: { title: '合同管理', icon: 'productType' }},
-      { menuId: 128, path: 'result', component: _import('transcMag/result/index'), name: '审核原因管理', meta: { title: '审核原因管理', icon: 'productType' }}
+      { menuId: 93, path: 'transc', component: _import('transcMag/transaction/index'), name: '交易列表', meta: { title: '交易列表', icon: 'transc' }},
+      { menuId: 94, path: 'appoint', component: _import('transcMag/appointment/index'), name: '预约列表', meta: { title: '预约列表', icon: 'appoint' }},
+      { menuId: 95, path: 'payment', component: _import('transcMag/payment/index'), name: '打款列表', meta: { title: '打款列表', icon: 'payment' }},
+      { menuId: 96, path: 'refund', component: _import('transcMag/refund/index'), name: '退款列表', meta: { title: '退款列表', icon: 'refund' }},
+      { menuId: 97, path: 'contract', component: _import('transcMag/contract/index'), name: '合同管理', meta: { title: '合同管理', icon: 'contract' }},
+      { menuId: 128, path: 'result', component: _import('transcMag/result/index'), name: '审核原因管理', meta: { title: '审核原因管理', icon: 'result' }}
     ]
   },
   {
