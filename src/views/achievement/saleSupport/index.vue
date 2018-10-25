@@ -220,14 +220,14 @@
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-form-item label="销售支持姓名" prop="salesName">
+            <el-form-item label="销售支持姓名" prop="salesLongName">
               <el-select v-if="dialogStatus==='create'"
                          class="filter-item"
                          value-key="userId"
                          filterable
                          style="width:100%;"
                          placeholder="请输入销售支持姓名"
-                         v-model="form.salesName"
+                         v-model="form.salesLongName"
                          @change="salesNameChange">
                 <el-option v-for="(item, index) in salesSupportList"
                            :value="item"
@@ -317,7 +317,7 @@
           salesCode: [
             { required: true, message: '请输入销售支持工号', trigger: 'blur' }
           ],
-          salesName: [
+          salesLongName: [
             { required: true, message: '请选择销售支持姓名', trigger: 'blur' }
           ],
           userCode: [
@@ -362,7 +362,7 @@
           return ite.empNo === newVal.empNo
         })
         this.form.salesCode = item.empNo
-        this.form.salesName = item.name
+        this.form.salesLongName = item.name
       },
       getUserLists() {
         getPlannerList({ status: 0 }).then(res => {
@@ -497,9 +497,11 @@
       create(formName) {
         const set = this.$refs
         console.log(this.form)
+        console.log(set[formName])
         set[formName].validate(valid => {
+          console.log(valid)
           if (valid) {
-            this.form.salesName = this.form.salesName.split('(')[0]
+            this.form.salesName = this.form.salesLongName.split('(')[0]
             this.form.userName = this.form.userName.split('(')[0]
             addSalesSupport(this.form).then(res => {
               if (res.status === 200) {
