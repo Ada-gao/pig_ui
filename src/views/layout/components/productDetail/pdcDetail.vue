@@ -129,6 +129,7 @@
                 class="sec-form-item"
                 >
                 <el-input
+                  type="number"
                   style="display: inline-block; width: 100px; margin-left: 5px;"
                   :maxlength="5"
                   v-model="form.annualizedReturn"></el-input>
@@ -279,7 +280,7 @@
         </el-form-item>
       </article>
       <div class="split-line" style="margin-bottom: 20px;"></div>
-      
+
       <el-row :gutter="90">
         <el-col :span="11">
           <el-form-item label="账户名称" prop="accountName">
@@ -449,7 +450,7 @@
   }
   // 收益对标基准校验
   const pdAnnualizedReturn = (rule, value, callback) => {
-      const exp = /^(\d+|\d+\.\d{1,2})$/
+      const exp = /^(\d{1,2}(\.\d{1,2})?|100)$/
       if (!value) {
           callback('请输入收益对标基准')
       } else if (!exp.test(Number(value))) {
