@@ -638,7 +638,7 @@
       </el-form>
       <div class="dialog-footer text-right">
         <el-button @click="cancelDialog('dto')">取 消</el-button>
-        <el-button @click="dialogStVisible = false">取 消</el-button>
+        <!-- <el-button @click="dialogStVisible = false">取 消</el-button> -->
         <el-button type="primary" @click="handleProStatus('dto')">确 定</el-button>
       </div>
     </el-dialog>
