@@ -35,7 +35,7 @@
           <el-form-item  label="活动类型"  prop="typeName"  :rules="[
       { required: true, message: '请输入活动类型', trigger: 'blur' }
     ]">
-            <el-input placeholder="输入活动类型名称" style="width:90%;" v-model='dynamicValidateForm.typeName'></el-input>
+            <el-input placeholder="输入活动类型名称" style="width:90%;" v-model.trim='dynamicValidateForm.typeName' :maxlength="20"></el-input>
           </el-form-item>
         </el-form>
           <div slot="footer" class="dialog-footer">
@@ -192,17 +192,16 @@ import {getSysSelectValueList,addType,deleteType,editType} from '@/api/market/se
         })
       },
       submit(formName){
-        console.log( this.$refs[formName])
           this.$refs[formName].validate((valid) => {
           if (valid) {
-            if(this.isEdit){
+            if(this.isEdit){ // 编辑
               let data={
                 "label": this.dynamicValidateForm.typeName,
                 "sysSelectValueId": this.sysSelectValueId,
                 "type": "activity_type",
               }
               this.edit(data)
-            }else{
+            }else{ // 编辑新增
               let obj = {
                 "label": this.dynamicValidateForm.typeName,
                 "type": "activity_type",
