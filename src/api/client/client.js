@@ -79,7 +79,9 @@ export function getObj(clientId, type) {
   return request({
     url: '/client/client/' + clientId,
     method: 'get',
-    params: type
+    params: {
+      type: type
+    }
   })
 }
 

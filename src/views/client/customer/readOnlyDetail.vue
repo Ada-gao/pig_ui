@@ -271,7 +271,7 @@
         </el-table-column>
         <el-table-column align="center" label="收益对标基准">
           <template slot-scope="scope">
-            <span>{{scope.row.isFloat === 1 ? scope.row.annualizedReturn : '浮动收益'}}</span>
+            <span>{{scope.row.isFloat === 1 ? scope.row.annualizedReturn + '%' : '浮动收益'}}</span>
           </template>
         </el-table-column>
       </el-table>

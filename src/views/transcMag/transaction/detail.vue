@@ -239,7 +239,7 @@
         </div>
         <!-- 退款审核 -->
         <div v-if="form.refundStatus == '2' && orderStatus != 1 && orderStatus != 3 && sys_refund_audit" class="dialog-footer" style="text-align: center;">
-          <el-button class="search_btn" @click="submitResult('4')">通 过1</el-button>
+          <el-button class="search_btn" @click="submitResult('4')">通 过</el-button>
           <el-button class="add_btn" @click="rejectResult('3')">不通过</el-button>
         </div>
 

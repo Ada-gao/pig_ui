@@ -85,7 +85,7 @@
         <el-form-item label="所属部门" prop="roleDeptIds">
           <dept v-model="form.roleDeptIds" @change="deptIdChangeHandle"></dept>
         </el-form-item>
-        <el-form-item label="掩码显示" prop="maskCode">
+        <el-form-item label="客户信息掩码显示" prop="maskCode">
           <el-checkbox-group v-model="form.maskCode">
             <el-checkbox v-for="item in maskCode" :label="item.value" :key="item.value">{{item.label}}</el-checkbox>
           </el-checkbox-group>
