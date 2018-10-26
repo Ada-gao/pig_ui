@@ -109,12 +109,10 @@ import {getSubcompany,getLogo} from '@/api/market/setting'
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
-          console.log(this.list)
         })
       },
       getCompanyLogo(obj){
         getLogo(obj).then(response=>{
-          console.log(response)
           if(response.status ==200){
             getSubcompany(this.listQuery).then(response => {
               this.list = response.data.records

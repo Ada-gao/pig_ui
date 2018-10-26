@@ -14,6 +14,14 @@ export function getSysSelectValueList(type) {
     method: 'get'
   })
 }
+// 取得子公司列表 (有分页)
+export function getSysSelectValueListPage(type,params) {
+  return request({
+    url: `/admin/sysSelectValue/page/${type}`,
+    method: 'get',
+    params
+  })
+}
 // 新增子公司logo
 export function getLogo(obj) {
   return request({

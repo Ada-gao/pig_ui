@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import {getSysSelectValueList,addType,deleteType,editType} from '@/api/market/setting'
+import {getSysSelectValueListPage,addType,deleteType,editType} from '@/api/market/setting'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { parseTime, transformText, transformText1 } from '@/utils'
   import { mapGetters } from 'vuex'
@@ -138,9 +138,10 @@ import {getSysSelectValueList,addType,deleteType,editType} from '@/api/market/se
     methods: {
       getList() {
         this.listLoading = true
-        getSysSelectValueList('activity_type').then(response => {
+        getSysSelectValueListPage('activity_type', this.listQuery).then(response => {
           if(response.status == 200){
-            this.list = response.data
+            this.list = response.data.records
+             this.total = response.data.total
             this.listLoading = false
           }
         })
