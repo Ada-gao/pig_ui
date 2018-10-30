@@ -55,12 +55,12 @@
       </el-table-column>
         <el-table-column
        align="center"
-        prop="userName"
+        prop="plannerName"
         label="理财师姓名">
       </el-table-column>
         <el-table-column
        align="center"
-        prop="userCode"
+        prop="plannerCode"
         label="理财师编号">
       </el-table-column>
         <el-table-column
