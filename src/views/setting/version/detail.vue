@@ -4,7 +4,6 @@
       <span class="list-tit">{{textMap[updateStatus]}}</span>
     </div> -->
     <h3>{{textMap[updateStatus]}}</h3>
-    <!-- <div class="margin-line"></div> -->
     <div class="update-detail">
       <el-form :model="form" :rules="rules" ref="form" label-width="120px">
         <div class="split-line" style="margin-bottom: 20px;"></div>
@@ -47,28 +46,13 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item prop="updateDeadline" style="float: left;margin-left: -110px" v-if="form.promptType === 'Recommend'">
-              <!-- <el-date-picker
+              <el-date-picker
                 v-model="form.updateDeadline"
-                type="date"
-                placeholder="选择最后升级日期"
-                :picker-options="pickerOptions0"/> -->
-                <el-date-picker
-                  v-model="form.updateDeadline"
-                  type="datetime"
-                  placeholder="选择最后升级日期时间"
-                  :picker-options="pickerOptions0">
-                </el-date-picker>
+                type="datetime"
+                placeholder="选择最后升级日期时间"
+                :picker-options="pickerOptions0">
+              </el-date-picker>
             </el-form-item>
-            <!-- <el-form-item prop="updateDeadlineTime" style="float: left;margin-left: -110px" v-if="form.promptType === 'Recommend'">
-              <el-time-select
-                v-model="form.updateDeadlineTime"
-                :picker-options="{
-                  start: '00:00',
-                  step: '00:10',
-                  end: '23:50'
-                }"
-                placeholder="选择时间"/>
-            </el-form-item> -->
           </el-col>
         </el-row>
         <el-row>

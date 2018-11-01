@@ -79,12 +79,13 @@
       <el-form label-width="100px">
         <el-row :gutter="20">
           <el-col :span="11">
-            <el-form-item label="客户端" prop="name" >
-              <el-input v-model="diaData.client"></el-input>
+            <el-form-item label="客户端：" prop="name" >
+              <span v-if="dialogStatus === 'update'">{{diaData.client}}</span>
+              <el-input v-else v-model="diaData.client"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11" v-show="dialogStatus === 'update'">
-            <el-form-item label="状态" prop="status" >
+            <el-form-item label="状态：" prop="status" >
               <el-select class="filter-item" v-model="diaData.status" placeholder="请选择">
                 <el-option v-for="item in authStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
               </el-select>
