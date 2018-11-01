@@ -153,7 +153,9 @@
           // clientType: 0 // 1：专业，0：普通
           certificationType: 1, //0: 普通， 1: 专业投资者
           certificationStatus: 1,
-          realNameStatus: 2 // 实名认证
+          realNameStatus: 2, // 实名认证
+          orderByField: 'create_time',
+          isAsc: false
         },
         role: undefined,
         form: {
@@ -281,7 +283,7 @@
         this.listQuery = data
         // this.listQuery.type = 0
         this.listQuery.certificationType = 1, //0: 普通， 1: 专业
-//        this.listQuery.certificationStatus = 1,
+       this.listQuery.certificationStatus = 1,
         this.listQuery.realNameStatus = 2 // 实名认证
         this.getList()
       }

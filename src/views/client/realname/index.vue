@@ -113,7 +113,9 @@
         listQuery: {
           page: 1,
           limit: 20,
-          realNameStatus: 1 // 待审核
+          realNameStatus: 1, // 待审核
+          orderByField: 'create_time',
+          isAsc: false
         },
         role: undefined,
         dialogFormVisible: false,

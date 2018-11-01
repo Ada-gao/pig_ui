@@ -196,7 +196,9 @@
         listQuery: {
           page: 1,
           limit: 20,
-          type: 1 // 1：客户，0：潜客
+          type: 1, // 1：客户，0：潜客
+          orderByField: 'create_time',
+          isAsc: false
         },
         role: undefined,
         form: {

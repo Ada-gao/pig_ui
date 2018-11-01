@@ -280,7 +280,7 @@ export default {
         nationality: '',
         city: ''
       },
-      console.log(this.listQuery.nationality)
+      // console.log(this.listQuery.nationality)
       this.deptId = []
       this.city = []
       this.entryDate = []
