@@ -84,7 +84,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="11" v-show="dialogStatus === 'update'">
-            <el-form-item label="状态" prop="name" >
+            <el-form-item label="状态" prop="status" >
               <el-select class="filter-item" v-model="diaData.status" placeholder="请选择">
                 <el-option v-for="item in authStatus" :key="item.value" :label="item.label" :value="item.value"> </el-option>
               </el-select>
@@ -135,12 +135,10 @@
         },
         dialogStatus: '',
         dialogFormVisible: false,
-        dialogDeptVisible: false,
         diaData: {
-          status: 0
+          status: '0'
         },
-        status_text: '',
-        id: ''
+        id: '',
       }
     },
     computed: {
@@ -179,10 +177,10 @@
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.id = item.appAuthyId
-        console.log(this.id)
         this.diaData = {
           client: item.client,
-          status: item.status
+          status: String(item.status),
+          appAuthyId: item.appAuthyId
         }
         // putObj(item.appAuthyId, this.diaData).then(response => {
         //   console.log(response.data)
@@ -243,7 +241,6 @@
         })
       },
       updateSubmit() {
-        this.diaData.appAuthyId = this.id
         putObj(this.id, this.diaData).then(response => {
           if(response.status === 200) {
             this.$notify({
