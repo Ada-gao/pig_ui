@@ -394,7 +394,7 @@
         this.listQuery = data
         // this.listQuery.type = 0
         this.listQuery.certificationType = 0, //0: 普通， 1: 专业
-        // this.listQuery.certificationStatus = 1,
+        this.listQuery.certificationStatus = 1,
         this.listQuery.realNameStatus = 2 // 实名认证
         this.getList()
       }
