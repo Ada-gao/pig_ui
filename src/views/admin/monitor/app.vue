@@ -1,6 +1,6 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
+    <!-- <div class="filter-container">
       <el-select v-model="listQuery.type" filterable placeholder="请选择">
         <el-option
           v-for="item in dicts"
@@ -11,7 +11,7 @@
       </el-select>
       <el-button class="filter-item search_btn" style="vertical-align: top;" v-waves icon="search" @click="handleFilter">
         <svg-icon icon-class="search"></svg-icon> 搜索</el-button>
-    </div>
+    </div> -->
 
     <div style="text-align: right">
       <el-button v-if="sys_auth_add" class="add_btn" @click="handleCreate">
@@ -47,7 +47,7 @@
 
       <el-table-column align="center" label="状态">
         <template slot-scope="scope">
-          <span>{{scope.row.status}}</span>
+          <span>{{scope.row.status|turnText1(authStatus)}}</span>
           <!-- <el-button @click="toogleStatus(scope.row)">{{status_text}}</el-button> -->
         </template>
       </el-table-column>
@@ -94,9 +94,9 @@
       </el-form> 
 
       <div slot="footer" class="dialog-footer">
-        <el-button class="search_btn" @click="cancleSubmit()">取 消</el-button>
-        <el-button v-if="dialogStatus === 'create'" class="add_btn" @click="handleSubmit()">确 定</el-button>
-        <el-button v-else class="add_btn" @click="updateSubmit()">修 改</el-button>
+        <el-button class="search_btn" @click="cancleSubmit">取 消</el-button>
+        <el-button v-if="dialogStatus === 'create'" class="add_btn" @click="handleSubmit">确 定</el-button>
+        <el-button v-else class="add_btn" @click="updateSubmit">修 改</el-button>
       </div>
     </el-dialog>
   </div>
@@ -104,7 +104,6 @@
 
 <script>
   import { delObj, fetchList, putObj, addObj, freObj } from '@/api/keyt'
-  import { remote } from '@/api/dict'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { mapGetters } from 'vuex'
   import { transformText } from '@/utils'
@@ -123,7 +122,7 @@
         sys_auth_del: false,
         sys_auth_status_upd: false,
         listLoading: true,
-        dicts:[],
+        dicts: [],
         listQuery: {
           page: 1,
           limit: 20,
@@ -137,7 +136,9 @@
         dialogStatus: '',
         dialogFormVisible: false,
         dialogDeptVisible: false,
-        diaData: {},
+        diaData: {
+          status: 0
+        },
         status_text: '',
         id: ''
       }
@@ -148,19 +149,7 @@
         'authStatus'
       ])
     },
-    filters: {
-      typeFilter(type) {
-        const typeMap = {
-          0: '正常',
-          9: '异常'
-        }
-        return typeMap[type]
-      }
-    },
     created() {
-      remote('log_type').then(response => {
-        this.dicts = response.data
-      })
       this.getList()
       this.sys_auth_add = this.permissions['sys_auth_add']
       this.sys_auth_upd = this.permissions['sys_auth_upd']
@@ -176,9 +165,6 @@
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
-          this.list.forEach(item => {
-            item.status = transformText(this.authStatus, item.status)
-          })
         })
       },
       handleSizeChange(val) {
@@ -257,7 +243,7 @@
         })
       },
       updateSubmit() {
-        console.log(this.id)
+        this.diaData.appAuthyId = this.id
         putObj(this.id, this.diaData).then(response => {
           if(response.status === 200) {
             this.$notify({

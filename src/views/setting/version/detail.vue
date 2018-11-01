@@ -47,13 +47,19 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item prop="updateDeadline" style="float: left;margin-left: -110px" v-if="form.promptType === 'Recommend'">
-              <el-date-picker
+              <!-- <el-date-picker
                 v-model="form.updateDeadline"
                 type="date"
                 placeholder="选择最后升级日期"
-                :picker-options="pickerOptions0"/>
+                :picker-options="pickerOptions0"/> -->
+                <el-date-picker
+                  v-model="form.updateDeadline"
+                  type="datetime"
+                  placeholder="选择最后升级日期时间"
+                  :picker-options="pickerOptions0">
+                </el-date-picker>
             </el-form-item>
-            <el-form-item prop="updateDeadlineTime" style="float: left;margin-left: -110px" v-if="form.promptType === 'Recommend'">
+            <!-- <el-form-item prop="updateDeadlineTime" style="float: left;margin-left: -110px" v-if="form.promptType === 'Recommend'">
               <el-time-select
                 v-model="form.updateDeadlineTime"
                 :picker-options="{
@@ -62,7 +68,7 @@
                   end: '23:50'
                 }"
                 placeholder="选择时间"/>
-            </el-form-item>
+            </el-form-item> -->
           </el-col>
         </el-row>
         <el-row>
