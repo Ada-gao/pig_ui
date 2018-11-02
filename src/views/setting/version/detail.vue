@@ -129,8 +129,8 @@
         form: {
           promptType: 'Silence',
           platform: 'Android',
-          updateDeadline: '',
-          updateDeadlineTime: ''
+          updateDeadline: ''
+          // updateDeadlineTime: ''
         },
         updateStatus: '',
         textMap: {
@@ -156,9 +156,9 @@
           updateDeadline: [
             {required: false, trigger: 'blur', validator: validateDate}
           ],
-          updateDeadlineTime: [
-            {required: false, trigger: 'blur', validator: validateTime}
-          ],
+          // updateDeadlineTime: [
+          //   {required: false, trigger: 'blur', validator: validateTime}
+          // ],
           packageUrl: [
             {required: true, trigger: 'blur', message: '请输入升级地址'}
           ],
@@ -187,7 +187,7 @@
       changeType(){
         if (this.form.promptType !== 'Recommend') {
          this.form.updateDeadline = ''
-         this.form.updateDeadlineTime = ''
+        //  this.form.updateDeadlineTime = ''
         }
       },
       create() {

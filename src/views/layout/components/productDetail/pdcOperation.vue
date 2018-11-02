@@ -13,11 +13,11 @@
           align="center">
           <template slot-scope="scope">
             <el-input v-model="scope.row.name"
-                      v-if="productFileId===scope.row.productFileId"
-                      v-autoFocus
-                      :maxlength="20"
-                      @keyup.enter.native="$event.target.blur"
-                      @blur="updateFileName(scope.row, 'transaction', 'productFileId')"></el-input>
+              v-if="productFileId===scope.row.productFileId"
+              v-autoFocus
+              :maxlength="20"
+              @keyup.enter.native="$event.target.blur"
+              @blur="updateFileName(scope.row, 'transaction', 'productFileId')"></el-input>
             <span v-else>{{scope.row.name}}</span>
           </template>
         </el-table-column>
@@ -38,7 +38,6 @@
           align="center"
           v-if="!operationDisabled">
           <template slot-scope="scope">
-            <!--<a class="common_btn" size="small" @click="productFileId=scope.row.productFileId">编辑</a>-->
             <a class="common_btn" size="small" @click="handlerEdit($data, scope.row, 'productFileId')">编辑</a>
             <a class="danger_btn" size="small" @click="delfiles(scope.row, 'transaction')">删除</a>
           </template>
@@ -46,9 +45,9 @@
       </el-table>
       <el-row style="text-align: right;">
         <el-button size="small"
-                   class="btn-padding add_btn"
-                   v-if="!operationDisabled"
-                   @click="addClientFile('transc')">追加材料</el-button>
+          class="btn-padding add_btn"
+          v-if="!operationDisabled"
+          @click="addClientFile('transc')">追加材料</el-button>
       </el-row>
     </div>
     <div class="trade-item">
@@ -1607,10 +1606,9 @@
       },
       handlerEdit (p0, p1, p2) {
         this.tempObj = transferEdit(p0, p1, p2)
-        console.log('tempObj', this.tempObj)
       },
       updateFileName(item, fileType, id) { // 编辑材料名称
-        console.log('id', id)
+        const suffix = item.filePath.substring(item.filePath.lastIndexOf('.'))
         if (item.name.trim() === '') {
           item.name = this.tempObj.name
           this[id] = ''
@@ -1618,10 +1616,10 @@
         }
         let params = {
           id: item.productFileId,
-          name: item.name,
+          name: item.name = item.name.includes(suffix) ? item.name : item.name + suffix,
           fileType: fileType
         }
-        console.log('params', params)
+        // console.log('params', params)
         if (params.name === this.tempObj.name) {
           this[id] = ''
           return
