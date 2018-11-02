@@ -165,7 +165,8 @@
         <el-col :span="8" v-if="realnameStatus && idType">
           <el-form-item label="证件号码：" prop="idNo">
             <!-- <el-input v-model="form.idNo" placeholder="" readonly></el-input> -->
-            <span>{{clientStatus.idNo}}</span>
+            <span v-if="form.realnameStatus==='2'">{{form.idNo}}</span>
+            <span v-else>{{clientStatus.idNo}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="realnameStatus && idType">
