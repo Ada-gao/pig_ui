@@ -405,7 +405,7 @@
         }
         if (this.isBatch) {
           batchPutPlanner({clientIds: this.modal.clientId}, params).then(res => {
-            if (res.status !== 200) return
+            if (!res || res.status !== 200) return
             this.$notify({
                   title: '成功',
                   message: '分配成功',
@@ -417,7 +417,7 @@
           })
         } else {
           putPlanner(this.modal.clientId, params).then(res => {
-            if (res.status !== 200) return
+            if (!res || res.status !== 200) return
             this.$notify({
                   title: '成功',
                   message: '分配成功',

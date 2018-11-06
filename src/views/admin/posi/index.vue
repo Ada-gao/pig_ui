@@ -249,7 +249,7 @@
           if (valid) {
             // this.dialogFormVisible = false
             putObj(this.form).then((res) => {
-              if (res.status !== 200) return
+              if (!res || res.status !== 200) return
               this.dialogFormVisible = false
               this.getList()
               this.$notify({
@@ -271,7 +271,7 @@
           type: 'warning'
         }).then(() => {
           delObj(row.positionId).then((res) => {
-            if(res.status !== 200) return
+            if(!res || res.status !== 200) return
             this.getList()
             this.$notify({
               title: '成功',

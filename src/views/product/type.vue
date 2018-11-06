@@ -238,7 +238,7 @@
             if (this.tabcard === 'first') {
               addObj(this.form)
                 .then((res) => {
-                  if(res.status !== 200) return
+                  if(!res || res.status !== 200) return
                   this.dialogFormVisible = false
                   this.getList()
                   this.$refs[formName].resetFields()
@@ -253,7 +253,7 @@
                 })
             } else if (this.tabcard === 'second') {
               postProductMix(this.form).then(res => {
-                if(res.status !== 200) return
+                if(!res || res.status !== 200) return
                 this.dialogFormVisible = false
                 this.getList()
                 this.$refs[formName].resetFields()

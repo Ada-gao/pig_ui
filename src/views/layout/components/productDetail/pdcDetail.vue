@@ -406,40 +406,40 @@
   import { decimals, isNumber } from '@/utils/validate'
   import Bus from '@/assets/js/bus'
 
-  const certNumber = (rule, value, callback) => {
-    if (!value) {
-      return null
-    } else if (!Number.isInteger(value)) {
-      callback(new Error('只能输入整数金额'))
-    } else if (!isNumber(value)) {
-      callback(new Error('请输入10位以内的数字'))
-    } else {
-      callback()
-    }
-  }
+  // const certNumber = (rule, value, callback) => {
+  //   if (!value) {
+  //     return null
+  //   } else if (!Number.isInteger(value)) {
+  //     callback(new Error('只能输入整数金额'))
+  //   } else if (!isNumber(value)) {
+  //     callback(new Error('请输入10位以内的数字'))
+  //   } else {
+  //     callback()
+  //   }
+  // }
 
-  const pdExpire = (rule, value, callback) => {
-    // const Reg = /^\d{1,5}$/
-    const Reg = /^[1-9][0-9]{0,5}\+{0,1}[0-9]{0,5}$/
-    if (!value) {
-      callback(new Error('请输入产品期限'))
-    } else if (!Reg.test(value)) {
-      callback(new Error('请输入有效的产品期限'))
-    } else {
-      callback()
-    }
-  }
+  // const pdExpire = (rule, value, callback) => {
+  //   // const Reg = /^\d{1,5}$/
+  //   const Reg = /^[1-9][0-9]{0,5}\+{0,1}[0-9]{0,5}$/
+  //   if (!value) {
+  //     callback(new Error('请输入产品期限'))
+  //   } else if (!Reg.test(value)) {
+  //     callback(new Error('请输入有效的产品期限'))
+  //   } else {
+  //     callback()
+  //   }
+  // }
 
-  const pdAcount = (rule, value, callback) => {
-    const exp = /^\d{1,20}$/
-    if (!value) {
-      callback(new Error('请输入账号'))
-    } else if (!exp.test(Number(value))) {
-      callback(new Error('请输入正确的账号'))
-    } else {
-      callback()
-    }
-  }
+  // const pdAcount = (rule, value, callback) => {
+  //   const exp = /^\d{1,20}$/
+  //   if (!value) {
+  //     callback(new Error('请输入账号'))
+  //   } else if (!exp.test(Number(value))) {
+  //     callback(new Error('请输入正确的账号'))
+  //   } else {
+  //     callback()
+  //   }
+  // }
 
   // const twoDecimals = (rule, value, callback) => {
   //   if (!value) {
@@ -451,16 +451,16 @@
   //   }
   // }
   // 收益对标基准校验
-  const pdAnnualizedReturn = (rule, value, callback) => {
-      const exp = /^(\d{1,2}(\.\d{1,2})?|100)$/
-      if (!value) {
-        callback(new Error('请输入收益对标基准'))
-      } else if (!exp.test(Number(value))) {
-        callback(new Error('请输入正确的收益对标基准'))
-      } else {
-        callback()
-      }
-  }
+  // const pdAnnualizedReturn = (rule, value, callback) => {
+  //     const exp = /^(\d{1,2}(\.\d{1,2})?|100)$/
+  //     if (!value) {
+  //       callback(new Error('请输入收益对标基准'))
+  //     } else if (!exp.test(Number(value))) {
+  //       callback(new Error('请输入正确的收益对标基准'))
+  //     } else {
+  //       callback()
+  //     }
+  // }
   export default {
     data() {
       return {
@@ -544,7 +544,6 @@
           investmentHorizon: [
             { required: true, message: '请输入产品期限', trigger: 'blur' },
             { pattern: /^[1-9][0-9]{0,5}\+{0,1}[0-9]{0,5}$/, message: '请输入有效的产品期限' }
-//            { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
           ],
           buyingCrowds: [
             { required: false, message: '请选择购买人群', trigger: 'change' }
@@ -555,7 +554,6 @@
             { pattern: /^(\d{1,2}(\.\d{1,2})?|100)$/, message: '请输入100以内并且最多两位小数的数字'}
           ],
           subscribeRate: [
-            // { required: false, validator: pdAnnualizedReturn, trigger: 'blur'}
             { required: true, message: '请输入价外认购率', trigger: 'blur'},
             { pattern: /^(\d{1,2}(\.\d{1,2})?|100)$/, message: '请输入100以内并且最多两位小数的数字'}
           ],
@@ -836,7 +834,7 @@
             } else {
               // this.form.productStatus = this.productStatusNo
               putObj(this.productId, this.form).then((res) => {
-                if(res.status !== 200) return
+                if(!res || res.status !== 200) return
                 this.$notify({
                   title: '成功',
                   message: '保存成功',
