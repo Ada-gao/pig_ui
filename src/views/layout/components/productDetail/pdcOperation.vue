@@ -1455,7 +1455,7 @@
           type: 'warning'
         }).then(() => {
           cancelToCollect(this.productId).then(res => {
-            if(res.status !== 200) return false
+            if(!res || res.status !== 200) return false
             this.$notify({
               title: '成功',
               message: '状态操作成功',

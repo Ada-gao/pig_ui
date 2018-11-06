@@ -147,7 +147,7 @@
           type: 'warning'
         }).then(() => {
           delObj(this.currentId).then((res) => {
-            if (res.status !== 200) return false
+            if (!res || res.status !== 200) return false
             this.getList()
             this.resetForm()
             this.onCancel()

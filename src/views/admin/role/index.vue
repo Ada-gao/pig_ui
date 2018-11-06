@@ -83,7 +83,8 @@
           <el-input v-model.trim="form.roleDesc" placeholder="描述"></el-input>
         </el-form-item>
         <el-form-item label="所属部门" prop="roleDeptIds">
-          <dept v-model="form.roleDeptIds" @change="deptIdChangeHandle"></dept>
+          <!-- <dept v-model="form.roleDeptIds" @change="deptIdChangeHandle"></dept> -->
+          <span>{{form.deptName}}</span>
         </el-form-item>
         <el-form-item label="客户信息掩码" prop="maskCode">
           <el-checkbox-group v-model="form.maskCode">
@@ -292,10 +293,8 @@
             this.form = res.data
             this.checkedKeysAll1 = this.form.deptIds? this.form.deptIds.split(',').map(Number) : []
             const listStr = this.form.maskCode
-            let arr = []
             if (listStr) {
-              arr.push(listStr)
-              this.form.maskCode = listStr.length > 1 ? listStr.split(',') : arr
+              this.form.maskCode = listStr.length > 1 ? listStr.split(',') : [listStr]
             } else {
               this.form.maskCode = []
             }
@@ -393,7 +392,7 @@
             this.form.deptIds = [...menuIds, ...menuIds1].join()
             addObj(this.form)
               .then((res) => {
-                if (res.status !== 200) return
+                if (!res || res.status !== 200) return
                 this.dialogFormVisible = false
                 this.getList()
                 this.$notify({
@@ -427,7 +426,8 @@
             }
             // this.dialogFormVisible = false
             putObj(this.form).then((res) => {
-              if (res.status !== 200) return
+              this.form.maskCode = this.form.maskCode.split(',')
+              if (!res || res.status !== 200) return
               this.dialogFormVisible = false
               this.getList()
               this.$notify({
