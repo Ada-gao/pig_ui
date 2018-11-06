@@ -209,11 +209,11 @@
         rules: {
           roleName: [
             { required: true, message: '角色名称', trigger: 'blur' },
-            { min: 3, max: 40, message: '长度在 3 到 20 个字符', trigger: 'blur' }
+            { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           roleCode: [
             { required: true, message: '角色标识', trigger: 'blur' },
-            { min: 3, max: 40, message: '长度在 3 到 20 个字符', trigger: 'blur' }
+            { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           roleDesc: [
             { required: true, message: '角色标识', trigger: 'blur' },
