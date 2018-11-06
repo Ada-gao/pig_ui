@@ -217,7 +217,19 @@
               <el-radio :label="0" style="display: inline-block">无认购费</el-radio>
               <el-radio :label="1" style="display: inline-block">价内认购</el-radio>
               <el-radio :label="2" style="display: inline-block">价外认购(%)</el-radio>
-              <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="subDisabled" required="subDisabled" v-model="form.subscribeRate"></el-input>
+              <!-- <el-input style="display: inline-block; width: 100px; margin-left: 20px;" v-show="subDisabled" required="subDisabled" v-model="form.subscribeRate"></el-input> -->
+              <el-form-item label=""
+                prop="subscribeRate"
+                v-if="subDisabled"
+                style="display: inline-block"
+                class="sec-form-item"
+                >
+                <el-input
+                  type="number"
+                  style="display: inline-block; width: 100px; margin-left: 5px;"
+                  :maxlength="5"
+                  v-model="form.subscribeRate"></el-input>
+              </el-form-item>
             </el-radio-group>
           </el-form-item>
         </el-col>
@@ -397,7 +409,7 @@
   const certNumber = (rule, value, callback) => {
     if (!value) {
       return null
-    } else if(!Number.isInteger(value)) {
+    } else if (!Number.isInteger(value)) {
       callback(new Error('只能输入整数金额'))
     } else if (!isNumber(value)) {
       callback(new Error('请输入10位以内的数字'))
@@ -407,22 +419,12 @@
   }
 
   const pdExpire = (rule, value, callback) => {
-      // const Reg = /^\d{1,5}$/
-      const Reg = /^[1-9][0-9]{0,5}\+{0,1}[0-9]{0,5}$/
-      if (!value) {
-        callback('请输入产品期限')
-      } else if (!Reg.test(value)) {
-        callback('请输入有效的产品期限')
-      } else {
-        callback()
-      }
-  }
-
-  const acount = (rule, value, callback) => {
-    const exp = /^\d{1,20}$/
+    // const Reg = /^\d{1,5}$/
+    const Reg = /^[1-9][0-9]{0,5}\+{0,1}[0-9]{0,5}$/
     if (!value) {
-    } else if (!exp.test(Number(value))) {
-      callback('请输入正确的账号')
+      callback(new Error('请输入产品期限'))
+    } else if (!Reg.test(value)) {
+      callback(new Error('请输入有效的产品期限'))
     } else {
       callback()
     }
@@ -431,46 +433,34 @@
   const pdAcount = (rule, value, callback) => {
     const exp = /^\d{1,20}$/
     if (!value) {
-      callback('请输入账号')
+      callback(new Error('请输入账号'))
     } else if (!exp.test(Number(value))) {
-      callback('请输入正确的账号')
+      callback(new Error('请输入正确的账号'))
     } else {
       callback()
     }
   }
 
-  const twoDecimals = (rule, value, callback) => {
-    if (!value) {
-      return null
-    } else if (!decimals(value)) {
-      callback(new Error('请输入正确的净值数字'))
-    } else {
-      callback()
-    }
-  }
+  // const twoDecimals = (rule, value, callback) => {
+  //   if (!value) {
+  //     return null
+  //   } else if (!decimals(value)) {
+  //     callback(new Error('请输入正确的净值数字'))
+  //   } else {
+  //     callback()
+  //   }
+  // }
   // 收益对标基准校验
   const pdAnnualizedReturn = (rule, value, callback) => {
       const exp = /^(\d{1,2}(\.\d{1,2})?|100)$/
       if (!value) {
-          callback('请输入收益对标基准')
+        callback(new Error('请输入收益对标基准'))
       } else if (!exp.test(Number(value))) {
-          callback('请输入正确的收益对标基准')
+        callback(new Error('请输入正确的收益对标基准'))
       } else {
-          callback()
+        callback()
       }
   }
-//募集人数校验
-  const vaProLp = (rule, value, callback) => {
-    const exp = /^\d{1,10}$/
-    if (!value) {
-      return null
-    }  else if(!exp.test(Number(value))) {
-      callback('请输入10位以内整数')
-    } else{
-        callback()
-    }
-  }
-
   export default {
     data() {
       return {
@@ -493,6 +483,10 @@
             { required: true, message: '请输入产品名称', trigger: 'blur' },
             { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
+          productShortName: [
+            { required: true, message: '请输入产品名称', trigger: 'blur' },
+            { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
+          ],
           isFloat: [
             { required: true, message: '请选择收益', trigger: 'change' }
           ],
@@ -506,7 +500,9 @@
             { required: true, message: '请输入支行名称', rigger: 'blur' }
           ],
           cardNo: [
-            { required: true, validator: pdAcount, trigger: 'blur' }
+            // { required: true, validator: pdAcount, trigger: 'blur' },
+            { required: true, message: '请输入账号', trigger: 'blur' },
+            { pattern: /^\d{1,20}$/, message: '请输入正确的账号' }
           ],
           productCode: [
             { required: true, message: '请输入产品名称', trigger: 'blur' },
@@ -546,17 +542,26 @@
             { pattern: /^\d{0,9}$/, message: '请输入9位以内的整数' }
           ],
           investmentHorizon: [
-            { required: true, validator: pdExpire, trigger: 'blur' }
+            { required: true, message: '请输入产品期限', trigger: 'blur' },
+            { pattern: /^[1-9][0-9]{0,5}\+{0,1}[0-9]{0,5}$/, message: '请输入有效的产品期限' }
 //            { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
           ],
           buyingCrowds: [
-            { required: true, message: '请选择购买人群', trigger: 'change' }
+            { required: false, message: '请选择购买人群', trigger: 'change' }
           ],
           annualizedReturn: [
-            { required: true, validator: pdAnnualizedReturn, trigger: 'blur'}
+            // { required: false, validator: pdAnnualizedReturn, trigger: 'blur'}
+            { required: true, message: '请输入收益对标基准利率', trigger: 'blur'},
+            { pattern: /^(\d{1,2}(\.\d{1,2})?|100)$/, message: '请输入100以内并且最多两位小数的数字'}
+          ],
+          subscribeRate: [
+            // { required: false, validator: pdAnnualizedReturn, trigger: 'blur'}
+            { required: true, message: '请输入价外认购率', trigger: 'blur'},
+            { pattern: /^(\d{1,2}(\.\d{1,2})?|100)$/, message: '请输入100以内并且最多两位小数的数字'}
           ],
           productLp: [
-            {required: false, validator: vaProLp, trigger: 'blur'}
+            // { required: false, validator: vaProLp, trigger: 'blur'}
+            { pattern: /^\d{0,9}$/, message: '请输入9位以内的整数' }
           ]
         },
         createStatus: 'create',
@@ -662,6 +667,7 @@
             this.userDefinedAttribute = JSON.parse(this.form.userDefinedAttribute)
             // console.log(JSON.parse(this.form.userDefinedAttribute))
             this.form.subscribe = this.form.subscribe - 0
+            this.subDisabled = this.form.subscribe === 2 ? true: false
             this.formBuyingCrowds = this.form.buyingCrowds.split(',')
             this.checkedDeptLabelList = this.form.deptNames
             if(this.userDefinedAttribute == null) {
@@ -758,6 +764,7 @@
         }
         this.form.buyingCrowds = this.formBuyingCrowds.toString()
         set[formName].validate(valid => {
+          console.log(valid)
           if (valid) {
             this.form.discountCoefficient = this.investRatio
             this.form.userDefinedAttribute = JSON.stringify(this.userDefinedAttribute)
@@ -791,10 +798,6 @@
           this.isDisabled = true
         }
         this.form.productStatus = this.productStatusNo
-        // this.form.currencyId = this.form.currencyIdNo
-        // this.form.productTypeId = this.form.productTypeIdNo
-        // this.form.investmentHorizonUnit = this.form.investmentHorizonUnitNo
-        // this.form.productMixTypeId = this.form.productMixTypeIdNo
         if(this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit!='1') {
           this.$notify({
             title: '提示',
@@ -805,7 +808,9 @@
           return false
         }
         this.form.buyingCrowds = this.formBuyingCrowds.toString()
+        console.log(set[formName])
         set[formName].validate(valid => {
+          console.log(valid)
           if (valid) {
             this.form.discountCoefficient = this.investRatio
             this.form.userDefinedAttribute = JSON.stringify(this.userDefinedAttribute)
