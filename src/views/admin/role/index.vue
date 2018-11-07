@@ -83,8 +83,8 @@
           <el-input v-model.trim="form.roleDesc" placeholder="描述"></el-input>
         </el-form-item>
         <el-form-item label="所属部门" prop="roleDeptIds">
-          <!-- <dept v-model="form.roleDeptIds" @change="deptIdChangeHandle"></dept> -->
-          <span>{{form.deptName}}</span>
+          <dept v-if="dialogStatus==='create'" v-model="form.roleDeptIds" @change="deptIdChangeHandle"></dept>
+          <span v-else>{{form.deptName}}</span>
         </el-form-item>
         <el-form-item label="客户信息掩码" prop="maskCode">
           <el-checkbox-group v-model="form.maskCode">
