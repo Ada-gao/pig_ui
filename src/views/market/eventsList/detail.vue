@@ -230,7 +230,7 @@
 
      <div style="text-align: center;" v-if="url != 'view'">
       <!-- <el-button class="search_btn">上一步</el-button> -->
-      <el-button v-if="url == 'edit' && activity_release" class="add_btn" @click="releaseEvent">发布活动</el-button>
+      <el-button v-if="url == 'edit' && activity_release && activityStatusId == 0" class="add_btn" @click="releaseEvent">发布活动</el-button>
       <el-button class="add_btn" @click="save('ruleForm')">保 存</el-button>
       <el-button class="search_btn" @click="cancelSava">取 消</el-button>
       <!-- <router-link class="el-button search_btn el-button--default" to="/market/eventsList" >取 消</router-link> -->
@@ -377,9 +377,9 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       url : this.$route.path.split('/')[3],
-      activityId:this.$route.params.activityId,
-      activityStatusId:this.$route.params.activityStatusId,
-      activityDeptList:{},
+      activityId: this.$route.params.activityId,
+      activityStatusId: this.$route.params.activityStatusId,
+      activityDeptList: {},
     }
   },
   computed: {
@@ -550,7 +550,7 @@ export default {
               type: 'success'
             });
              loading.close()
-            this.$router.push(`/market/eventsList/edit/${res.data.data}/${this.activityStatusId  || 0}`)
+            this.$router.push(`/market/eventsList/edit/${res.data.data}/${this.activityStatusId || 0}`)
            }
          
           })
@@ -929,7 +929,7 @@ export default {
     },
     // 发布活动
     releaseEvent(){
-         if(this.activityStatusId == 0){
+      if(this.activityStatusId == 0){
       releaseEvent(this.activityId).then(res=>{
         if(res.status == 200){
           this.$confirm('确认发布活动后，活动将在app端展示！', '发布活动', {

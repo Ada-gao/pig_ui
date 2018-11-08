@@ -21,10 +21,10 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
           <el-form-item label="活动状态">
             <el-checkbox-group v-model="activityStatus">
-              <el-checkbox-button   v-for="releaseSelection in releaseSelections" :label="releaseSelection" :key="releaseSelection">{{releaseSelection}}</el-checkbox-button>
+              <el-checkbox-button v-for="releaseSelection in releaseSelections" :label="releaseSelection" :key="releaseSelection">{{releaseSelection}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
         </el-col>
@@ -267,7 +267,6 @@ export default {
       }else{
         this.$router.push(`/market/eventsList/${state}/${row.activityId}/${row.activityStatusId}`)
       }
-      
     },
     deletes(row) {
       this.$confirm('此操作将永久删除该活动，是否继续？', '提示', {
