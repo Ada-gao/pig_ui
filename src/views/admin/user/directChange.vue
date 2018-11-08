@@ -864,7 +864,7 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
               this.newForm =JSON.parse(JSON.stringify(this.form));
-              this.newForm.userId = this.$route.params.id;
+              this.newForm.userId = this.listQuery.userId;
             if(this.selfChange()){
                 this.$notify({
                   title: '警告',
