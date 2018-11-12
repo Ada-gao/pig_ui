@@ -502,7 +502,10 @@
           cardNo: [
             // { required: true, validator: pdAcount, trigger: 'blur' },
             { required: true, message: '请输入账号', trigger: 'blur' },
-            { pattern: /^\d{1,20}$/, message: '请输入正确的账号' }
+            { pattern: /^([1-9]{1})(\d{15}|\d{18})$/, message: '请输入正确的账号' }
+          ],
+          paymentNumber: [
+            { pattern: /^([1-9]{1})(\d{15}|\d{18})$/, message: '请输入正确的账号' }
           ],
           productCode: [
             { required: true, message: '请输入产品名称', trigger: 'blur' },

@@ -246,7 +246,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button class="search_btn" @click="cancel('form')">取 消</el-button>
-        <el-button class="add_btn" v-if="dialogStatus=='create'" @click="create('form')">确 定</el-button>
+        <el-button class="add_btn" v-if="dialogStatus=='create'&&!userId" @click="create('form')">确 定</el-button>
         <el-button class="add_btn" v-else @click="update('form')">修 改</el-button>
       </div>
     </div>
@@ -599,6 +599,7 @@
     },
     mounted() {
       this.initialization()
+
     },
     methods: {
       // 员工基本信息初始化
@@ -799,6 +800,7 @@
               this.fileList = []
             }
             this.form.deptId = this.form.deptIds[this.form.deptIds.length - 1]
+            this.form.userId = this.form.userId ? this.form.userId : this.userId
             putObj(this.form).then((res) => {
               // this.getList()
               if (!res || res.status !== 200) return false

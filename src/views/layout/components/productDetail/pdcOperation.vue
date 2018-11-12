@@ -203,31 +203,31 @@
         <h3>产品预约审核条件（不选择，代表不需要审核，可多选）</h3>
         <el-row>
           <el-col :md="12" :lg="8" style="margin-bottom: 10px">
-            <el-checkbox v-model="checked1" :disabled="operationDisabled">
+            <el-checkbox v-model="checked1" :disabled="operationDisabled" @change="checkChange('appointAmountPercent')">
               <span style="width: 110px; display: inline-block">预约总额度满</span>
               <el-input v-model="form2.appointAmountPercent" :disabled="!checked1" style="width: 100px;"></el-input> %，进入人工审核
             </el-checkbox>
           </el-col>
           <el-col :md="12" :lg="8" style="margin-bottom: 10px">
-            <el-checkbox v-model="checked2" :disabled="operationDisabled">
+            <el-checkbox v-model="checked2" :disabled="operationDisabled" @change="checkChange('appointNums')">
               <span style="width: 110px; display: inline-block">预约人数满</span>
               <el-input v-model="form2.appointNums" :disabled="!checked2" style="width: 100px;"></el-input> 人，进入人工审核
             </el-checkbox>
           </el-col>
           <el-col :md="12" :lg="8" style="margin-bottom: 10px">
-            <el-checkbox v-model="checked3" :disabled="operationDisabled">
+            <el-checkbox v-model="checked3" :disabled="operationDisabled" @change="checkChange('onceAppointGt')">
               <span style="width: 110px; display: inline-block">单笔打款金额大于</span>
               <el-input v-model="form2.onceAppointGt" :disabled="!checked3" style="width: 100px;"></el-input> 万，进入人工审核
             </el-checkbox>
           </el-col>
           <el-col :md="12" :lg="8" style="margin-bottom: 10px">
-            <el-checkbox v-model="checked4" :disabled="operationDisabled">
+            <el-checkbox v-model="checked4" :disabled="operationDisabled" @change="checkChange('onceAppointLt')">
               <span style="width: 110px; display: inline-block">单笔打款金额小于</span>
               <el-input v-model="form2.onceAppointLt" :disabled="!checked4" style="width: 100px;"></el-input> 万，进入人工审核
             </el-checkbox>
           </el-col>
           <el-col :md="12" :lg="8" style="margin-bottom: 10px">
-            <el-checkbox v-model="checked5" :disabled="operationDisabled">
+            <el-checkbox v-model="checked5" :disabled="operationDisabled" @change="checkChange('remitAmountsPercent')">
               <span style="width: 110px; display: inline-block">打款金额满</span>
               <el-input v-model="form2.remitAmountsPercent" :disabled="!checked5" style="width: 100px;"></el-input> %，进入人工审核
             </el-checkbox>
@@ -1439,7 +1439,9 @@
             type: 'success',
             duration: 2000
           })
-          this.getOperations()
+          // this.getOperations()
+          this.$router.push({path: '/product/collecting'})
+          Bus.$emit('activeUrl', '/product/collecting')
         })
       },
       changeCollect() {
@@ -1732,7 +1734,27 @@
           this.collectTime = ''
           this.errorTime = false
         }
-        
+      },
+      checkChange(val) {
+        console.log(val)
+        console.log('this.checked1', this.checked1)
+        switch (val) {
+          case 'appointAmountPercent':
+            if (!this.checked1) this.form2.appointAmountPercent = ''
+            break
+          case 'appointNums':
+            if (!this.checked2) this.form2.appointNums = ''
+            break
+          case 'onceAppointGt':
+            if (!this.checked3) this.form2.onceAppointGt = ''
+            break
+          case 'onceAppointLt':
+            if (!this.checked4) this.form2.onceAppointLt = ''
+            break
+          case 'remitAmountsPercent':
+            if (!this.checked5) this.form2.remitAmountsPercent = ''
+            break
+        }
       }
     }
   }
