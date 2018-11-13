@@ -97,7 +97,7 @@
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon" style="margin-bottom: 21px; white-space: nowrap;">
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}</span>
-            <el-input v-else v-model="form.investmentHorizon" style="width: 25%;"></el-input>
+            <el-input v-else v-model="form.investmentHorizon" style="width: 25%;" placeholder="请输入"></el-input>
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
             <el-form-item v-else label=""
               prop="investmentHorizonUnit"
@@ -132,7 +132,8 @@
                   type="number"
                   style="display: inline-block; width: 100px; margin-left: 5px;"
                   :maxlength="5"
-                  v-model="form.annualizedReturn"></el-input>
+                  v-model="form.annualizedReturn"
+                  placeholder="请输入"></el-input>
               </el-form-item>
             </el-radio-group>
           </el-form-item>
@@ -152,19 +153,19 @@
         <el-col :span="11">
           <el-form-item label="起投金额（万）" prop="minimalAmount" style="white-space: nowrap">
             <span v-if="detailDisabled">{{form.minimalAmount}}</span>
-            <el-input v-else type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入起投金额"></el-input>
+            <el-input v-else type="number" v-model.number="form.minimalAmount" :maxlength="10" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="追加金额（万）" prop="minimalAddAmount" style="white-space: nowrap">
             <span v-if="detailDisabled">{{form.minimalAddAmount}}</span>
-            <el-input v-else type="number" v-model.number="form.minimalAddAmount" :maxlength="10"></el-input>
+            <el-input v-else type="number" v-model.number="form.minimalAddAmount" :maxlength="10" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="收益分配方式" prop="incomeDistribution" style="white-space: nowrap">
             <span v-if="detailDisabled||stageType=='0'">{{form.incomeDistribution}}</span>
-            <el-input v-else v-model="form.incomeDistribution" :maxlength="10"></el-input>
+            <el-input v-else v-model="form.incomeDistribution" :maxlength="10" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -228,7 +229,8 @@
                   type="number"
                   style="display: inline-block; width: 100px; margin-left: 5px;"
                   :maxlength="5"
-                  v-model="form.subscribeRate"></el-input>
+                  v-model="form.subscribeRate"
+                  placeholder="请输入"></el-input>
               </el-form-item>
             </el-radio-group>
           </el-form-item>
@@ -242,7 +244,8 @@
               v-else
               type="textarea"
               :row="2"
-              v-model="form.announcement">
+              v-model="form.announcement"
+              placeholder="请输入">
             </el-input>
           </el-form-item>
         </el-col>
@@ -328,7 +331,8 @@
               v-else
               type="textarea"
               :row="2"
-              v-model="form.remark">
+              v-model="form.remark"
+              placeholder="请输入">
             </el-input>
           </el-form-item>
         </el-col>
@@ -466,7 +470,8 @@
       return {
         form: {
           userDefinedAttribute: '',
-          buyingCrowds: []
+          buyingCrowds: [],
+          subscribe: 1
         },
         userDefinedAttribute: [],
         productTypes: [],
@@ -583,7 +588,7 @@
         dialogDepartment: false,
         checkedDeptLabelList: [],
         checkedDeptIds: [],
-        visibleRangeType: 0,
+        visibleRangeType: 0
       }
     },
     props: ['productId', 'stageType', 'formData'],
@@ -642,7 +647,7 @@
       document.documentElement.scrollTop = document.body.scrollTop = 0
     },
     mounted() {
-      this.form = this.formData
+      this.form = Object.assign(this.form, this.formData)
       let list = Object.keys(this.formData)
       if(list.length > 1 && !list.productId) {
         this.formBuyingCrowds = this.form.buyingCrowds.split(',')

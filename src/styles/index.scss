@@ -256,6 +256,16 @@ input[type="number"]{
     margin-left: 130px!important;
   }
 }
+.group-item .group-item-label {
+  display: inline-block;
+  margin-bottom: 0;
+  .el-form-item__content {
+    margin-left: 0!important;
+    .el-form-item__error {
+      left: 0;
+    }
+  }
+}
 .hide {
   display: none;
 }

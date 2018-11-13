@@ -81,6 +81,7 @@
     <div class="trade-item">
       <h3>产品说明材料</h3>
       <el-table
+        v-loading="loading2"
         :data="fileList2"
         border
         style="width: 100%">
@@ -128,7 +129,9 @@
           style="display: inline-block;"
           :headers="headers"
           :action="importFile('product')"
+          :on-progress="handleLoading2"
           :on-success="handleChange2"
+          :on-error="handleUploadFail2"
           :show-file-list="false"
           accept=".pdf">
           <el-button size="small"
@@ -141,6 +144,7 @@
       <!-- 产品公告 -->
       <h3>投后报告</h3>
       <el-table
+        v-loading="loading3"
         :data="fileList3"
         border
         style="width: 100%">
@@ -188,7 +192,9 @@
           style="display: inline-block;"
           :headers="headers"
           :action="importFile('announcement')"
-          :on-change="handleChange3"
+          :on-progress="handleLoading3"
+          :on-success="handleChange3"
+          :on-error="handleUploadFail3"
           :show-file-list="false"
           accept=".pdf">
           <el-button size="small"
@@ -202,37 +208,102 @@
       <div class="group-item">
         <h3>产品预约审核条件（不选择，代表不需要审核，可多选）</h3>
         <el-row>
-          <el-col :md="12" :lg="8" style="margin-bottom: 10px">
+          <el-col :md="12" :lg="8" style="margin-bottom: 20px">
             <el-checkbox v-model="checked1" :disabled="operationDisabled" @change="checkChange('appointAmountPercent')">
               <span style="width: 110px; display: inline-block">预约总额度满</span>
-              <el-input v-model="form2.appointAmountPercent" :disabled="!checked1" style="width: 100px;"></el-input> %，进入人工审核
             </el-checkbox>
+            <el-form-item
+              prop="appointAmountPercent"
+              label=""
+              class="group-item-label"
+              :rules="[
+                { pattern: /^(\d{1,2}(\.\d{0,2})?|100)$/, message: '请输入100以内且最多两位小数的数字' }
+              ]">
+              <el-input v-model="form2.appointAmountPercent" :disabled="!checked1||operationDisabled" style="width: 100px;"></el-input> %，进入人工审核
+              <span v-show="checked1&&!form2.appointAmountPercent" class="el-form-item__error">请输入</span>
+            </el-form-item>
+            <!-- <el-checkbox v-model="checked1" :disabled="operationDisabled" @change="checkChange('appointAmountPercent')">
+              <span style="width: 110px; display: inline-block">预约总额度满</span>
+              <el-input v-model="form2.appointAmountPercent" :disabled="!checked1" style="width: 100px;"></el-input> %，进入人工审核
+            </el-checkbox> -->
           </el-col>
-          <el-col :md="12" :lg="8" style="margin-bottom: 10px">
+          <el-col :md="12" :lg="8" style="margin-bottom: 20px">
             <el-checkbox v-model="checked2" :disabled="operationDisabled" @change="checkChange('appointNums')">
               <span style="width: 110px; display: inline-block">预约人数满</span>
-              <el-input v-model="form2.appointNums" :disabled="!checked2" style="width: 100px;"></el-input> 人，进入人工审核
             </el-checkbox>
+            <el-form-item
+              prop="appointNums"
+              label=""
+              class="group-item-label"
+              :rules="[
+                { pattern: /^\d{1,9}$/, message: '请输入整数' }
+              ]">
+              <el-input v-model="form2.appointNums" :disabled="!checked2||operationDisabled" style="width: 100px;"></el-input> 人，进入人工审核
+              <span v-show="checked2&&!form2.appointNums" class="el-form-item__error">请输入</span>
+            </el-form-item>
+            <!-- <el-checkbox v-model="checked2" :disabled="operationDisabled" @change="checkChange('appointNums')">
+              <span style="width: 110px; display: inline-block">预约人数满</span>
+              <el-input v-model="form2.appointNums" :disabled="!checked2" style="width: 100px;"></el-input> 人，进入人工审核
+            </el-checkbox> -->
           </el-col>
-          <el-col :md="12" :lg="8" style="margin-bottom: 10px">
+          <el-col :md="12" :lg="8" style="margin-bottom: 20px">
             <el-checkbox v-model="checked3" :disabled="operationDisabled" @change="checkChange('onceAppointGt')">
               <span style="width: 110px; display: inline-block">单笔打款金额大于</span>
-              <el-input v-model="form2.onceAppointGt" :disabled="!checked3" style="width: 100px;"></el-input> 万，进入人工审核
             </el-checkbox>
+            <el-form-item
+              prop="onceAppointGt"
+              label=""
+              class="group-item-label"
+              :rules="[
+                { pattern: /^\d{1,9}$/, message: '请输入整数' }
+              ]">
+              <el-input v-model="form2.onceAppointGt" :disabled="!checked3||operationDisabled" style="width: 100px;"></el-input> 万，进入人工审核
+              <span v-show="checked3&&!form2.onceAppointGt" class="el-form-item__error">请输入</span>
+            </el-form-item>
+            <!-- <el-checkbox v-model="checked3" :disabled="operationDisabled" @change="checkChange('onceAppointGt')">
+              <span style="width: 110px; display: inline-block">单笔打款金额大于</span>
+              <el-input v-model="form2.onceAppointGt" :disabled="!checked3" style="width: 100px;"></el-input> 万，进入人工审核
+            </el-checkbox> -->
           </el-col>
-          <el-col :md="12" :lg="8" style="margin-bottom: 10px">
+          <el-col :md="12" :lg="8" style="margin-bottom: 20px">
             <el-checkbox v-model="checked4" :disabled="operationDisabled" @change="checkChange('onceAppointLt')">
               <span style="width: 110px; display: inline-block">单笔打款金额小于</span>
-              <el-input v-model="form2.onceAppointLt" :disabled="!checked4" style="width: 100px;"></el-input> 万，进入人工审核
             </el-checkbox>
+            <el-form-item
+              prop="onceAppointLt"
+              label=""
+              class="group-item-label"
+              :rules="[
+                { pattern: /^\d{1,9}$/, message: '请输入整数' }
+              ]">
+              <el-input v-model="form2.onceAppointLt" :disabled="!checked4||operationDisabled" style="width: 100px;"></el-input> 万，进入人工审核
+              <span v-show="checked4&&!form2.onceAppointLt" class="el-form-item__error">请输入</span>
+            </el-form-item>
+            <!-- <el-checkbox v-model="checked4" :disabled="operationDisabled" @change="checkChange('onceAppointLt')">
+              <span style="width: 110px; display: inline-block">单笔打款金额小于</span>
+              <el-input v-model="form2.onceAppointLt" :disabled="!checked4" style="width: 100px;"></el-input> 万，进入人工审核
+            </el-checkbox> -->
           </el-col>
-          <el-col :md="12" :lg="8" style="margin-bottom: 10px">
+          <el-col :md="12" :lg="8" style="margin-bottom: 20px">
             <el-checkbox v-model="checked5" :disabled="operationDisabled" @change="checkChange('remitAmountsPercent')">
               <span style="width: 110px; display: inline-block">打款金额满</span>
-              <el-input v-model="form2.remitAmountsPercent" :disabled="!checked5" style="width: 100px;"></el-input> %，进入人工审核
             </el-checkbox>
+            <el-form-item
+              prop="remitAmountsPercent"
+              label=""
+              class="group-item-label"
+              :rules="[
+                { pattern: /^(\d{1,2}(\.\d{0,2})?|100)$/, message: '请输入100以内且最多两位小数的数字' }
+              ]">
+              <el-input v-model="form2.remitAmountsPercent" :disabled="!checked5||operationDisabled" style="width: 100px;"></el-input> %，进入人工审核
+              <span v-show="checked5&&!form2.remitAmountsPercent" class="el-form-item__error">请输入</span>
+            </el-form-item>
+            <!-- <el-checkbox v-model="checked5" :disabled="operationDisabled" @change="checkChange('remitAmountsPercent')">
+              <span style="width: 110px; display: inline-block">打款金额满</span>
+              <el-input v-model="form2.remitAmountsPercent" :disabled="!checked5" style="width: 100px;"></el-input> %，进入人工审核
+            </el-checkbox> -->
           </el-col>
-          <el-col :md="12" :lg="8" style="margin-bottom: 10px">
+          <el-col :md="12" :lg="8" style="margin-bottom: 20px">
             <el-form-item
               label="预约时效"
               prop="timeliness"
@@ -241,7 +312,6 @@
                 { required: true, trigger: 'blur', message: '请输入预约时效'},
                 { pattern: /^[1-9]\d*$/, message: '请输入大于0的整数' }
               ]">
-              <!--<span style="width: 135px; display: inline-block; text-align: right">预约时效</span>-->
               <el-input style="width: 100px;"
                 :disabled="operationDisabled"
                 v-model="form2.timeliness"></el-input> 小时
@@ -299,11 +369,15 @@
         <h3>佣金业绩统计</h3>
         <el-row style="position: relative">
           <el-col :span="11">
-            <el-form :model="normalDTO" ref="normalDTO" :rules="rules3" class="demo-ruleForm">
+            <el-form :model="normalDTO" ref="normalDTO" class="demo-ruleForm">
               <el-form-item
                 label="折标业绩系数"
                 prop="performanceCoefficient"
-                label-width="120px">
+                label-width="120px"
+                :rules="[
+                  { required: true, trigger: 'blur', message: '请输入折标业绩系数' },
+                  { pattern: /^\d+\.{0,1}\d{0,2}$/, message: '请输入数字并且最多两位小数' }
+                ]">
                 <span class="el-input" v-if="operationDisabled">{{normalDTO.performanceCoefficient}}</span>
                 <!-- <el-input  v-model="normalDTO.performanceCoefficient" type="number" onkeypress='return( /[\d]/.test(String.fromCharCode(event.keyCode) ) )' v-else></el-input> -->
                 <el-input  v-model="normalDTO.performanceCoefficient" v-else></el-input>
@@ -799,7 +873,9 @@
         statistic: {},
         chooseNone: false,
         errorTime: false,
-        errorTimeText: ''
+        errorTimeText: '',
+        loading2: false,
+        loading3: false
         // form: {},
         // isDisabled: true,
         // stage: false,
@@ -873,7 +949,7 @@
       },
       //筛选佣金业绩统计
       normalFilter(filter){
-        console.log('佣金业绩统计')
+        // console.log('佣金业绩统计')
         let self = true
         if(!this.normalDTO.performanceCoefficient && filter){
           this.performanceCoefficient()
@@ -1160,137 +1236,138 @@
       updateRouter() { // 操作指南新建或编辑提交
       
         this.$refs['form2'].validate(valid1 => {
-        this.$refs['normalDTO'].validate(valid2 => {
-          if(valid1&&valid2){
-        this.activityData.forEach((item, index) => {
-          item.activeDate = this.activeDateList[index] || ['', '']
-        })
-        this.activityList = this.activityList.concat(this.activityData)
-        this.activityList.forEach(item => {
-          item.activityEnd = item.activeDate[1]
-          item.activityStart = item.activeDate[0]
-        })
-        // if (this.importantDate) {
-        //   this.form2.importantStart = this.importantDate[0]
-        //   this.form2.importantEnd = this.importantDate[1]
-        // } else {
-        //   this.form2.importantStart = ''
-        //   this.form2.importantEnd = ''
-        // }
-        if (this.importantStart) {
-          this.form2.importantStart = this.importantStart
-          if (this.importantEnd) {
-            this.form2.importantEnd = this.importantEnd
-          } else {
-            this.form2.importantEnd = new Date('2037-12-31')
-          }
-        } else {
-          this.form2.importantStart = ''
-          this.form2.importantEnd = ''
-        }
-        if (!this.normalFilter(true)) return false
-        // if (this.productStatusNo === 2) {
-        //  if (!this.activityFilter(true)) return false
-        //  if (!this.normalFilter(true)) return false
-        // }
-        if(this.normalDTO.performanceCoefficient >= 100) {
-          this.$notify({
-            title: '失败',
-            message: '输折标业绩系数应小于100',
-            type: 'error',
-            duration: 2000
-          })
-          return false
-        }
-         this.normalDTO.normalBrokerageCoefficients.forEach(item=>{
-          item.brokerageCoefficientDTOList.forEach(item=>{
-            if(item.coefficient>=100){
+          this.$refs['normalDTO'].validate(valid2 => {
+            if(valid1&&valid2){
+              this.activityData.forEach((item, index) => {
+                item.activeDate = this.activeDateList[index] || ['', '']
+              })
+              this.activityList = this.activityList.concat(this.activityData)
+              this.activityList.forEach(item => {
+                item.activityEnd = item.activeDate[1]
+                item.activityStart = item.activeDate[0]
+              })
+              // if (this.importantDate) {
+              //   this.form2.importantStart = this.importantDate[0]
+              //   this.form2.importantEnd = this.importantDate[1]
+              // } else {
+              //   this.form2.importantStart = ''
+              //   this.form2.importantEnd = ''
+              // }
+              if (this.importantStart) {
+                this.form2.importantStart = this.importantStart
+                if (this.importantEnd) {
+                  this.form2.importantEnd = this.importantEnd
+                } else {
+                  this.form2.importantEnd = new Date('2037-12-31')
+                }
+              } else {
+                this.form2.importantStart = ''
+                this.form2.importantEnd = ''
+              }
+              if (!this.normalFilter(true)) return false
+              // if (this.productStatusNo === 2) {
+              //  if (!this.activityFilter(true)) return false
+              //  if (!this.normalFilter(true)) return false
+              // }
+              if((this.checked1&&!this.form2.appointAmountPercent)||(this.checked2&&!this.form2.appointNums)||(this.checked3&&!this.form2.onceAppointGt)||(this.checked4&&!this.form2.onceAppointLt)||(this.checked5&&!this.form2.remitAmountsPercent)) return
+              if(this.normalDTO.performanceCoefficient >= 100) {
                 this.$notify({
                   title: '失败',
-                  message: '层级应小于100',
-                  type: 'error',
-                  duration: 2000
-                })
-                return false
-            }
-          })
-         })
-         this.activityData.forEach(item=>{
-          if(item.performanceCoefficient>=100){
-            this.$notify({
-              title: '失败',
-              message: '折标业绩系数应小于100',
-              type: 'error',
-              duration: 2000
-            })
-            return false
-          }
-          item.activityBrokerageCoefficients.forEach(item=>{
-            item.brokerageCoefficientDTOList.forEach(item=>{
-              if(item.coefficient>=100){
-                this.$notify({
-                  title: '失败',
-                  message: '输入层级应小于100',
+                  message: '输折标业绩系数应小于100',
                   type: 'error',
                   duration: 2000
                 })
                 return false
               }
-            })
-          })
-         })
-        this.form2.normalDTO = this.normalDTO
-        // this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
+              this.normalDTO.normalBrokerageCoefficients.forEach(item=>{
+                item.brokerageCoefficientDTOList.forEach(item=>{
+                  if(item.coefficient>=100){
+                    this.$notify({
+                      title: '失败',
+                      message: '层级应小于100',
+                      type: 'error',
+                      duration: 2000
+                    })
+                    return false
+                  }
+                })
+              })
+              this.activityData.forEach(item=>{
+                if(item.performanceCoefficient>=100){
+                  this.$notify({
+                    title: '失败',
+                    message: '折标业绩系数应小于100',
+                    type: 'error',
+                    duration: 2000
+                  })
+                  return false
+                }
+                item.activityBrokerageCoefficients.forEach(item=>{
+                  item.brokerageCoefficientDTOList.forEach(item=>{
+                    if(item.coefficient>=100){
+                      this.$notify({
+                        title: '失败',
+                        message: '输入层级应小于100',
+                        type: 'error',
+                        duration: 2000
+                      })
+                      return false
+                    }
+                  })
+                })
+              })
+              this.form2.normalDTO = this.normalDTO
+              // this.normalList = this.form2.normalDTO.normalBrokerageCoefficients
 
-        this.form2.activityDTO = this.activityData
-        //this.form2.normalDTO.normalBrokerageCoefficients = this.normalList.concat(this.addNormList)
-        // this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
-        this.form2.productId = this.productId
-        // this.form2.keyProduct = this.radio2
-        // console.log('aaa', this.form2.timeliness)
-        // if (!this.form2.timeliness || this.form2.timeliness < 0) {
-        //   this.$notify({
-        //     title: '失败',
-        //     message: '预约时效不能为空',
-        //     type: 'error',
-        //     duration: 2000
-        //   })
-        //   return false
-        // }
-        if (!this.operationDisabled && !this.form2.importantStart) {
-          if (this.defineform.radio2 === 2) {
-            this.$notify({
-              title: '失败',
-              message: '重点产品开始时间不能为空',
-              type: 'error',
-              duration: 2000
-            })
-            return false
-          }
-        }
-        if (this.form2.importantStart && window.Number(this.form2.importantEnd) < Number(this.form2.importantStart)) {
-          this.$notify({
-            title: '失败',
-            message: '重点产品结束时间须不小于开始时间',
-            type: 'error',
-            duration: 2000
+              this.form2.activityDTO = this.activityData
+              //this.form2.normalDTO.normalBrokerageCoefficients = this.normalList.concat(this.addNormList)
+              // this.form2.normalDTO.normalBrokerageCoefficients = this.normalList1
+              this.form2.productId = this.productId
+              // this.form2.keyProduct = this.radio2
+              // console.log('aaa', this.form2.timeliness)
+              // if (!this.form2.timeliness || this.form2.timeliness < 0) {
+              //   this.$notify({
+              //     title: '失败',
+              //     message: '预约时效不能为空',
+              //     type: 'error',
+              //     duration: 2000
+              //   })
+              //   return false
+              // }
+              if (!this.operationDisabled && !this.form2.importantStart) {
+                if (this.defineform.radio2 === 2) {
+                  this.$notify({
+                    title: '失败',
+                    message: '重点产品开始时间不能为空',
+                    type: 'error',
+                    duration: 2000
+                  })
+                  return false
+                }
+              }
+              if (this.form2.importantStart && window.Number(this.form2.importantEnd) < Number(this.form2.importantStart)) {
+                this.$notify({
+                  title: '失败',
+                  message: '重点产品结束时间须不小于开始时间',
+                  type: 'error',
+                  duration: 2000
+                })
+                return false
+              }
+              addOperationObj(this.form2).then(res => {
+                this.$notify({
+                  title: '成功',
+                  message: '产品指南保存成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                // return false
+                // if(this.createStatus = 'create') {}
+                // this.$router.push({path: '/product/productList'})
+                // Bus.$emit('activeIndex', '/product/productList')
+              })
+            }
           })
-          return false
-        }
-        addOperationObj(this.form2).then(res => {
-          this.$notify({
-            title: '成功',
-            message: '产品指南保存成功',
-            type: 'success',
-            duration: 2000
-          })
-          // return false
-          // if(this.createStatus = 'create') {}
-          // this.$router.push({path: '/product/productList'})
-          // Bus.$emit('activeIndex', '/product/productList')
-        })
-          }
-        })
         })
       },
       updateProductDisplay() { // 显示/隐藏
@@ -1440,8 +1517,8 @@
             duration: 2000
           })
           // this.getOperations()
-          this.$router.push({path: '/product/collecting'})
-          Bus.$emit('activeUrl', '/product/collecting')
+          this.$router.push({path: '/product/preheating'})
+          Bus.$emit('activeUrl', '/product/preheating')
         })
       },
       changeCollect() {
@@ -1521,6 +1598,7 @@
         return uploadFiles(this.productId, fileType)
       },
       getAllFiles(productId) {
+        this.loading = false
         if(!productId) return null
         this.getFiles1(productId)
         this.getFiles2(productId)
@@ -1668,11 +1746,37 @@
         // this.fileList2 = fileList.slice(-3)
         // this.uploadData.fileType = 'product'
         this.getFiles2(this.productId)
+        this.loading2 = false
       },
       handleChange3(file, fileList) { // 上传材料完成状态，列表展示
         // this.fileList2 = fileList.slice(-3)
         // this.uploadData.fileType = 'product'
         this.getFiles3(this.productId)
+        this.loading3 = false
+      },
+      handleLoading2() {
+        this.loading2 = true
+      },
+      handleLoading3() {
+        this.loading3 = true
+      },
+      handleUploadFail2(err, file) {
+        this.loading2 = false
+        this.$notify({
+          title: '失败',
+          message: '文件上传失败',
+          type: 'error',
+          duration: 2000
+        })
+      },
+      handleUploadFail3(err, file) {
+        this.loading3 = false
+        this.$notify({
+          title: '失败',
+          message: '文件上传失败',
+          type: 'error',
+          duration: 2000
+        })
       },
       getFiles1(productId) {
         let uploadData = { // 交易所需材料
