@@ -484,7 +484,7 @@
             { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           productShortName: [
-            { required: true, message: '请输入产品名称', trigger: 'blur' },
+            { required: false, message: '请输入产品名称', trigger: 'blur' },
             { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           isFloat: [
