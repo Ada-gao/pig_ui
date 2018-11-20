@@ -315,7 +315,7 @@
         <el-col :span="11">
           <el-form-item label="大额支付行号" prop="paymentNumber">
             <span v-if="detailDisabled">{{form.paymentNumber}}</span>
-            <el-input v-else type="number" v-model.number="form.paymentNumber" placeholder="请输入"></el-input>
+            <el-input v-else v-model="form.paymentNumber" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -501,16 +501,16 @@
           ],
           cardNo: [
             // { required: true, validator: pdAcount, trigger: 'blur' },
-            { required: true, message: '请输入账号', trigger: 'blur' },
-            { pattern: /^([1-9]{1})(\d{15}|\d{18})$/, message: '请输入正确的账号' }
+            { required: true, message: '请输入账号', trigger: 'blur' }
+            // { pattern: /^\d*$/, message: '请输入正确的账号' }
           ],
-          paymentNumber: [
-            { pattern: /^([1-9]{1})(\d{15}|\d{18})$/, message: '请输入正确的账号' }
-          ],
-          productCode: [
-            { required: true, message: '请输入产品名称', trigger: 'blur' },
-            { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
-          ],
+          // paymentNumber: [
+          //   { pattern: /^\d*$/, message: '请输入正确的账号' }
+          // ],
+          // productCode: [
+          //   { required: true, message: '请输入产品编号', trigger: 'blur' },
+          //   { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
+          // ],
           productTypeId: [
             { required: true, message: '请选择产品收益类型', trigger: 'change' }
           ],
