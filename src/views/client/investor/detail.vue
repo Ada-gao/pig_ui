@@ -60,8 +60,8 @@
           </el-table-column>
           <el-table-column align="center" :label="investorType == 0 ? '风险测评问卷（图片）' : '专业投资者认证材料（图片）'">
             <template slot-scope="scope">
-              <div v-for="item in scope.row.urls" :data="scope.row.urls" style="display: inline-block; margin-right: 10px">
-                <a href="#"><img @click="previewImg(scope.row.urls)" :src="item" alt="" style="width: 50px"></a>
+              <div v-for="(item, index) in scope.row.urls" :data="scope.row.urls" style="display: inline-block; margin-right: 10px">
+                <a href="#"><img @click="previewImg(scope.row.urls, index)" :src="item" alt="" style="width: 50px"></a>
               </div>
             </template>
           </el-table-column>
@@ -481,9 +481,17 @@
       carouselChange(value) {
         this.rotateCnt = 0
       },
-      previewImg(list) {
+      previewImg(list, index) {
         this.dialogImgVisible1 = true
         this.idcardImgs = list
+        let timer = setTimeout(() => {
+          this.setActive(index)
+          clearTimeout(timer)
+          timer = null
+        }, 10)
+      },
+      setActive(index) {
+        this.$refs.carousel.setActiveItem(index)
       },
       handleRotate() {
         this.rotateCnt === 3 ? this.rotateCnt = 0 : ++this.rotateCnt
