@@ -276,7 +276,7 @@
               this.$notify({
                 title: '提示',
                 message: '请至少选择一个字段',
-                type: 'danger',
+                type: 'warning',
                 duration: 2000
               })
               return

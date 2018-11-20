@@ -754,13 +754,12 @@
           this.form.annualizedReturn = null
           this.isDisabled = true
         }
-        if(this.form.investmentHorizon && this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit!='1') {
-          this.$notify({
-            title: '提示',
-            message: '产品期限填写有误，请重新输入',
-            type: 'danger',
-            duration: 2000
-          })
+        if(this.form.investmentHorizon && this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit != '1') {
+          this.warnNotify('产品期限填写有误，请重新输入')
+          return false
+        }
+        if(this.form.collectionAmount < this.form.minimalAmount) {
+          this.warnNotify('募集额度不能小于起投金额')
           return false
         }
         this.form.buyingCrowds = this.formBuyingCrowds.toString()
@@ -799,19 +798,18 @@
           this.isDisabled = true
         }
         this.form.productStatus = this.productStatusNo
-        if(this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit!='1') {
-          this.$notify({
-            title: '提示',
-            message: '产品期限填写有误，请重新输入',
-            type: 'danger',
-            duration: 2000
-          })
+        if(this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit != '1') {
+          this.warnNotify('产品期限填写有误，请重新输入')
+          return false
+        }
+        if(this.form.collectionAmount < this.form.minimalAmount) {
+          this.warnNotify('募集额度不能小于起投金额')
           return false
         }
         this.form.buyingCrowds = this.formBuyingCrowds.toString()
-        console.log(set[formName])
+        // console.log(set[formName])
         set[formName].validate(valid => {
-          console.log(valid)
+          // console.log(valid)
           if (valid) {
             this.form.discountCoefficient = this.investRatio
             this.form.userDefinedAttribute = JSON.stringify(this.userDefinedAttribute)
@@ -916,6 +914,14 @@
       },
       cancelDept() {
         this.dialogDepartment = false
+      },
+      warnNotify(text) {
+        this.$notify({
+          title: '提示',
+          message: text,
+          type: 'warning',
+          duration: 2000
+        })
       }
     }
   }
