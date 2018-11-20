@@ -200,7 +200,7 @@ export const constantRouterMap = [
       title: '设置管理',
       icon: 'setting'
     },
-    children:[
+    children: [
       {
         path: 'currency/detail/:name/:id',
         component: _import('admin/setting/detail'),
@@ -408,6 +408,7 @@ export const asyncRouterMap = [
     },
     children: [
       { menuId: 38, path: 'currency', component: _import('admin/setting/currency'), name: '币种管理', meta: { title: '币种管理', icon: 'currency' }},
+      { menuId: 4, path: 'bankManagement', component: _import('admin/bankManagement/index'), name: '银行名称管理', meta: { title: '银行名称管理', icon: 'dict' }},
       { menuId: 349, path: 'asset', component: _import('admin/asset/index'), name: '资产规模设置', meta: { title: '资产规模设置', icon: 'currency' }},
       { menuId: 332, path: 'cooling', component: _import('admin/cooling/index'), name: '冷静期时间', meta: { title: '冷静期时间', icon: 'currency' }},
       { menuId: 9, path: 'dict', component: _import('admin/dict/index'), name: '字典管理', meta: { title: '字典管理', icon: 'dict' }},
