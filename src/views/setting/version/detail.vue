@@ -29,10 +29,10 @@
         <el-row :gutter="20">
           <el-col :span="16">
             <el-form-item label="升级平台" prop="platform">
-              <el-checkbox-group v-model="form.platform" :disabled="updateStatus==='update'?true:false">
-                <el-checkbox label="Android"/>
-                <el-checkbox label="IOS"/>
-              </el-checkbox-group>
+              <el-radio-group v-model="form.platform" :disabled="updateStatus==='update'?true:false">
+                <el-radio label="Android"/>
+                <el-radio label="IOS"/>
+              </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
@@ -72,7 +72,7 @@
         </el-row>
       </el-form>
       <el-col :span="16" slot="footer" class="dialog-footer" style="text-align: center">
-        <el-button class="add_btn" @click="create" :disabled="isCommit">提 交</el-button>
+        <el-button class="add_btn" @click="create">提 交</el-button>
         <el-button class="search_btn" @click="cancel">取 消</el-button>
       </el-col>
     </div>
@@ -121,7 +121,6 @@
         }
       }
       return {
-        isCommit: false,
         pickerOptions0: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7;
@@ -129,7 +128,7 @@
         },
         form: {
           promptType: 'Silence',
-          platform: [],
+          platform: 'Android',
           updateDeadline: ''
           // updateDeadlineTime: ''
         },
@@ -165,17 +164,15 @@
           ],
           promptText: [
             {required: true, trigger: 'blur', message: '请输入升级说明'}
-          ]
-        }
+          ],
+        },
       }
     },
     created() {
       let obj = this.$route.params
-      console.log(obj)
       if (obj && obj.id) {
         // this.form = obj
         this.updateStatus = 'update'
-        console.log(this.updateStatus)
         this.getVersion(obj.id)
       } else {
         this.updateStatus = 'create'
@@ -185,7 +182,6 @@
       getVersion(id) {
         getVersion(id).then(res => {
           this.form = res.data
-          this.form.platform = this.form.platform.split(',')
         })
       },
       changeType(){
@@ -197,32 +193,24 @@
       create() {
         this.$refs['form'].validate(valid => {
           if (valid) {
-            this.isCommit = true
-            let data = JSON.parse(JSON.stringify(this.form))
-            data.platform = data.platform.join(',')
-            console.log(data)
             if (this.updateStatus === 'update'){
               delete this.form.createTime
-              updateVersion(this.form.appVersionId, data)
+              updateVersion(this.form.appVersionId,this.form)
                 .then(res => {
                   this.$message({
                     message: '修改成功',
                     type: 'success'
                   })
                   this.$router.push({path: '/setting/version'})
-                }).catch(() => {
-                  this.isCommit = false
                 })
             } else{
-              createVersion(data)
+              createVersion(this.form)
                 .then(res => {
                   this.$message({
                     message: '新建成功',
                     type: 'success'
                   })
                   this.$router.push({path: '/setting/version'})
-                }).catch(() => {
-                  this.isCommit = false
                 })
             }
           } else {
