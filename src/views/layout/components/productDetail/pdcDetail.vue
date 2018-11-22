@@ -546,7 +546,7 @@
           ],
           investmentHorizon: [
             { required: true, message: '请输入产品期限', trigger: 'blur' },
-            { pattern: /^[1-9][0-9]{0,5}\+{0,1}[0-9]{0,5}$/, message: '请输入有效的产品期限' }
+            { pattern: /^([1-9]{1,3}(\+\d{1,3}){0,4}|[1-9]\d{0,4})$/, message: '请输入有效的产品期限' }
           ],
           buyingCrowds: [
             { required: false, message: '请选择购买人群', trigger: 'change' }
