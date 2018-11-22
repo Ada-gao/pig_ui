@@ -171,6 +171,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
+            <el-form-item label="职级" prop="rankId">
+              <el-select class="filter-item" v-model="form.rankId" placeholder="请选择" @change="handleRankChange">
+                <el-option v-for="item in rankOptions" :key="item.rankId" :label="item.rankName" :value="item.rankId">
+                  <span style="float: left">{{ item.rankName }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
             <el-form-item label="是否营销岗" prop="isMarketing">
               <el-radio-group v-model="form.isMarketing">
                 <el-radio :label="1" style="display: inline-block">是</el-radio>
@@ -349,6 +358,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
+            <el-form-item label="职级：">
+              {{form.rankName}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
             <el-form-item label="是否营销岗：" prop="isMarketing">
               {{form.isMarketing==1?'是':'否'}}
               <!-- <el-radio-group v-model="form.isMarketing">
@@ -389,40 +403,18 @@
   import { getObj, addObj, putObj, delObj } from '@/api/user'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getPositionName } from '@/api/posi'
+  import { getRankById } from '@/api/rank'
   import { getAllPositon } from '@/api/queryConditions'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { parseTime, transformText, transformText1, eachChildren } from '@/utils'
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
-  import { isvalidMobile, isvalidID } from '@/utils/validate'
   import { getPYData } from '@/assets/data'
   import { getToken } from '@/utils/auth'
   import DirectChange from './directChange.vue'
   import Dept from 'components/dept'
-  // import MyCascader from '@/components/MyCascader'
-
-  const validMobile = (rule, value, callback) => {
-    if (!value) {
-      callback(new Error('请输入电话号码'))
-    } else if (!isvalidMobile(value)) {
-      callback(new Error('请输入正确的11位手机号'))
-    } else {
-      callback()
-    }
-  }
-
-  const validID = (rule, value, callback) => {
-    if (!value) {
-      // console.log(this.form.idType)
-      callback(new Error('请输入证件号码'))
-    } else if (!isvalidID(value)) {
-      callback(new Error('请输入正确的证件号码'))
-    } else {
-      callback()
-    }
-  }
-
+  
   export default {
     components: {
       ElOption,
@@ -461,6 +453,7 @@
           // status: undefined,
           deptIds: [],
           roleList: [],
+          lock: 0
         },
         deptIds: [],
         rules: {
@@ -502,9 +495,9 @@
           //   {required: false, trigger: 'blur', message: '请输入邮箱'}
           // ],
           mobile: [
-            // {required: true, trigger: 'blur', validator: validMobile},
-            {required: true, trigger: 'blur,change', message: '请输入手机号'},
-            { pattern: /^1[34578]\d{9}$/, message: '请输入正确的手机号码' }
+            {required: true, trigger: 'blur', validator: this.Valids.validMobile}
+            // {required: true, trigger: 'blur', message: '请输入手机号'},
+            // { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码' }
           ],
           isMarketing: [
             { required: true, trigger: 'change', message: '请选择是否是营销岗' }
@@ -522,6 +515,7 @@
         },
         // statusOptions: ['0', '1', '2'],
         positionsOptions: [],
+        rankOptions: [],
         rolesOptions: [],
         userAdd: false,
         userUpd: false,
@@ -599,7 +593,6 @@
     },
     mounted() {
       this.initialization()
-
     },
     methods: {
       // 员工基本信息初始化
@@ -645,6 +638,7 @@
               this.fileList.length = 1
             }
             this.getNodeData(response.data.deptId)
+            this.handleRankList(response.data.rankId)
           })
       },
       getNodeData(id) { // 部门查询角色
@@ -738,6 +732,13 @@
           this.positionsOptions = res.data
         })
       },
+      handleRankList(id) {
+        getRankById(id).then(res => {
+          if(res.status == 200){
+            this.rankOptions = res.data
+          }
+        })
+      },
       handleChageRole(val) {
         this.rolesOptions = this.rolesOptions.slice(0)
       },
@@ -747,7 +748,7 @@
         // this.role = ''
       },
       handleCreate() {
-        this.resetTemp()
+        // this.resetTemp()
         // this.dialogStatus = 'create'
         this.PYCode = getPYData() // 获取拼音数据
       },
@@ -817,14 +818,14 @@
           }
         })
       },
-      resetTemp() {
-        this.form = {
-          id: undefined,
-          username: '',
-          password: '',
-          role: undefined
-        }
-      },
+      // resetTemp() {
+      //   this.form = {
+      //     id: undefined,
+      //     username: '',
+      //     password: '',
+      //     role: undefined
+      //   }
+      // },
       handleRemove(file, fileList) {
         this.fileList = []
         // console.log(file, fileList)
@@ -850,6 +851,16 @@
       },
       handleChange(val) {
         this.form.positionId = val
+        this.form.rankId = ''
+        this.handleRankList(val)
+        // getRankById(val).then(res => {
+        //   if(res.status == 200){
+        //     this.rankOptions = res.data
+        //   }
+        // })
+      },
+      handleRankChange() {
+        this.rankOptions = this.rankOptions.slice(0)
       },
       getPYCode(val) {
         this.form.username = this.covertPY(val)

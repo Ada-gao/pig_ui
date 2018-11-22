@@ -25,11 +25,13 @@ export function addRank(obj) {
 /**
  * 根据id获取职级信息
  */
-export function getRankById(params) {
+export function getRankById(positionId) {
   return request({
     url: '/admin/rank/list',
     method: 'get',
-    params
+    params: {
+      positionId: positionId
+    }
   })
 }
 
