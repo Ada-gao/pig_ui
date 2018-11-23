@@ -19,7 +19,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品结构类型" prop="productMixTypeId">
-            <span v-if="detailDisabled">{{form.productMixTypeId|turnText(productMixTypes)}}</span>
+            <span v-if="detailDisabled">{{form.productMixTypeName}}</span>
             <el-select v-else class="filter-item" v-model="form.productMixTypeId" placeholder="请选择">
               <el-option v-for="item in productMixTypes" :key="item.productMixTypeId" :value="item.productMixTypeId" :label="item.name">
                 <span style="float: left">{{ item.name }}</span>
@@ -35,7 +35,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="产品收益类型" prop="productTypeId">
-            <span v-if="detailDisabled||stageType=='0'">{{form.productTypeId|turnText(productTypes)}}</span>
+            <span v-if="detailDisabled||stageType=='0'">{{form.productTypeName}}</span>
             <el-select v-else class="filter-item" v-model="form.productTypeId" placeholder="请选择">
               <el-option v-for="item in productTypes" :key="item.productTypeId" :value="item.productTypeId" :label="item.name">
                 <span style="float: left">{{ item.name }}</span>
@@ -45,7 +45,7 @@
         </el-col>
         <el-col :span="11" style="white-space: nowrap">
           <el-form-item label="产品风险级别" prop="productRiskLevel">
-            <span v-if="detailDisabled||stageType=='0'">{{form.productRiskLevel|turnText(productRiskLevel)}}</span>
+            <span v-if="detailDisabled||stageType=='0'">{{form.productRiskLevel|turnText1(productRiskLevel)}}</span>
             <el-select v-else class="filter-item" v-model="form.productRiskLevel" placeholder="请选择">
               <el-option v-for="item in productRiskLevel" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -61,7 +61,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="交易币种" prop="currencyId">
-            <span v-if="detailDisabled||stageType=='0'">{{form.currencyId|turnText(currencyList)}}</span>
+            <span v-if="detailDisabled||stageType=='0'">{{form.currencyId|turnText1(currencyList)}}</span>
             <el-select v-else class="filter-item" v-model="form.currencyId" placeholder="请选择" @change="changeCurrency">
               <el-option v-for="item in currencyList" :key="item.currencyId" :value="item.currencyId" :label="item.name">
                 <span style="float: left">{{ item.name }}</span>
@@ -71,7 +71,7 @@
         </el-col>
         <!-- <el-col :span="11">
           <el-form-item label="购买人群" prop="buyingCrowds">
-            <span v-if="detailDisabled">{{form.buyingCrowds|turnText(buyingCrowds)}}</span>
+            <span v-if="detailDisabled">{{form.buyingCrowds|turnText1(buyingCrowds)}}</span>
             <el-select v-else class="filter-item" multiple v-model="form.buyingCrowds" placeholder="请选择">
               <el-option v-for="item in buyingCrowds" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -86,7 +86,7 @@
             :rules="[
               { required: true, message: '请选择购买人群', trigger: 'blur'}
             ]">
-            <span v-if="detailDisabled"><i v-for="item in form.buyingCrowds">{{item|turnText(buyingCrowds)}} </i></span>
+            <span v-if="detailDisabled"><i v-for="item in form.buyingCrowds">{{item|turnText1(buyingCrowds)}} </i></span>
             <el-select v-if="!detailDisabled" class="filter-item" multiple v-model="formBuyingCrowds" value-key="id" placeholder="请选择">
               <el-option v-for="item in buyingCrowds" :key="item.id" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -203,7 +203,7 @@
 
         <el-col :span="11">
           <el-form-item label="付息方式" prop="interestPayment">
-            <span v-if="detailDisabled">{{form.interestPayment|turnText(interestPayment)}}</span>
+            <span v-if="detailDisabled">{{form.interestPayment|turnText1(interestPayment)}}</span>
             <el-select v-else class="filter-item" v-model="form.interestPayment" placeholder="请选择">
               <el-option v-for="item in interestPayment" :key="item.value" :value="item.value" :label="item.label">
                 <span style="float: left">{{ item.label }}</span>
@@ -405,7 +405,7 @@
   import { fetchCurrency, getObjList } from '@/api/currency'
   import { fetchTree } from '@/api/dept'
   import { mapGetters } from 'vuex'
-  import { transformText, sortKey, transformText1 } from '@/utils'
+  import { transformText, sortKey } from '@/utils'
   import { parseTime } from '@/utils'
   import { decimals, isNumber } from '@/utils/validate'
   import Bus from '@/assets/js/bus'
@@ -621,9 +621,6 @@
       },
       turnNum (num) {
         return Math.round(parseFloat(num) * 100) / 100 + '%'
-      },
-      turnText (val, list) {
-        return transformText1(val, list)
       }
     },
     created() {
@@ -632,18 +629,18 @@
       }
       fetchProductTypeList().then(res => { // 获取产品收益类型
         this.productTypes = res.data
-        fetchProductMixType().then(res => { // 获取产品结构类型
-          this.productMixTypes = res.data
-        })
-        getObjList().then(response => { // 获取币种
-          this.currencyList = response.data
-          this.form.currencyId = 1
-          if(!this.stage) {
-            // console.log('没有分期')
-            this.getList()
-          }
-        })
       })
+      fetchProductMixType().then(res => { // 获取产品结构类型
+        this.productMixTypes = res.data
+      })
+      getObjList().then(response => { // 获取币种
+        this.currencyList = response.data
+        this.form.currencyId = 1
+      })
+      if(!this.stage) {
+        // console.log('没有分期')
+        this.getList()
+      }
       document.documentElement.scrollTop = document.body.scrollTop = 0
     },
     mounted() {
@@ -651,7 +648,7 @@
       let list = Object.keys(this.formData)
       if(list.length > 1 && !list.productId) {
         this.formBuyingCrowds = this.form.buyingCrowds.split(',')
-        console.log(this.formBuyingCrowds)
+        // console.log(this.formBuyingCrowds)
         if(this.stageType === '0') {
           // 产品分期
           this.detailDisabled = false
@@ -709,12 +706,7 @@
             // this.form.currencyIdNo = this.form.currencyId
             // this.form.productTypeIdNo = this.form.productTypeId
             this.form.investmentHorizonUnitNo = this.form.investmentHorizonUnit
-            // this.form.productMixTypeIdNo = this.form.productMixTypeId
-            // this.form.productTypeId = transformText(this.productTypes, this.form.productTypeId)
-            // this.form.currencyId = transformText(this.currencyList, this.form.currencyId)
-            // this.form.investmentHorizonUnit = transformText(this.investHorizonUnit, this.form.investmentHorizonUnit)
-            this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
-            // this.form.productMixTypeId = transformText(this.productMixTypes, this.form.productMixTypeId)
+            // this.form.productStatus = transformText(this.productStatus, this.form.productStatus)
 
             this.detailDisabled = true
             if(this.productStatusNo === 0) {
@@ -803,14 +795,13 @@
           this.form.annualizedReturn = null
           this.isDisabled = true
         }
-        this.form.productStatus = this.productStatusNo
-        if(this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit!='1') {
-          this.$notify({
-            title: '提示',
-            message: '产品期限填写有误，请重新输入',
-            type: 'danger',
-            duration: 2000
-          })
+        // this.form.productStatus = this.productStatusNo
+        if(this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit != '1') {
+          this.warnNotify('产品期限填写有误，请重新输入')
+          return false
+        }
+        if(this.form.collectionAmount < this.form.minimalAmount) {
+          this.warnNotify('募集额度不能小于起投金额')
           return false
         }
         this.form.buyingCrowds = this.formBuyingCrowds.toString()
