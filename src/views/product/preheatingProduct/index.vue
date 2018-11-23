@@ -175,14 +175,6 @@
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
-          fetchProductTypeList().then(res => { // 获取产品类型
-            this.productTypes = res.data
-            this.list.forEach(item => {
-              item.productTypeId = transformText(this.productTypes, item.productTypeId)
-              item.productStatus = transformText(this.productStatus, item.productStatus)
-              item.investmentHorizonUnit = transformText(this.investHorizonUnit, item.investmentHorizonUnit)
-            })
-          })
         })
       }
     }
