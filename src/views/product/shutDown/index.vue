@@ -143,22 +143,12 @@
         this.getList()
       },
       getList() {
-        // this.listLoading = true
-        
         // this.listQuery.isFloat ? this.listQuery.isFloat = 0: this.listQuery.isFloat = null
         fetchList(this.listQuery).then(response => {
           this.data = response.data
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
-          fetchProductTypeList().then(res => { // 获取产品类型
-            this.productTypes = res.data
-            this.list.forEach(item => {
-              item.productTypeId = transformText(this.productTypes, item.productTypeId)
-              item.productStatus = transformText(this.productStatus, item.productStatus)
-              item.investmentHorizonUnit = transformText(this.investHorizonUnit, item.investmentHorizonUnit)
-            })
-          })
         })
 
         getObjList().then(response => {
