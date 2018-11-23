@@ -156,8 +156,10 @@
   import { getAppointList } from '@/api/product/product'
   import { putCtra } from '@/api/transc/check'
   import { fetchRecords } from '@/api/transc/records'
+  import { fetchProductTypeList } from '@/api/product/productType'
   import { deptRoleList, fetchDeptTree } from '@/api/role'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
+  import { fetchCurrency, getObjList } from '@/api/currency'
   import { getToken } from '@/utils/auth'
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import { transformText, transformText1 } from '@/utils'
