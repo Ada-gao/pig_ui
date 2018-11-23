@@ -163,7 +163,7 @@
 
           <!-- 预览图片 -->
           <el-dialog :visible.sync="dialogImgVisible">
-            <img width="100%" :src="dialogImageUrl" alt="">
+            <img height="100%" :src="dialogImageUrl" alt="">
           </el-dialog>
 
         </el-form>
