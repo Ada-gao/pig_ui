@@ -248,7 +248,7 @@
           <img :src="item"
                alt=""
                :class="'rotate_' + rotateCnt * 90"
-               style="width:80%;height:100%">
+               style="height:100%">
         </el-carousel-item>
       </el-carousel>
       <el-button type="primary"
