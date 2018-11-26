@@ -235,7 +235,9 @@
       </el-button>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogImgVisible1" class="swiper-dialog rotate-dialog">
+    <el-dialog :visible.sync="dialogImgVisible1" class="swiper-dialog rotate-dialog"
+      v-dialogDrag
+      ref="dialog_wrapper">
       <!--<img width="100%" :src="dialogImageUrl" alt="">-->
       <el-carousel arrow="always"
                    indicator-position="none"

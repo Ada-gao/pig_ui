@@ -10,6 +10,7 @@ import '@/icons' // icon
 import '@/permission' // 权限
 import * as Validate from '@/utils/validate_rules'
 import autoFocus from './directive/focus'
+import './directive/dialogDrag.js'
 
 Vue.use(ElementUI, { locale })
 Vue.prototype.Valids = Validate
