@@ -36,23 +36,24 @@ service.interceptors.response.use(
   },
   error => {
     const res = error.response
+    const defaultMsg = '服务器正在开小差，请稍后再试！'
     res.data.codeMsg = interceptorsMsg.errMessage(res.config.url, res.data.code)
-    console.log(res.data)
+    // console.log(res.data)
 
     if(res.status === 400) {
       if(res.data) {
         if(res.data.codeMsg.code === '999999') {
           return
         } else if(res.data.codeMsg.code === '888888') {
-          return message(res.data.msg, 'error') // 后台自定义错误信息返回
+          return message(res.data.msg || defaultMsg, 'error') // 后台自定义错误信息返回
           
         } else if(res.data.codeMsg.code === '777777') {
           if(res.data.code) {
-            return message(res.data.msg, 'error')
+            return message(res.data.msg || defaultMsg, 'error')
           }
-          return message(res.data.error_description, 'error') // 后台自定义错误信息返回
+          return message(res.data.error_description || defaultMsg, 'error') // 后台自定义错误信息返回
         } else {
-          message(res.data.codeMsg.errMsg, 'error')
+          message(res.data.codeMsg.errMsg || defaultMsg, 'error')
         }
       }
     } else if(res.status.toString().indexOf('401') !== -1) {
@@ -66,7 +67,7 @@ service.interceptors.response.use(
     } else if(res.status === 403) {
       message('管理权限不足，请联系管理员')
     } else if(res.status === 500) {
-      message(res.data.msg, 'error')
+      message(res.data.msg || defaultMsg, 'error')
     } else if(res.status.toString().indexOf('504') !== -1 || res.status === 404) {
       message('服务器被吃了⊙﹏⊙∥', 'error')
       router.replace({

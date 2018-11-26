@@ -8,11 +8,12 @@ import store from './store'
 import * as filters from './filters' // 全局filter
 import '@/icons' // icon
 import '@/permission' // 权限
-import { Validate } from '@/utils/validate_rules'
+import * as Validate from '@/utils/validate_rules'
 import autoFocus from './directive/focus'
 
 Vue.use(ElementUI, { locale })
-Vue.use(Validate)
+Vue.prototype.Valids = Validate
+// Vue.use(Validate)
 
 // register global utility filters.
 Object.keys(filters).forEach(key => {

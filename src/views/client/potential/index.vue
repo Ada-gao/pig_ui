@@ -127,28 +127,8 @@
   import { mapGetters } from 'vuex'
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
-  import { isvalidMobile, isvalidID } from '@/utils/validate'
   import Bus from '@/assets/js/bus'
 
-  const validMobile = (rule, value, callback) => {
-    if (!value) {
-      callback(new Error('请输入电话号码'))
-    } else if (!isvalidMobile(value)) {
-      callback(new Error('请输入正确的11位手机号'))
-    } else {
-      callback()
-    }
-  }
-
-  const validID = (rule, value, callback) => {
-    if (!value) {
-      callback(new Error('请输入身份证号码'))
-    } else if (!isvalidID(value)) {
-      callback(new Error('请输入正确的身份证号码'))
-    } else {
-      callback()
-    }
-  }
 
   export default {
     components: {

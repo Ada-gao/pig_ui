@@ -81,7 +81,7 @@ const user = {
           const data = response.data.data
           commit('SET_ROLES', data.roles)
           commit('SET_NAME', data.sysUser.username)
-          commit('SET_AVATAR', data.sysUser.avatar)
+          commit('SET_AVATAR', data.sysUser.avatar || 'static/img/default_user.png')
           commit('SET_INTRODUCTION', data.sysUser.introduction)
           const permissions = {}
           for (let i = 0; i < data.permissions.length; i++) {

@@ -16,7 +16,7 @@
           <img :src="item"
                alt=""
                :class="'rotate_' + rotateCnt * 90"
-               style="width:80%;height:100%">
+               style="height:100%">
           <!--<el-button type="primary"-->
                      <!--@click="handleRotate"-->
                      <!--style="display: block;margin:10px auto 0">顺时针翻转90度</el-button>-->
@@ -203,7 +203,7 @@
           <!-- 预览图片 -->
           <el-dialog :visible.sync="dialogImgVisible" @close="handleClose">
             <div style="width:400px;height:400px;margin:0 auto">
-              <img style="width:100%;height:100%;display: inline-block;"
+              <img style="height:100%;display: inline-block;"
                    :src="dialogImageUrl"
                    :class="'rotate_' + rotateCnt * 90"
                    alt="">

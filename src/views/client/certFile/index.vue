@@ -72,7 +72,6 @@
   import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
   import ElOption from "element-ui/packages/select/src/option"
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import { isvalidMobile, isvalidID } from '@/utils/validate'
   import { provinceAndCityData } from 'element-china-area-data' // 省市区数据
 
   export default {

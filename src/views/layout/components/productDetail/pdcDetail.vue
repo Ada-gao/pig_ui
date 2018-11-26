@@ -97,7 +97,7 @@
         <el-col :span="11">
           <el-form-item label="产品期限" prop="investmentHorizon" style="margin-bottom: 21px; white-space: nowrap;">
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizon}}</span>
-            <el-input v-else v-model="form.investmentHorizon" style="width: 25%;" placeholder="请输入"></el-input>
+            <el-input v-else v-model="form.investmentHorizon" style="width: 35%;" placeholder="请输入"></el-input>
             <span v-if="detailDisabled||stageType=='0'">{{form.investmentHorizonUnit|turnText(investHorizonUnit)}}</span>
             <el-form-item v-else label=""
               prop="investmentHorizonUnit"
@@ -318,7 +318,7 @@
         <el-col :span="11">
           <el-form-item label="大额支付行号" prop="paymentNumber">
             <span v-if="detailDisabled">{{form.paymentNumber}}</span>
-            <el-input v-else type="number" v-model.number="form.paymentNumber" placeholder="请输入"></el-input>
+            <el-input v-else v-model="form.paymentNumber" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -454,17 +454,17 @@
   //     callback()
   //   }
   // }
-  // 收益对标基准校验
-  // const pdAnnualizedReturn = (rule, value, callback) => {
-  //     const exp = /^(\d{1,2}(\.\d{1,2})?|100)$/
-  //     if (!value) {
-  //       callback(new Error('请输入收益对标基准'))
-  //     } else if (!exp.test(Number(value))) {
-  //       callback(new Error('请输入正确的收益对标基准'))
-  //     } else {
-  //       callback()
-  //     }
-  // }
+  // 产品期限校验
+  const certInvestmentHorizon = (rule, value, callback) => {
+      const exp = /^[1-9]{1,3}(\+\d{1,3}){0,4}$/
+      if (!value) {
+        callback(new Error('请输入产品期限'))
+      } else if (!exp.test(value)) {
+        callback(new Error('请输入正确的产品期限'))
+      } else {
+        callback()
+      }
+  }
   export default {
     data() {
       return {
@@ -489,7 +489,7 @@
             { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           productShortName: [
-            { required: true, message: '请输入产品名称', trigger: 'blur' },
+            { required: false, message: '请输入产品名称', trigger: 'blur' },
             { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
           ],
           isFloat: [
@@ -506,16 +506,16 @@
           ],
           cardNo: [
             // { required: true, validator: pdAcount, trigger: 'blur' },
-            { required: true, message: '请输入账号', trigger: 'blur' },
-            { pattern: /^([1-9]{1})(\d{15}|\d{18})$/, message: '请输入正确的账号' }
+            { required: true, message: '请输入账号', trigger: 'blur' }
+            // { pattern: /^\d*$/, message: '请输入正确的账号' }
           ],
-          paymentNumber: [
-            { pattern: /^([1-9]{1})(\d{15}|\d{18})$/, message: '请输入正确的账号' }
-          ],
-          productCode: [
-            { required: true, message: '请输入产品名称', trigger: 'blur' },
-            { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
-          ],
+          // paymentNumber: [
+          //   { pattern: /^\d*$/, message: '请输入正确的账号' }
+          // ],
+          // productCode: [
+          //   { required: true, message: '请输入产品编号', trigger: 'blur' },
+          //   { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
+          // ],
           productTypeId: [
             { required: true, message: '请选择产品收益类型', trigger: 'change' }
           ],
@@ -551,13 +551,12 @@
           ],
           investmentHorizon: [
             { required: true, message: '请输入产品期限', trigger: 'blur' },
-            { pattern: /^[1-9][0-9]{0,5}\+{0,1}[0-9]{0,5}$/, message: '请输入有效的产品期限' }
+            {  message: '请输入有效的产品期限',  trigger: 'blur',  validator: certInvestmentHorizon}
           ],
           buyingCrowds: [
             { required: false, message: '请选择购买人群', trigger: 'change' }
           ],
           annualizedReturn: [
-            // { required: false, validator: pdAnnualizedReturn, trigger: 'blur'}
             { required: true, message: '请输入收益对标基准利率', trigger: 'blur'},
             { pattern: /^(\d{1,2}(\.\d{1,2})?|100)$/, message: '请输入100以内并且最多两位小数的数字'}
           ],
@@ -751,13 +750,12 @@
           this.form.annualizedReturn = null
           this.isDisabled = true
         }
-        if(this.form.investmentHorizon && this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit!='1') {
-          this.$notify({
-            title: '提示',
-            message: '产品期限填写有误，请重新输入',
-            type: 'danger',
-            duration: 2000
-          })
+        if(this.form.investmentHorizon && this.form.investmentHorizonUnit && this.form.investmentHorizon.indexOf('+') !== -1 && this.form.investmentHorizonUnit != '1') {
+          this.warnNotify('产品期限填写有误，请重新输入')
+          return false
+        }
+        if(this.form.collectionAmount < this.form.minimalAmount) {
+          this.warnNotify('募集额度不能小于起投金额')
           return false
         }
         this.form.buyingCrowds = this.formBuyingCrowds.toString()
@@ -805,9 +803,9 @@
           return false
         }
         this.form.buyingCrowds = this.formBuyingCrowds.toString()
-        console.log(set[formName])
+        // console.log(set[formName])
         set[formName].validate(valid => {
-          console.log(valid)
+          // console.log(valid)
           if (valid) {
             this.form.discountCoefficient = this.investRatio
             this.form.userDefinedAttribute = JSON.stringify(this.userDefinedAttribute)
@@ -912,6 +910,14 @@
       },
       cancelDept() {
         this.dialogDepartment = false
+      },
+      warnNotify(text) {
+        this.$notify({
+          title: '提示',
+          message: text,
+          type: 'warning',
+          duration: 2000
+        })
       }
     }
   }
