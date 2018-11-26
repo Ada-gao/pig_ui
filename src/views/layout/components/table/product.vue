@@ -24,13 +24,13 @@
 
       <el-table-column align="center" label="产品分类" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.productTypeId}}</span>
+        <span>{{scope.row.productTypeName}}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="产品期限" show-overflow-tooltip>
         <template slot-scope="scope">
-        <span>{{scope.row.investmentHorizon}}{{scope.row.investmentHorizonUnit}}</span>
+        <span>{{scope.row.investmentHorizon}}{{scope.row.investmentHorizonUnit|turnText1(investHorizonUnit)}}</span>
         </template>
       </el-table-column>
 
@@ -54,7 +54,7 @@
 
       <el-table-column align="center" label="产品状态">
         <template slot-scope="scope">
-          {{scope.row.productStatus}}
+          {{scope.row.productStatus|turnText1(productStatus)}}
         </template>
       </el-table-column>
 
@@ -63,7 +63,7 @@
           <a v-if="sys_product_upd" size="small" class="common_btn"
                      @click="handleUpdate(scope.row)">查看
           </a>
-          <a v-if="sys_product_del&scope.row.productStatus==='在建'" size="small" class="danger_btn"
+          <a v-if="sys_product_del&&scope.row.productStatus===0" size="small" class="danger_btn"
                      @click="deletes(scope.row.productId)">删除
           </a>
           <!-- <a v-if="sys_user_del" size="small" type=""
@@ -86,7 +86,7 @@
 
 <script>
   import { fetchList, getObj, addObj, putObj, delObj } from '@/api/product/product'
-  import { fetchProductTypeList } from '@/api/product/productType'
+  // import { fetchProductTypeList } from '@/api/product/productType'
   import { getFiles, delFiles, uploadFiles } from '@/api/qiniu'
   import { fetchCurrency, getObjList } from '@/api/currency'
   import { getToken } from '@/utils/auth'

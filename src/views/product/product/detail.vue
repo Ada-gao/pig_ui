@@ -243,8 +243,8 @@
         uploadData: {
           productId: '',
         },
-        productTypes: [],
-        currencyList: [], //
+        // productTypes: [],
+        // currencyList: [],
         headers: {
           Authorization: 'Bearer ' + getToken()
         },
@@ -340,20 +340,12 @@
       this.productId = this.$route.params.id
       const proStatusText = this.$route.query.productStatus
       // 获取状态速度更快，提升用户体验
-      if (proStatusText && proStatusText.indexOf('在建') === -1 && proStatusText.indexOf('预热') === -1) {
+      if (proStatusText - 0 !== 0&& proStatusText - 0 !== 1) {
         this.productTran = true
       }
       if(this.productId) {
         this.createStatus = 'update'
       }
-      fetchProductTypeList().then(res => { // 获取产品类型
-        this.productTypes = res.data
-        getObjList().then(response => { // 获取币种
-          this.currencyList = response.data
-          this.form.currencyId = 1
-          // this.getList()
-        })
-      })
       this.sys_user_add = this.permissions['sys_user_add']
       this.sys_user_upd = this.permissions['sys_user_upd']
       this.sys_user_del = this.permissions['sys_user_del']
@@ -581,13 +573,6 @@
           this.form.isDisplay = display
           // this.getOperations()
         })
-      },
-      resetTemp() {
-        this.form = {
-          id: undefined,
-          username: '',
-          password: ''
-        }
       },
       getAllFiles(productId) {
         if(!productId) return null
