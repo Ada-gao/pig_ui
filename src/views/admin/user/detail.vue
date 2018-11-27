@@ -637,7 +637,9 @@
               this.fileList.push(obj)
               this.fileList.length = 1
             }
+            if (this.state === 'view') return
             this.getNodeData(response.data.deptId)
+            if (!response.data.rankId) return
             this.handleRankList(response.data.rankId)
           })
       },
