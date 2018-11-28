@@ -740,6 +740,7 @@
           this.subDisabled = true
         } else {
           this.subDisabled = false
+          this.form.subscribeRate = ''
         }
       },
       create(formName) { // 创建提交
